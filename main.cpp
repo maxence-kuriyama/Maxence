@@ -271,7 +271,7 @@ int commentFlg = 0;
 int drawFlgCnt = 0;
 int cutinFlg = 0; int cutinCnt = 0;
 int debugFlg = 0;
-string text[400]; int txtMax = 400;
+string text[450]; int txtMax = 450;
 char txt_name[30] = "data/sayings.txt";
 int numTxt = 0; 
 int txtX = rnd() % 200; int txtY = rnd() % 400;
@@ -293,7 +293,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ChangeWindowMode(TRUE); 
 	SetUseASyncChangeWindowModeFunction(TRUE, ChangeWinSize, NULL);
 	SetAlwaysRunFlag(TRUE);
-	SetMainWindowText("Maxence 0.3.0");
+	SetMainWindowText("Maxence 0.3.1");
 	SetWindowIconID(101);
 	if (DxLib_Init() == -1) {
 		return -1;
@@ -2073,7 +2073,8 @@ int OnButton(Mouse_t Mouse, int LeftUpx, int LeftUpy, int RightDownx, int RightD
 int GetTexts(string *text, const char *filename) {
 	ifstream read(filename);
 	string str;
-	int length = 30; int maxSize = txtMax;
+	int length = 30; 
+	int maxSize = txtMax;
 	double tmp = 0.0;
 	int k = 0;
 
@@ -2083,7 +2084,8 @@ int GetTexts(string *text, const char *filename) {
 	else {
 		while (k < maxSize){
 			getline(read, str);
-			text[k] = str; k++;
+			text[k] = str; 
+			k++;
 		}
 	}
 	read.close();
