@@ -293,7 +293,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ChangeWindowMode(TRUE); 
 	SetUseASyncChangeWindowModeFunction(TRUE, ChangeWinSize, NULL);
 	SetAlwaysRunFlag(TRUE);
-	SetMainWindowText("Maxence 0.3.1");
+	SetMainWindowText("Maxence 0.3.2");
 	SetWindowIconID(101);
 	if (DxLib_Init() == -1) {
 		return -1;
@@ -592,6 +592,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					Gameflg = 0;
 					taijin = 0;
 					for (int i = 0; i < 3; ++i) tama[i].initialize();
+					StopMusic();
 				}
 			}
 		}
@@ -1187,6 +1188,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//対戦スキップ（一人用デバッグ）
 			if (Key[KEY_INPUT_B] == 1 && taijin == 1) {
 				Scenflg++;
+				StopMusic();
 				Gameflg = -6;
 			}
 
@@ -1729,6 +1731,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				case 5:
 					DrawGraph(30, 380, stripe[14], TRUE); break;
 				}
+
+				if (CheckMusic() != 1) {
+					if (Scenflg == 0 || Scenflg == 7 || Scenflg == 12) PlayMusic("sound/bgm03.mp3", DX_PLAYTYPE_BACK);
+					if (Scenflg == 21) PlayMusic("sound/bgm07.mp3", DX_PLAYTYPE_BACK);
+				}
 				switch (Scenflg) {
 				case 1:
 					//鹿が現れる
@@ -1760,6 +1767,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					break;
 				case 6:
 					//第一戦
+					PlayMusic("sound/bgm04.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					InitializeGame();
 					break;
@@ -1780,6 +1788,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					break;
 				case 11:
 					//第二戦
+					PlayMusic("sound/bgm05.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					InitializeGame();
 					break;
@@ -1807,6 +1816,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					break;
 				case 17:
 					//第三戦
+					PlayMusic("sound/bgm06.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					InitializeGame();
 					break;
@@ -1827,6 +1837,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					break;
 				case 22:
 					//第四戦
+					PlayMusic("sound/bgm08.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					InitializeGame();
 					break;
