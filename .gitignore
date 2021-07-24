@@ -259,3 +259,16 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+
+#======================================
+#-------------------------------------
+
+data_ignore
+music_list
+how_to_use_vect.cpp
+MLP_test.cpp
+Tsutsui*
+Log*
+obj_load_test
+*memo.txt
