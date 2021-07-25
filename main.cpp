@@ -1672,6 +1672,29 @@ void ChangeWinSize(void* Data) {
 	Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 }
 
+//テキストファイルの読み込み
+int GetTexts(string* text, const char* filename) {
+	ifstream read(filename);
+	string str;
+	int length = 30;
+	int maxSize = txtMax;
+	double tmp = 0.0;
+	int k = 0;
+
+	if (!read) {
+		cout << "テキストファイルの読み込み失敗" << endl;
+	}
+	else {
+		while (k < maxSize) {
+			getline(read, str);
+			text[k] = str;
+			k++;
+		}
+	}
+	read.close();
+	return k;
+}
+
 int InitializeHist(int last[3], int seclast[3]) {
 	for (int i = 0; i < 3; i++) {
 		last[i] = 0; seclast[i] = 0;
@@ -1770,29 +1793,6 @@ VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side) {
 		}
 	}
 	return trg;
-}
-
-//テキストファイルの読み込み
-int GetTexts(string *text, const char *filename) {
-	ifstream read(filename);
-	string str;
-	int length = 30; 
-	int maxSize = txtMax;
-	double tmp = 0.0;
-	int k = 0;
-
-	if (!read) {
-		cout << "テキストファイルの読み込み失敗" << endl;
-	}
-	else {
-		while (k < maxSize){
-			getline(read, str);
-			text[k] = str; 
-			k++;
-		}
-	}
-	read.close();
-	return k;
 }
 
 VectorXd softmax(const VectorXd &src, double alpha) {

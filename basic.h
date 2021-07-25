@@ -1,5 +1,10 @@
 
 
+
+//======================================
+//   入力関連
+//======================================
+
 typedef struct {
 	int x;
 	int y;
@@ -38,7 +43,17 @@ int UpdateMouse(Mouse_t* Mouse) {
 	return 0;
 }
 
-//カメラの移動
+//矩形の上にマウスカーソルがいるか判定
+int OnButton(Mouse_t Mouse, int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
+	return Mouse.x > LeftUpx && Mouse.x < RightDownx&& Mouse.y > LeftUpy && Mouse.y < RightDowny;
+}
+
+
+
+//======================================
+//   カメラ関連
+//======================================
+
 int CameraMove(double dx, double dy, VECTOR* CameraPos, VECTOR Origin) {
 	VECTOR tmp1 = VSub(*CameraPos, Origin);
 	VECTOR tmp2 = VNorm(tmp1);
@@ -55,10 +70,11 @@ int InitializeCamera(VECTOR* CameraPos) {
 	return 0;
 }
 
-//矩形の上にマウスカーソルがいるか判定
-int OnButton(Mouse_t Mouse, int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
-	return Mouse.x > LeftUpx && Mouse.x < RightDownx&& Mouse.y > LeftUpy && Mouse.y < RightDowny;
-}
+
+
+//======================================
+//   コメント描画関連
+//======================================
 
 void DrawRoundBox(int x, int y, int r, int w, int h, int Color)
 {
