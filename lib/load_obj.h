@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OBJ_Loader.h"
+#include "lib/OBJ_Loader.h"
 #include "DxLib.h"
 #include <iostream>
 #include <sstream>

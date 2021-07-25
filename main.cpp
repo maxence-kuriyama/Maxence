@@ -7,15 +7,15 @@
 #include <fstream>
 #include <string>
 #include <random>
-#include "load_obj.h"
 #include <mbstring.h>
 #include <mbctype.h>
-#include "vect.h"
-#include "field.h"
-#include "fireflower.h"
-#include "scenario.h"
-#include "ending.h"
-#include "basic.h"
+#include "lib/load_obj.h"
+#include "lib/vect.h"
+#include "lib/field.h"
+#include "lib/fireflower.h"
+#include "lib/scenario.h"
+#include "lib/ending.h"
+#include "lib/basic.h"
 using namespace DxLib;
 using namespace std;
 using namespace Eigen;
@@ -342,7 +342,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 
 		//こんなことをしていいのだろうか。。。
-		#include "key_input.h"
+		#include "lib/key_input.h"
 		if (AcRate >= 0.5 && AcRate <= 30.0) { AcRate += 0.03; }
 
 		//マウス操作か否かを判定する
