@@ -13,6 +13,7 @@
 #include "vect.h"
 #include "field.h"
 #include "fireflower.h"
+#include "scenario.h"
 using namespace DxLib;
 using namespace std;
 using namespace Eigen;
@@ -239,78 +240,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int visible[5] = { 1,1,1,1,0 };
 	string scen_txt[40];
 	int scen_who[40];
-	scen_who[0] = 0;
-	scen_txt[0] = "――世界は１つの部屋で出来ている。";
-	scen_who[1] = 0;
-	scen_txt[1] = "「Mr.Kが世界を滅ぼす」";
-	scen_who[2] = 1;
-	scen_txt[2] = "Mr.K: なにっ！？";
-	scen_who[3] = 4;
-	scen_txt[3] = "Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！";
-	scen_who[4] = 3;
-	scen_txt[4] = "Mr.K: 世界が滅びるというのは本当の事のようだな。";
-	scen_who[5] = 3;
-	scen_txt[5] = "Mr.K: しかし、一体我々のうちの誰が滅ぼすというのだ？ 貴様か？ Mr.K！！！";
-	scen_who[6] = 3;
-	scen_txt[6] = "Mr.K: 馬鹿な、そんなはずではなかったのに…。";
-	scen_who[7] = 3;
-	scen_txt[7] = "Mr.K: 最後の最期は後悔しないと決めていたのに、こんな死に様とはな。";
-	scen_who[8] = 3;
-	scen_txt[8] = "Mr.K: だが、俺が死ねば世界の崩壊が止まるというのなら、俺の死にも意味を持たせられるというものじゃないか…………。";
-	scen_who[9] = 4;
-	scen_txt[9] = "Mr.K: 貴様、Mr.Kを殺したな！";
-	scen_who[10] = 4;
-	scen_txt[10] = "Mr.K: 何故いつも分かり合えないのだろう。でもそれが同じもの同士が集まった時の性なのだろう。";
-	scen_who[11] = 4;
-	scen_txt[11] = "Mr.K: だからMr.Kよ。殺し合おう。その中で生きた意味を見出そうじゃないか。";
-	scen_who[12] = 4;
-	scen_txt[12] = "Mr.K: さぁ教えてくれ。";
-	scen_who[13] = 4;
-	scen_txt[13] = "Mr.K: 俺は見えたよ。";
-	scen_who[14] = 4;
-	scen_txt[14] = "Mr.K: 残ったお前にもいつか見える時が来るだろう…………。先に逝っているよ。";
-	scen_who[15] = 2;
-	scen_txt[15] = "Mr.K: あなた1人になるまで隠れていました。";
-	scen_who[16] = 2;
-	scen_txt[16] = "Mr.K: 他の2人を消してくれてありがとう。こうなることはカードを見た時から分かっていたからね。";
-	scen_who[17] = 2;
-	scen_txt[17] = "Mr.K: そして連戦の貴方を始末すれば、ここは私の世界になる訳だ。そうだろう？";
-	scen_who[18] = 2;
-	scen_txt[18] = "Mr.K: 私は世界を滅ぼすつもりじゃないのです。貴方が邪魔なだけなのですよ。";
-	scen_who[19] = 2;
-	scen_txt[19] = "Mr.K: 馬鹿な、そんな、世界の王に成れるチャンスを逃してしまうなんて、有り得ない。";
-	scen_who[20] = 2;
-	scen_txt[20] = "Mr.K: …………ああ、生きていたこと自体が大きなチャンスだったのか…………しまったな。";
-	scen_who[21] = 1;
-	scen_txt[21] = "Mr.K: Mr.Kは王になろうとしていたのか…………。";
-	scen_who[22] = 1;
-	scen_txt[22] = "Mr.K: 王、そうか！";
-	scen_who[23] = 1;
-	scen_txt[23] = "Mr.K: Kとは king のことだったのか。";
-	scen_who[24] = 1;
-	scen_txt[24] = "Mr.K: Mr.K。僕も見えたよ。";
-	scen_who[25] = 1;
-	scen_txt[25] = "Mr.K: さぁ、後はこの世界にいるのは僕だけだ。";
-	scen_who[26] = 1;
-	scen_txt[26] = "Mr.K: だからこの王である僕を殺して世界を救ってくれ。";
-	scen_who[27] = 1;
-	scen_txt[27] = "Mr.K: ありがとう。";
-	scen_who[28] = 5;
-	scen_txt[28] = "鹿: しかと見届けたぞ。";
-	scen_who[29] = 5;
-	scen_txt[29] = "鹿: 鹿と見届けたぞ。";
-	scen_who[30] = -1;
-	scen_txt[30] = "このゲームの王が世界を滅ぼすというなら…";
-	scen_who[31] = -1;
-	scen_txt[31] = "王であるプレイヤーが、この世界に居る貴様を滅ぼすのだろう？";
-	scen_who[32] = 5;
-	scen_txt[32] = "鹿: 気づいてしまったか。";
-	scen_who[33] = 5;
-	scen_txt[33] = "鹿: ならば鹿他無い。唯、私が上であることを確認するだけだ。";
-	scen_who[34] = 5;
-	scen_txt[34] = "鹿: かかって来なさい。";
-	scen_who[35] = 5;
-	scen_txt[35] = "鹿: …………";
+	init_scene_text(scen_txt, scen_who);
 
 	//エンディング関係
 	int end_cnt = 0;
