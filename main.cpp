@@ -186,15 +186,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 
 	//3DÉÇÉfÉãä÷åW
-	int ModelHandle = MV1LoadModel("movie/max0.mv1");
-	float totalTime, playTime = 0.0;
-	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
-	MV1SetScale(ModelHandle, VGet(0.1, 0.1, 0.1));
-	//MV1SetRotationXYZ(ModelHandle, VGet(0.0, -0.5 * DX_PI_F, 0.0));
-	MV1SetRotationXYZ(ModelHandle, VGet(0.0, DX_PI_F, 0.0));
-	//int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
-	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
-	int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
+	//int ModelHandle = MV1LoadModel("movie/max0.mv1");
+	//float totalTime, playTime = 0.0;
+	//MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
+	//MV1SetScale(ModelHandle, VGet(0.1, 0.1, 0.1));
+	////MV1SetRotationXYZ(ModelHandle, VGet(0.0, -0.5 * DX_PI_F, 0.0));
+	//MV1SetRotationXYZ(ModelHandle, VGet(0.0, DX_PI_F, 0.0));
+	////int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
+	////totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
+	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
 
 	srand((unsigned)time(NULL));
 	fireflower tama[3]; tama[0].sound = 1;
@@ -540,11 +540,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//Game Loop
 		else if (Gameflg == 1) {
 			//ï`âÊ
-			//// DrawGraph(0, 0, GrHandle, TRUE);
-			// MV1SetAttachAnimTime(ModelHandle, AttachIndex, playTime);
-			MV1DrawModel(ModelHandle);
-			// playTime += 0.05;
-			// if(playTime >= totalTime){ playTime = 0.0; }
+			////// DrawGraph(0, 0, GrHandle, TRUE);
+			//// MV1SetAttachAnimTime(ModelHandle, AttachIndex, playTime);
+			//MV1DrawModel(ModelHandle);
+			//// playTime += 0.05;
+			//// if(playTime >= totalTime){ playTime = 0.0; }
 			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
 			if (cancelCnt > 0) {
 				/*if (child[last[0]][last[1]].state[last[2]][last[3]] == 1) {
@@ -745,7 +745,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//CameraPos.x -= tmp.x * Mouse.Wheel * 10.0;
 			//CameraPos.z -= tmp.z * Mouse.Wheel * 10.0;
 			SetCameraPositionAndTarget_UpVecY(CameraPos, Origin);
-			MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
+			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			//ìÆçÏÇÃéÊÇËè¡Çµ
 			if (Key[KEY_INPUT_Z] == 1 || Key[KEY_INPUT_BACK] == 1) {
@@ -1585,7 +1585,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	InitGraph();
 	DeleteGraph(MovieGraphHandle); 
-	MV1DeleteModel(ModelHandle);
+	//MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
 	return 0;
