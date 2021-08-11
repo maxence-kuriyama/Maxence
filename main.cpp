@@ -182,8 +182,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		pict_name = "graph/end_pict" + to_string(i) + ".png";
 		end_pict[i-1] = LoadGraph(pict_name.c_str());
 	}
-	int MovieGraphHandle = LoadGraph("movie/battle.ogv");
 	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
+
+	//ìÆâÊ
+	//int MovieGraphHandle = LoadGraph("movie/battle.ogv");
 
 	//3DÉÇÉfÉãä÷åW
 	//int ModelHandle = MV1LoadModel("movie/max0.mv1");
@@ -446,19 +448,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "ó◊ÇÃêlÇ∆");
 					if ((!keyboardFlg && Mouse.Button[0] == 1) || (keyboardFlg && Key[KEY_INPUT_RETURN] == 1)) {
 						mode = "ó◊ÇÃêlÇ∆";
-						//PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
-						PlayMovieToGraph(MovieGraphHandle);
-						SetBackgroundColor(0, 0, 0);
-						while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() 
-							&& GetMovieStateToGraph(MovieGraphHandle)){
-							UpdateKey(Key);
-							if (Key[KEY_INPUT_W] == 1) {
-								PauseMovieToGraph(MovieGraphHandle);
-								break;
-							}
-							DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
-							WaitTimer(10);
-						}
+						////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
+						//PlayMovieToGraph(MovieGraphHandle);
+						//SetBackgroundColor(0, 0, 0);
+						//while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() 
+						//	&& GetMovieStateToGraph(MovieGraphHandle)){
+						//	UpdateKey(Key);
+						//	if (Key[KEY_INPUT_W] == 1) {
+						//		//PauseMovieToGraph(MovieGraphHandle);
+						//		break;
+						//	}
+						//	//DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
+						//	WaitTimer(10);
+						//}
 						SetBackgroundColor(0, 128, 128);
 						InitializeGame();
 						keyWait = 20;
@@ -1584,7 +1586,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//::FreeConsole();
 
 	InitGraph();
-	DeleteGraph(MovieGraphHandle); 
+	//DeleteGraph(MovieGraphHandle); 
 	//MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
