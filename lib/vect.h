@@ -10,7 +10,7 @@
 #ifndef vect_h
 #define vect_h
 
-//using namespace std;
+using namespace std;
 using namespace Eigen;
 random_device rnd;
 mt19937 mt(rnd());

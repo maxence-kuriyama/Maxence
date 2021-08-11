@@ -4,21 +4,23 @@
 #include <time.h>
 #include <float.h>
 #include <iostream>
+#include <sstream>
 #include <fstream>
+#include <vector>
 #include <string>
 #include <random>
 #include <mbstring.h>
 #include <mbctype.h>
-#include "lib/load_obj.h"
 #include "lib/vect.h"
+
+using namespace DxLib;
+using namespace std;
 #include "lib/field.h"
 #include "lib/fireflower.h"
 #include "lib/scenario.h"
 #include "lib/ending.h"
 #include "lib/basic.h"
-using namespace DxLib;
-using namespace std;
-using namespace Eigen;
+
 #pragma comment(lib, "winmm.lib")
 
 #define TEXT1_X		220
@@ -184,9 +186,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 
 	//3DÉÇÉfÉãä÷åW
-	float pos[21000][3]; float normal[21000][3]; int tri_id[11000][3];
-	int meshNum; int vertexNum; int triNum;
-	load_obj(pos, normal, tri_id, &meshNum, &vertexNum, &triNum);
 	int ModelHandle = MV1LoadModel("movie/max0.mv1");
 	float totalTime, playTime = 0.0;
 	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
@@ -540,8 +539,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		//Game Loop
 		else if (Gameflg == 1) {
-			//ï`âÊ	
-			// show_obj(pos, normal, tri_id, vertexNum, triNum, CentK, 0.7, theta);
+			//ï`âÊ
 			//// DrawGraph(0, 0, GrHandle, TRUE);
 			// MV1SetAttachAnimTime(ModelHandle, AttachIndex, playTime);
 			MV1DrawModel(ModelHandle);
@@ -620,8 +618,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				}
 			}
 			//DrawFormatString(0, 100, StringColor, "m1: %d", meshNum);
-			//DrawFormatString(0, 150, StringColor, "v1: %d", vertexNum);
-			//DrawFormatString(0, 200, StringColor, "t1: %d", triNum);
 
 			//ÉQÅ[ÉÄì‡ëÄçÏ
 			if (taijin == 0 || (taijin == 1 && cnt % 2 == teban)) {

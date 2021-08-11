@@ -1,3 +1,4 @@
+#pragma once
 
 void init_scene_text(string* scen_txt, int* scen_who) {
 

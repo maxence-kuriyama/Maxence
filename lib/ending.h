@@ -1,3 +1,4 @@
+#pragma once
 
 void init_ending_text(string* job, string* who) {
 
