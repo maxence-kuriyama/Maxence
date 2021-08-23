@@ -93,7 +93,6 @@ int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 int prex = 0; int prey = 0;				//マウス操作か否かを判定するための変数
 string mode = "?";
 //ゲームの演出に用いる変数
-//int x = 0; int y = 0;
 int setx = 0; int sety = 0;
 double logoX = 0.0;
 int musicFlg = 0;
@@ -137,8 +136,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	SetCameraNearFar(100.0, 6000.0);
 	SetGlobalAmbientLight(GetColorF(1.0, 0.0, 0.0, 0.0));
 	ChangeLightTypePoint(VGet(320.0, 240.0, -300.0), 2000.0, 0.0, 0.001f, 0.0);
-	//ChangeLightTypeSpot(VGet(320.0, 240.0, -300.0), VGet(0,0,1), DX_PI_F, DX_PI_F, 2000.0, 0.0, 0.004f, 0.0);
-	//SetWindowUserCloseEnableFlag(false);
 
 	//種々のハンドル
 	unsigned int White = GetColor(255, 255, 255);
@@ -153,8 +150,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
-	//BkGraph = LoadGraph("graph/back.png");
-	//Maxence = LoadGraph("graph/Maxence.png");
 	MLogo = LoadGraph("graph/M.png");
 	axence = LoadGraph("graph/axence.png");
 	ClickToStart = LoadGraph("graph/click.png");
@@ -318,10 +313,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	////critic.setLayer(R5, 9);
 	////critic.setLayer(Q6, 10);
 
-	//FILE* out = NULL;
-	//::AllocConsole();
-	//freopen_s(&out, "CON", "w", stdout);
-	//printf("Hello!!\n\n");
 
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
@@ -428,7 +419,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				tama[i].tick();
 			}
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
-			//DrawFormatString(0, 448, White, "%f", Lrate);
 			//タイトル画面その１
 			if (taijin == 0) {
 				DrawFormatString(TEXT1_X, TEXT1_Y, StringColor, "ぼっちで");
@@ -497,18 +487,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					|| (keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "先攻");
 					if ((!keyboardFlg && Mouse.Button[0] == 1) || (keyboardFlg && Key[KEY_INPUT_RETURN] == 1)) {
-						//PlayMovieToGraph(MovieGraphHandle);
 						SetBackgroundColor(0, 0, 0);
-						/*while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()
-							&& GetMovieStateToGraph(MovieGraphHandle)) {
-							UpdateKey(Key);
-							if (Key[KEY_INPUT_W] == 1) {
-								PauseMovieToGraph(MovieGraphHandle);
-								break;
-							}
-							DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
-							WaitTimer(10);
-						}*/
 						SetBackgroundColor(0, 128, 128);
 						Gameflg = -6;
 						keyWait = 20;
@@ -519,18 +498,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					|| (keyboardFlg && selectMode == 1)) {
 					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "後攻");
 					if ((!keyboardFlg && Mouse.Button[0] == 1) || (keyboardFlg && Key[KEY_INPUT_RETURN] == 1)) {
-						//PlayMovieToGraph(MovieGraphHandle);
 						SetBackgroundColor(0, 0, 0);
-						/*while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()
-							&& GetMovieStateToGraph(MovieGraphHandle)) {
-							UpdateKey(Key);
-							if (Key[KEY_INPUT_W] == 1) {
-								PauseMovieToGraph(MovieGraphHandle);
-								break;
-							}
-							DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
-							WaitTimer(10);
-						}*/
 						SetBackgroundColor(0, 128, 128);
 						Gameflg = -6;
 						keyWait = 20;
@@ -542,25 +510,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//Game Loop
 		else if (Gameflg == 1) {
 			//描画
-			////// DrawGraph(0, 0, GrHandle, TRUE);
-			//// MV1SetAttachAnimTime(ModelHandle, AttachIndex, playTime);
 			//MV1DrawModel(ModelHandle);
-			//// playTime += 0.05;
-			//// if(playTime >= totalTime){ playTime = 0.0; }
 			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
 			if (cancelCnt > 0) {
-				/*if (child[last[0]][last[1]].state[last[2]][last[3]] == 1) {
-					DrawExtendGraph(176.5 + 100 * last[0] + 33 * last[2] - 15, 96.5 + 100 * last[1] + 33 * last[3] - 15,
-						176.5 + 100 * last[0] + 33 * last[2] + 15, 96.5 + 100 * last[1] + 33 * last[3] + 15, stone1_t, TRUE);
-				}
-				else if (child[last[0]][last[1]].state[last[2]][last[3]] == -1) {
-					DrawExtendGraph(176.5 + 100 * last[0] + 33 * last[2] - 15, 96.5 + 100 * last[1] + 33 * last[3] - 15,
-						176.5 + 100 * last[0] + 33 * last[2] + 15, 96.5 + 100 * last[1] + 33 * last[3] + 15, stone2_t, TRUE);
-				}*/
 				DrawBox(160 + 100 * last[0] + 33 * last[2], 80 + 100 * last[1] + 33 * last[3],
 					160 + 100 * last[0] + 33 * (last[2] + 1), 80 + 100 * last[1] + 33 * (last[3] + 1), GetColor(255, 160, 160), TRUE);
 			}
-			//DrawBox(160, 80, 460, 380, GetColor(170, 170, 230), TRUE);
 			//操作の処理
 			for (int i = 0; i < 3; ++i) {
 				for (int j = 0; j < 3; ++j) {
@@ -740,12 +695,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			tmp = VNorm(VSub(CameraPos, Origin));
 			if (Mouse.Button[0] > 1) {
-				//CameraMove(Mouse.x - setx, Mouse.y - sety, &CameraPos, Origin);
 				theta -= (Mouse.x - setx) * 0.05;
 				setx = Mouse.x; sety = Mouse.y;
 			}
-			//CameraPos.x -= tmp.x * Mouse.Wheel * 10.0;
-			//CameraPos.z -= tmp.z * Mouse.Wheel * 10.0;
 			SetCameraPositionAndTarget_UpVecY(CameraPos, Origin);
 			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
@@ -778,21 +730,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 
 			//テキストの描画
-			//DrawFormatString(0, 400, StringColor, "左ドラッグでカメラ視点変更");
-			//DrawFormatString(0, 160, StringColor, "%d", cnt);
-			//for (int i = 0; i < 3; ++i) {
-			//	for (int j = 0; j < 3; ++j) {
-			//		DrawFormatString(i * 16, 180 + j * 16, StringColor, "%d", child[i][j].victory());
-			//	}
-			//}
-			//DrawFormatString(0, 230, StringColor, "%d", mother.victory());
 			DrawFormatString(470, 80, StringColor, "右クリック:");
 			DrawFormatString(540, 100, StringColor, "石を置く");
 			DrawFormatString(470, 124, StringColor, "zキー（BkSpキー）:");
 			DrawFormatString(540, 144, StringColor, "一手戻る");
-			//DrawStringToHandle(20, 20, text[txtId].c_str(), StringColor, Font0);
 			if(commentFlg) DrawObtainsString2(txtX + 20, txtY + 10, 560, GetFontSize(), text[txtId].c_str(), StringColor, Font0, GetColor(250, 250, 150));
-			//DrawFormatString(470, 180, StringColor, "%f", output(81));
 			DrawFormatString(620, 0, StringColor, "%d", waitOnCOM);
 			if(anl_flg) DrawFormatString(540, 0, Green, "annealed!");
 
@@ -1581,9 +1523,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		start = clock();
 	}
-
-	//fclose(out);
-	//::FreeConsole();
 
 	InitGraph();
 	//DeleteGraph(MovieGraphHandle); 
