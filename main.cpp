@@ -15,6 +15,7 @@
 
 using namespace DxLib;
 using namespace std;
+#include "lib/const.h"
 #include "lib/field.h"
 #include "lib/fireflower.h"
 #include "lib/scenario.h"
@@ -22,16 +23,6 @@ using namespace std;
 #include "lib/basic.h"
 
 #pragma comment(lib, "winmm.lib")
-
-#define TEXT1_X		220
-#define TEXT1_Y		300
-#define TEXT2_X		370
-#define TEXT2_Y		300
-#define RWD_VICT	1.0
-#define RWD_DOM		1.0
-#define RWD_PUT		0.0
-#define RWD_CANPUT	0.0
-#define RWD_FAULT	-0.5
 
 int InitializeHist(int last[3], int seclast[3]);
 int InitializeGame(int flg = 1);
