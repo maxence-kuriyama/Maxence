@@ -33,7 +33,6 @@ using namespace std;
 #define RWD_CANPUT	0.0
 #define RWD_FAULT	-0.5
 
-void ChangeWinSize(void* Data);
 int InitializeHist(int last[3], int seclast[3]);
 int InitializeGame(int flg = 1);
 double PlayOneTurn(int Gx, int Gy, int Lx, int Ly, int side);
@@ -43,18 +42,9 @@ int MultiByteLength(const char* String);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
-int BkGraph, Maxence, MLogo, axence;
-int ClickToStart;
-int Cutin1, Cutin10, Cutin11;
-int Logo0, Logo1, Logo2, Logo3, Logo4;
-int Room, Card;
-int stone1, stone2, stone1_t, stone2_t; 
-int stripe[15];
-int end_pict[20];
 int Font0, Font1, Font2, Font3, Font4;
 char Key[256];
 Mouse_t Mouse;
-VECTOR CenterPos = VGet(320.0, 240.0, 0.0);
 VECTOR Origin = VGet(320.0, 240.0, 0.0);
 VECTOR CameraPos;
 VECTOR tmp;
@@ -121,8 +111,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow)
 {
 	SetOutApplicationLogValidFlag(FALSE);
-	ChangeWindowMode(TRUE); 
-	SetUseASyncChangeWindowModeFunction(TRUE, ChangeWinSize, NULL);
+	ChangeWindowMode(TRUE);
 	SetAlwaysRunFlag(TRUE);
 	SetMainWindowText("Maxence 0.3.2");
 	SetWindowIconID(101);
@@ -136,8 +125,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	SetCameraNearFar(100.0, 6000.0);
 	SetGlobalAmbientLight(GetColorF(1.0, 0.0, 0.0, 0.0));
 	ChangeLightTypePoint(VGet(320.0, 240.0, -300.0), 2000.0, 0.0, 0.001f, 0.0);
+	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 
-	//種々のハンドル
+	// 種々のハンドル
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
 	unsigned int Green = GetColor(0, 255, 0);
@@ -145,44 +135,49 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	unsigned int Blue = GetColor(0, 0, 255);
 	unsigned int col = Green;
 	unsigned int StringColor = White;		//文字色
+
+	// フォント
 	Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font1 = CreateFontToHandle("Times New Roman", 10, 1, -1);
 	Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
-	MLogo = LoadGraph("graph/M.png");
-	axence = LoadGraph("graph/axence.png");
-	ClickToStart = LoadGraph("graph/click.png");
-	Logo0 = LoadGraph("graph/Maxence_after.png");
-	Logo1 = LoadGraph("graph/Maxence_after1.png");
-	Logo2 = LoadGraph("graph/Maxence_after2.png");
-	Logo3 = LoadGraph("graph/Maxence_after3.png");
-	Logo4 = LoadGraph("graph/Maxence_after4.png");
-	Room = LoadGraph("graph/room.bmp");
-	Card = LoadGraph("graph/card.bmp");
-	Cutin1 = LoadGraph("graph/cutin1.png");
-	Cutin10 = LoadGraph("graph/cutin10.png");
+
+	// 画像読み込み
+	int MLogo = LoadGraph("graph/M.png");
+	int axence = LoadGraph("graph/axence.png");
+	int ClickToStart = LoadGraph("graph/click.png");
+	int Logo0 = LoadGraph("graph/Maxence_after.png");
+	int Logo1 = LoadGraph("graph/Maxence_after1.png");
+	int Logo2 = LoadGraph("graph/Maxence_after2.png");
+	int Logo3 = LoadGraph("graph/Maxence_after3.png");
+	int Logo4 = LoadGraph("graph/Maxence_after4.png");
+	int Room = LoadGraph("graph/room.bmp");
+	int Card = LoadGraph("graph/card.bmp");
+	int Cutin1 = LoadGraph("graph/cutin1.png");
+	int Cutin10 = LoadGraph("graph/cutin10.png");
 	GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
-	stone1 = LoadGraph("graph/stone1.png");
-	stone2 = LoadGraph("graph/stone2.png");
-	stone1_t = LoadGraph("graph/stone1.png");
-	stone2_t = LoadGraph("graph/stone2.png");
+	int stone1 = LoadGraph("graph/stone1.png");
+	int stone2 = LoadGraph("graph/stone2.png");
+	int stone1_t = LoadGraph("graph/stone1.png");
+	int stone2_t = LoadGraph("graph/stone2.png");
+	int stripe[15];
 	for (int i = 1; i <= 15; ++i) {
 		string pict_name;
 		pict_name = "graph/stripe" + to_string(i) + ".png";
 		stripe[i-1] = LoadGraph(pict_name.c_str());
 	}
+	int end_pict[20];
 	for (int i = 1; i <= 20; ++i) {
 		string pict_name;
 		pict_name = "graph/end_pict" + to_string(i) + ".png";
 		end_pict[i-1] = LoadGraph(pict_name.c_str());
 	}
-	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 
-	//動画
+	// 動画
 	//int MovieGraphHandle = LoadGraph("movie/battle.ogv");
 
-	//3Dモデル関係
+	// 3Dモデル関係
 	//int ModelHandle = MV1LoadModel("movie/max0.mv1");
 	//float totalTime, playTime = 0.0;
 	//MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
@@ -1533,34 +1528,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 
-//ウィンドウサイズの変更
-void ChangeWinSize(void* Data) {
-	BkGraph = LoadGraph("graph/back.png");
-	Maxence = LoadGraph("graph/Maxence.png");
-	MLogo = LoadGraph("graph/M.png");
-	axence = LoadGraph("graph/axence.png");
-	ClickToStart = LoadGraph("graph/click.png");
-	Logo0 = LoadGraph("graph/Maxence_after.png");
-	Logo1 = LoadGraph("graph/Maxence_after1.png");
-	Logo2 = LoadGraph("graph/Maxence_after2.png");
-	Logo3 = LoadGraph("graph/Maxence_after3.png");
-	Logo4 = LoadGraph("graph/Maxence_after4.png");
-	stone1 = LoadGraph("graph/stone1.png");
-	stone2 = LoadGraph("graph/stone2.png");
-	stone1_t = LoadGraph("graph/stone1.png");
-	stone2_t = LoadGraph("graph/stone2.png");
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			child[i][j].stone1 = stone1;
-			child[i][j].stone2 = stone2;
-			child[i][j].stone1_t = stone1_t;
-			child[i][j].stone2_t = stone2_t;
-		}
-	}
-	Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-}
-
-//テキストファイルの読み込み
+// テキストファイルの読み込み
 int GetTexts(string* text, const char* filename) {
 	ifstream read(filename);
 	string str;

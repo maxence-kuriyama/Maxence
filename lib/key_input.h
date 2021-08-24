@@ -26,13 +26,6 @@ if (Key[KEY_INPUT_P] == 1) {
 }
 
 
-//Windowモードにする
-if (Key[KEY_INPUT_ESCAPE] == 1) {
-	ChangeWindowMode(TRUE);
-	ChangeWinSize(NULL);
-}
-
-
 //カットインを入れる
 if (Key[KEY_INPUT_C] == 1) {
 	cutinFlg = 1;
