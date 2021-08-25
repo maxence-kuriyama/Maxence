@@ -54,21 +54,25 @@ int OnButton(Mouse_t Mouse, int LeftUpx, int LeftUpy, int RightDownx, int RightD
 //   ƒJƒƒ‰ŠÖ˜A
 //======================================
 
-int CameraMove(double dx, double dy, VECTOR* CameraPos, VECTOR Origin) {
-	VECTOR tmp1 = VSub(*CameraPos, Origin);
-	VECTOR tmp2 = VNorm(tmp1);
-	CameraPos->y += 2.0 * dy / cosh((double)tmp2.y);
-	CameraPos->x = Origin.x + tmp1.x * cos(dx / 100.0) + tmp1.z * sin(dx / 100.0);
-	CameraPos->z = Origin.z - tmp1.x * sin(dx / 100.0) + tmp1.z * cos(dx / 100.0);
-	return 0;
-}
 
-int InitializeCamera(VECTOR* CameraPos) {
-	CameraPos->x = 320.0;
-	CameraPos->y = 240.0;
-	CameraPos->z = -300.0;
-	return 0;
-}
+class Camera {
+public:
+	VECTOR pos;
+
+	void initialize() {
+		pos.x = 320.0;
+		pos.y = 240.0;
+		pos.z = -300.0;
+	}
+
+	void move(double dx, double dy, VECTOR Origin) {
+		VECTOR tmp1 = VSub(pos, Origin);
+		VECTOR tmp2 = VNorm(tmp1);
+		pos.y += 2.0 * dy / cosh((double)tmp2.y);
+		pos.x = Origin.x + tmp1.x * cos(dx / 100.0) + tmp1.z * sin(dx / 100.0);
+		pos.z = Origin.z - tmp1.x * sin(dx / 100.0) + tmp1.z * cos(dx / 100.0);
+	}
+};
 
 
 

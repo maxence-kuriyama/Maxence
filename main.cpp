@@ -34,6 +34,43 @@ int MultiByteLength(const char* String);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
+class Game {
+public:
+	int flg = -3; // -3,..,-1:Demo, 0:Menu, 1:Game, 2:Result
+	Field mother;
+	Field child[3][3];
+	History hist;
+	Camera camera;
+	int nextField = -1;						// -1:anywhere
+	int cnt = 0;							// ターン数
+
+
+	void initialize(int f) {
+		flg = f;
+		nextField = -1;
+		cnt = 0; 
+		// 初期化
+		camera.initialize();
+		mother.initialize();
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				child[i][j].initialize();
+			}
+		}
+		hist.initialize();
+		InitializeHist();
+	}
+};
+
+
+int Gameflg = -3;						// -3,..,-1:Demo, 0:Menu, 1:Game, 2:Result
+Field mother;
+Field child[3][3];
+History hist;
+Camera camera;
+int nextField = -1;						// -1:anywhere
+int cnt = 0;							// ターン数
+
 //一時記憶に用いる変数
 int mindex[2];
 
@@ -41,20 +78,13 @@ int Font0, Font1, Font2, Font3, Font4;
 char Key[256];
 Mouse_t Mouse;
 VECTOR Origin = VGet(320.0, 240.0, 0.0);
-VECTOR CameraPos;
 VECTOR tmp;
 //ゲームの処理に用いる変数
-int Gameflg = -3;						// -3,..,-1:Demo, 0:Menu, 1:Game, 2:Result
 int Soloflg = 0;						// シナリオ管理用フラグ
 int Scenflg = 0;						// シナリオ管理用フラグ
-Field mother;
-Field child[3][3];
-History hist;
-int cnt = 0;							// ターン数
 int teban = 0;							// 0:senko, 1:koko
 int vict = 0;
 int taijin = 0;							// 0:vsHuman, 1:vsCOM 
-int nextField = -1;						// -1:anywhere
 int keyboardFlg = 0;					// 0:マウス操作, 1:キーボード操作
 int corGx = 1;
 int corGy = 1;
@@ -168,15 +198,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//int MovieGraphHandle = LoadGraph("movie/battle.ogv");
 
 	// 3Dモデル関係
-	//int ModelHandle = MV1LoadModel("movie/max0.mv1");
-	//float totalTime, playTime = 0.0;
-	//MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
-	//MV1SetScale(ModelHandle, VGet(0.1, 0.1, 0.1));
-	////MV1SetRotationXYZ(ModelHandle, VGet(0.0, -0.5 * DX_PI_F, 0.0));
-	//MV1SetRotationXYZ(ModelHandle, VGet(0.0, DX_PI_F, 0.0));
-	////int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
-	////totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
+	/*
+	int ModelHandle = MV1LoadModel("movie/max0.mv1");
+	float totalTime, playTime = 0.0;
+	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
+	MV1SetScale(ModelHandle, VGet(0.1, 0.1, 0.1));
+	//MV1SetRotationXYZ(ModelHandle, VGet(0.0, -0.5 * DX_PI_F, 0.0));
+	MV1SetRotationXYZ(ModelHandle, VGet(0.0, DX_PI_F, 0.0));
+	//int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
+	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
 	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
+	*/
 
 	srand((unsigned)time(NULL));
 	fireflower tama[3]; tama[0].sound = 1;
@@ -678,12 +710,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (Mouse.Button[0] == 1) {
 				setx = Mouse.x; sety = Mouse.y;
 			}
-			tmp = VNorm(VSub(CameraPos, Origin));
+			tmp = VNorm(VSub(camera.pos, Origin));
 			if (Mouse.Button[0] > 1) {
 				theta -= (Mouse.x - setx) * 0.05;
 				setx = Mouse.x; sety = Mouse.y;
 			}
-			SetCameraPositionAndTarget_UpVecY(CameraPos, Origin);
+			SetCameraPositionAndTarget_UpVecY(camera.pos, Origin);
 			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			//動作の取り消し
@@ -855,14 +887,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (Mouse.Button[0] == 1) {
 				setx = Mouse.x; sety = Mouse.y;
 			}
-			tmp = VNorm(VSub(CameraPos, Origin));
+			tmp = VNorm(VSub(camera.pos, Origin));
 			if (Mouse.Button[0] > 1) {
-				CameraMove(Mouse.x - setx, Mouse.y - sety, &CameraPos, Origin);
+				camera.move(Mouse.x - setx, Mouse.y - sety, Origin);
 				setx = Mouse.x; sety = Mouse.y;
 			}
-			CameraPos.x -= tmp.x * Mouse.Wheel * 5.0;
-			CameraPos.z -= tmp.z * Mouse.Wheel * 5.0;
-			SetCameraPositionAndTarget_UpVecY(CameraPos, Origin);
+			camera.pos.x -= tmp.x * Mouse.Wheel * 5.0;
+			camera.pos.z -= tmp.z * Mouse.Wheel * 5.0;
+			SetCameraPositionAndTarget_UpVecY(camera.pos, Origin);
 
 			//動作の取り消し
 			if (Key[KEY_INPUT_Z] == 1 || Key[KEY_INPUT_BACK] == 1) {
@@ -1543,9 +1575,8 @@ int InitializeGame(int flg) {
 	nextField = -1;
 	cnt = 0; train_cnt = 0;
 	drawFlgCnt = 0;
-	// カメラの座標を初期化
-	InitializeCamera(&CameraPos);
-	//碁石の情報を初期化
+	// 初期化
+	camera.initialize();
 	mother.initialize(); 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
