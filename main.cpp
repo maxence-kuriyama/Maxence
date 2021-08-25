@@ -17,6 +17,7 @@ using namespace DxLib;
 using namespace std;
 #include "lib/const.h"
 #include "lib/field.h"
+#include "lib/hist.h"
 #include "lib/fireflower.h"
 #include "lib/scenario.h"
 #include "lib/ending.h"
@@ -24,7 +25,7 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-int InitializeHist(int last[3], int seclast[3]);
+int InitializeHist();
 int InitializeGame(int flg = 1);
 double PlayOneTurn(int Gx, int Gy, int Lx, int Ly, int side);
 int GetTexts(string *text, const char* filename);
@@ -33,24 +34,22 @@ int MultiByteLength(const char* String);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
+//一時記憶に用いる変数
+int mindex[2];
+
 int Font0, Font1, Font2, Font3, Font4;
 char Key[256];
 Mouse_t Mouse;
 VECTOR Origin = VGet(320.0, 240.0, 0.0);
 VECTOR CameraPos;
 VECTOR tmp;
-//一時記憶に用いる変数
-int mindex[2];
-int last[5];
-int seclast[5];
-int lastHeight = -1;
-int cancelCnt = 0;
 //ゲームの処理に用いる変数
 int Gameflg = -3;						// -3,..,-1:Demo, 0:Menu, 1:Game, 2:Result
 int Soloflg = 0;						// シナリオ管理用フラグ
 int Scenflg = 0;						// シナリオ管理用フラグ
 Field mother;
 Field child[3][3];
+History hist;
 int cnt = 0;							// ターン数
 int teban = 0;							// 0:senko, 1:koko
 int vict = 0;
@@ -498,9 +497,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//描画
 			//MV1DrawModel(ModelHandle);
 			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
-			if (cancelCnt > 0) {
-				DrawBox(160 + 100 * last[0] + 33 * last[2], 80 + 100 * last[1] + 33 * last[3],
-					160 + 100 * last[0] + 33 * (last[2] + 1), 80 + 100 * last[1] + 33 * (last[3] + 1), GetColor(255, 160, 160), TRUE);
+			if (hist.canCancel()) {
+				DrawBox(160 + 100 * hist.last[0] + 33 * hist.last[2], 80 + 100 * hist.last[1] + 33 * hist.last[3],
+					160 + 100 * hist.last[0] + 33 * (hist.last[2] + 1), 80 + 100 * hist.last[1] + 33 * (hist.last[3] + 1), GetColor(255, 160, 160), TRUE);
 			}
 			//操作の処理
 			for (int i = 0; i < 3; ++i) {
@@ -689,17 +688,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 			//動作の取り消し
 			if (Key[KEY_INPUT_Z] == 1 || Key[KEY_INPUT_BACK] == 1) {
-				if (cancelCnt > 0 && taijin == 0) {
-					child[last[0]][last[1]].state[last[2]][last[3]] = 0;
-					mother.state[last[0]][last[1]] = 0;
-					mother.update(last[0], last[1], child[last[0]][last[1]].victory());
-					nextField = last[4];
-					for (int i = 0; i < 5; i++) {
-						last[i] = seclast[i];
-						seclast[i] = 0;
-					}
+				if (hist.canCancel() && taijin == 0) {
+					child[hist.last[0]][hist.last[1]].state[hist.last[2]][hist.last[3]] = 0;
+					mother.state[hist.last[0]][hist.last[1]] = 0;
+					mother.update(hist.last[0], hist.last[1], child[hist.last[0]][hist.last[1]].victory());
+					nextField = hist.last[4];
+					hist.goBack();
 					cnt--;
-					cancelCnt--; 
 					/*for (int i = 0; i < 3; ++i) {
 						for (int j = 0; j < 3; ++j) {
 							for (int k = 0; k < 3; ++k) {
@@ -815,19 +810,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		//勝敗表示
 		else if (Gameflg == 2) {
-			//柱の描画
 			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
-			if (cancelCnt > 0) {
-				/*if (child[last[0]][last[1]].state[last[2]][last[3]] == 1) {
-					DrawExtendGraph(176.5 + 100 * last[0] + 33 * last[2] - 15, 96.5 + 100 * last[1] + 33 * last[3] - 15,
-						176.5 + 100 * last[0] + 33 * last[2] + 15, 96.5 + 100 * last[1] + 33 * last[3] + 15, stone1_t, TRUE);
+			if (hist.canCancel()) {
+				/*if (child[hist.last[0]][hist.last[1]].state[hist.last[2]][hist.last[3]] == 1) {
+					DrawExtendGraph(176.5 + 100 * hist.last[0] + 33 * hist.last[2] - 15, 96.5 + 100 * hist.last[1] + 33 * hist.last[3] - 15,
+						176.5 + 100 * hist.last[0] + 33 * hist.last[2] + 15, 96.5 + 100 * hist.last[1] + 33 * hist.last[3] + 15, stone1_t, TRUE);
 				}
-				else if (child[last[0]][last[1]].state[last[2]][last[3]] == -1) {
-					DrawExtendGraph(176.5 + 100 * last[0] + 33 * last[2] - 15, 96.5 + 100 * last[1] + 33 * last[3] - 15,
-						176.5 + 100 * last[0] + 33 * last[2] + 15, 96.5 + 100 * last[1] + 33 * last[3] + 15, stone2_t, TRUE);
+				else if (child[hist.last[0]][hist.last[1]].state[hist.last[2]][hist.last[3]] == -1) {
+					DrawExtendGraph(176.5 + 100 * hist.last[0] + 33 * hist.last[2] - 15, 96.5 + 100 * hist.last[1] + 33 * hist.last[3] - 15,
+						176.5 + 100 * hist.last[0] + 33 * hist.last[2] + 15, 96.5 + 100 * hist.last[1] + 33 * hist.last[3] + 15, stone2_t, TRUE);
 				}*/
-				DrawBox(160 + 100 * last[0] + 33 * last[2], 80 + 100 * last[1] + 33 * last[3],
-					160 + 100 * last[0] + 33 * (last[2] + 1), 80 + 100 * last[1] + 33 * (last[3] + 1), GetColor(255, 200, 200), TRUE);
+				DrawBox(160 + 100 * hist.last[0] + 33 * hist.last[2], 80 + 100 * hist.last[1] + 33 * hist.last[3],
+					160 + 100 * hist.last[0] + 33 * (hist.last[2] + 1), 80 + 100 * hist.last[1] + 33 * (hist.last[3] + 1), GetColor(255, 200, 200), TRUE);
 			}
 			for (int i = 0; i < 3; ++i) {
 				for (int j = 0; j < 3; ++j) {
@@ -872,17 +866,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 			//動作の取り消し
 			if (Key[KEY_INPUT_Z] == 1 || Key[KEY_INPUT_BACK] == 1) {
-				if (cancelCnt > 0) {
-					child[last[0]][last[1]].state[last[2]][last[3]] = 0;
-					mother.state[last[0]][last[1]] = 0;
-					mother.update(last[0], last[1], child[last[0]][last[1]].victory());
-					nextField = last[4];
-					for (int i = 0; i < 5; i++) {
-						last[i] = seclast[i];
-						seclast[i] = 0;
-					}
+				if (hist.canCancel()) {
+					child[hist.last[0]][hist.last[1]].state[hist.last[2]][hist.last[3]] = 0;
+					mother.state[hist.last[0]][hist.last[1]] = 0;
+					mother.update(hist.last[0], hist.last[1], child[hist.last[0]][hist.last[1]].victory());
+					nextField = hist.last[4];
+					hist.goBack();
 					cnt--;
-					cancelCnt--;
 					Gameflg = 1;
 				}
 			}
@@ -903,14 +893,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				DrawFormatString(20 + 24, 20 + 24, Red, "もう一回");
 				if (Mouse.Button[0] == 1 || Key[KEY_INPUT_RETURN] == 1) {
 					InitializeGame();
-					cancelCnt = 0;
 					keyWait = 20;
 				}
 			}
 
 			if (taijin == 2) {
 				InitializeGame();
-				cancelCnt = 0;
 				keyWait = 20;
 			}
 		}
@@ -1542,11 +1530,7 @@ int GetTexts(string* text, const char* filename) {
 	return k;
 }
 
-int InitializeHist(int last[3], int seclast[3]) {
-	for (int i = 0; i < 3; i++) {
-		last[i] = 0; seclast[i] = 0;
-	}
-	cancelCnt = 0;
+int InitializeHist() {
 	for (int i = 0; i < 100; i++) {
 		COM_hist[i] = 0;
 	}
@@ -1568,7 +1552,8 @@ int InitializeGame(int flg) {
 			child[i][j].initialize();
 		}
 	}
-	InitializeHist(last, seclast);
+	hist.initialize();
+	InitializeHist();
 	return 0;
 }
 
@@ -1578,13 +1563,7 @@ double PlayOneTurn(int Gx, int Gy, int Lx, int Ly, int side) {
 		if (child[Gx][Gy].update(Lx, Ly, side) == 0) {
 			//cnt++;
 			//履歴を残す
-			for (int m = 0; m < 5; m++) {
-				seclast[m] = last[m];
-			}
-			last[0] = Gx; last[1] = Gy;
-			last[2] = Lx; last[3] = Ly;
-			last[4] = nextField;
-			if (cancelCnt < 2) cancelCnt++;
+			hist.add(Gx, Gy, Lx, Ly, nextField);
 			//全体の更新
 			mother.update(Gx, Gy, child[Gx][Gy].victory());
 			if (child[Lx][Ly].victory() != 0) {
