@@ -61,7 +61,7 @@ else if (Key[KEY_INPUT_N] == 1) {
 
 //エンディングモード
 if (Key[KEY_INPUT_MINUS] == 1) {
-	if (Gameflg != -4) { Gameflg = -4; }
-	else { StopMusic(); Gameflg = 0; }
+	if (game.flg != -4) { game.flg = -4; }
+	else { StopMusic(); game.flg = 0; }
 	end_cnt = 0;
 }
