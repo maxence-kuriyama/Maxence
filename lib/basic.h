@@ -5,12 +5,41 @@
 //   入力関連
 //======================================
 
-typedef struct {
+class Mouse {
+public:
 	int x;
 	int y;
-	int Wheel;
-	unsigned int Button[8];
-}Mouse_t;
+	int setx = 0;
+	int sety = 0;
+	int wheel;
+	unsigned int button[8];
+
+	//マウス状態の取得
+	int update() {
+		if (GetMousePoint(&x, &y) == -1) return -1;
+		int MouseInput = GetMouseInput();
+		for (int i = 0; i < 8; i++) {
+			if (MouseInput & (1 << i)) {
+				button[i]++;
+			}
+			else {
+				button[i] = 0;
+			}
+		}
+		wheel = GetMouseWheelRotVol();
+		return 0;
+	}
+
+	void set() {
+		setx = x;
+		sety = y;
+	}
+
+	//矩形の上にマウスカーソルがいるか判定
+	int onButton(int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
+		return x > LeftUpx && x < RightDownx && y > LeftUpy && y < RightDowny;
+	}
+};
 
 //キーボード状態の取得
 int UpdateKey(char Key[256]) {
@@ -25,27 +54,6 @@ int UpdateKey(char Key[256]) {
 		}
 	}
 	return 0;
-}
-
-//マウス状態の取得
-int UpdateMouse(Mouse_t* Mouse) {
-	if (GetMousePoint(&Mouse->x, &Mouse->y) == -1) return -1;
-	int MouseInput = GetMouseInput();
-	for (int i = 0; i < 8; i++) {
-		if (MouseInput & (1 << i)) {
-			Mouse->Button[i]++;
-		}
-		else {
-			Mouse->Button[i] = 0;
-		}
-	}
-	Mouse->Wheel = GetMouseWheelRotVol();
-	return 0;
-}
-
-//矩形の上にマウスカーソルがいるか判定
-int OnButton(Mouse_t Mouse, int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
-	return Mouse.x > LeftUpx && Mouse.x < RightDownx&& Mouse.y > LeftUpy && Mouse.y < RightDowny;
 }
 
 
