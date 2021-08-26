@@ -25,13 +25,18 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-int InitializeHist();
-int InitializeGame(int flg = 1);
 int GetTexts(string *text, const char* filename);
 int MultiByteLength(const char* String);
 //VectorXd StateToInput(int dim, int side);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
+
+Mouse_t Mouse;
+int setx = 0; 
+int sety = 0;
+int train_cnt = 0;
+int drawFlgCnt = 0;
+int COM_hist[100];
 
 class Game {
 public:
@@ -56,13 +61,15 @@ public:
 			}
 		}
 		hist.initialize();
-		InitializeHist();
-	}
 
-	//setx = Mouse.x; 
-	//sety = Mouse.y;
-	//train_cnt = 0;
-	//drawFlgCnt = 0;
+		setx = Mouse.x; 
+		sety = Mouse.y;
+		train_cnt = 0;
+		drawFlgCnt = 0;
+		for (int i = 0; i < 100; i++) {
+			COM_hist[i] = 0;
+		}
+	}
 
 	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
 		if (side == 0) {
@@ -98,7 +105,6 @@ int mindex[2];
 
 int Font0, Font1, Font2, Font3, Font4;
 char Key[256];
-Mouse_t Mouse;
 VECTOR Origin = VGet(320.0, 240.0, 0.0);
 VECTOR tmp;
 //ゲームの処理に用いる変数
@@ -112,7 +118,6 @@ int corGx = 1;
 int corGy = 1;
 int corLx = 1;
 int corLy = 1;							//キーボード操作時の座標
-int COM_hist[100];
 int COMGx = 1;
 int COMGy = 1;
 int COMLx = 1;
@@ -125,13 +130,11 @@ int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 int prex = 0; int prey = 0;				//マウス操作か否かを判定するための変数
 string mode = "?";
 //ゲームの演出に用いる変数
-int setx = 0; int sety = 0;
 double logoX = 0.0;
 int musicFlg = 0;
 int windowFlg = 1;
 int likeliFlg = 0;
 int commentFlg = 0;
-int drawFlgCnt = 0;
 int cutinFlg = 0; int cutinCnt = 0;
 int debugFlg = 0;
 string text[450]; int txtMax = 450;
@@ -146,7 +149,6 @@ int titleX = 445, titleY = 400;
 double AcRate = 0.0;
 int max_id = 0;
 double max_val = 0.0;
-int train_cnt = 0;
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -491,7 +493,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						//	WaitTimer(10);
 						//}
 						SetBackgroundColor(0, 128, 128);
-						InitializeGame();
+						game.initialize();
 						keyWait = 20;
 					}
 				}
@@ -509,12 +511,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if (Key[KEY_INPUT_A] == 1) {
 					mode = "オート";
 					taijin = 2;
-					InitializeGame();
+					game.initialize();
 					keyWait = 20;
 				}
 				else if (Key[KEY_INPUT_H] == 1) {
 					mode = "オート";
-					InitializeGame(5);
+					game.initialize(5);
 					keyWait = 20;
 				}
 			}
@@ -943,13 +945,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (OnButton(Mouse, 20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || (!keyWait && Key[KEY_INPUT_RETURN] == 1)) {
 				DrawFormatString(20 + 24, 20 + 24, Red, "もう一回");
 				if (Mouse.Button[0] == 1 || Key[KEY_INPUT_RETURN] == 1) {
-					InitializeGame();
+					game.initialize();
 					keyWait = 20;
 				}
 			}
 
 			if (taijin == 2) {
-				InitializeGame();
+				game.initialize();
 				keyWait = 20;
 			}
 		}
@@ -1429,7 +1431,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					//第一戦
 					PlayMusic("sound/bgm04.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
-					InitializeGame();
+					game.initialize();
 					break;
 				case 8:
 					//赤が死ぬ
@@ -1450,7 +1452,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					//第二戦
 					PlayMusic("sound/bgm05.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
-					InitializeGame();
+					game.initialize();
 					break;
 				case 13:
 					//緑が死ぬ
@@ -1478,7 +1480,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					//第三戦
 					PlayMusic("sound/bgm06.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
-					InitializeGame();
+					game.initialize();
 					break;
 				case 19:
 					//青が死ぬ
@@ -1499,7 +1501,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					//第四戦
 					PlayMusic("sound/bgm08.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
-					InitializeGame();
+					game.initialize();
 					break;
 				default:
 					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
@@ -1579,21 +1581,6 @@ int GetTexts(string* text, const char* filename) {
 	}
 	read.close();
 	return k;
-}
-
-int InitializeHist() {
-	for (int i = 0; i < 100; i++) {
-		COM_hist[i] = 0;
-	}
-	return 0;
-}
-
-int InitializeGame(int flg) {
-	setx = Mouse.x; sety = Mouse.y;
-	train_cnt = 0;
-	drawFlgCnt = 0;
-	game.initialize(flg);
-	return 0;
 }
 
 
