@@ -8,6 +8,7 @@ public:
 	Field() {
 		initialize();
 	}
+
 	void initialize() {
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -15,6 +16,7 @@ public:
 			}
 		}
 	}
+
 	int victory() {
 		int vict = 0;
 		int temp = 0;
@@ -66,6 +68,7 @@ public:
 		if (filled() == 1 && vict == 0) vict = 10;
 		return vict;
 	} // 0:on-game, 1:Black, -1:White, 10: Draw, 100:Error
+
 	int filled() {
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -74,6 +77,7 @@ public:
 		}
 		return 1;
 	}
+
 	int update(int i, int j, int side) {
 		if (victory() != 0) return -1;
 		if (state[i][j] == 0) {
@@ -82,6 +86,7 @@ public:
 		}
 		return -1;
 	}
+
 	void draw(double baseX, double baseY, double width) {
 		for (int k = 0; k < 3; ++k) {
 			for (int l = 0; l < 3; ++l) {
@@ -96,6 +101,7 @@ public:
 			}
 		}
 	}
+
 	Field operator = (const Field& src) {
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {

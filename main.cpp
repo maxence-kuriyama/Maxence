@@ -27,7 +27,6 @@ using namespace std;
 
 int InitializeHist();
 int InitializeGame(int flg = 1);
-double PlayOneTurn(int Gx, int Gy, int Lx, int Ly, int side);
 int GetTexts(string *text, const char* filename);
 int MultiByteLength(const char* String);
 //VectorXd StateToInput(int dim, int side);
@@ -36,12 +35,12 @@ int MultiByteLength(const char* String);
 
 class Game {
 public:
-	int flg = -3; // -3,..,-1:Demo, 0:Menu, 1:Game, 2:Result
+	int flg = -3; // -3,..,-1: Demo, 0: Menu, 1: Game, 2: Result
 	Field mother;
 	Field child[3][3];
 	History hist;
 	Camera camera;
-	int nextField = -1;						// -1:anywhere
+	int nextField = -1;						// -1: anywhere
 	int cnt = 0;							// ターン数
 
 
@@ -58,6 +57,36 @@ public:
 		}
 		hist.initialize();
 		InitializeHist();
+	}
+
+	//setx = Mouse.x; 
+	//sety = Mouse.y;
+	//train_cnt = 0;
+	//drawFlgCnt = 0;
+
+	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
+		if (side == 0) {
+			side = 1 - 2 * (cnt % 2);
+		}
+		//盤面の更新
+		if (nextField == 3 * global_x + global_y || nextField == -1) {
+			if (child[global_x][global_y].update(local_x, local_y, side) == 0) {
+				cnt++;
+				//履歴を残す
+				hist.add(global_x, global_y, local_x, local_y, nextField);
+				//全体の更新
+				mother.update(global_x, global_y, child[global_x][global_y].victory());
+				if (child[local_x][local_y].victory() != 0) {
+					nextField = -1;
+					return RWD_DOM;
+				}
+				else {
+					nextField = local_x * 3 + local_y;
+					return RWD_PUT;
+				}
+			}
+		}
+		return -100.0;
 	}
 };
 
@@ -555,9 +584,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 									corGx = i; corGy = j;
 									corLx = k; corLy = l;
 									if (Mouse.Button[1] == 1) {
-										rwd_tmp = PlayOneTurn(i, j, k, l, 1 - 2 * (game.cnt % 2));
+										rwd_tmp = game.update(i, j, k, l);
 										if (rwd_tmp > -10.0) {
-											game.cnt++;
 											if (taijin == 1) {
 												COMWait = waitOnCOM;
 										//		reward2 = -rwd_tmp;
@@ -641,9 +669,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					keyboardFlg = 1;
 				}
 				if (keyboardFlg && !keyWait && (CheckHitKey(KEY_INPUT_RETURN) == 1 || CheckHitKey(KEY_INPUT_SPACE) == 1)) {
-					rwd_tmp = PlayOneTurn(corGx, corGy, corLx, corLy, 1 - 2 * (game.cnt % 2));
+					rwd_tmp = game.update(corGx, corGy, corLx, corLy);
 					if (rwd_tmp > -10.0) {
-						game.cnt++;
 						if (taijin == 1) {
 							COMWait = waitOnCOM;
 					//		reward2 = -rwd_tmp;
@@ -675,7 +702,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//		anl_flg = 0;
 				//	}
 				//	//盤面の更新
-				//	rwd_tmp = PlayOneTurn(COMGx, COMGy, COMLx, COMLy, 1 - 2 * (game.cnt % 2));
+				//	rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 				//	if (rwd_tmp > -10.0) {
 				//		temp_i[train_cnt] = input;
 				//		temp_o[train_cnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
@@ -692,7 +719,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//			}
 				//		}
 				//		train_cnt++;
-				//		game.cnt++;
 				//		if (taijin == 2) COMWait = waitOnCOM;
 				//		break;
 				//	}
@@ -1223,7 +1249,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//			}
 		//			if (unif(mt) >= anl_rate) {
 		//				//盤面の更新
-		//				rwd_tmp = PlayOneTurn(COMGx, COMGy, COMLx, COMLy, 1 - 2 * (game.cnt % 2));
+		//				rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 		//				if (rwd_tmp > -10.0) {
 		//					//COM_hist[train_cnt] = max_id;
 		//					COM_hist[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
@@ -1239,7 +1265,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//					COMGx = rand() % 3; COMGy = rand() % 3;
 		//					COMLx = rand() % 3; COMLy = rand() % 3;
 		//					//盤面の更新
-		//					rwd_tmp = PlayOneTurn(COMGx, COMGy, COMLx, COMLy, 1 - 2 * (game.cnt % 2));
+		//					rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 		//					if (rwd_tmp > -10.0) {
 		//						COM_hist[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 		//						break;
@@ -1570,27 +1596,6 @@ int InitializeGame(int flg) {
 	return 0;
 }
 
-double PlayOneTurn(int Gx, int Gy, int Lx, int Ly, int side) {
-	//盤面の更新
-	if (game.nextField == 3 * Gx + Gy || game.nextField == -1) {
-		if (game.child[Gx][Gy].update(Lx, Ly, side) == 0) {
-			//cnt++;
-			//履歴を残す
-			game.hist.add(Gx, Gy, Lx, Ly, game.nextField);
-			//全体の更新
-			game.mother.update(Gx, Gy, game.child[Gx][Gy].victory());
-			if (game.child[Lx][Ly].victory() != 0) {
-				game.nextField = -1;
-				return RWD_DOM;
-			}
-			else {
-				game.nextField = Lx * 3 + Ly;
-				return RWD_PUT;
-			}
-		}
-	}
-	return -100.0;
-}
 
 //VectorXd StateToInput(int dim, int side) {
 //	VectorXd trg(dim);
