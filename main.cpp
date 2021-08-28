@@ -42,8 +42,6 @@ void initializeTrain() {
 }
 
 int taijin = 0;			// 0: vsHuman, 1: vsCOM, 2: AutoLearning
-int keyWait = 0;
-
 
 class Game {
 public:
@@ -83,6 +81,7 @@ public:
 		}
 		hist.initialize();
 		mouse.set();
+		key.initWait();
 	}
 
 	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
@@ -128,11 +127,20 @@ public:
 	}
 
 	void toggleHighSpeedLearning() {
-		if (key.toggleHighSpeedLearning(flg, taijin) == 1) {
+		if (key.toggleHighSpeedLearning(flg) == 1) {
 			mode = "オート";
 			initialize(flg);
 			initializeTrain();
-			keyWait = 20;
+			key.initWait();
+		}
+	}
+
+	void toggleAutoLearning() {
+		if (key.toggleAutoLearning(flg, taijin) == 1 || key.toggleHighSpeedLearning(flg) == 1) {
+			mode = "オート";
+			initialize(flg);
+			initializeTrain();
+			key.initWait();
 		}
 	}
 
@@ -166,7 +174,6 @@ int COMLx = 1;
 int COMLy = 1;							//COMの選ぶ座標
 int selectMode = 0;
 int COMWait = 0;
-int waitOnGame = 6;						//ゲーム中のキー入力ウェイト
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 int prex = 0; int prey = 0;				//マウス操作か否かを判定するための変数
 //ゲームの演出に用いる変数
@@ -513,7 +520,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
 						game.mode = "ぼっちで";
 						//InitializeGame();
-						keyWait = 10;
+						game.key.initWait();
 						taijin = 1;
 					}
 				}
@@ -538,21 +545,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						SetBackgroundColor(0, 128, 128);
 						game.initialize();
 						initializeTrain();
-						keyWait = 20;
 					}
 				}
-				if (!keyWait && CheckHitKey(KEY_INPUT_LEFT) == 1) {
+				if (game.key.onLeft()) {
 					selectMode = ((selectMode - 1) + 2) % 2;
-					keyWait = 8;
+					game.key.initWait();
 					keyboardFlg = 1;
 				}
-				if (!keyWait && CheckHitKey(KEY_INPUT_RIGHT) == 1) {
+				if (game.key.onRight()) {
 					selectMode = (selectMode + 1) % 2;
-					keyWait = 8;
+					game.key.initWait();
 					keyboardFlg = 1;
 				}
 				//オートモード
-				game.toggleHighSpeedLearning();
+				game.toggleAutoLearning();
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
 			else if (taijin == 1) {
@@ -565,7 +571,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
-						keyWait = 20;
+						game.key.initWait();
 						teban = 0;
 					}
 				}
@@ -576,7 +582,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
-						keyWait = 20;
+						game.key.initWait();
 						teban = 1;
 					}
 				}
@@ -652,7 +658,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 			//ゲーム内操作
 			if (taijin == 0 || (taijin == 1 && game.cnt % 2 == teban)) {
-				if (!keyWait && (CheckHitKey(KEY_INPUT_UP) == 1 || CheckHitKey(KEY_INPUT_W) == 1)) {
+				if (game.key.onUp()) {
 					corLy--;
 					if (corLy < 0) {
 						if (corGy > 0) {
@@ -662,10 +668,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLy = 0;
 						}
 					}
-					keyWait = waitOnGame;
+					game.key.initWait();
 					keyboardFlg = 1;
 				}
-				if (!keyWait && (CheckHitKey(KEY_INPUT_DOWN) == 1 || CheckHitKey(KEY_INPUT_S) == 1)) {
+				if (game.key.onDown()) {
 					corLy++;
 					if (corLy > 2) {
 						if (corGy < 2) {
@@ -675,10 +681,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLy = 2;
 						}
 					}
-					keyWait = waitOnGame;
+					game.key.initWait();
 					keyboardFlg = 1;
 				}
-				if (!keyWait && (CheckHitKey(KEY_INPUT_LEFT) == 1 || CheckHitKey(KEY_INPUT_A) == 1)) {
+				if (game.key.onLeft()) {
 					corLx--;
 					if (corLx < 0) {
 						if (corGx > 0) {
@@ -688,10 +694,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLx = 0;
 						}
 					}
-					keyWait = waitOnGame;
+					game.key.initWait();
 					keyboardFlg = 1;
 				}
-				if (!keyWait && (CheckHitKey(KEY_INPUT_RIGHT) == 1 || CheckHitKey(KEY_INPUT_D) == 1)) {
+				if (game.key.onRight()) {
 					corLx++;
 					if (corLx > 2) {
 						if (corGx < 2) {
@@ -701,14 +707,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLx = 2;
 						}
 					}
-					keyWait = waitOnGame;
+					game.key.initWait();
 					keyboardFlg = 1;
 				}
-				if (keyboardFlg && !keyWait && (CheckHitKey(KEY_INPUT_RETURN) == 1 || CheckHitKey(KEY_INPUT_SPACE) == 1)) {
+				if (keyboardFlg && game.key.onCheck()) {
 					rwd_tmp = game.update(corGx, corGy, corLx, corLy);
 					if (rwd_tmp > -10.0) {
 						if (taijin == 1) {
-							COMWait = waitOnCOM;
+							game.key.initWait();
 					//		reward2 = -rwd_tmp;
 						}
 					}
@@ -856,7 +862,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			vict = game.mother.victory();
 			if (vict != 0) {
 				game.flg = 2;
-				keyWait = 20;
+				game.key.initWait();
 				//学習
 				/*if (taijin == 1) {
 					if (vict == teban * 2 - 1) {
@@ -971,19 +977,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			DrawFormatString(20 + 96, 20, Green, "Won");
 			DrawFormatString(20 + 24, 20 + 24, game.strColor, "もう一回");
-			if (game.mouse.onButton(20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || (!keyWait && game.key.onReturn())) {
+			if (game.mouse.onButton(20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || game.key.onReturn()) {
 				DrawFormatString(20 + 24, 20 + 24, Red, "もう一回");
 				if (game.mouse.button[0] == 1 || game.key.onReturn()) {
 					game.initialize();
 					initializeTrain();
-					keyWait = 20;
 				}
 			}
 
 			if (taijin == 2) {
 				game.initialize();
 				initializeTrain();
-				keyWait = 20;
 			}
 		}
 		//Ending
@@ -1575,7 +1579,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			fps_start = clock();
 		}
 		if(likeliFlg) DrawFormatString(5, 5, game.strColor, "fps:%d", cur_fps);
-		if (keyWait > 0) keyWait--;
 		if (COMWait > 0) COMWait--;
 		while (clock() - start < 1000.0 / 30.0 && game.flg != 5) {
 			WaitTimer(1);
