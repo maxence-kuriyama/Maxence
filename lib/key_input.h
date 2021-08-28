@@ -5,6 +5,13 @@
 unsigned int White = GetColor(255, 255, 255);
 unsigned int Black = GetColor(0, 0, 0);
 
+class Option {
+public:
+	int strColor = White;
+	int musicFlg = 1;
+	int soundFlg = 1;
+};
+
 class Key {
 public:
 	int state[256];
@@ -86,7 +93,7 @@ public:
 		return false;
 	}
 
-	void toggleSetting(Logo& logo, int& musicFlg, int& soundFlg, int& strColor) {
+	void toggleSetting(Logo& logo, Option& option) {
 		// ロゴを動かす
 		if (state[KEY_INPUT_AT] == 1) {
 			if (logo.acRate >= 0.5) {
@@ -99,18 +106,18 @@ public:
 
 		// 文字色の変更
 		if (state[KEY_INPUT_I] == 1) {
-			if (strColor == Black) {
-				strColor = White;
+			if (option.strColor == Black) {
+				option.strColor = White;
 			}
 			else {
-				strColor = Black;
+				option.strColor = Black;
 			}
 		}
 
 		//音楽, SEの有無
 		if (state[KEY_INPUT_P] == 1) {
-			musicFlg = (musicFlg + 1) % 2;
-			soundFlg = (soundFlg + 1) % 2;
+			option.musicFlg = (option.musicFlg + 1) % 2;
+			option.soundFlg = (option.soundFlg + 1) % 2;
 		}
 	}
 
