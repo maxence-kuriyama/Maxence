@@ -22,6 +22,8 @@ using namespace std;
 #include "lib/scenario.h"
 #include "lib/ending.h"
 #include "lib/basic.h"
+#include "lib/key_input.h"
+#include "lib/logo.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -40,7 +42,8 @@ void initializeTrain() {
 	//}
 }
 
-int taijin = 0;			// 0: vsHuman, 1: vsCOM, 2: AutoLearning,
+int taijin = 0;			// 0: vsHuman, 1: vsCOM, 2: AutoLearning
+
 
 class Game {
 public:
@@ -50,11 +53,16 @@ public:
 	// -4: Ending
 	// -6: Story
 	// 5: High-speed Learning
+	int musicFlg = 1;
+	int soundFlg = 1;
+	int debugFlg = 0;
 	Field mother;
 	Field child[3][3];
 	History hist;
 	Camera camera;
 	Mouse mouse;
+	Key key;
+	Logo logo;
 	int nextField = -1;		// -1: anywhere
 	int cnt = 0;			// É^Å[Éìêî
 	int drawCnt = 0;		// à¯Ç´ï™ÇØéûÇÃã≠êßèIóπÇÃÇΩÇﬂÇÃÉJÉEÉìÉg
@@ -109,6 +117,14 @@ public:
 			drawCnt++;
 		}
 	}
+
+	void toggle() {
+		key.toggleSetting(logo, musicFlg, soundFlg);
+		key.configLearn();
+		key.toggleDebug(debugFlg);
+		key.toggleForDebug(debugFlg);
+	}
+
 };
 
 
@@ -118,7 +134,6 @@ Game game;
 int mindex[2];
 
 int Font0, Font1, Font2, Font3, Font4;
-char Key[256];
 VECTOR Origin = VGet(320.0, 240.0, 0.0);
 VECTOR tmp;
 //ÉQÅ[ÉÄÇÃèàóùÇ…ópÇ¢ÇÈïœêî
@@ -144,12 +159,10 @@ int prex = 0; int prey = 0;				//É}ÉEÉXëÄçÏÇ©î€Ç©ÇîªíËÇ∑ÇÈÇΩÇﬂÇÃïœêî
 string mode = "?";
 //ÉQÅ[ÉÄÇÃââèoÇ…ópÇ¢ÇÈïœêî
 double logoX = 0.0;
-int musicFlg = 0;
 int windowFlg = 1;
 int likeliFlg = 0;
 int commentFlg = 0;
 int cutinFlg = 0; int cutinCnt = 0;
-int debugFlg = 0;
 string text[450]; int txtMax = 450;
 char txt_name[30] = "data/sayings.txt";
 int numTxt = 0; 
@@ -158,8 +171,6 @@ int txtId = 0; int txtCnt = 0;			//ÉeÉLÉXÉgÇÃÉCÉìÉfÉbÉNÉXÇ∆ÉeÉLÉXÉgç∑Çµë÷Ç¶ÇÃÉJÉ
 int txtSeq = 0;							//ÉeÉLÉXÉgÇÃòAî‘Ç™Ç¢Ç≠Ç¬åpë±ÇµÇΩÇ©ÇÃÉJÉEÉìÉ^
 //char SEname[8][20] = { "sound/se_amb01.wav" ,"sound/se_amb02.wav" ,"sound/se_amb03.wav" ,
 		//"sound/se_amb04.wav" ,"sound/se_amb05.wav" ,"sound/se_amb06.wav" ,"sound/se_amb07.wav" ,"sound/se_amb08.wav" };
-int titleX = 445, titleY = 400;
-double AcRate = 0.0;
 int max_id = 0;
 double max_val = 0.0;
 
@@ -370,32 +381,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//ÉÅÉCÉìÉãÅ[Év
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
-		UpdateKey(Key);
+		game.key.update();
 		game.mouse.update();
 
 		//game.flg > 0 Ç≈ÉäÉZÉbÉgÉ{É^ÉìÇï\é¶Ç∑ÇÈ
 		if (game.flg > 0) {
-			if (game.mouse.onButton(titleX, titleY-5, titleX + 185, titleY + 65)) {
-				DrawBox(titleX, titleY-5, titleX + 185, titleY + 65, GetColor(20, 150, 150), TRUE);
+			if (game.mouse.onButton(game.logo.titleX, game.logo.titleY - 5, game.logo.titleX + 185, game.logo.titleY + 65)) {
+				DrawBox(game.logo.titleX, game.logo.titleY - 5, game.logo.titleX + 185, game.logo.titleY + 65, GetColor(20, 150, 150), TRUE);
 				if (game.mouse.button[0] == 1) {
 					game.mouse.set();
 					game.flg = 0;
 					taijin = 0;
-					for (int i = 0; i < 3; ++i) tama[i].initialize();
+					for (int i = 0; i < 3; ++i) {
+						tama[i].initialize();
+					}
 					StopMusic();
 				}
 			}
 		}
 
-		//Ç±ÇÒÇ»Ç±Ç∆ÇÇµÇƒÇ¢Ç¢ÇÃÇæÇÎÇ§Ç©ÅBÅBÅB
-		#include "lib/key_input.h"
-		if (AcRate >= 0.5 && AcRate <= 30.0) { AcRate += 0.03; }
+
+		game.toggle();
+		if (game.soundFlg == 1) {
+			tama[0].sound = 1;
+		}
+		else {
+			tama[0].sound = 0;
+		}
 
 		//É}ÉEÉXëÄçÏÇ©î€Ç©ÇîªíËÇ∑ÇÈ
 		if (game.mouse.x != prex || game.mouse.y != prey) {
 			keyboardFlg = 0;
 		}
-		prex = game.mouse.x; prey = game.mouse.y;
+		prex = game.mouse.x;
+		prey = game.mouse.y;
 
 		//OPÉAÉjÉÅÅ[ÉVÉáÉì ClickToStartÇ‹Ç≈
 		if (game.flg == -3){
@@ -420,7 +439,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			logoX += 2.0;
 
-			if (logoX > 480.0 || game.mouse.button[0] == 1 || Key[KEY_INPUT_RETURN] == 1) {
+			if (logoX > 480.0 || game.mouse.button[0] == 1 || game.key.onReturn()) {
 				game.flg = -2;
 				logoX = M_PI_2;
 			}
@@ -435,7 +454,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawExtendGraph(200, 290, 460, 360, ClickToStart, TRUE);
 			SetDrawBright(255, 255, 255);
 
-			if (game.mouse.button[0] == 1 || Key[KEY_INPUT_RETURN] == 1) {
+			if (game.mouse.button[0] == 1 || game.key.onReturn()) {
 				game.flg = -1;
 				SetBackgroundColor(0, 128, 128);	//îwåiêF
 				SetDrawBright(255, 255, 255);
@@ -462,7 +481,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 485 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			}
 			if(logoX < 1000.0) logoX += 1.0;
-			if (logoX > 120 || game.mouse.button[0] == 1 || Key[KEY_INPUT_RETURN] == 1) {
+			if (logoX > 120 || game.mouse.button[0] == 1 || game.key.onReturn()) {
 				game.flg = 0;
 			}
 		}
@@ -480,7 +499,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if ((!keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
 					|| (keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "Ç⁄Ç¡ÇøÇ≈");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && Key[KEY_INPUT_RETURN] == 1)) {
+					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
 						mode = "Ç⁄Ç¡ÇøÇ≈";
 						//InitializeGame();
 						keyWait = 10;
@@ -490,7 +509,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				else if ((!keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
 					|| (keyboardFlg && selectMode == 1)) {
 					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "ó◊ÇÃêlÇ∆");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && Key[KEY_INPUT_RETURN] == 1)) {
+					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
 						mode = "ó◊ÇÃêlÇ∆";
 						////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
 						//PlayMovieToGraph(MovieGraphHandle);
@@ -522,14 +541,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					keyboardFlg = 1;
 				}
 				//ÉIÅ[ÉgÉÇÅ[Éh
-				if (Key[KEY_INPUT_A] == 1) {
+				if (game.key.state[KEY_INPUT_A] == 1) {
 					mode = "ÉIÅ[Ég";
 					taijin = 2;
 					game.initialize();
 					initializeTrain();
 					keyWait = 20;
 				}
-				else if (Key[KEY_INPUT_H] == 1) {
+				else if (game.key.state[KEY_INPUT_H] == 1) {
 					mode = "ÉIÅ[Ég";
 					game.initialize(5);
 					initializeTrain();
@@ -543,7 +562,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if ((!keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
 					|| (keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "êÊçU");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && Key[KEY_INPUT_RETURN] == 1)) {
+					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
@@ -554,7 +573,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				else if ((!keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
 					|| (keyboardFlg && selectMode == 1)) {
 					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "å„çU");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && Key[KEY_INPUT_RETURN] == 1)) {
+					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
@@ -756,7 +775,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			//ìÆçÏÇÃéÊÇËè¡Çµ
-			if (Key[KEY_INPUT_Z] == 1 || Key[KEY_INPUT_BACK] == 1) {
+			if (game.logo.onBack()) {
 				if (game.hist.canCancel() && taijin == 0) {
 					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
 					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
@@ -864,12 +883,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			game.stopDrawGame();
 
 			//çÇë¨äwèKÉÇÅ[Éh
-			if (Key[KEY_INPUT_H] == 1) {
+			if (game.key.state[KEY_INPUT_H] == 1) {
 				game.flg = 5;
 			}
 
 			//ëŒêÌÉXÉLÉbÉvÅiàÍêlópÉfÉoÉbÉOÅj
-			if (Key[KEY_INPUT_B] == 1 && taijin == 1) {
+			if (game.key.state[KEY_INPUT_B] == 1 && taijin == 1) {
 				Scenflg++;
 				StopMusic();
 				game.flg = -6;
@@ -933,7 +952,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			SetCameraPositionAndTarget_UpVecY(game.camera.pos, Origin);
 
 			//ìÆçÏÇÃéÊÇËè¡Çµ
-			if (Key[KEY_INPUT_Z] == 1 || Key[KEY_INPUT_BACK] == 1) {
+			if (game.logo.onBack()) {
 				if (game.hist.canCancel()) {
 					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
 					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
@@ -957,9 +976,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			DrawFormatString(20 + 96, 20, Green, "Won");
 			DrawFormatString(20 + 24, 20 + 24, StringColor, "Ç‡Ç§àÍâÒ");
-			if (game.mouse.onButton(20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || (!keyWait && Key[KEY_INPUT_RETURN] == 1)) {
+			if (game.mouse.onButton(20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || (!keyWait && game.key.onReturn())) {
 				DrawFormatString(20 + 24, 20 + 24, Red, "Ç‡Ç§àÍâÒ");
-				if (game.mouse.button[0] == 1 || Key[KEY_INPUT_RETURN] == 1) {
+				if (game.mouse.button[0] == 1 || game.key.onReturn()) {
 					game.initialize();
 					initializeTrain();
 					keyWait = 20;
@@ -1001,7 +1020,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					}
 				}
 			}
-			DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, Logo4, TRUE);
+			game.logo.draw();
 
 			double fade_tmp = min(255.0, 0.01 * pow(max(0.0, end_cnt - 50.0), 2.0));
 			SetDrawBlendMode(DX_BLENDMODE_SUB, fade_tmp);
@@ -1547,10 +1566,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 		//game.flg > 0Ç≈É^ÉCÉgÉãÉçÉSÇï\é¶Ç∑ÇÈ
 		if (game.flg > 0) {
-			DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, Logo4, TRUE);
+			game.logo.draw();
 			if (game.flg == 1) {
-				titleX += AcRate * (rand() % 11 - 5.0); if (titleX <= -10) titleX = -10; if (titleX >= 640 - 160) titleX = 640 - 160;
-				titleY += AcRate * (rand() % 11 - 5.0); if (titleY <= -10) titleY = -10; if (titleY >= 480 - 80) titleY = 480 - 80;
+				game.logo.update();
 			}
 		}
 

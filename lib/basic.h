@@ -2,7 +2,7 @@
 
 
 //======================================
-//   入力関連
+//   マウス関連
 //======================================
 
 class Mouse {
@@ -40,21 +40,6 @@ public:
 		return x > LeftUpx && x < RightDownx && y > LeftUpy && y < RightDowny;
 	}
 };
-
-//キーボード状態の取得
-int UpdateKey(char Key[256]) {
-	char tmpKey[256];
-	GetHitKeyStateAll(tmpKey);
-	for (int i = 0; i < 256; i++) {
-		if (tmpKey[i] != 0) {
-			Key[i]++;
-		}
-		else {
-			Key[i] = 0;
-		}
-	}
-	return 0;
-}
 
 
 
