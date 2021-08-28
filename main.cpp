@@ -31,20 +31,25 @@ int MultiByteLength(const char* String);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
-//int train_cnt = 0;
+//int trainCnt = 0;
 //int comHistt[100];
 void initializeTrain() {
-	//train_cnt = 0;
+	//trainCnt = 0;
 	//for (int i = 0; i < 100; i++) {
 		//comHistt[i] = 0;
 	//}
 }
 
-int taijin = 0;							// 0:vsHuman, 1:vsCOM 
+int taijin = 0;			// 0: vsHuman, 1: vsCOM, 2: AutoLearning,
 
 class Game {
 public:
-	int flg = -3; // -3,..,-1: Demo, 0: Menu, 1: Game, 2: Result
+	int flg = -3; 
+	// -3,..,-1: Demo
+	// 0: Menu, 1: Game, 2: Result
+	// -4: Ending
+	// -6: Story
+	// 5: High-speed Learning
 	Field mother;
 	Field child[3][3];
 	History hist;
@@ -100,7 +105,7 @@ public:
 		if (drawCnt > 10000) {
 			flg = 2;
 		}
-		if (taijin == 2 || taijin == 3 || taijin == 4 || taijin == 5) {
+		if (taijin == 2 || flg == 5) {
 			drawCnt++;
 		}
 	}
@@ -165,7 +170,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	SetOutApplicationLogValidFlag(FALSE);
 	ChangeWindowMode(TRUE);
 	SetAlwaysRunFlag(TRUE);
-	SetMainWindowText("Maxence 0.3.2");
+	SetMainWindowText("Maxence 0.4.0");
 	SetWindowIconID(101);
 	if (DxLib_Init() == -1) {
 		return -1;
@@ -614,8 +619,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 									char str_tmp[10]; 
 									sprintf_s(str_tmp, "%.4f", output(27 * i + 9 * j + 3 * k + l));
 									DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 2, str_tmp, Red, Font1);
-									if (train_cnt >= 1) {
-										sprintf_s(str_tmp, "%.4f", temp_o[train_cnt - 1](27 * i + 9 * j + 3 * k + l));
+									if (trainCnt >= 1) {
+										sprintf_s(str_tmp, "%.4f", temp_o[trainCnt - 1](27 * i + 9 * j + 3 * k + l));
 										DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 12, str_tmp, Blue, Font1);
 									}
 								}*/
@@ -703,7 +708,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//	if (unif(mt) < anl_rate) {
 				//		COMGx = rand() % 3; COMGy = rand() % 3;
 				//		COMLx = rand() % 3; COMLy = rand() % 3;
-				//		comHistt[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
+				//		comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 				//		anl_flg = 1;
 				//	}
 				//	else {
@@ -711,27 +716,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//		COMGy = (max_id / 9) % 3;
 				//		COMLx = (max_id / 3) % 3;
 				//		COMLy = max_id % 3;
-				//		comHistt[train_cnt] = max_id;
+				//		comHistt[trainCnt] = max_id;
 				//		anl_flg = 0;
 				//	}
 				//	//盤面の更新
 				//	rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 				//	if (rwd_tmp > -10.0) {
-				//		temp_i[train_cnt] = input;
-				//		temp_o[train_cnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
-				//		temp_o[train_cnt](comHistt[train_cnt]) = rwd_tmp;
-				//		if (train_cnt >= 1) {
+				//		temp_i[trainCnt] = input;
+				//		temp_o[trainCnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
+				//		temp_o[trainCnt](comHistt[trainCnt]) = rwd_tmp;
+				//		if (trainCnt >= 1) {
 				//			if (taijin == 1) {
-				//				temp_o[train_cnt - 1](comHistt[train_cnt - 1]) += gamma * max_val + reward2;
+				//				temp_o[trainCnt - 1](comHistt[trainCnt - 1]) += gamma * max_val + reward2;
 				//			}
 				//			else if (taijin == 2) {
-				//				temp_o[train_cnt - 1](comHistt[train_cnt - 1]) -= rwd_tmp;
-				//				if (train_cnt >= 2) {
-				//					temp_o[train_cnt - 2](comHistt[train_cnt - 2]) += gamma * max_val;
+				//				temp_o[trainCnt - 1](comHistt[trainCnt - 1]) -= rwd_tmp;
+				//				if (trainCnt >= 2) {
+				//					temp_o[trainCnt - 2](comHistt[trainCnt - 2]) += gamma * max_val;
 				//				}
 				//			}
 				//		}
-				//		train_cnt++;
+				//		trainCnt++;
 				//		if (taijin == 2) COMWait = waitOnCOM;
 				//		break;
 				//	}
@@ -837,18 +842,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//学習
 				/*if (taijin == 1) {
 					if (vict == teban * 2 - 1) {
-						temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = RWD_VICT;
+						temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
 					}else {
-						temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = -RWD_VICT;
+						temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = -RWD_VICT;
 					}
 				}
 				else if (taijin == 2) {
-					temp_o[train_cnt - 2](comHistt[train_cnt - 2]) = -RWD_VICT;
-					temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = RWD_VICT;
+					temp_o[trainCnt - 2](comHistt[trainCnt - 2]) = -RWD_VICT;
+					temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
 				}
-				train_i.setZero(train_cnt, lay_size[0]);
-				train_o.setZero(train_cnt, lay_size[lay_len]);
-				for (int i = 0; i < train_cnt; ++i) {
+				train_i.setZero(trainCnt, lay_size[0]);
+				train_o.setZero(trainCnt, lay_size[lay_len]);
+				for (int i = 0; i < trainCnt; ++i) {
 					train_i.block(i, 0, 1, lay_size[0]) = temp_i[i].transpose();
 					train_o.block(i, 0, 1, lay_size[lay_len]) = temp_o[i].transpose();
 				}
@@ -1217,7 +1222,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//	if (debugFlg == 1) {
 		//		//デバッグ
 		//		if (Key[KEY_INPUT_D] == 1) {
-		//			if (dbg_cnt == 0) printf("%d\n", train_cnt);
+		//			if (dbg_cnt == 0) printf("%d\n", trainCnt);
 		//			for (int j = 0; j < 9; ++j) {
 		//				printf("\n");
 		//				for (int k = 0; k < 9; ++k) {
@@ -1235,7 +1240,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//			printf("\n");
 		//			dbg_cnt++;
 		//		}
-		//		if (dbg_cnt >= train_cnt) {
+		//		if (dbg_cnt >= trainCnt) {
 		//			dbg_cnt = 0;
 		//			debugFlg = 2;
 		//		}
@@ -1265,8 +1270,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//				//盤面の更新
 		//				rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 		//				if (rwd_tmp > -10.0) {
-		//					//comHistt[train_cnt] = max_id;
-		//					comHistt[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
+		//					//comHistt[trainCnt] = max_id;
+		//					comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 		//					train_correct_cnt++;
 		//					correct_per_epic[epic]++;
 		//				}
@@ -1281,19 +1286,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//					//盤面の更新
 		//					rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 		//					if (rwd_tmp > -10.0) {
-		//						comHistt[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
+		//						comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 		//						break;
 		//					}
 		//					//永遠に勝敗がつかない場合の処理
 		//					game.stopDrawGame();
 		//				}
 		//			}
-		//			temp_i[train_cnt] = input;
-		//			temp_o[train_cnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
-		//			temp_o[train_cnt](COM_game.hist[train_cnt]) = rwd_tmp;
-		//			//if (train_cnt >= 1) temp_o[train_cnt - 1](comHistt[train_cnt - 1]) -= rwd_tmp;
-		//			if (train_cnt >= 2) temp_o[train_cnt - 2](comHistt[train_cnt - 2]) += gamma * max_val;
-		//			train_cnt++;
+		//			temp_i[trainCnt] = input;
+		//			temp_o[trainCnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
+		//			temp_o[trainCnt](COM_game.hist[trainCnt]) = rwd_tmp;
+		//			//if (trainCnt >= 1) temp_o[trainCnt - 1](comHistt[trainCnt - 1]) -= rwd_tmp;
+		//			if (trainCnt >= 2) temp_o[trainCnt - 2](comHistt[trainCnt - 2]) += gamma * max_val;
+		//			trainCnt++;
 		//			game.cnt++;
 		//			train_turn_cnt++;
 		//			turn_per_epic[epic]++;
@@ -1306,11 +1311,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//			game.stopDrawGame();
 		//		}
 		//		//学習
-		//		temp_o[train_cnt - 2](comHistt[train_cnt - 2]) = -RWD_VICT;
-		//		temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = RWD_VICT;
-		//		train_i.setZero(train_cnt, lay_size[0]);
-		//		train_o.setZero(train_cnt, lay_size[lay_len]);
-		//		for (int i = 0; i < train_cnt; ++i) {
+		//		temp_o[trainCnt - 2](comHistt[trainCnt - 2]) = -RWD_VICT;
+		//		temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
+		//		train_i.setZero(trainCnt, lay_size[0]);
+		//		train_o.setZero(trainCnt, lay_size[lay_len]);
+		//		for (int i = 0; i < trainCnt; ++i) {
 		//			train_i.block(i, 0, 1, lay_size[0]) = temp_i[i].transpose();
 		//			train_o.block(i, 0, 1, lay_size[lay_len]) = temp_o[i].transpose();
 		//		}
