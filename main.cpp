@@ -31,8 +31,15 @@ int MultiByteLength(const char* String);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
-int train_cnt = 0;
-int COM_hist[100];
+//int train_cnt = 0;
+//int comHistt[100];
+void initializeTrain() {
+	//train_cnt = 0;
+	//for (int i = 0; i < 100; i++) {
+		//comHistt[i] = 0;
+	//}
+}
+
 int taijin = 0;							// 0:vsHuman, 1:vsCOM 
 
 class Game {
@@ -61,12 +68,6 @@ public:
 		}
 		hist.initialize();
 		mouse.set();
-
-		// こいつらどうしましょうか
-		train_cnt = 0;
-		for (int i = 0; i < 100; i++) {
-			COM_hist[i] = 0;
-		}
 	}
 
 	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
@@ -501,6 +502,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						//}
 						SetBackgroundColor(0, 128, 128);
 						game.initialize();
+						initializeTrain();
 						keyWait = 20;
 					}
 				}
@@ -519,11 +521,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					mode = "オート";
 					taijin = 2;
 					game.initialize();
+					initializeTrain();
 					keyWait = 20;
 				}
 				else if (Key[KEY_INPUT_H] == 1) {
 					mode = "オート";
 					game.initialize(5);
+					initializeTrain();
 					keyWait = 20;
 				}
 			}
@@ -699,7 +703,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//	if (unif(mt) < anl_rate) {
 				//		COMGx = rand() % 3; COMGy = rand() % 3;
 				//		COMLx = rand() % 3; COMLy = rand() % 3;
-				//		COM_hist[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
+				//		comHistt[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 				//		anl_flg = 1;
 				//	}
 				//	else {
@@ -707,7 +711,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//		COMGy = (max_id / 9) % 3;
 				//		COMLx = (max_id / 3) % 3;
 				//		COMLy = max_id % 3;
-				//		COM_hist[train_cnt] = max_id;
+				//		comHistt[train_cnt] = max_id;
 				//		anl_flg = 0;
 				//	}
 				//	//盤面の更新
@@ -715,15 +719,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//	if (rwd_tmp > -10.0) {
 				//		temp_i[train_cnt] = input;
 				//		temp_o[train_cnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
-				//		temp_o[train_cnt](COM_hist[train_cnt]) = rwd_tmp;
+				//		temp_o[train_cnt](comHistt[train_cnt]) = rwd_tmp;
 				//		if (train_cnt >= 1) {
 				//			if (taijin == 1) {
-				//				temp_o[train_cnt - 1](COM_hist[train_cnt - 1]) += gamma * max_val + reward2;
+				//				temp_o[train_cnt - 1](comHistt[train_cnt - 1]) += gamma * max_val + reward2;
 				//			}
 				//			else if (taijin == 2) {
-				//				temp_o[train_cnt - 1](COM_hist[train_cnt - 1]) -= rwd_tmp;
+				//				temp_o[train_cnt - 1](comHistt[train_cnt - 1]) -= rwd_tmp;
 				//				if (train_cnt >= 2) {
-				//					temp_o[train_cnt - 2](COM_hist[train_cnt - 2]) += gamma * max_val;
+				//					temp_o[train_cnt - 2](comHistt[train_cnt - 2]) += gamma * max_val;
 				//				}
 				//			}
 				//		}
@@ -833,14 +837,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//学習
 				/*if (taijin == 1) {
 					if (vict == teban * 2 - 1) {
-						temp_o[train_cnt - 1](COM_hist[train_cnt - 1]) = RWD_VICT;
+						temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = RWD_VICT;
 					}else {
-						temp_o[train_cnt - 1](COM_hist[train_cnt - 1]) = -RWD_VICT;
+						temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = -RWD_VICT;
 					}
 				}
 				else if (taijin == 2) {
-					temp_o[train_cnt - 2](COM_hist[train_cnt - 2]) = -RWD_VICT;
-					temp_o[train_cnt - 1](COM_hist[train_cnt - 1]) = RWD_VICT;
+					temp_o[train_cnt - 2](comHistt[train_cnt - 2]) = -RWD_VICT;
+					temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = RWD_VICT;
 				}
 				train_i.setZero(train_cnt, lay_size[0]);
 				train_o.setZero(train_cnt, lay_size[lay_len]);
@@ -952,12 +956,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				DrawFormatString(20 + 24, 20 + 24, Red, "もう一回");
 				if (game.mouse.button[0] == 1 || Key[KEY_INPUT_RETURN] == 1) {
 					game.initialize();
+					initializeTrain();
 					keyWait = 20;
 				}
 			}
 
 			if (taijin == 2) {
 				game.initialize();
+				initializeTrain();
 				keyWait = 20;
 			}
 		}
@@ -1259,8 +1265,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//				//盤面の更新
 		//				rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 		//				if (rwd_tmp > -10.0) {
-		//					//COM_hist[train_cnt] = max_id;
-		//					COM_hist[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
+		//					//comHistt[train_cnt] = max_id;
+		//					comHistt[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 		//					train_correct_cnt++;
 		//					correct_per_epic[epic]++;
 		//				}
@@ -1275,7 +1281,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//					//盤面の更新
 		//					rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
 		//					if (rwd_tmp > -10.0) {
-		//						COM_hist[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
+		//						comHistt[train_cnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 		//						break;
 		//					}
 		//					//永遠に勝敗がつかない場合の処理
@@ -1285,8 +1291,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//			temp_i[train_cnt] = input;
 		//			temp_o[train_cnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
 		//			temp_o[train_cnt](COM_game.hist[train_cnt]) = rwd_tmp;
-		//			//if (train_cnt >= 1) temp_o[train_cnt - 1](COM_hist[train_cnt - 1]) -= rwd_tmp;
-		//			if (train_cnt >= 2) temp_o[train_cnt - 2](COM_hist[train_cnt - 2]) += gamma * max_val;
+		//			//if (train_cnt >= 1) temp_o[train_cnt - 1](comHistt[train_cnt - 1]) -= rwd_tmp;
+		//			if (train_cnt >= 2) temp_o[train_cnt - 2](comHistt[train_cnt - 2]) += gamma * max_val;
 		//			train_cnt++;
 		//			game.cnt++;
 		//			train_turn_cnt++;
@@ -1300,8 +1306,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//			game.stopDrawGame();
 		//		}
 		//		//学習
-		//		temp_o[train_cnt - 2](COM_hist[train_cnt - 2]) = -RWD_VICT;
-		//		temp_o[train_cnt - 1](COM_hist[train_cnt - 1]) = RWD_VICT;
+		//		temp_o[train_cnt - 2](comHistt[train_cnt - 2]) = -RWD_VICT;
+		//		temp_o[train_cnt - 1](comHistt[train_cnt - 1]) = RWD_VICT;
 		//		train_i.setZero(train_cnt, lay_size[0]);
 		//		train_o.setZero(train_cnt, lay_size[lay_len]);
 		//		for (int i = 0; i < train_cnt; ++i) {
@@ -1436,6 +1442,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PlayMusic("sound/bgm04.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					game.initialize();
+					initializeTrain();
 					break;
 				case 8:
 					//赤が死ぬ
@@ -1457,6 +1464,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PlayMusic("sound/bgm05.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					game.initialize();
+					initializeTrain();
 					break;
 				case 13:
 					//緑が死ぬ
@@ -1485,6 +1493,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PlayMusic("sound/bgm06.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					game.initialize();
+					initializeTrain();
 					break;
 				case 19:
 					//青が死ぬ
@@ -1506,6 +1515,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PlayMusic("sound/bgm08.mp3", DX_PLAYTYPE_BACK);
 					scen_txt_cnt++; scen_char_cnt = 0;
 					game.initialize();
+					initializeTrain();
 					break;
 				default:
 					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
