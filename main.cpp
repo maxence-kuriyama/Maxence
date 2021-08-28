@@ -23,7 +23,6 @@ using namespace std;
 #include "lib/ending.h"
 #include "lib/basic.h"
 #include "lib/key_input.h"
-#include "lib/logo.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -56,6 +55,7 @@ public:
 	int musicFlg = 1;
 	int soundFlg = 1;
 	int debugFlg = 0;
+	int strColor = White;
 	Field mother;
 	Field child[3][3];
 	History hist;
@@ -119,16 +119,16 @@ public:
 	}
 
 	void toggle() {
-		key.toggleSetting(logo, musicFlg, soundFlg);
-		key.configLearn();
+		key.toggleSetting(logo, musicFlg, soundFlg, strColor);
+		//key.configLearn();
 		key.toggleDebug(debugFlg);
-		key.toggleForDebug(debugFlg);
+		//key.toggleForDebug(debugFlg);
 	}
 
 };
 
-
 Game game;
+
 
 //一時記憶に用いる変数
 int mindex[2];
@@ -196,13 +196,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 
 	// 種々のハンドル
-	unsigned int White = GetColor(255, 255, 255);
-	unsigned int Black = GetColor(0, 0, 0);
 	unsigned int Green = GetColor(0, 255, 0);
 	unsigned int Red = GetColor(255, 0, 0);
 	unsigned int Blue = GetColor(0, 0, 255);
 	unsigned int col = Green;
-	unsigned int StringColor = White;		//文字色
 
 	// フォント
 	Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
@@ -220,6 +217,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int Logo2 = LoadGraph("graph/Maxence_after2.png");
 	int Logo3 = LoadGraph("graph/Maxence_after3.png");
 	int Logo4 = LoadGraph("graph/Maxence_after4.png");
+	game.logo.image = Logo4;
 	int Room = LoadGraph("graph/room.bmp");
 	int Card = LoadGraph("graph/card.bmp");
 	int Cutin1 = LoadGraph("graph/cutin1.png");
@@ -494,8 +492,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			//タイトル画面その１
 			if (taijin == 0) {
-				DrawFormatString(TEXT1_X, TEXT1_Y, StringColor, "ぼっちで");
-				DrawFormatString(TEXT2_X, TEXT2_Y, StringColor, "隣の人と");
+				DrawFormatString(TEXT1_X, TEXT1_Y, game.strColor, "ぼっちで");
+				DrawFormatString(TEXT2_X, TEXT2_Y, game.strColor, "隣の人と");
 				if ((!keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
 					|| (keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "ぼっちで");
@@ -557,8 +555,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
 			else if (taijin == 1) {
-				DrawFormatString(TEXT1_X, TEXT1_Y, StringColor, "先攻");
-				DrawFormatString(TEXT2_X, TEXT2_Y, StringColor, "後攻");
+				DrawFormatString(TEXT1_X, TEXT1_Y, game.strColor, "先攻");
+				DrawFormatString(TEXT2_X, TEXT2_Y, game.strColor, "後攻");
 				if ((!keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
 					|| (keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "先攻");
@@ -775,7 +773,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			//動作の取り消し
-			if (game.logo.onBack()) {
+			if (game.key.onBack()) {
 				if (game.hist.canCancel() && taijin == 0) {
 					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
 					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
@@ -799,12 +797,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 
 			//テキストの描画
-			DrawFormatString(470, 80, StringColor, "右クリック:");
-			DrawFormatString(540, 100, StringColor, "石を置く");
-			DrawFormatString(470, 124, StringColor, "zキー（BkSpキー）:");
-			DrawFormatString(540, 144, StringColor, "一手戻る");
-			if(commentFlg) DrawObtainsString2(txtX + 20, txtY + 10, 560, GetFontSize(), text[txtId].c_str(), StringColor, Font0, GetColor(250, 250, 150));
-			DrawFormatString(620, 0, StringColor, "%d", waitOnCOM);
+			DrawFormatString(470, 80, game.strColor, "右クリック:");
+			DrawFormatString(540, 100, game.strColor, "石を置く");
+			DrawFormatString(470, 124, game.strColor, "zキー（BkSpキー）:");
+			DrawFormatString(540, 144, game.strColor, "一手戻る");
+			if(commentFlg) DrawObtainsString2(txtX + 20, txtY + 10, 560, GetFontSize(), text[txtId].c_str(), game.strColor, Font0, GetColor(250, 250, 150));
+			DrawFormatString(620, 0, game.strColor, "%d", waitOnCOM);
 			if(anl_flg) DrawFormatString(540, 0, Green, "annealed!");
 
 			//カットインアニメーション
@@ -952,7 +950,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			SetCameraPositionAndTarget_UpVecY(game.camera.pos, Origin);
 
 			//動作の取り消し
-			if (game.logo.onBack()) {
+			if (game.key.onBack()) {
 				if (game.hist.canCancel()) {
 					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
 					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
@@ -975,7 +973,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				DrawFormatString(20, 20, Green, "No one");
 			}
 			DrawFormatString(20 + 96, 20, Green, "Won");
-			DrawFormatString(20 + 24, 20 + 24, StringColor, "もう一回");
+			DrawFormatString(20 + 24, 20 + 24, game.strColor, "もう一回");
 			if (game.mouse.onButton(20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || (!keyWait && game.key.onReturn())) {
 				DrawFormatString(20 + 24, 20 + 24, Red, "もう一回");
 				if (game.mouse.button[0] == 1 || game.key.onReturn()) {
@@ -1234,7 +1232,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			
 			if(end_cnt <= 6500) end_cnt++;
-			DrawFormatString(5, 25, StringColor, "%d", end_cnt);
+			DrawFormatString(5, 25, game.strColor, "%d", end_cnt);
 		}
 		//高速学習モード
 		//else if (game.flg == 5) {
@@ -1414,7 +1412,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if (visible[3]) DrawGraph(480 + eqx, 240, stripe[13], TRUE);
 				if (Scenflg == 2) DrawExtendGraph(0, 0, 640, 400, Card, FALSE);
 				DrawRoundBox(15, 380, 10, 609, 89, GetColor(250, 250, 150)); 
-				DrawMessage(scen_char_cnt, 110, 390, 600, GetFontSize(), scen_txt[scen_txt_cnt].c_str(), StringColor, Font0, GetColor(250, 250, 150));
+				DrawMessage(scen_char_cnt, 110, 390, 600, GetFontSize(), scen_txt[scen_txt_cnt].c_str(), game.strColor, Font0, GetColor(250, 250, 150));
 				switch (scen_who[scen_txt_cnt]) {
 				case 1:
 					DrawGraph(30, 380, stripe[10], TRUE); break;
@@ -1559,7 +1557,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					}
 					break;
 				}
-				DrawFormatString(5, 5, StringColor, "Scenflg:%d", Scenflg);
+				DrawFormatString(5, 5, game.strColor, "Scenflg:%d", Scenflg);
 				//DrawFormatString(5, 25, StringColor, "char_cnt:%d", char_cnt);
 			}
 		}
@@ -1579,7 +1577,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			fps_cnt = 0;
 			fps_start = clock();
 		}
-		if(likeliFlg) DrawFormatString(5, 5, StringColor, "fps:%d", cur_fps);
+		if(likeliFlg) DrawFormatString(5, 5, game.strColor, "fps:%d", cur_fps);
 		if (keyWait > 0) keyWait--;
 		if (COMWait > 0) COMWait--;
 		while (clock() - start < 1000.0 / 30.0 && game.flg != 5) {

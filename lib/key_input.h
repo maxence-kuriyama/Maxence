@@ -1,5 +1,10 @@
 #pragma once
 
+
+#include "lib/logo.h"
+unsigned int White = GetColor(255, 255, 255);
+unsigned int Black = GetColor(0, 0, 0);
+
 class Key {
 public:
 	int state[256];
@@ -26,7 +31,7 @@ public:
 		return (state[KEY_INPUT_Z] == 1 || state[KEY_INPUT_BACK] == 1);
 	}
 
-	void toggleSetting(Logo logo, int musicFlg, int soundFlg) {
+	void toggleSetting(Logo& logo, int& musicFlg, int& soundFlg, int& strColor) {
 
 		//ロゴを動かす
 		if (state[KEY_INPUT_AT] == 1) {
@@ -39,16 +44,14 @@ public:
 		}
 
 		//文字色の変更
-		/*
 		if (state[KEY_INPUT_I] == 1) {
-			if (StringColor == Black) {
-				StringColor = White;
+			if (strColor == Black) {
+				strColor = White;
 			}
 			else {
-				StringColor = Black;
+				strColor = Black;
 			}
 		}
-		*/
 
 		//音楽, SEの有無
 		if (state[KEY_INPUT_P] == 1) {
@@ -66,12 +69,14 @@ public:
 		}
 
 		//AIのウェイトを変更する
+		/*
 		if (state[KEY_INPUT_M] == 1) {
 			waitOnCOM++;
 		}
 		else if (state[KEY_INPUT_N] == 1) {
 			waitOnCOM--;
 		}
+		*/
 
 	}
 
@@ -84,6 +89,7 @@ public:
 
 	}
 
+	/*
 	void toggleForDebug(int debug) {
 		if (debug) {
 			//カットインを入れる
@@ -114,4 +120,5 @@ public:
 			}
 		}
 	}
+	*/
 };

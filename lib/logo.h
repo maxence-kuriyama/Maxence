@@ -5,7 +5,7 @@ public:
 	double acRate = 0.0;
 	int titleX = 445;
 	int titleY = 400;
-	int image = LoadGraph("graph/Maxence_after4.png");
+	int image;
 
 	void initialize() {
 		acRate = 0.0;
