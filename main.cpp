@@ -121,10 +121,10 @@ public:
 	}
 
 	void toggleByKey() {
-		key.toggleSetting(logo, option);
+		key.toggleSetting(option, logo);
 		//key.configLearning();
 		key.toggleDebug(debugFlg);
-		key.toggleForDebug(cutin.flg);
+		key.toggleForDebug(option, cutin.flg);
 	}
 
 	void toggleHighSpeedLearning() {
@@ -179,8 +179,6 @@ int prey = 0;				//マウス操作か否かを判定するための変数
 //ゲームの演出に用いる変数
 double logoX = 0.0;
 int windowFlg = 1;
-int likeliFlg = 0;
-int commentFlg = 0;
 string text[450]; 
 int txtMax = 450;
 char txt_name[30] = "data/sayings.txt";
@@ -634,10 +632,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 									}
 								}
 							}
-							if (likeliFlg >= 1) {
+							if (game.option.likeliFlg >= 1) {
 								/*double col_tmp = min(max(240.0 * (output(27 * i + 9 * j + 3 * k + l) + 0.5), 0.0), 255.0);
 								DrawCircle(160 + 100 * i + 33 * k + 16, 80 + 100 * j + 33 * l + 16, 15, GetColor(255, 255, 255 - col_tmp));
-								if (likeliFlg == 2) {
+								if (game.option.likeliFlg == 2) {
 									char str_tmp[10]; 
 									sprintf_s(str_tmp, "%.4f", output(27 * i + 9 * j + 3 * k + l));
 									DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 2, str_tmp, Red, Font1);
@@ -801,7 +799,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawFormatString(540, 100, game.option.strColor, "石を置く");
 			DrawFormatString(470, 124, game.option.strColor, "zキー（BkSpキー）:");
 			DrawFormatString(540, 144, game.option.strColor, "一手戻る");
-			if (commentFlg) {
+			if (game.option.commentFlg) {
 				DrawObtainsString2(txtX + 20, txtY + 10, 560, GetFontSize(), text[txtId].c_str(), game.option.strColor, Font0, GetColor(250, 250, 150));
 			}
 			if (game.debugFlg) {
@@ -1551,7 +1549,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			fps_cnt = 0;
 			fps_start = clock();
 		}
-		if(likeliFlg) DrawFormatString(5, 5, game.option.strColor, "fps:%d", cur_fps);
+		if (game.debugFlg) {
+			DrawFormatString(5, 5, game.option.strColor, "fps:%d", cur_fps);
+		}
 		if (COMWait > 0) COMWait--;
 		while (clock() - start < 1000.0 / 30.0 && game.flg != 5) {
 			WaitTimer(1);

@@ -10,6 +10,8 @@ public:
 	int strColor = White;
 	int musicFlg = 1;
 	int soundFlg = 1;
+	int likeliFlg = 0;		// 学習機械の出力フラグ 0: 非表示, 1: 色で表示, 2: 数値も表示
+	int commentFlg = 0;
 };
 
 class Key {
@@ -93,7 +95,7 @@ public:
 		return false;
 	}
 
-	void toggleSetting(Logo& logo, Option& option) {
+	void toggleSetting(Option& option, Logo& logo) {
 		// ロゴを動かす
 		if (state[KEY_INPUT_AT] == 1) {
 			if (logo.acRate >= 0.5) {
@@ -118,6 +120,11 @@ public:
 		if (state[KEY_INPUT_P] == 1) {
 			option.musicFlg = (option.musicFlg + 1) % 2;
 			option.soundFlg = (option.soundFlg + 1) % 2;
+		}
+
+		// コメントを消す
+		if (state[KEY_INPUT_K] == 1) {
+			option.commentFlg = (option.commentFlg + 1) % 2;
 		}
 	}
 
@@ -167,24 +174,19 @@ public:
 		}
 	}
 
-	void toggleForDebug(int& cutinFlg) {
+	void toggleForDebug(Option& option, int& cutinFlg) {
 		if (debugFlg) {
 			// カットインを入れる
 			if (state[KEY_INPUT_C] == 1) {
 				cutinFlg = 1;
 			}
 
-			/*
-			// COMの出力を見る
+			// 学習機械の出力を見る
 			if (state[KEY_INPUT_V] == 1) {
-				likeliFlg = (likeliFlg + 1) % 3;
+				option.likeliFlg = (option.likeliFlg + 1) % 3;
 			}
 
-			// コメントを消す
-			if (state[KEY_INPUT_K] == 1) {
-				commentFlg = (commentFlg + 1) % 2;
-			}
-
+			/*
 			// エンディングモード
 			if (state[KEY_INPUT_MINUS] == 1) {
 				if (game.flg != -4) {
@@ -199,7 +201,6 @@ public:
 			*/
 		}
 	}
-	
 
 	void skipBattle(int& gameFlg, int& sceneFlg) {
 		if (debugFlg) {
