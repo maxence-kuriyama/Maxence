@@ -42,6 +42,7 @@ void initializeTrain() {
 }
 
 int taijin = 0;			// 0: vsHuman, 1: vsCOM, 2: AutoLearning
+int keyWait = 0;
 
 
 class Game {
@@ -66,6 +67,7 @@ public:
 	int nextField = -1;		// -1: anywhere
 	int cnt = 0;			// ターン数
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
+	string mode = "?";
 
 	void initialize(int f = 1) {
 		flg = f;
@@ -118,13 +120,25 @@ public:
 		}
 	}
 
-	void toggle() {
+	void toggleByKey() {
 		key.toggleSetting(logo, musicFlg, soundFlg, strColor);
-		//key.configLearn();
+		//key.configLearning();
 		key.toggleDebug(debugFlg);
-		//key.toggleForDebug(debugFlg);
+		//key.toggleForDebug();
 	}
 
+	void toggleHighSpeedLearning() {
+		if (key.toggleHighSpeedLearning(flg, taijin) == 1) {
+			mode = "オート";
+			initialize(flg);
+			initializeTrain();
+			keyWait = 20;
+		}
+	}
+
+	void skipBattle(int& sceneFlg) {
+		key.skipBattle(flg, sceneFlg);
+	}
 };
 
 Game game;
@@ -151,12 +165,10 @@ int COMGy = 1;
 int COMLx = 1;
 int COMLy = 1;							//COMの選ぶ座標
 int selectMode = 0;
-int keyWait = 0;
 int COMWait = 0;
 int waitOnGame = 6;						//ゲーム中のキー入力ウェイト
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 int prex = 0; int prey = 0;				//マウス操作か否かを判定するための変数
-string mode = "?";
 //ゲームの演出に用いる変数
 double logoX = 0.0;
 int windowFlg = 1;
@@ -399,13 +411,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 
 
-		game.toggle();
+		game.toggleByKey();
 		if (game.soundFlg == 1) {
 			tama[0].sound = 1;
 		}
 		else {
 			tama[0].sound = 0;
 		}
+
 
 		//マウス操作か否かを判定する
 		if (game.mouse.x != prex || game.mouse.y != prey) {
@@ -498,7 +511,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					|| (keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "ぼっちで");
 					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
-						mode = "ぼっちで";
+						game.mode = "ぼっちで";
 						//InitializeGame();
 						keyWait = 10;
 						taijin = 1;
@@ -508,7 +521,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					|| (keyboardFlg && selectMode == 1)) {
 					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "隣の人と");
 					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
-						mode = "隣の人と";
+						game.mode = "隣の人と";
 						////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
 						//PlayMovieToGraph(MovieGraphHandle);
 						//SetBackgroundColor(0, 0, 0);
@@ -539,19 +552,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					keyboardFlg = 1;
 				}
 				//オートモード
-				if (game.key.state[KEY_INPUT_A] == 1) {
-					mode = "オート";
-					taijin = 2;
-					game.initialize();
-					initializeTrain();
-					keyWait = 20;
-				}
-				else if (game.key.state[KEY_INPUT_H] == 1) {
-					mode = "オート";
-					game.initialize(5);
-					initializeTrain();
-					keyWait = 20;
-				}
+				game.toggleHighSpeedLearning();
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
 			else if (taijin == 1) {
@@ -834,7 +835,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				cutinCnt++;
 			}
 
-			//テキストの差し替え
+			// テキストの差し替え
 			if (txtCnt > 200) {
 				//ある程度連番が続くように設定
 				if (txtId < numTxt && (rnd() % 10000) / 10000.0 < pow(0.95,pow(2.0,txtSeq))) {
@@ -851,7 +852,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			txtCnt++;
 
-			//勝利判定
+			// 勝利判定
 			vict = game.mother.victory();
 			if (vict != 0) {
 				game.flg = 2;
@@ -877,19 +878,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if(taijin == 1 || taijin == 2) critic.backprop(train_i, train_o);*/
 			}
 
-			//永遠に勝敗がつかない場合の処理
+			// 永遠に勝敗がつかない場合の処理
 			game.stopDrawGame();
 
-			//高速学習モード
-			if (game.key.state[KEY_INPUT_H] == 1) {
-				game.flg = 5;
-			}
+			// 高速学習モード
+			game.toggleHighSpeedLearning();
 
-			//対戦スキップ（一人用デバッグ）
-			if (game.key.state[KEY_INPUT_B] == 1 && taijin == 1) {
-				Scenflg++;
-				StopMusic();
-				game.flg = -6;
+			// 対戦スキップ（一人用デバッグ）
+			if (taijin == 1) {
+				game.skipBattle(Scenflg);
 			}
 
 		}

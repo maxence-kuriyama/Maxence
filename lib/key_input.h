@@ -8,6 +8,7 @@ unsigned int Black = GetColor(0, 0, 0);
 class Key {
 public:
 	int state[256];
+	int debugFlg = 0;
 
 	int update() {
 		char temp[256];
@@ -32,7 +33,6 @@ public:
 	}
 
 	void toggleSetting(Logo& logo, int& musicFlg, int& soundFlg, int& strColor) {
-
 		//ロゴを動かす
 		if (state[KEY_INPUT_AT] == 1) {
 			if (logo.acRate >= 0.5) {
@@ -58,11 +58,9 @@ public:
 			musicFlg = (musicFlg + 1) % 2;
 			soundFlg = (soundFlg + 1) % 2;
 		}
-
 	}
 
-	void configLearn() {
-
+	void configLearning() {
 		//データの保存
 		if (state[KEY_INPUT_O] == 1) {
 			//save parameters
@@ -77,21 +75,37 @@ public:
 			waitOnCOM--;
 		}
 		*/
+	}
 
+	// 返り値1でゲームを初期化する
+	int toggleHighSpeedLearning(int& gameFlg, int& taijin) {
+		// 自動学習モード
+		if (state[KEY_INPUT_A] == 1) {
+			taijin = 2;
+			gameFlg = 1;
+			return 1;
+		}
+
+		// 高速自動学習モード
+		if (state[KEY_INPUT_H] == 1) {
+			gameFlg = 5;
+			return 1;
+		}
+
+		return 0;
 	}
 
 	void toggleDebug(int &debug) {
-
 		//デバッグモード解除
 		if (state[KEY_INPUT_D] == 1) {
 			debug = (debug + 1) % 2;
+			debugFlg = debug;
 		}
-
 	}
 
 	/*
-	void toggleForDebug(int debug) {
-		if (debug) {
+	void toggleForDebug() {
+		if (debugFlg) {
 			//カットインを入れる
 			if (state[KEY_INPUT_C] == 1) {
 				cutinFlg = 1;
@@ -121,4 +135,14 @@ public:
 		}
 	}
 	*/
+
+	void skipBattle(int& gameFlg, int& sceneFlg) {
+		if (debugFlg) {
+			if (state[KEY_INPUT_B] == 1) {
+				StopMusic();
+				sceneFlg++;
+				gameFlg = -6;
+			}
+		}
+	}
 };
