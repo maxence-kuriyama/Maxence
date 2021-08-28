@@ -22,6 +22,7 @@ using namespace std;
 #include "lib/scenario.h"
 #include "lib/ending.h"
 #include "lib/basic.h"
+#include "lib/anime.h"
 #include "lib/key_input.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -62,10 +63,11 @@ public:
 	Mouse mouse;
 	Key key;
 	Logo logo;
+	Anime cutin;
 	int nextField = -1;		// -1: anywhere
 	int cnt = 0;			// ターン数
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
-	string mode = "?";
+	string mode = "";
 
 	void initialize(int f = 1) {
 		flg = f;
@@ -123,7 +125,7 @@ public:
 		key.toggleSetting(logo, musicFlg, soundFlg, strColor);
 		//key.configLearning();
 		key.toggleDebug(debugFlg);
-		//key.toggleForDebug();
+		key.toggleForDebug(cutin.flg);
 	}
 
 	void toggleHighSpeedLearning() {
@@ -131,7 +133,6 @@ public:
 			mode = "オート";
 			initialize(flg);
 			initializeTrain();
-			key.initWait();
 		}
 	}
 
@@ -140,7 +141,6 @@ public:
 			mode = "オート";
 			initialize(flg);
 			initializeTrain();
-			key.initWait();
 		}
 	}
 
@@ -175,17 +175,19 @@ int COMLy = 1;							//COMの選ぶ座標
 int selectMode = 0;
 int COMWait = 0;
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
-int prex = 0; int prey = 0;				//マウス操作か否かを判定するための変数
+int prex = 0; 
+int prey = 0;				//マウス操作か否かを判定するための変数
 //ゲームの演出に用いる変数
 double logoX = 0.0;
 int windowFlg = 1;
 int likeliFlg = 0;
 int commentFlg = 0;
-int cutinFlg = 0; int cutinCnt = 0;
-string text[450]; int txtMax = 450;
+string text[450]; 
+int txtMax = 450;
 char txt_name[30] = "data/sayings.txt";
 int numTxt = 0; 
-int txtX = rnd() % 200; int txtY = rnd() % 400;
+int txtX = rnd() % 200; 
+int txtY = rnd() % 400;
 int txtId = 0; int txtCnt = 0;			//テキストのインデックスとテキスト差し替えのカウンタ
 int txtSeq = 0;							//テキストの連番がいくつ継続したかのカウンタ
 //char SEname[8][20] = { "sound/se_amb01.wav" ,"sound/se_amb02.wav" ,"sound/se_amb03.wav" ,
@@ -241,6 +243,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int Card = LoadGraph("graph/card.bmp");
 	int Cutin1 = LoadGraph("graph/cutin1.png");
 	int Cutin10 = LoadGraph("graph/cutin10.png");
+	game.cutin.image0 = Cutin1;
+	game.cutin.image1 = Cutin10;
 	GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
@@ -520,7 +524,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
 						game.mode = "ぼっちで";
 						//InitializeGame();
-						game.key.initWait();
 						taijin = 1;
 					}
 				}
@@ -549,12 +552,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				}
 				if (game.key.onLeft()) {
 					selectMode = ((selectMode - 1) + 2) % 2;
-					game.key.initWait();
 					keyboardFlg = 1;
 				}
 				if (game.key.onRight()) {
 					selectMode = (selectMode + 1) % 2;
-					game.key.initWait();
 					keyboardFlg = 1;
 				}
 				//オートモード
@@ -571,7 +572,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
-						game.key.initWait();
 						teban = 0;
 					}
 				}
@@ -582,7 +582,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
-						game.key.initWait();
 						teban = 1;
 					}
 				}
@@ -668,7 +667,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLy = 0;
 						}
 					}
-					game.key.initWait();
 					keyboardFlg = 1;
 				}
 				if (game.key.onDown()) {
@@ -681,7 +679,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLy = 2;
 						}
 					}
-					game.key.initWait();
 					keyboardFlg = 1;
 				}
 				if (game.key.onLeft()) {
@@ -694,7 +691,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLx = 0;
 						}
 					}
-					game.key.initWait();
 					keyboardFlg = 1;
 				}
 				if (game.key.onRight()) {
@@ -707,14 +703,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLx = 2;
 						}
 					}
-					game.key.initWait();
 					keyboardFlg = 1;
 				}
 				if (keyboardFlg && game.key.onCheck()) {
 					rwd_tmp = game.update(corGx, corGy, corLx, corLy);
 					if (rwd_tmp > -10.0) {
 						if (taijin == 1) {
-							game.key.initWait();
 					//		reward2 = -rwd_tmp;
 						}
 					}
@@ -808,38 +802,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawFormatString(540, 100, game.strColor, "石を置く");
 			DrawFormatString(470, 124, game.strColor, "zキー（BkSpキー）:");
 			DrawFormatString(540, 144, game.strColor, "一手戻る");
-			if(commentFlg) DrawObtainsString2(txtX + 20, txtY + 10, 560, GetFontSize(), text[txtId].c_str(), game.strColor, Font0, GetColor(250, 250, 150));
-			DrawFormatString(620, 0, game.strColor, "%d", waitOnCOM);
-			if(anl_flg) DrawFormatString(540, 0, Green, "annealed!");
+			if (commentFlg) {
+				DrawObtainsString2(txtX + 20, txtY + 10, 560, GetFontSize(), text[txtId].c_str(), game.strColor, Font0, GetColor(250, 250, 150));
+			}
+			if (game.debugFlg) {
+				DrawFormatString(620, 0, game.strColor, "%d", waitOnCOM);
+			}
+			if (anl_flg) {
+				DrawFormatString(540, 0, Green, "annealed!");
+			}
 
 			//カットインアニメーション
-			if (cutinFlg == 1) {
-				SetDrawBlendMode(DX_BLENDMODE_SUB, 255);
-				DrawGraph(pow(cutinCnt - 15, 2.0) * 640 / pow(15.0, 2.0), 0, Cutin10, FALSE);
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 225);
-				DrawGraph(pow(cutinCnt - 15, 2.0) * 640 / pow(15.0, 2.0), 0, Cutin1, FALSE);
-				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-				if (cutinCnt > 15) { cutinFlg = 2; }
-				cutinCnt++;
-			}
-			else if (cutinFlg == 2) {
-				SetDrawBlendMode(DX_BLENDMODE_SUB, 255);
-				DrawGraph(0, 0, Cutin10, FALSE);
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 225);
-				DrawGraph(0, 0, Cutin1, FALSE);
-				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-				if (cutinCnt > 105) { cutinFlg = 3; }
-				cutinCnt++;
-			}
-			else if (cutinFlg == 3) {
-				SetDrawBlendMode(DX_BLENDMODE_SUB, 255);
-				DrawGraph(- pow(cutinCnt - 105, 2.0) * 640 / pow(15.0, 2.0), 0, Cutin10, FALSE);
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 225);
-				DrawGraph(- pow(cutinCnt - 105, 2.0) * 640 / pow(15.0, 2.0), 0, Cutin1, FALSE);
-				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-				if (cutinCnt > 120) { cutinFlg = 0; cutinCnt = 0; }
-				cutinCnt++;
-			}
+			game.cutin.update();
 
 			// テキストの差し替え
 			if (txtCnt > 200) {

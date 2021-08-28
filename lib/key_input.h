@@ -38,7 +38,11 @@ public:
 	}
 
 	bool onReturn() {
-		return (waitCnt <=0 && state[KEY_INPUT_RETURN] == 1);
+		if (waitCnt <= 0 && state[KEY_INPUT_RETURN] == 1) {
+			initWait();
+			return true;
+		}
+		return false;
 	}
 
 	bool onBack() {
@@ -47,19 +51,39 @@ public:
 
 	// ゲーム中のキー入力
 	bool onCheck() {
-		return (waitCnt <= 0 && (state[KEY_INPUT_RETURN] == 1 || state[KEY_INPUT_SPACE] == 1));
+		if (waitCnt <= 0 && (state[KEY_INPUT_RETURN] == 1 || state[KEY_INPUT_SPACE] == 1)) {
+			initWait();
+			return true;
+		}
+		return false;
 	}
 	bool onUp() {
-		return (waitCnt <= 0 && (state[KEY_INPUT_UP]== 1 || state[KEY_INPUT_W] == 1));
+		if (waitCnt <= 0 && (state[KEY_INPUT_UP]== 1 || state[KEY_INPUT_W] == 1)) {
+			initWait();
+			return true;
+		}
+		return false;
 	}
 	bool onDown() {
-		return (waitCnt <= 0 && (state[KEY_INPUT_DOWN] == 1 || state[KEY_INPUT_S] == 1));
+		if (waitCnt <= 0 && (state[KEY_INPUT_DOWN] == 1 || state[KEY_INPUT_S] == 1)) {
+			initWait();
+			return true;
+		}
+		return false;
 	}
 	bool onLeft() {
-		return (waitCnt <= 0 && (state[KEY_INPUT_LEFT] == 1 || state[KEY_INPUT_A] == 1));
+		if (waitCnt <= 0 && (state[KEY_INPUT_LEFT] == 1 || state[KEY_INPUT_A] == 1)) {
+			initWait();
+			return true;
+		}
+		return false;
 	}
 	bool onRight() {
-		return (waitCnt <= 0 && (state[KEY_INPUT_RIGHT] == 1 || state[KEY_INPUT_D] == 1));
+		if (waitCnt <= 0 && (state[KEY_INPUT_RIGHT] == 1 || state[KEY_INPUT_D] == 1)) {
+			initWait();
+			return true;
+		}
+		return false;
 	}
 
 	void toggleSetting(Logo& logo, int& musicFlg, int& soundFlg, int& strColor) {
@@ -128,22 +152,22 @@ public:
 		return 0;
 	}
 
-	void toggleDebug(int &debug) {
+	void toggleDebug(int& debug) {
 		//デバッグモード解除
-		if (state[KEY_INPUT_D] == 1) {
+		if (state[KEY_INPUT_G] == 1) {
 			debug = (debug + 1) % 2;
 			debugFlg = debug;
 		}
 	}
 
-	/*
-	void toggleForDebug() {
+	void toggleForDebug(int& cutinFlg) {
 		if (debugFlg) {
 			// カットインを入れる
 			if (state[KEY_INPUT_C] == 1) {
 				cutinFlg = 1;
 			}
 
+			/*
 			// COMの出力を見る
 			if (state[KEY_INPUT_V] == 1) {
 				likeliFlg = (likeliFlg + 1) % 3;
@@ -165,9 +189,10 @@ public:
 				}
 				end_cnt = 0;
 			}
+			*/
 		}
 	}
-	*/
+	
 
 	void skipBattle(int& gameFlg, int& sceneFlg) {
 		if (debugFlg) {
