@@ -27,7 +27,6 @@ public:
 class Key {
 public:
 	int state[256];
-	int debugFlg = 0;
 	int waitConst = 3;		// ゲーム中のキー入力ウェイト
 	int waitCnt = 3;		// キー入力ウェイトのカウンタ
 	int use = 0;
@@ -186,49 +185,44 @@ public:
 		return 0;
 	}
 
-	void toggleDebug(int& debug) {
+	void toggleDebug(int& debugFlg) {
 		//デバッグモード解除
 		if (state[KEY_INPUT_G] == 1) {
-			debug = (debug + 1) % 2;
-			debugFlg = debug;
+			debugFlg = (debugFlg + 1) % 2;
 		}
 	}
 
 	void toggleForDebug(Option& option, int& cutinFlg) {
-		if (debugFlg) {
-			// カットインを入れる
-			if (state[KEY_INPUT_C] == 1) {
-				cutinFlg = 1;
-			}
-
-			// 学習機械の出力を見る
-			if (state[KEY_INPUT_V] == 1) {
-				option.likeliFlg = (option.likeliFlg + 1) % 3;
-			}
-
-			/*
-			// エンディングモード
-			if (state[KEY_INPUT_MINUS] == 1) {
-				if (game.flg != -4) {
-					game.flg = -4;
-				}
-				else {
-					StopMusic();
-					game.flg = 0;
-				}
-				end_cnt = 0;
-			}
-			*/
+		// カットインを入れる
+		if (state[KEY_INPUT_C] == 1) {
+			cutinFlg = 1;
 		}
+
+		// 学習機械の出力を見る
+		if (state[KEY_INPUT_V] == 1) {
+			option.likeliFlg = (option.likeliFlg + 1) % 3;
+		}
+
+		/*
+		// エンディングモード
+		if (state[KEY_INPUT_MINUS] == 1) {
+			if (game.flg != -4) {
+				game.flg = -4;
+			}
+			else {
+				StopMusic();
+				game.flg = 0;
+			}
+			end_cnt = 0;
+		}
+		*/
 	}
 
 	void skipBattle(int& gameFlg, int& sceneFlg) {
-		if (debugFlg) {
-			if (state[KEY_INPUT_B] == 1) {
-				StopMusic();
-				sceneFlg++;
-				gameFlg = -6;
-			}
+		if (state[KEY_INPUT_B] == 1) {
+			StopMusic();
+			sceneFlg++;
+			gameFlg = -6;
 		}
 	}
 };

@@ -28,17 +28,8 @@ int MultiByteLength(const char* String);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
-
-
 Game game;
 
-//一時記憶に用いる変数
-int mindex[2];
-
-int Font0, Font1, Font2, Font3, Font4;
-//ゲームの処理に用いる変数
-int Soloflg = 0;						// シナリオ管理用フラグ
-int Scenflg = 0;						// シナリオ管理用フラグ
 int corGx = 1;
 int corGy = 1;
 int corLx = 1;
@@ -47,6 +38,14 @@ int COMGx = 1;
 int COMGy = 1;
 int COMLx = 1;
 int COMLy = 1;							//COMの選ぶ座標
+
+//一時記憶に用いる変数
+int mindex[2];
+
+int Font0, Font1, Font2, Font3, Font4;
+//ゲームの処理に用いる変数
+int Soloflg = 0;						// シナリオ管理用フラグ
+int Scenflg = 0;						// シナリオ管理用フラグ
 int selectMode = 0;
 int COMWait = 0;
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
@@ -161,10 +160,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//時間関連
 	long current = clock();
-	long start = clock();
-	int cur_fps = 0;
-	int fps_cnt = 0;
-	long fps_start = clock();
 
 	//シナリオ関係
 	int scen_char_cnt = 0;
@@ -670,9 +665,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawFormatString(540, 144, game.option.strColor, "一手戻る");
 			if (game.option.commentFlg) {
 				game.comment.draw(game.option.strColor);
-			}
-			if (game.debugFlg) {
-				DrawFormatString(620, 0, game.option.strColor, "%d", waitOnCOM);
 			}
 			if (anl_flg) {
 				DrawFormatString(540, 0, Green, "annealed!");
@@ -1267,7 +1259,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				case 2:
 					//カードを見つける、青消える
 					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
-					if (fps_cnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
+					if (game.fpsCnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
 					if (game.mouse.click()) {
 						if (scen_char_cnt < scen_txt_len) { scen_char_cnt = scen_txt_len; }
 						else {
@@ -1366,7 +1358,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					break;
 				default:
 					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
-					if (fps_cnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
+					if (game.fpsCnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
 					if (game.mouse.click()) {
 						if (scen_char_cnt < scen_txt_len) { scen_char_cnt = scen_txt_len; }
 						else { 
@@ -1396,21 +1388,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 
 		// 同期処理
-		fps_cnt++;
-		if (clock() - fps_start > 1000.0) {
-			cur_fps = fps_cnt;
-			fps_cnt = 0;
-			fps_start = clock();
-		}
-		if (game.debugFlg) {
-			DrawFormatString(5, 5, game.option.strColor, "fps:%d", cur_fps);
-			DrawFormatString(5, 25, game.option.strColor, "keyboardFlg:%d", game.keyboardFlg);
-		}
+		game.sync();
 		if (COMWait > 0) COMWait--;
-		while (clock() - start < 1000.0 / 30.0 && game.flg != 5) {
-			WaitTimer(1);
-		}
-		start = clock();
+
+		// デバッグ情報出力
+		game.debugDump();
 	}
 
 	InitGraph();

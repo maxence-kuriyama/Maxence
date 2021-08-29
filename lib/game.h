@@ -1,5 +1,6 @@
 #pragma once
 
+#include <time.h>
 #include "lib/field.h"
 #include "lib/hist.h"
 #include "lib/basic.h"
@@ -27,11 +28,18 @@ public:
 	int taijin = 0;		// 0: vsHuman, 1: vsCOM, 2: AutoLearning
 	int teban = 0;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
-	int debugFlg = 0;
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
+	int debugFlg = 0;
+
 	int nextField = -1;		// -1: anywhere
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 	string mode = "";
+
+	// 同期処理関連
+	long start = clock();	// 同期処理開始時刻
+	long fpsStart = clock();	// fps計測開始時刻
+	int fps = 0;			// fps出力用
+	int fpsCnt = 0;			// fps計測用
 
 	Option option;
 	Field mother;
@@ -86,6 +94,21 @@ public:
 		return -100.0;
 	}
 
+	void sync() {
+		// 実効fps計測
+		fpsCnt++;
+		if (clock() - fpsStart > 1000.0) {
+			fps = fpsCnt;
+			fpsCnt = 0;
+			fpsStart = clock();
+		}
+		// 同期処理
+		while (clock() - start < 1000.0 / FPS && flg != 5) {
+			WaitTimer(1);
+		}
+		start = clock();
+	}
+
 	//永遠に勝敗がつかない場合の処理
 	void stopDrawGame() {
 		if (drawCnt > 10000) {
@@ -96,11 +119,34 @@ public:
 		}
 	}
 
+
+	/*===========================*/
+	//    bool
+	/*===========================*/
+	bool isPlayTurn() {
+		// 対人戦、あるいは人vsCOMの人の手番
+		return (vsHuman() || (vsCOM() && cnt % 2 == teban));
+	}
+
+	bool vsHuman() {
+		return taijin == 0;
+	}
+
+	bool vsCOM() {
+		return taijin == 1;
+	}
+
+
+	/*===========================*/
+	//    キーボード入力関連
+	/*===========================*/
 	void toggleByKey() {
 		key.toggleSetting(option, logo);
 		//key.configLearning();
 		key.toggleDebug(debugFlg);
-		key.toggleForDebug(option, cutin.flg);
+		if (debugFlg) {
+			key.toggleForDebug(option, cutin.flg);
+		}
 	}
 
 	void toggleHighSpeedLearning() {
@@ -120,19 +166,20 @@ public:
 	}
 
 	void skipBattle(int& sceneFlg) {
-		key.skipBattle(flg, sceneFlg);
+		if (debugFlg) {
+			key.skipBattle(flg, sceneFlg);
+		}
 	}
 
-	bool isPlayTurn() {
-		// 対人戦、あるいは人vsCOMの人の手番
-		return (vsHuman() || (vsCOM() && cnt % 2 == teban));
-	}
 
-	bool vsHuman() {
-		return taijin == 0;
-	}
-
-	bool vsCOM() {
-		return taijin == 1;
+	/*===========================*/
+	//    デバッグ情報
+	/*===========================*/
+	void debugDump() {
+		if (debugFlg) {
+			int strColor = option.strColor;
+			DrawFormatString(5, 5, strColor, "fps:%d", fps);
+			DrawFormatString(5, 25, strColor, "keyboardFlg:%d", keyboardFlg);
+		}
 	}
 };
