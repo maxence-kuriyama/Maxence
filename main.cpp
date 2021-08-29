@@ -36,8 +36,6 @@ Game game;
 int mindex[2];
 
 int Font0, Font1, Font2, Font3, Font4;
-VECTOR Origin = VGet(320.0, 240.0, 0.0);
-VECTOR tmp;
 //ゲームの処理に用いる変数
 int Soloflg = 0;						// シナリオ管理用フラグ
 int Scenflg = 0;						// シナリオ管理用フラグ
@@ -631,15 +629,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 
 			// カメラ操作
+			game.camera.set();
 			if (game.mouse.click()) {
 				game.mouse.set();
 			}
-			tmp = VNorm(VSub(game.camera.pos, Origin));
-			if (game.mouse.onClick()) {
+			else if (game.mouse.onClick()) {
 				theta -= (game.mouse.distDragX()) * 0.05;
 				game.mouse.set();
 			}
-			SetCameraPositionAndTarget_UpVecY(game.camera.pos, Origin);
 			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			// 動作の取り消し
@@ -727,6 +724,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		// 勝敗表示
 		else if (game.flg == 2) {
+			//MV1DrawModel(ModelHandle);
 			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
 			if (game.hist.canCancel()) {
 				/*if (game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] == 1) {
@@ -772,14 +770,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (game.mouse.click()) {
 				game.mouse.set();
 			}
-			tmp = VNorm(VSub(game.camera.pos, Origin));
-			if (game.mouse.onClick()) {
-				game.camera.move(game.mouse.distDragX(), game.mouse.distDragY(), Origin);
+			else if (game.mouse.onClick()) {
+				game.camera.move(game.mouse.distDragX(), game.mouse.distDragY());
 				game.mouse.set();
 			}
-			game.camera.pos.x -= tmp.x * game.mouse.wheel * 5.0;
-			game.camera.pos.z -= tmp.z * game.mouse.wheel * 5.0;
-			SetCameraPositionAndTarget_UpVecY(game.camera.pos, Origin);
+			game.camera.zoom(game.mouse.wheel);
 
 			//動作の取り消し
 			if (game.key.onBack()) {
