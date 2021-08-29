@@ -43,20 +43,22 @@ void initializeTrain() {
 }
 
 
-int taijin = 0;			// 0: vsHuman, 1: vsCOM, 2: AutoLearning
-int teban = 0;							// 0:senko, 1:koko
-int vict = 0;
-
 class Game {
 public:
-	int flg = -3; 
-	// -3,..,-1: Demo
-	// 0: Menu, 1: Game, 2: Result
-	// -4: Ending
-	// -6: Story
-	// 5: High-speed Learning
+	int flg = -3;	// -3,..,-1: Demo
+					// 0: Menu, 1: Game, 2: Result
+					// -4: Ending
+					// -6: Story
+					// 5: High-speed Learning
+	int taijin = 0;		// 0: vsHuman, 1: vsCOM, 2: AutoLearning
+	int teban = 0;		// 0: senko, 1: koko
+	int cnt = 0;		// ターン数
 	int debugFlg = 0;
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
+	int nextField = -1;		// -1: anywhere
+	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
+	string mode = "";
+
 	Option option;
 	Field mother;
 	Field child[3][3];
@@ -66,10 +68,6 @@ public:
 	Key key;
 	Logo logo;
 	Anime cutin;
-	int nextField = -1;		// -1: anywhere
-	int cnt = 0;			// ターン数
-	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
-	string mode = "";
 
 	void initialize(int f = 1) {
 		flg = f;
@@ -149,10 +147,23 @@ public:
 	void skipBattle(int& sceneFlg) {
 		key.skipBattle(flg, sceneFlg);
 	}
+
+	bool isPlayTurn() {
+		// 対人戦、あるいは人vsCOMの人の手番
+		return (vsHuman() || (vsCOM() && cnt % 2 == teban));
+	}
+
+	bool vsHuman() {
+		return taijin == 0;
+	}
+
+	bool vsCOM() {
+		return taijin == 1;
+	}
 };
 
-Game game;
 
+Game game;
 
 //一時記憶に用いる変数
 int mindex[2];
@@ -396,6 +407,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	////critic.setLayer(Q6, 10);
 
 
+	int vict = 0;	// 勝敗格納用の一時変数
+
+
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		game.key.update();
@@ -408,7 +422,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if (game.mouse.button[0] == 1) {
 					game.mouse.set();
 					game.flg = 0;
-					taijin = 0;
+					game.taijin = 0;
 					for (int i = 0; i < 3; ++i) {
 						tama[i].initialize();
 					}
@@ -426,11 +440,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			tama[0].sound = 0;
 		}
 
-
 		//マウス操作か否かを判定する
 		if (game.mouse.isUsed()) {
 			game.keyboardFlg = 0;
 		}
+
 
 		//OPアニメーション ClickToStartまで
 		if (game.flg == -3){
@@ -509,7 +523,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			//タイトル画面その１
-			if (taijin == 0) {
+			if (game.vsHuman()) {
 				DrawFormatString(TEXT1_X, TEXT1_Y, game.option.strColor, "ぼっちで");
 				DrawFormatString(TEXT2_X, TEXT2_Y, game.option.strColor, "隣の人と");
 				if ((!game.keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
@@ -517,8 +531,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "ぼっちで");
 					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
 						game.mode = "ぼっちで";
-						//InitializeGame();
-						taijin = 1;
+						game.taijin = 1;
 					}
 				}
 				else if ((!game.keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
@@ -557,7 +570,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				game.toggleAutoLearning();
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
-			else if (taijin == 1) {
+			else if (game.vsCOM()) {
 				DrawFormatString(TEXT1_X, TEXT1_Y, game.option.strColor, "先攻");
 				DrawFormatString(TEXT2_X, TEXT2_Y, game.option.strColor, "後攻");
 				if ((!game.keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
@@ -567,7 +580,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
-						teban = 0;
+						game.teban = 0;
 					}
 				}
 				else if ((!game.keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
@@ -577,7 +590,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
-						teban = 1;
+						game.teban = 1;
 					}
 				}
 			}
@@ -614,7 +627,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					}
 					for (int k = 0; k < 3; ++k) {
 						for (int l = 0; l < 3; ++l) {
-							if (taijin == 0 || (taijin == 1 && game.cnt % 2 == teban)) {
+							if (game.isPlayTurn()) {
 								if (!game.keyboardFlg && game.mouse.onButton(160 + 100 * i + 33 * k, 80 + 100 * j + 33 * l,
 									160 + 100 * i + 33 * (k + 1), 80 + 100 * j + 33 * (l + 1))) {
 									corGx = i; corGy = j;
@@ -622,7 +635,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 									if (game.mouse.clickRight()) {
 										rwd_tmp = game.update(i, j, k, l);
 										if (rwd_tmp > -10.0) {
-											if (taijin == 1) {
+											if (game.vsCOM()) {
 												COMWait = waitOnCOM;
 										//		reward2 = -rwd_tmp;
 											}
@@ -651,7 +664,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//DrawFormatString(0, 100, StringColor, "m1: %d", meshNum);
 
 			//ゲーム内操作
-			if (taijin == 0 || (taijin == 1 && game.cnt % 2 == teban)) {
+			if (game.isPlayTurn()) {
 				if (game.key.onUp()) {
 					corLy--;
 					if (corLy < 0) {
@@ -702,7 +715,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if (game.keyboardFlg && game.key.onCheck()) {
 					rwd_tmp = game.update(corGx, corGy, corLx, corLy);
 					if (rwd_tmp > -10.0) {
-						if (taijin == 1) {
+						if (game.vsCOM()) {
 					//		reward2 = -rwd_tmp;
 						}
 					}
@@ -712,7 +725,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				160 + 100 * corGx + 33 * (corLx + 1), 80 + 100 * corGy + 33 * (corLy + 1), Black, FALSE);
 
 			//COMの手番
-			if ((taijin == 1  && game.cnt % 2 != teban) || taijin == 2) {
+			if (!game.isPlayTurn()) {
 				//input = StateToInput(lay_size[0], 1 - 2 * (game.cnt % 2));
 				//output = critic.predict(input);
 				//max_val = output.maxCoeff(&max_id);
@@ -738,10 +751,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//		temp_o[trainCnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
 				//		temp_o[trainCnt](comHistt[trainCnt]) = rwd_tmp;
 				//		if (trainCnt >= 1) {
-				//			if (taijin == 1) {
+				//			if (game.vsCOM()) {
 				//				temp_o[trainCnt - 1](comHistt[trainCnt - 1]) += gamma * max_val + reward2;
 				//			}
-				//			else if (taijin == 2) {
+				//			else if (game.taijin == 2) {
 				//				temp_o[trainCnt - 1](comHistt[trainCnt - 1]) -= rwd_tmp;
 				//				if (trainCnt >= 2) {
 				//					temp_o[trainCnt - 2](comHistt[trainCnt - 2]) += gamma * max_val;
@@ -749,7 +762,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//			}
 				//		}
 				//		trainCnt++;
-				//		if (taijin == 2) COMWait = waitOnCOM;
+				//		if (game.taijin == 2) COMWait = waitOnCOM;
 				//		break;
 				//	}
 				//}
@@ -769,7 +782,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 			//動作の取り消し
 			if (game.key.onBack()) {
-				if (game.hist.canCancel() && taijin == 0) {
+				if (game.hist.canCancel() && game.vsHuman()) {
 					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
 					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
 					game.mother.update(game.hist.last[0], game.hist.last[1], game.child[game.hist.last[0]][game.hist.last[1]].victory());
@@ -832,14 +845,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				game.flg = 2;
 				game.key.initWait();
 				//学習
-				/*if (taijin == 1) {
+				/*if (game.vsCOM()) {
 					if (vict == teban * 2 - 1) {
 						temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
 					}else {
 						temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = -RWD_VICT;
 					}
 				}
-				else if (taijin == 2) {
+				else if (game.taijin == 2) {
 					temp_o[trainCnt - 2](comHistt[trainCnt - 2]) = -RWD_VICT;
 					temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
 				}
@@ -849,7 +862,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					train_i.block(i, 0, 1, lay_size[0]) = temp_i[i].transpose();
 					train_o.block(i, 0, 1, lay_size[lay_len]) = temp_o[i].transpose();
 				}
-				if(taijin == 1 || taijin == 2) critic.backprop(train_i, train_o);*/
+				if(!game.vsHuma()) critic.backprop(train_i, train_o);*/
 			}
 
 			// 永遠に勝敗がつかない場合の処理
@@ -859,7 +872,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			game.toggleHighSpeedLearning();
 
 			// 対戦スキップ（一人用デバッグ）
-			if (taijin == 1) {
+			if (game.vsCOM()) {
 				game.skipBattle(Scenflg);
 			}
 
@@ -953,7 +966,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				}
 			}
 
-			if (taijin == 2) {
+			if (game.taijin == 2) {
 				game.initialize();
 				initializeTrain();
 			}
@@ -1360,7 +1373,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//		if (Key[KEY_INPUT_A] == 1) {
 		//			game.mouse.set();
 		//			game.flg = 0;
-		//			taijin = 0;
+		//			game.taijin = 0;
 		//			for (int i = 0; i < 3; ++i) tama[i].initialize();
 		//		}
 		//
