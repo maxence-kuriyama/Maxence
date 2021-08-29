@@ -267,26 +267,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
+		// 入力情報を取得
 		game.key.update();
 		game.mouse.update();
 
-		// game.flg > 0 でリセットボタンを表示する
-		if (game.flg > 0) {
-			if (game.mouse.onButton(game.logo.titleX, game.logo.titleY - 5, game.logo.titleX + 185, game.logo.titleY + 65)) {
-				DrawBox(game.logo.titleX, game.logo.titleY - 5, game.logo.titleX + 185, game.logo.titleY + 65, GetColor(20, 150, 150), TRUE);
-				if (game.mouse.button[0] == 1) {
-					game.mouse.set();
-					game.flg = 0;
-					game.taijin = 0;
-					for (int i = 0; i < 3; ++i) {
-						tama[i].initialize();
-					}
-					StopMusic();
-				}
+		// リセットボタンを表示する
+		if (game.reset() == 1) {
+			for (int i = 0; i < 3; ++i) {
+				tama[i].initialize();
 			}
 		}
+		game.drawLogo();
 
-
+		// 設定を切り替える
 		game.toggleByKey();
 		if (game.option.soundFlg == 1) {
 			tama[0].sound = 1;
@@ -1379,13 +1372,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 		}
 
-		// game.flg > 0でタイトルロゴを表示する
-		if (game.flg > 0) {
-			game.logo.draw();
-			if (game.flg == 1) {
-				game.logo.update();
-			}
-		}
 
 		// 同期処理
 		game.sync();

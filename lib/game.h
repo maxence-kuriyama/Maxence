@@ -138,6 +138,37 @@ public:
 
 
 	/*===========================*/
+	//    リセットボタン
+	/*===========================*/
+	void drawLogo() {
+		if (flg > 0) {
+			if (mouse.onButton(logo.titleX, logo.titleY - 5, logo.titleX + 185, logo.titleY + 65)) {
+				DrawBox(logo.titleX, logo.titleY - 5, logo.titleX + 185, logo.titleY + 65, GetColor(20, 150, 150), TRUE);
+			}
+			logo.draw();
+			if (flg == 1) {
+				logo.update();
+			}
+		}
+	}
+
+	int reset() {
+		if (flg > 0) {
+			if (mouse.onButton(logo.titleX, logo.titleY - 5, logo.titleX + 185, logo.titleY + 65)) {
+				if (mouse.button[0] == 1) {
+					mouse.set();
+					flg = 0;
+					taijin = 0;
+					StopMusic();
+					return 1;
+				}
+			}
+		}
+		return 0;
+	}
+
+
+	/*===========================*/
 	//    キーボード入力関連
 	/*===========================*/
 	void toggleByKey() {
