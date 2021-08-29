@@ -23,11 +23,11 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-int GetTexts(string *text, const char* filename);
 int MultiByteLength(const char* String);
 //VectorXd StateToInput(int dim, int side);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
+
 
 
 Game game;
@@ -55,14 +55,6 @@ int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 //ゲームの演出に用いる変数
 double logoX = 0.0;
 int windowFlg = 1;
-string text[450]; 
-int txtMax = 450;
-char txt_name[30] = "data/sayings.txt";
-int numTxt = 0; 
-int txtX = rnd() % 200; 
-int txtY = rnd() % 400;
-int txtId = 0; int txtCnt = 0;			//テキストのインデックスとテキスト差し替えのカウンタ
-int txtSeq = 0;							//テキストの連番がいくつ継続したかのカウンタ
 //char SEname[8][20] = { "sound/se_amb01.wav" ,"sound/se_amb02.wav" ,"sound/se_amb03.wav" ,
 		//"sound/se_amb04.wav" ,"sound/se_amb05.wav" ,"sound/se_amb06.wav" ,"sound/se_amb07.wav" ,"sound/se_amb08.wav" };
 int max_id = 0;
@@ -103,6 +95,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
+	game.comment.font = Font0;
 
 	// 画像読み込み
 	int MLogo = LoadGraph("graph/M.png");
@@ -166,7 +159,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	VECTOR CentK = VGet(150.0, 200.0, 0.0);
 	double theta = 0.3;
-	numTxt = GetTexts(text, txt_name);
+	game.comment.initialize();
 
 	//時間関連
 	long current = clock();
@@ -284,7 +277,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		game.key.update();
 		game.mouse.update();
 
-		//game.flg > 0 でリセットボタンを表示する
+		// game.flg > 0 でリセットボタンを表示する
 		if (game.flg > 0) {
 			if (game.mouse.onButton(game.logo.titleX, game.logo.titleY - 5, game.logo.titleX + 185, game.logo.titleY + 65)) {
 				DrawBox(game.logo.titleX, game.logo.titleY - 5, game.logo.titleX + 185, game.logo.titleY + 65, GetColor(20, 150, 150), TRUE);
@@ -309,13 +302,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			tama[0].sound = 0;
 		}
 
-		//マウス操作か否かを判定する
+		// マウス操作か否かを判定する
 		if (game.mouse.isUsed()) {
 			game.keyboardFlg = 0;
 		}
 
 
-		//OPアニメーション ClickToStartまで
+		// OPアニメーション ClickToStartまで
 		if (game.flg == -3){
 			SetBackgroundColor(0, 0, 0);	//背景色
 			if (logoX <= 120.0 ) {
@@ -343,7 +336,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				logoX = M_PI_2;
 			}
 		}
-		//OPアニメーション ClickToStart点滅
+		// OPアニメーション ClickToStart点滅
 		else if (game.flg == -2) {
 			DrawExtendGraph(170, 170, 258, 260, MLogo, TRUE);
 			DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
@@ -359,7 +352,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				SetDrawBright(255, 255, 255);
 			}
 		}
-		//OPアニメーション メインロゴ
+		// OPアニメーション メインロゴ
 		else if (game.flg == -1) {
 			if (logoX <= 37.5) {
 				DrawExtendGraph(160, 170, 490, 260, Logo0, TRUE);
@@ -384,7 +377,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				game.flg = 0;
 			}
 		}
-		//タイトル画面
+		// タイトル画面
 		else if (game.flg == 0) {
 			for (int i = 0; i < 3; ++i) {
 				tama[i].draw();
@@ -464,7 +457,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				}
 			}
 		}
-		//Game Loop
+		// Game Loop
 		else if (game.flg == 1) {
 			//描画
 			//MV1DrawModel(ModelHandle);
@@ -473,7 +466,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				DrawBox(160 + 100 * game.hist.last[0] + 33 * game.hist.last[2], 80 + 100 * game.hist.last[1] + 33 * game.hist.last[3],
 					160 + 100 * game.hist.last[0] + 33 * (game.hist.last[2] + 1), 80 + 100 * game.hist.last[1] + 33 * (game.hist.last[3] + 1), GetColor(255, 160, 160), TRUE);
 			}
-			//操作の処理
+			// 操作の処理
 			for (int i = 0; i < 3; ++i) {
 				for (int j = 0; j < 3; ++j) {
 					if (game.mother.state[i][j] == 1) {
@@ -532,7 +525,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			//DrawFormatString(0, 100, StringColor, "m1: %d", meshNum);
 
-			//ゲーム内操作
+			// ゲーム内操作
 			if (game.isPlayTurn()) {
 				if (game.key.onUp()) {
 					corLy--;
@@ -593,7 +586,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawBox(160 + 100 * corGx + 33 * corLx, 80 + 100 * corGy + 33 * corLy,
 				160 + 100 * corGx + 33 * (corLx + 1), 80 + 100 * corGy + 33 * (corLy + 1), Black, FALSE);
 
-			//COMの手番
+			// COMの手番
 			if (!game.isPlayTurn()) {
 				//input = StateToInput(lay_size[0], 1 - 2 * (game.cnt % 2));
 				//output = critic.predict(input);
@@ -637,7 +630,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//}
 			}
 
-			//カメラ操作
+			// カメラ操作
 			if (game.mouse.click()) {
 				game.mouse.set();
 			}
@@ -649,7 +642,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			SetCameraPositionAndTarget_UpVecY(game.camera.pos, Origin);
 			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
-			//動作の取り消し
+			// 動作の取り消し
 			if (game.key.onBack()) {
 				if (game.hist.canCancel() && game.vsHuman()) {
 					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
@@ -673,13 +666,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				}
 			}
 
-			//テキストの描画
+			// メッセージの描画
 			DrawFormatString(470, 80, game.option.strColor, "右クリック:");
 			DrawFormatString(540, 100, game.option.strColor, "石を置く");
 			DrawFormatString(470, 124, game.option.strColor, "zキー（BkSpキー）:");
 			DrawFormatString(540, 144, game.option.strColor, "一手戻る");
 			if (game.option.commentFlg) {
-				DrawObtainsString2(txtX + 20, txtY + 10, 560, GetFontSize(), text[txtId].c_str(), game.option.strColor, Font0, GetColor(250, 250, 150));
+				game.comment.draw(game.option.strColor);
 			}
 			if (game.debugFlg) {
 				DrawFormatString(620, 0, game.option.strColor, "%d", waitOnCOM);
@@ -688,25 +681,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				DrawFormatString(540, 0, Green, "annealed!");
 			}
 
-			//カットインアニメーション
+			// カットインアニメーション
 			game.cutin.update();
 
 			// テキストの差し替え
-			if (txtCnt > 200) {
-				//ある程度連番が続くように設定
-				if (txtId < numTxt && (rnd() % 10000) / 10000.0 < pow(0.95,pow(2.0,txtSeq))) {
-					txtId++;
-					txtSeq++;
-				}
-				else {
-					txtId = rnd() % numTxt;
-					txtSeq = 0;
-				}
-				txtCnt = 0;
-				txtX = rnd() % 200;
-				txtY = rnd() % 400;
-			}
-			txtCnt++;
+			game.comment.update();
 
 			// 勝利判定
 			vict = game.mother.victory();
@@ -746,7 +725,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 
 		}
-		//勝敗表示
+		// 勝敗表示
 		else if (game.flg == 2) {
 			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
 			if (game.hist.canCancel()) {
@@ -840,7 +819,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				initializeTrain();
 			}
 		}
-		//Ending
+		// Ending
 		else if (game.flg == -4) {
 			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
 			for (int i = 0; i < 3; ++i) {
@@ -1253,7 +1232,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//	}
 		//}
 
-		//シナリオ
+		// シナリオ
 		else if (game.flg == -6) {
 			if (Soloflg == 0) {
 				DrawExtendGraph(0 + eqx, -50, 640 + eqx, 380, Room, FALSE);
@@ -1413,7 +1392,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 		}
 
-		//game.flg > 0でタイトルロゴを表示する
+		// game.flg > 0でタイトルロゴを表示する
 		if (game.flg > 0) {
 			game.logo.draw();
 			if (game.flg == 1) {
@@ -1421,7 +1400,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 		}
 
-		//同期処理
+		// 同期処理
 		fps_cnt++;
 		if (clock() - fps_start > 1000.0) {
 			cur_fps = fps_cnt;
@@ -1445,30 +1424,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	DxLib_End();
 
 	return 0;
-}
-
-
-// テキストファイルの読み込み
-int GetTexts(string* text, const char* filename) {
-	ifstream read(filename);
-	string str;
-	int length = 30;
-	int maxSize = txtMax;
-	double tmp = 0.0;
-	int k = 0;
-
-	if (!read) {
-		cout << "テキストファイルの読み込み失敗" << endl;
-	}
-	else {
-		while (k < maxSize) {
-			getline(read, str);
-			text[k] = str;
-			k++;
-		}
-	}
-	read.close();
-	return k;
 }
 
 

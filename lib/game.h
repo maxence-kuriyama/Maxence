@@ -5,6 +5,7 @@
 #include "lib/basic.h"
 #include "lib/anime.h"
 #include "lib/keyboard.h"
+#include "lib/comment.h"
 
 
 //int trainCnt = 0;
@@ -41,6 +42,7 @@ public:
 	Key key;
 	Logo logo;
 	Anime cutin;
+	Comment comment;
 
 	void initialize(int f = 1) {
 		flg = f;
