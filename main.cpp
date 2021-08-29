@@ -44,6 +44,8 @@ void initializeTrain() {
 
 
 int taijin = 0;			// 0: vsHuman, 1: vsCOM, 2: AutoLearning
+int teban = 0;							// 0:senko, 1:koko
+int vict = 0;
 
 class Game {
 public:
@@ -54,6 +56,7 @@ public:
 	// -6: Story
 	// 5: High-speed Learning
 	int debugFlg = 0;
+	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
 	Option option;
 	Field mother;
 	Field child[3][3];
@@ -160,9 +163,6 @@ VECTOR tmp;
 //ゲームの処理に用いる変数
 int Soloflg = 0;						// シナリオ管理用フラグ
 int Scenflg = 0;						// シナリオ管理用フラグ
-int teban = 0;							// 0:senko, 1:koko
-int vict = 0;
-int keyboardFlg = 0;					// 0:マウス操作, 1:キーボード操作
 int corGx = 1;
 int corGy = 1;
 int corLx = 1;
@@ -174,8 +174,6 @@ int COMLy = 1;							//COMの選ぶ座標
 int selectMode = 0;
 int COMWait = 0;
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
-int prex = 0; 
-int prey = 0;				//マウス操作か否かを判定するための変数
 //ゲームの演出に用いる変数
 double logoX = 0.0;
 int windowFlg = 1;
@@ -240,9 +238,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int Card = LoadGraph("graph/card.bmp");
 	int Cutin1 = LoadGraph("graph/cutin1.png");
 	int Cutin10 = LoadGraph("graph/cutin10.png");
+	GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
 	game.cutin.image0 = Cutin1;
 	game.cutin.image1 = Cutin10;
-	GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
@@ -301,7 +299,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int scen_char_cnt = 0;
 	int scen_txt_cnt = 0;
 	int scen_txt_len = 0;
-	int eqx = 0; int eqy = 0;
+	int eqx = 0; 
+	int eqy = 0;
 	int visible[5] = { 1,1,1,1,0 };
 	string scen_txt[40];
 	int scen_who[40];
@@ -429,11 +428,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 		//マウス操作か否かを判定する
-		if (game.mouse.x != prex || game.mouse.y != prey) {
-			keyboardFlg = 0;
+		if (game.mouse.isUsed()) {
+			game.keyboardFlg = 0;
 		}
-		prex = game.mouse.x;
-		prey = game.mouse.y;
 
 		//OPアニメーション ClickToStartまで
 		if (game.flg == -3){
@@ -458,7 +455,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			logoX += 2.0;
 
-			if (logoX > 480.0 || game.mouse.button[0] == 1 || game.key.onReturn()) {
+			if (logoX > 480.0 || game.mouse.click() || game.key.onReturn()) {
 				game.flg = -2;
 				logoX = M_PI_2;
 			}
@@ -473,7 +470,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawExtendGraph(200, 290, 460, 360, ClickToStart, TRUE);
 			SetDrawBright(255, 255, 255);
 
-			if (game.mouse.button[0] == 1 || game.key.onReturn()) {
+			if (game.mouse.click() || game.key.onReturn()) {
 				game.flg = -1;
 				SetBackgroundColor(0, 128, 128);	//背景色
 				SetDrawBright(255, 255, 255);
@@ -500,7 +497,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 485 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			}
 			if(logoX < 1000.0) logoX += 1.0;
-			if (logoX > 120 || game.mouse.button[0] == 1 || game.key.onReturn()) {
+			if (logoX > 120 || game.mouse.click() || game.key.onReturn()) {
 				game.flg = 0;
 			}
 		}
@@ -515,19 +512,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (taijin == 0) {
 				DrawFormatString(TEXT1_X, TEXT1_Y, game.option.strColor, "ぼっちで");
 				DrawFormatString(TEXT2_X, TEXT2_Y, game.option.strColor, "隣の人と");
-				if ((!keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
-					|| (keyboardFlg && selectMode == 0)) {
+				if ((!game.keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
+					|| (game.keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "ぼっちで");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
+					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
 						game.mode = "ぼっちで";
 						//InitializeGame();
 						taijin = 1;
 					}
 				}
-				else if ((!keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
-					|| (keyboardFlg && selectMode == 1)) {
+				else if ((!game.keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
+					|| (game.keyboardFlg && selectMode == 1)) {
 					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "隣の人と");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
+					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
 						game.mode = "隣の人と";
 						////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
 						//PlayMovieToGraph(MovieGraphHandle);
@@ -549,11 +546,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				}
 				if (game.key.onLeft()) {
 					selectMode = ((selectMode - 1) + 2) % 2;
-					keyboardFlg = 1;
 				}
 				if (game.key.onRight()) {
 					selectMode = (selectMode + 1) % 2;
-					keyboardFlg = 1;
+				}
+				if (game.key.isUsed()) {
+					game.keyboardFlg = 1;
 				}
 				//オートモード
 				game.toggleAutoLearning();
@@ -562,20 +560,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			else if (taijin == 1) {
 				DrawFormatString(TEXT1_X, TEXT1_Y, game.option.strColor, "先攻");
 				DrawFormatString(TEXT2_X, TEXT2_Y, game.option.strColor, "後攻");
-				if ((!keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
-					|| (keyboardFlg && selectMode == 0)) {
+				if ((!game.keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
+					|| (game.keyboardFlg && selectMode == 0)) {
 					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "先攻");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
+					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
 						teban = 0;
 					}
 				}
-				else if ((!keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
-					|| (keyboardFlg && selectMode == 1)) {
+				else if ((!game.keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
+					|| (game.keyboardFlg && selectMode == 1)) {
 					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "後攻");
-					if ((!keyboardFlg && game.mouse.button[0] == 1) || (keyboardFlg && game.key.onReturn())) {
+					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
 						SetBackgroundColor(0, 0, 0);
 						SetBackgroundColor(0, 128, 128);
 						game.flg = -6;
@@ -617,11 +615,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					for (int k = 0; k < 3; ++k) {
 						for (int l = 0; l < 3; ++l) {
 							if (taijin == 0 || (taijin == 1 && game.cnt % 2 == teban)) {
-								if (!keyboardFlg && game.mouse.onButton(160 + 100 * i + 33 * k, 80 + 100 * j + 33 * l,
+								if (!game.keyboardFlg && game.mouse.onButton(160 + 100 * i + 33 * k, 80 + 100 * j + 33 * l,
 									160 + 100 * i + 33 * (k + 1), 80 + 100 * j + 33 * (l + 1))) {
 									corGx = i; corGy = j;
 									corLx = k; corLy = l;
-									if (game.mouse.button[1] == 1) {
+									if (game.mouse.clickRight()) {
 										rwd_tmp = game.update(i, j, k, l);
 										if (rwd_tmp > -10.0) {
 											if (taijin == 1) {
@@ -664,7 +662,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLy = 0;
 						}
 					}
-					keyboardFlg = 1;
 				}
 				if (game.key.onDown()) {
 					corLy++;
@@ -676,7 +673,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLy = 2;
 						}
 					}
-					keyboardFlg = 1;
 				}
 				if (game.key.onLeft()) {
 					corLx--;
@@ -688,7 +684,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLx = 0;
 						}
 					}
-					keyboardFlg = 1;
 				}
 				if (game.key.onRight()) {
 					corLx++;
@@ -700,9 +695,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLx = 2;
 						}
 					}
-					keyboardFlg = 1;
 				}
-				if (keyboardFlg && game.key.onCheck()) {
+				if (game.key.isUsed()) {
+					game.keyboardFlg = 1;
+				}
+				if (game.keyboardFlg && game.key.onCheck()) {
 					rwd_tmp = game.update(corGx, corGy, corLx, corLy);
 					if (rwd_tmp > -10.0) {
 						if (taijin == 1) {
@@ -759,12 +756,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 
 			//カメラ操作
-			if (game.mouse.button[0] == 1) {
+			if (game.mouse.click()) {
 				game.mouse.set();
 			}
 			tmp = VNorm(VSub(game.camera.pos, Origin));
-			if (game.mouse.button[0] > 1) {
-				theta -= (game.mouse.x - game.mouse.setx) * 0.05;
+			if (game.mouse.onClick()) {
+				theta -= (game.mouse.distDragX()) * 0.05;
 				game.mouse.set();
 			}
 			SetCameraPositionAndTarget_UpVecY(game.camera.pos, Origin);
@@ -911,12 +908,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//if (BkFlg) DrawGraph(versionX, versionY, BkGraphHandle, TRUE);
 
 			//カメラ操作
-			if (game.mouse.button[0] == 1) {
+			if (game.mouse.click()) {
 				game.mouse.set();
 			}
 			tmp = VNorm(VSub(game.camera.pos, Origin));
-			if (game.mouse.button[0] > 1) {
-				game.camera.move(game.mouse.x - game.mouse.setx, game.mouse.y - game.mouse.sety, Origin);
+			if (game.mouse.onClick()) {
+				game.camera.move(game.mouse.distDragX(), game.mouse.distDragY(), Origin);
 				game.mouse.set();
 			}
 			game.camera.pos.x -= tmp.x * game.mouse.wheel * 5.0;
@@ -950,7 +947,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DrawFormatString(20 + 24, 20 + 24, game.option.strColor, "もう一回");
 			if (game.mouse.onButton(20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || game.key.onReturn()) {
 				DrawFormatString(20 + 24, 20 + 24, Red, "もう一回");
-				if (game.mouse.button[0] == 1 || game.key.onReturn()) {
+				if (game.mouse.click() || game.key.onReturn()) {
 					game.initialize();
 					initializeTrain();
 				}
@@ -1361,7 +1358,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//		}
 		//
 		//		if (Key[KEY_INPUT_A] == 1) {
-		//			setx = game.mouse.x; sety = game.mouse.y;
+		//			game.mouse.set();
 		//			game.flg = 0;
 		//			taijin = 0;
 		//			for (int i = 0; i < 3; ++i) tama[i].initialize();
@@ -1407,7 +1404,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					//鹿が現れる
 					DrawGraph(480, 120, stripe[11], TRUE);
 					DrawGraph(270, 200, stripe[14], TRUE);
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
 					}
 					break;
@@ -1415,7 +1412,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					//カードを見つける、青消える
 					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
 					if (fps_cnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						if (scen_char_cnt < scen_txt_len) { scen_char_cnt = scen_txt_len; }
 						else {
 							visible[1] = 0;
@@ -1426,7 +1423,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				case 4:
 					//地震
 					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0); 
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						eqx = 0;
 						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
 					}
@@ -1441,14 +1438,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				case 8:
 					//赤が死ぬ
 					visible[2] = 0; 
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						Scenflg++;
 					}
 					break;
 				case 9:
 					//地震
 					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						eqx = 0;
 						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
 					}
@@ -1463,14 +1460,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				case 13:
 					//緑が死ぬ
 					visible[3] = 0; 
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						Scenflg++; 
 					}
 					break;
 				case 14:
 					//地震
 					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						eqx = 0;
 						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
 					}
@@ -1478,7 +1475,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				case 15:
 					//青が出てくる
 					visible[1] = 1;
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						Scenflg++; ;
 					}
 					break;
@@ -1492,14 +1489,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				case 19:
 					//青が死ぬ
 					visible[1] = 0;
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						Scenflg++; 
 					}
 					break;
 				case 20:
 					//地震
 					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						eqx = 0;
 						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
 					}
@@ -1514,7 +1511,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				default:
 					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
 					if (fps_cnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
-					if (game.mouse.button[0] == 1) {
+					if (game.mouse.click()) {
 						if (scen_char_cnt < scen_txt_len) { scen_char_cnt = scen_txt_len; }
 						else { 
 							if (scen_txt_cnt == 0 || scen_txt_cnt == 3 || scen_txt_cnt == 5 || scen_txt_cnt == 8 
@@ -1551,6 +1548,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		if (game.debugFlg) {
 			DrawFormatString(5, 5, game.option.strColor, "fps:%d", cur_fps);
+			DrawFormatString(5, 25, game.option.strColor, "keyboardFlg:%d", game.keyboardFlg);
 		}
 		if (COMWait > 0) COMWait--;
 		while (clock() - start < 1000.0 / 30.0 && game.flg != 5) {

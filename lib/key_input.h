@@ -18,8 +18,9 @@ class Key {
 public:
 	int state[256];
 	int debugFlg = 0;
-	int waitConst = 5;		// ゲーム中のキー入力ウェイト
-	int waitCnt = 20;		// キー入力ウェイトのカウンタ
+	int waitConst = 3;		// ゲーム中のキー入力ウェイト
+	int waitCnt = 3;		// キー入力ウェイトのカウンタ
+	int use = 0;
 
 	void setWait(int wait) {
 		waitConst = wait;
@@ -49,6 +50,7 @@ public:
 	bool onReturn() {
 		if (waitCnt <= 0 && state[KEY_INPUT_RETURN] == 1) {
 			initWait();
+			use++;
 			return true;
 		}
 		return false;
@@ -62,6 +64,7 @@ public:
 	bool onCheck() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_RETURN] == 1 || state[KEY_INPUT_SPACE] == 1)) {
 			initWait();
+			use++;
 			return true;
 		}
 		return false;
@@ -69,6 +72,7 @@ public:
 	bool onUp() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_UP]== 1 || state[KEY_INPUT_W] == 1)) {
 			initWait();
+			use++;
 			return true;
 		}
 		return false;
@@ -76,6 +80,7 @@ public:
 	bool onDown() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_DOWN] == 1 || state[KEY_INPUT_S] == 1)) {
 			initWait();
+			use++;
 			return true;
 		}
 		return false;
@@ -83,6 +88,7 @@ public:
 	bool onLeft() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_LEFT] == 1 || state[KEY_INPUT_A] == 1)) {
 			initWait();
+			use++;
 			return true;
 		}
 		return false;
@@ -90,6 +96,15 @@ public:
 	bool onRight() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_RIGHT] == 1 || state[KEY_INPUT_D] == 1)) {
 			initWait();
+			use++;
+			return true;
+		}
+		return false;
+	}
+
+	bool isUsed() {
+		if (use > 0) {
+			use = 0;
 			return true;
 		}
 		return false;
