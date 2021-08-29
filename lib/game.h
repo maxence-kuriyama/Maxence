@@ -121,7 +121,7 @@ public:
 
 
 	/*===========================*/
-	//    bool
+	//    Bool
 	/*===========================*/
 	bool isPlayTurn() {
 		// 対人戦、あるいは人vsCOMの人の手番
@@ -178,8 +178,33 @@ public:
 	void debugDump() {
 		if (debugFlg) {
 			int strColor = option.strColor;
-			DrawFormatString(5, 5, strColor, "fps:%d", fps);
-			DrawFormatString(5, 25, strColor, "keyboardFlg:%d", keyboardFlg);
+			// Game
+			DrawFormatString(5, 25, strColor, "fps: %d", fps);
+			DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
+			DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
+			DrawFormatString(5, 85, strColor, "teban: %d", teban);
+			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
+			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
+			// Option
+			DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
+			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
+			DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
+			DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
+			// Hist
+			DrawFormatString(125, 145, strColor, "cancelCnt: %d", hist.cancelCnt);
+			DrawFormatString(125, 165, strColor, "last[0]: %d", hist.last[0]);
+			DrawFormatString(125, 185, strColor, "last[1]: %d", hist.last[1]);
+			DrawFormatString(125, 205, strColor, "last[2]: %d", hist.last[2]);
+			DrawFormatString(125, 225, strColor, "last[3]: %d", hist.last[3]);
+			DrawFormatString(125, 245, strColor, "last[4]: %d", hist.last[4]);
+			// Comment
+			DrawFormatString(245, 25, strColor, "texts.maxSize: %d", comment.texts.maxSize);
+			DrawFormatString(245, 45, strColor, "texts.size: %d", comment.texts.size);
+			DrawFormatString(245, 65, strColor, "comment.x: %d", comment.x);
+			DrawFormatString(245, 85, strColor, "comment.y: %d", comment.y);
+			DrawFormatString(245, 105, strColor, "textId: %d", comment.textId);
+			DrawFormatString(245, 125, strColor, "textSeq: %d", comment.textSeq);
+			DrawFormatString(245, 145, strColor, "comment.cnt: %d", comment.cnt);
 		}
 	}
 };
