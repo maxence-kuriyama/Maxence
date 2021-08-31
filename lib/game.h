@@ -39,6 +39,12 @@ public:
 	int fps = 0;			// fps出力用
 	int fpsCnt = 0;			// fps計測用
 
+	// 盤面上の操作関連
+	int globalX = 1;
+	int globalY = 1;
+	int localX = 1;
+	int localY = 1;			//キーボード操作時の座標
+
 	// 定数
 	int bkColorBase = GetColor(255, 255, 245);
 	int frColorBase = GetColor(0, 0, 0);
@@ -47,6 +53,7 @@ public:
 	int bkColorStateLose = GetColor(70, 70, 130);
 	int bkColorStateDraw = GetColor(70, 130, 70);
 	int frColorNextField = GetColor(255, 0, 0);
+	int frColorCurrentCoord = GetColor(0, 0, 0);
 
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 	string mode = "";
@@ -87,31 +94,6 @@ public:
 		mouse.set();
 		key.initWait();
 		menu.set(lonely, vsHuman);
-	}
-
-	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
-		if (side == 0) {
-			side = 1 - 2 * (cnt % 2);
-		}
-		//盤面の更新
-		if (nextField == 3 * global_x + global_y || nextField == -1) {
-			if (child[global_x][global_y].update(local_x, local_y, side) == 0) {
-				cnt++;
-				//履歴を残す
-				hist.add(global_x, global_y, local_x, local_y, nextField);
-				//全体の更新
-				mother.update(global_x, global_y, child[global_x][global_y].victory());
-				if (child[local_x][local_y].victory() != 0) {
-					nextField = -1;
-					return RWD_DOM;
-				}
-				else {
-					nextField = local_x * 3 + local_y;
-					return RWD_PUT;
-				}
-			}
-		}
-		return -100.0;
 	}
 
 	void sync() {
@@ -253,7 +235,7 @@ public:
 		}
 	}
 
-	void drawFieldState() {
+	void drawGlobalState() {
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
 				int upLeftX = 160 + 100 * i + 1;
@@ -294,6 +276,140 @@ public:
 				}
 			}
 		}
+	}
+
+	void drawLocalState() {
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				child[i][j].draw(176.5 + 100 * i, 96.5 + 100 * j, 33);
+			}
+		}
+	}
+
+	void drawCurrentCoord() {
+		int upLeftX = 160 + 100 * globalX + 33 * localX;
+		int upLeftY = 80 + 100 * globalY + 33 * localY;
+		int lowRightX = 160 + 100 * globalX + 33 * (localX + 1);
+		int lowRightY = 80 + 100 * globalY + 33 * (localY + 1);
+		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
+	}
+
+	void getMouseCoord() {
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				for (int k = 0; k < 3; ++k) {
+					for (int l = 0; l < 3; ++l) {
+						int upLeftX = 160 + 100 * i + 33 * k;
+						int upLeftY = 80 + 100 * j + 33 * l;
+						int lowRightX = 160 + 100 * i + 33 * (k + 1);
+						int lowRightY = 80 + 100 * j + 33 * (l + 1);
+						if (mouse.onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
+							globalX = i;
+							globalY = j;
+							localX = k;
+							localY = l;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void moveCoordByKey() {
+		if (key.onUp()) {
+			localY--;
+			if (localY < 0) {
+				if (globalY > 0) {
+					globalY--;
+					localY += 3;
+				}
+				else {
+					localY = 0;
+				}
+			}
+		}
+		if (key.onDown()) {
+			localY++;
+			if (localY > 2) {
+				if (globalY < 2) {
+					globalY++;
+					localY -= 3;
+				}
+				else {
+					localY = 2;
+				}
+			}
+		}
+		if (key.onLeft()) {
+			localX--;
+			if (localX < 0) {
+				if (globalX > 0) {
+					globalX--;
+					localX += 3;
+				}
+				else {
+					localX = 0;
+				}
+			}
+		}
+		if (key.onRight()) {
+			localX++;
+			if (localX > 2) {
+				if (globalX < 2) {
+					globalX++;
+					localX -= 3;
+				}
+				else {
+					localX = 2;
+				}
+			}
+		}
+	}
+
+	bool playTurn() {
+		moveCoordByKey();
+		if (keyboardFlg) {
+			if (key.onCheck()) {
+				return true;
+			}
+		}
+		else {
+			getMouseCoord();
+			if (mouse.clickRight()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	double update(int side = 0) {
+		return update(globalX, globalY, localX, localY, side);
+	}
+
+	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
+		// sideが指定されていなければ、cntから計算する
+		if (side == 0) {
+			side = 1 - 2 * (cnt % 2);
+		}
+		//盤面の更新
+		if (nextField == 3 * global_x + global_y || nextField == -1) {
+			if (child[global_x][global_y].update(local_x, local_y, side) == 0) {
+				cnt++;
+				//履歴を残す
+				hist.add(global_x, global_y, local_x, local_y, nextField);
+				//全体の更新
+				mother.update(global_x, global_y, child[global_x][global_y].victory());
+				if (child[local_x][local_y].victory() != 0) {
+					nextField = -1;
+					return RWD_DOM;
+				}
+				else {
+					nextField = local_x * 3 + local_y;
+					return RWD_PUT;
+				}
+			}
+		}
+		return -100.0;
 	}
 
 

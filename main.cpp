@@ -30,10 +30,6 @@ int MultiByteLength(const char* String);
 
 Game game;
 
-int corGx = 1;
-int corGy = 1;
-int corLx = 1;
-int corLy = 1;							//キーボード操作時の座標
 int COMGx = 1;
 int COMGy = 1;
 int COMLx = 1;
@@ -421,111 +417,49 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		// Game Loop
 		else if (game.flg == 1) {
-			//描画
+			// 盤面の描画
 			//MV1DrawModel(ModelHandle);
 			game.drawBase();
 			game.drawHistLast();
-			game.drawFieldState();
+			game.drawGlobalState();
 			game.drawNextField();
+			// プレイヤーの操作
+			if (game.isPlayTurn() && game.playTurn()) {
+				rwd_tmp = game.update();
+				if (rwd_tmp > -10.0) {
+					if (game.isVsCOM()) {
+						COMWait = waitOnCOM;
+						// reward2 = -rwd_tmp;
+					}
+				}
+			}
+			game.drawLocalState();
+			game.drawCurrentCoord();
 
-			// 操作の処理
-			for (int i = 0; i < 3; ++i) {
-				for (int j = 0; j < 3; ++j) {
-					for (int k = 0; k < 3; ++k) {
-						for (int l = 0; l < 3; ++l) {
-							if (game.isPlayTurn()) {
-								if (!game.keyboardFlg && game.mouse.onButton(160 + 100 * i + 33 * k, 80 + 100 * j + 33 * l,
-									160 + 100 * i + 33 * (k + 1), 80 + 100 * j + 33 * (l + 1))) {
-									corGx = i; corGy = j;
-									corLx = k; corLy = l;
-									if (game.mouse.clickRight()) {
-										rwd_tmp = game.update(i, j, k, l);
-										if (rwd_tmp > -10.0) {
-											if (game.isVsCOM()) {
-												COMWait = waitOnCOM;
-										//		reward2 = -rwd_tmp;
-											}
-										}
-									}
-								}
-							}
-							if (game.option.likeliFlg >= 1) {
-								/*double col_tmp = min(max(240.0 * (output(27 * i + 9 * j + 3 * k + l) + 0.5), 0.0), 255.0);
+			// 学習機械の出力描画
+			if (game.option.likeliFlg >= 1) {
+				for (int i = 0; i < 3; ++i) {
+					for (int j = 0; j < 3; ++j) {
+						for (int k = 0; k < 3; ++k) {
+							for (int l = 0; l < 3; ++l) {
+								/*
+								double col_tmp = min(max(240.0 * (output(27 * i + 9 * j + 3 * k + l) + 0.5), 0.0), 255.0);
 								DrawCircle(160 + 100 * i + 33 * k + 16, 80 + 100 * j + 33 * l + 16, 15, GetColor(255, 255, 255 - col_tmp));
 								if (game.option.likeliFlg == 2) {
-									char str_tmp[10]; 
+									char str_tmp[10];
 									sprintf_s(str_tmp, "%.4f", output(27 * i + 9 * j + 3 * k + l));
 									DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 2, str_tmp, Red, Font1);
 									if (trainCnt >= 1) {
 										sprintf_s(str_tmp, "%.4f", temp_o[trainCnt - 1](27 * i + 9 * j + 3 * k + l));
 										DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 12, str_tmp, Blue, Font1);
 									}
-								}*/
+								}
+								*/
 							}
-							game.child[i][j].draw(176.5 + 100 * i, 96.5 + 100 * j, 33);
 						}
 					}
 				}
 			}
-			//DrawFormatString(0, 100, StringColor, "m1: %d", meshNum);
-
-			// ゲーム内操作
-			if (game.isPlayTurn()) {
-				if (game.key.onUp()) {
-					corLy--;
-					if (corLy < 0) {
-						if (corGy > 0) {
-							corGy--; corLy += 3;
-						}
-						else {
-							corLy = 0;
-						}
-					}
-				}
-				if (game.key.onDown()) {
-					corLy++;
-					if (corLy > 2) {
-						if (corGy < 2) {
-							corGy++; corLy -= 3;
-						}
-						else {
-							corLy = 2;
-						}
-					}
-				}
-				if (game.key.onLeft()) {
-					corLx--;
-					if (corLx < 0) {
-						if (corGx > 0) {
-							corGx--; corLx += 3;
-						}
-						else {
-							corLx = 0;
-						}
-					}
-				}
-				if (game.key.onRight()) {
-					corLx++;
-					if (corLx > 2) {
-						if (corGx < 2) {
-							corGx++; corLx -= 3;
-						}
-						else {
-							corLx = 2;
-						}
-					}
-				}
-				if (game.keyboardFlg && game.key.onCheck()) {
-					rwd_tmp = game.update(corGx, corGy, corLx, corLy);
-					if (rwd_tmp > -10.0) {
-						if (game.isVsCOM()) {
-					//		reward2 = -rwd_tmp;
-						}
-					}
-				}
-			}
-			DrawBox(160 + 100 * corGx + 33 * corLx, 80 + 100 * corGy + 33 * corLy,
-				160 + 100 * corGx + 33 * (corLx + 1), 80 + 100 * corGy + 33 * (corLy + 1), Black, FALSE);
 
 			// COMの手番
 			if (!game.isPlayTurn()) {
