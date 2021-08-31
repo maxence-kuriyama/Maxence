@@ -51,6 +51,11 @@ public:
 	Logo logo;
 	Anime cutin;
 	Comment comment;
+	Menu menu;
+
+	Game() {
+		initialize(-3);
+	}
 
 	void initialize(int f = 1) {
 		flg = f;
@@ -125,14 +130,14 @@ public:
 	/*===========================*/
 	bool isPlayTurn() {
 		// 対人戦、あるいは人vsCOMの人の手番
-		return (vsHuman() || (vsCOM() && cnt % 2 == teban));
+		return (isVsHuman() || (isVsCOM() && cnt % 2 == teban));
 	}
 
-	bool vsHuman() {
+	bool isVsHuman() {
 		return taijin == 0;
 	}
 
-	bool vsCOM() {
+	bool isVsCOM() {
 		return taijin == 1;
 	}
 
@@ -229,13 +234,24 @@ public:
 			DrawFormatString(125, 225, strColor, "last[3]: %d", hist.last[3]);
 			DrawFormatString(125, 245, strColor, "last[4]: %d", hist.last[4]);
 			// Comment
-			DrawFormatString(245, 25, strColor, "texts.maxSize: %d", comment.texts.maxSize);
-			DrawFormatString(245, 45, strColor, "texts.size: %d", comment.texts.size);
+			DrawFormatString(245, 25, strColor, "maxSize: %d", comment.texts.maxSize);
+			DrawFormatString(245, 45, strColor, "size: %d", comment.texts.size);
 			DrawFormatString(245, 65, strColor, "comment.x: %d", comment.x);
 			DrawFormatString(245, 85, strColor, "comment.y: %d", comment.y);
 			DrawFormatString(245, 105, strColor, "textId: %d", comment.textId);
 			DrawFormatString(245, 125, strColor, "textSeq: %d", comment.textSeq);
 			DrawFormatString(245, 145, strColor, "comment.cnt: %d", comment.cnt);
+			// Menu
+			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
+			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);
+			DrawFormatString(365, 65, strColor, "btn1.upLX: %d", menu.button[0].upLeftX);
+			DrawFormatString(365, 85, strColor, "btn1.upLY: %d", menu.button[0].upLeftY);
+			DrawFormatString(365, 105, strColor, "btn1.lowRX: %d", menu.button[0].lowRightX);
+			DrawFormatString(365, 125, strColor, "btn1.lowRY: %d", menu.button[0].lowRightY);
+			DrawFormatString(365, 145, strColor, "btn2.upLX: %d", menu.button[1].upLeftX);
+			DrawFormatString(365, 165, strColor, "btn2.upLY: %d", menu.button[1].upLeftY);
+			DrawFormatString(365, 185, strColor, "btn2.lowRX: %d", menu.button[1].lowRightX);
+			DrawFormatString(365, 205, strColor, "btn2.lowRY: %d", menu.button[1].lowRightY);
 		}
 	}
 };

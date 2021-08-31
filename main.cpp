@@ -264,6 +264,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	int vict = 0;	// 勝敗格納用の一時変数
 
+	Button lonely(TEXT1_X, TEXT1_Y, "ぼっちで");
+	Button vsHuman(TEXT2_X, TEXT2_Y, "隣の人と");
+	game.menu.set(lonely, vsHuman);
+
 
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
@@ -292,6 +296,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (game.mouse.isUsed()) {
 			game.keyboardFlg = 0;
 		}
+
 
 
 		// OPアニメーション ClickToStartまで
@@ -371,54 +376,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			//タイトル画面その１
-			if (game.vsHuman()) {
-				DrawFormatString(TEXT1_X, TEXT1_Y, game.option.strColor, "ぼっちで");
-				DrawFormatString(TEXT2_X, TEXT2_Y, game.option.strColor, "隣の人と");
-				if ((!game.keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
-					|| (game.keyboardFlg && selectMode == 0)) {
-					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "ぼっちで");
-					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
-						game.mode = "ぼっちで";
-						game.taijin = 1;
-					}
+			if (game.isVsHuman()) {
+				int choice = game.menu.choose(game.keyboardFlg, game.mouse, game.key, game.option.strColor);
+				if (choice == 0) {
+					game.mode = "ぼっちで";
+					game.taijin = 1;
 				}
-				else if ((!game.keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
-					|| (game.keyboardFlg && selectMode == 1)) {
-					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "隣の人と");
-					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
-						game.mode = "隣の人と";
-						////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
-						//PlayMovieToGraph(MovieGraphHandle);
-						//SetBackgroundColor(0, 0, 0);
-						//while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() 
-						//	&& GetMovieStateToGraph(MovieGraphHandle)){
-						//	UpdateKey(Key);
-						//	if (Key[KEY_INPUT_W] == 1) {
-						//		//PauseMovieToGraph(MovieGraphHandle);
-						//		break;
-						//	}
-						//	//DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
-						//	WaitTimer(10);
-						//}
-						SetBackgroundColor(0, 128, 128);
-						game.initialize();
-						initializeTrain();
-					}
+				else if (choice == 1) {
+					game.mode = "隣の人と";
+					////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
+					//PlayMovieToGraph(MovieGraphHandle);
+					//SetBackgroundColor(0, 0, 0);
+					//while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() 
+					//	&& GetMovieStateToGraph(MovieGraphHandle)){
+					//	UpdateKey(Key);
+					//	if (Key[KEY_INPUT_W] == 1) {
+					//		//PauseMovieToGraph(MovieGraphHandle);
+					//		break;
+					//	}
+					//	//DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
+					//	WaitTimer(10);
+					//}
+					game.initialize();
+					initializeTrain();
 				}
-				if (game.key.onLeft()) {
-					selectMode = ((selectMode - 1) + 2) % 2;
-				}
-				if (game.key.onRight()) {
-					selectMode = (selectMode + 1) % 2;
-				}
+
 				if (game.key.isUsed()) {
 					game.keyboardFlg = 1;
 				}
+
 				//オートモード
 				game.toggleAutoLearning();
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
-			else if (game.vsCOM()) {
+			else if (game.isVsCOM()) {
 				DrawFormatString(TEXT1_X, TEXT1_Y, game.option.strColor, "先攻");
 				DrawFormatString(TEXT2_X, TEXT2_Y, game.option.strColor, "後攻");
 				if ((!game.keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
@@ -483,7 +474,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 									if (game.mouse.clickRight()) {
 										rwd_tmp = game.update(i, j, k, l);
 										if (rwd_tmp > -10.0) {
-											if (game.vsCOM()) {
+											if (game.isVsCOM()) {
 												COMWait = waitOnCOM;
 										//		reward2 = -rwd_tmp;
 											}
@@ -563,7 +554,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if (game.keyboardFlg && game.key.onCheck()) {
 					rwd_tmp = game.update(corGx, corGy, corLx, corLy);
 					if (rwd_tmp > -10.0) {
-						if (game.vsCOM()) {
+						if (game.isVsCOM()) {
 					//		reward2 = -rwd_tmp;
 						}
 					}
@@ -629,7 +620,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 			// 動作の取り消し
 			if (game.key.onBack()) {
-				if (game.hist.canCancel() && game.vsHuman()) {
+				if (game.hist.canCancel() && game.isVsHuman()) {
 					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
 					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
 					game.mother.update(game.hist.last[0], game.hist.last[1], game.child[game.hist.last[0]][game.hist.last[1]].victory());
@@ -702,7 +693,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			game.toggleHighSpeedLearning();
 
 			// 対戦スキップ（一人用デバッグ）
-			if (game.vsCOM()) {
+			if (game.isVsCOM()) {
 				game.skipBattle(Scenflg);
 			}
 
