@@ -128,7 +128,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//int MovieGraphHandle = LoadGraph("movie/battle.ogv");
 
 	// 3DÉÇÉfÉãä÷åW
-	/*
+	
 	int ModelHandle = MV1LoadModel("movie/max0.mv1");
 	float totalTime, playTime = 0.0;
 	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
@@ -138,7 +138,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
 	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
 	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
-	*/
+	
 
 	srand((unsigned)time(NULL));
 	fireflower tama[FIRE_FLOWER_NUM]; tama[0].sound = 1;
@@ -418,7 +418,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		// Game Loop
 		else if (game.flg == 1) {
 			// î’ñ ÇÃï`âÊ
-			//MV1DrawModel(ModelHandle);
+			MV1DrawModel(ModelHandle);
 			game.drawBase();
 			game.drawHistLast();
 			game.drawGlobalState();
@@ -510,34 +510,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (game.mouse.click()) {
 				game.mouse.set();
 			}
-			else if (game.mouse.onClick()) {
+			if (game.mouse.onClick()) {
 				theta -= (game.mouse.distDragX()) * 0.05;
 				game.mouse.set();
 			}
-			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
+			MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			// ìÆçÏÇÃéÊÇËè¡Çµ
-			if (game.key.onBack()) {
-				if (game.hist.canCancel() && game.isVsHuman()) {
-					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
-					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
-					game.mother.update(game.hist.last[0], game.hist.last[1], game.child[game.hist.last[0]][game.hist.last[1]].victory());
-					game.nextField = game.hist.last[4];
-					game.hist.goBack();
-					game.cnt--;
-					/*for (int i = 0; i < 3; ++i) {
-						for (int j = 0; j < 3; ++j) {
-							for (int k = 0; k < 3; ++k) {
-								for (int l = 0; l < 3; ++l) {
-									input(27 * i + 9 * j + 3 * k + l) = game.child[i][j].state[k][l];
+			if (game.key.onBack() && game.goBackHist()) {
+				/*
+				for (int i = 0; i < 3; ++i) {
+					for (int j = 0; j < 3; ++j) {
+						for (int k = 0; k < 3; ++k) {
+							for (int l = 0; l < 3; ++l) {
+								input(27 * i + 9 * j + 3 * k + l) = game.child[i][j].state[k][l];
 
-								}
 							}
 						}
 					}
-					output = critic.predict(input);*/
-					COMWait = waitOnCOM;
 				}
+				output = critic.predict(input);
+				*/
+				COMWait = waitOnCOM;
 			}
 
 			// ÉÅÉbÉZÅ[ÉWÇÃï`âÊ
@@ -1272,7 +1266,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	InitGraph();
 	//DeleteGraph(MovieGraphHandle); 
-	//MV1DeleteModel(ModelHandle);
+	MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
 	return 0;

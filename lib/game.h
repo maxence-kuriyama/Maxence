@@ -96,6 +96,7 @@ public:
 		menu.set(lonely, vsHuman);
 	}
 
+	// ìØä˙èàóù
 	void sync() {
 		// é¿å¯fpsåvë™
 		fpsCnt++;
@@ -111,7 +112,7 @@ public:
 		start = clock();
 	}
 
-	//âiâìÇ…èüîsÇ™Ç¬Ç©Ç»Ç¢èÍçáÇÃèàóù
+	// âiâìÇ…èüîsÇ™Ç¬Ç©Ç»Ç¢èÍçáÇÃèàóù
 	void stopDrawGame() {
 		if (drawCnt > 10000) {
 			flg = 2;
@@ -294,6 +295,10 @@ public:
 		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
 	}
 
+
+	/*===========================*/
+	//    î’ñ çXêVä÷òA
+	/*===========================*/
 	void getMouseCoord() {
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -410,6 +415,19 @@ public:
 			}
 		}
 		return -100.0;
+	}
+
+	bool goBackHist() {
+		if (hist.canCancel() && isVsHuman()) {
+			child[hist.last[0]][hist.last[1]].state[hist.last[2]][hist.last[3]] = 0;
+			mother.state[hist.last[0]][hist.last[1]] = 0;
+			mother.update(hist.last[0], hist.last[1], child[hist.last[0]][hist.last[1]].victory());
+			nextField = hist.last[4];
+			hist.goBack();
+			cnt--;
+			return true;
+		}
+		return false;
 	}
 
 
