@@ -264,10 +264,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	int vict = 0;	// 勝敗格納用の一時変数
 
-	Button lonely(TEXT1_X, TEXT1_Y, "ぼっちで");
-	Button vsHuman(TEXT2_X, TEXT2_Y, "隣の人と");
-	game.menu.set(lonely, vsHuman);
-
+	Button senko(TEXT1_X, TEXT1_Y, "先攻");
+	Button koko(TEXT2_X, TEXT2_Y, "後攻");
 
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
@@ -381,6 +379,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if (choice == 0) {
 					game.mode = "ぼっちで";
 					game.taijin = 1;
+					game.menu.set(senko, koko);
 				}
 				else if (choice == 1) {
 					game.mode = "隣の人と";

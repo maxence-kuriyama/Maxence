@@ -1,6 +1,7 @@
 #pragma once
 
 #include <time.h>
+#include "lib/const.h"
 #include "lib/field.h"
 #include "lib/hist.h"
 #include "lib/basic.h"
@@ -51,9 +52,13 @@ public:
 	Logo logo;
 	Anime cutin;
 	Comment comment;
+	Button lonely;
+	Button vsHuman;
 	Menu menu;
 
 	Game() {
+		lonely.initialize(TEXT1_X, TEXT1_Y, "‚Ú‚Á‚¿‚Å");
+		vsHuman.initialize(TEXT2_X, TEXT2_Y, "—×‚Ìl‚Æ");
 		initialize(-3);
 	}
 
@@ -72,6 +77,7 @@ public:
 		hist.initialize();
 		mouse.set();
 		key.initWait();
+		menu.set(lonely, vsHuman);
 	}
 
 	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
