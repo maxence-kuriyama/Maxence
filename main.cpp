@@ -267,6 +267,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Button senko(TEXT1_X, TEXT1_Y, "先攻");
 	Button koko(TEXT2_X, TEXT2_Y, "後攻");
 
+
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		// 入力情報を取得
@@ -294,7 +295,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (game.mouse.isUsed()) {
 			game.keyboardFlg = 0;
 		}
-
+		if (game.key.isUsed()) {
+			game.keyboardFlg = 1;
+		}
 
 
 		// OPアニメーション ClickToStartまで
@@ -382,7 +385,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					game.menu.set(senko, koko);
 				}
 				else if (choice == 1) {
-					game.mode = "隣の人と";
 					////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
 					//PlayMovieToGraph(MovieGraphHandle);
 					//SetBackgroundColor(0, 0, 0);
@@ -396,12 +398,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					//	//DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
 					//	WaitTimer(10);
 					//}
+					game.mode = "隣の人と";
 					game.initialize();
 					initializeTrain();
-				}
-
-				if (game.key.isUsed()) {
-					game.keyboardFlg = 1;
 				}
 
 				//オートモード
@@ -409,27 +408,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
 			else if (game.isVsCOM()) {
-				DrawFormatString(TEXT1_X, TEXT1_Y, game.option.strColor, "先攻");
-				DrawFormatString(TEXT2_X, TEXT2_Y, game.option.strColor, "後攻");
-				if ((!game.keyboardFlg && game.mouse.onButton(TEXT1_X - 16, TEXT1_Y - 16, TEXT1_X + 80, TEXT1_Y + 24))
-					|| (game.keyboardFlg && selectMode == 0)) {
-					DrawFormatString(TEXT1_X, TEXT1_Y, Red, "先攻");
-					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
-						SetBackgroundColor(0, 0, 0);
-						SetBackgroundColor(0, 128, 128);
-						game.flg = -6;
-						game.teban = 0;
-					}
+				int choice = game.menu.choose(game.keyboardFlg, game.mouse, game.key, game.option.strColor);
+				if (choice == 0) {
+					game.flg = -6;
+					game.teban = 0;
 				}
-				else if ((!game.keyboardFlg && game.mouse.onButton(TEXT2_X - 16, TEXT2_Y - 16, TEXT2_X + 80, TEXT2_Y + 24))
-					|| (game.keyboardFlg && selectMode == 1)) {
-					DrawFormatString(TEXT2_X, TEXT2_Y, Red, "後攻");
-					if ((!game.keyboardFlg && game.mouse.click()) || (game.keyboardFlg && game.key.onReturn())) {
-						SetBackgroundColor(0, 0, 0);
-						SetBackgroundColor(0, 128, 128);
-						game.flg = -6;
-						game.teban = 1;
-					}
+				else if (choice == 1) {
+					game.flg = -6;
+					game.teban = 1;
 				}
 			}
 		}
@@ -546,9 +532,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							corLx = 2;
 						}
 					}
-				}
-				if (game.key.isUsed()) {
-					game.keyboardFlg = 1;
 				}
 				if (game.keyboardFlg && game.key.onCheck()) {
 					rwd_tmp = game.update(corGx, corGy, corLx, corLy);

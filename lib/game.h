@@ -242,8 +242,8 @@ public:
 			// Comment
 			DrawFormatString(245, 25, strColor, "maxSize: %d", comment.texts.maxSize);
 			DrawFormatString(245, 45, strColor, "size: %d", comment.texts.size);
-			DrawFormatString(245, 65, strColor, "comment.x: %d", comment.x);
-			DrawFormatString(245, 85, strColor, "comment.y: %d", comment.y);
+			DrawFormatString(245, 65, strColor, "commentX: %d", comment.x);
+			DrawFormatString(245, 85, strColor, "commentY: %d", comment.y);
 			DrawFormatString(245, 105, strColor, "textId: %d", comment.textId);
 			DrawFormatString(245, 125, strColor, "textSeq: %d", comment.textSeq);
 			DrawFormatString(245, 145, strColor, "comment.cnt: %d", comment.cnt);
