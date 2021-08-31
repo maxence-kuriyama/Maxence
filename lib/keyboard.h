@@ -57,12 +57,7 @@ public:
 	}
 
 	bool onReturn() {
-		if (waitCnt <= 0 && state[KEY_INPUT_RETURN] == 1) {
-			initWait();
-			use++;
-			return true;
-		}
-		return false;
+		return (state[KEY_INPUT_RETURN] == 1 || state[KEY_INPUT_SPACE] == 1);
 	}
 
 	bool onBack() {
