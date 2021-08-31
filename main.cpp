@@ -145,7 +145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	*/
 
 	srand((unsigned)time(NULL));
-	fireflower tama[3]; tama[0].sound = 1;
+	fireflower tama[FIRE_FLOWER_NUM]; tama[0].sound = 1;
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			game.child[i][j].stone1 = stone1;
@@ -276,7 +276,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 		// リセットボタンを表示する
 		if (game.reset() == 1) {
-			for (int i = 0; i < 3; ++i) {
+			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].initialize();
 			}
 		}
@@ -371,14 +371,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		// タイトル画面
 		else if (game.flg == 0) {
-			for (int i = 0; i < 3; ++i) {
+			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].draw();
 				tama[i].tick();
 			}
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			//タイトル画面その１
 			if (game.isVsHuman()) {
-				int choice = game.menu.choose(game.keyboardFlg, game.mouse, game.key, game.option.strColor);
+				int choice = game.menuChoose();
 				if (choice == 0) {
 					game.mode = "ぼっちで";
 					game.taijin = 1;
@@ -408,7 +408,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
 			else if (game.isVsCOM()) {
-				int choice = game.menu.choose(game.keyboardFlg, game.mouse, game.key, game.option.strColor);
+				int choice = game.menuChoose();
 				if (choice == 0) {
 					game.flg = -6;
 					game.teban = 0;

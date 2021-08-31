@@ -180,6 +180,14 @@ public:
 
 
 	/*===========================*/
+	//    メニュー画面
+	/*===========================*/
+	int menuChoose() {
+		return menu.choose(keyboardFlg, mouse, key, option.strColor);
+	}
+
+
+	/*===========================*/
 	//    キーボード入力関連
 	/*===========================*/
 	void toggleByKey() {
