@@ -436,6 +436,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			game.drawLocalState();
 			game.drawCurrentCoord();
 
+			// メッセージの描画
+			game.drawBattleMessage();
+			/*
+			if (anl_flg) {
+				DrawFormatString(540, 0, Green, "annealed!");
+			}
+			*/
+
 			// 学習機械の出力描画
 			if (game.option.likeliFlg >= 1) {
 				for (int i = 0; i < 3; ++i) {
@@ -505,52 +513,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//}
 			}
 
-			// カメラ操作
-			game.camera.set();
-			if (game.mouse.click()) {
-				game.mouse.set();
-			}
-			if (game.mouse.onClick()) {
-				theta -= (game.mouse.distDragX()) * 0.05;
-				game.mouse.set();
-			}
-			MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
-
-			// 動作の取り消し
-			if (game.key.onBack() && game.goBackHist()) {
-				/*
-				for (int i = 0; i < 3; ++i) {
-					for (int j = 0; j < 3; ++j) {
-						for (int k = 0; k < 3; ++k) {
-							for (int l = 0; l < 3; ++l) {
-								input(27 * i + 9 * j + 3 * k + l) = game.child[i][j].state[k][l];
-
-							}
-						}
-					}
-				}
-				output = critic.predict(input);
-				*/
-				COMWait = waitOnCOM;
-			}
-
-			// メッセージの描画
-			DrawFormatString(470, 80, game.option.strColor, "右クリック:");
-			DrawFormatString(540, 100, game.option.strColor, "石を置く");
-			DrawFormatString(470, 124, game.option.strColor, "zキー（BkSpキー）:");
-			DrawFormatString(540, 144, game.option.strColor, "一手戻る");
-			if (game.option.commentFlg) {
-				game.comment.draw(game.option.strColor);
-			}
-			if (anl_flg) {
-				DrawFormatString(540, 0, Green, "annealed!");
-			}
+			// コメントの描画
+			game.drawComment();
 
 			// カットインアニメーション
 			game.cutin.update();
-
-			// テキストの差し替え
-			game.comment.update();
 
 			// 勝利判定
 			vict = game.mother.victory();
@@ -578,16 +545,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if(!game.vsHuma()) critic.backprop(train_i, train_o);*/
 			}
 
+			// 動作の取り消し
+			if (game.key.onBack() && game.goBackHist()) {
+				/*
+				for (int i = 0; i < 3; ++i) {
+					for (int j = 0; j < 3; ++j) {
+						for (int k = 0; k < 3; ++k) {
+							for (int l = 0; l < 3; ++l) {
+								input(27 * i + 9 * j + 3 * k + l) = game.child[i][j].state[k][l];
+							}
+						}
+					}
+				}
+				output = critic.predict(input);
+				*/
+				COMWait = waitOnCOM;
+			}
+
+			// カメラ操作
+			game.camera.set();
+			if (game.mouse.click()) {
+				game.mouse.set();
+			}
+			if (game.mouse.onClick()) {
+				theta -= (game.mouse.distDragX()) * 0.05;
+				game.mouse.set();
+			}
+			MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
+
 			// 永遠に勝敗がつかない場合の処理
 			game.stopDrawGame();
 
-			// 高速学習モード
+			// 高速学習モードへの切り替え
 			game.toggleHighSpeedLearning();
 
 			// 対戦スキップ（一人用デバッグ）
-			if (game.isVsCOM()) {
-				game.skipBattle(Scenflg);
-			}
+			game.skipBattle(Scenflg);
 
 		}
 		// 勝敗表示

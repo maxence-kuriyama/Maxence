@@ -54,6 +54,7 @@ public:
 	int bkColorStateDraw = GetColor(70, 130, 70);
 	int frColorNextField = GetColor(255, 0, 0);
 	int frColorCurrentCoord = GetColor(0, 0, 0);
+	int strColorDebug = GetColor(0, 0, 255);
 
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 	string mode = "";
@@ -208,7 +209,7 @@ public:
 	}
 
 	void skipBattle(int& sceneFlg) {
-		if (debugFlg) {
+		if (debugFlg && isVsCOM()) {
 			key.skipBattle(flg, sceneFlg);
 		}
 	}
@@ -293,6 +294,22 @@ public:
 		int lowRightX = 160 + 100 * globalX + 33 * (localX + 1);
 		int lowRightY = 80 + 100 * globalY + 33 * (localY + 1);
 		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
+	}
+
+	void drawBattleMessage() {
+		DrawFormatString(470, 80, option.strColor, "右クリック:");
+		DrawFormatString(540, 100, option.strColor, "石を置く");
+		DrawFormatString(470, 124, option.strColor, "zキー（BkSpキー）:");
+		DrawFormatString(540, 144, option.strColor, "一手戻る");
+	}
+
+	void drawComment() {
+		// コメント描画
+		if (option.commentFlg) {
+			comment.draw(option.strColor);
+		}
+		// コメント差し替え
+		comment.update();
 	}
 
 
@@ -436,7 +453,7 @@ public:
 	/*===========================*/
 	void debugDump() {
 		if (debugFlg) {
-			int strColor = option.strColor;
+			int strColor = strColorDebug;
 			// Game
 			DrawFormatString(5, 25, strColor, "fps: %d", fps);
 			DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
@@ -459,11 +476,11 @@ public:
 			// Comment
 			DrawFormatString(245, 25, strColor, "maxSize: %d", comment.texts.maxSize);
 			DrawFormatString(245, 45, strColor, "size: %d", comment.texts.size);
-			DrawFormatString(245, 65, strColor, "commentX: %d", comment.x);
-			DrawFormatString(245, 85, strColor, "commentY: %d", comment.y);
+			DrawFormatString(245, 65, strColor, "comX: %d", comment.x);
+			DrawFormatString(245, 85, strColor, "comY: %d", comment.y);
 			DrawFormatString(245, 105, strColor, "textId: %d", comment.textId);
 			DrawFormatString(245, 125, strColor, "textSeq: %d", comment.textSeq);
-			DrawFormatString(245, 145, strColor, "comment.cnt: %d", comment.cnt);
+			DrawFormatString(245, 145, strColor, "comCnt: %d", comment.cnt);
 			// Menu
 			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
 			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);
