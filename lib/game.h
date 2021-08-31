@@ -291,8 +291,8 @@ public:
 	void drawCurrentCoord() {
 		int upLeftX = 160 + 100 * globalX + 33 * localX;
 		int upLeftY = 80 + 100 * globalY + 33 * localY;
-		int lowRightX = 160 + 100 * globalX + 33 * (localX + 1);
-		int lowRightY = 80 + 100 * globalY + 33 * (localY + 1);
+		int lowRightX = 160 + 100 * globalX + 33 * (localX + 1) + 1;
+		int lowRightY = 80 + 100 * globalY + 33 * (localY + 1) + 1;
 		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
 	}
 
@@ -341,49 +341,29 @@ public:
 		if (key.onUp()) {
 			localY--;
 			if (localY < 0) {
-				if (globalY > 0) {
-					globalY--;
-					localY += 3;
-				}
-				else {
-					localY = 0;
-				}
+				globalY = (globalY - 1 + 3) % 3;
+				localY += 3;
 			}
 		}
 		if (key.onDown()) {
 			localY++;
-			if (localY > 2) {
-				if (globalY < 2) {
-					globalY++;
-					localY -= 3;
-				}
-				else {
-					localY = 2;
-				}
+			if (localY >= 3) {
+				globalY = (globalY + 1) % 3;
+				localY -= 3;
 			}
 		}
 		if (key.onLeft()) {
 			localX--;
 			if (localX < 0) {
-				if (globalX > 0) {
-					globalX--;
-					localX += 3;
-				}
-				else {
-					localX = 0;
-				}
+				globalX = (globalX - 1 + 3) % 3;
+				localX += 3;
 			}
 		}
 		if (key.onRight()) {
 			localX++;
 			if (localX > 2) {
-				if (globalX < 2) {
-					globalX++;
-					localX -= 3;
-				}
-				else {
-					localX = 2;
-				}
+				globalX = (globalX + 1) % 3;
+				localX -= 3;
 			}
 		}
 	}

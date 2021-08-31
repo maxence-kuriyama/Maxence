@@ -420,8 +420,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			// ”Õ–Ê‚Ì•`‰æ
 			MV1DrawModel(ModelHandle);
 			game.drawBase();
-			game.drawHistLast();
 			game.drawGlobalState();
+			game.drawHistLast();
 			game.drawNextField();
 			// ƒvƒŒƒCƒ„[‚Ì‘€ì
 			if (game.isPlayTurn() && game.playTurn()) {
