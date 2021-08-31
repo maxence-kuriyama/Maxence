@@ -423,32 +423,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		else if (game.flg == 1) {
 			//ï`âÊ
 			//MV1DrawModel(ModelHandle);
-			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
-			if (game.hist.canCancel()) {
-				DrawBox(160 + 100 * game.hist.last[0] + 33 * game.hist.last[2], 80 + 100 * game.hist.last[1] + 33 * game.hist.last[3],
-					160 + 100 * game.hist.last[0] + 33 * (game.hist.last[2] + 1), 80 + 100 * game.hist.last[1] + 33 * (game.hist.last[3] + 1), GetColor(255, 160, 160), TRUE);
-			}
+			game.drawBase();
+			game.drawHistLast();
+			game.drawFieldState();
+			game.drawNextField();
+
 			// ëÄçÏÇÃèàóù
 			for (int i = 0; i < 3; ++i) {
 				for (int j = 0; j < 3; ++j) {
-					if (game.mother.state[i][j] == 1) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(130, 70, 70), TRUE);
-					}
-					else if (game.mother.state[i][j] == -1) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(70, 70, 130), TRUE);
-					}
-					else if (game.mother.state[i][j] != 0) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(70, 130, 70), TRUE);
-					}
-					DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Black, FALSE);
-					if (game.nextField == 3 * i + j) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Red, FALSE);
-						DrawBox(160 + 100 * i + 1, 80 + 100 * j + 1, 160 + 100 * (i + 1) - 1, 80 + 100 * (j + 1) - 1, Red, FALSE);
-						DrawBox(160 + 100 * i + 2, 80 + 100 * j + 2, 160 + 100 * (i + 1) - 2, 80 + 100 * (j + 1) - 2, Red, FALSE);
-					}
-					else if (game.nextField == -1 && game.child[i][j].victory() == 0) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Red, FALSE);
-					}
 					for (int k = 0; k < 3; ++k) {
 						for (int l = 0; l < 3; ++l) {
 							if (game.isPlayTurn()) {
