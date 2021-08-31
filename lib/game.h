@@ -46,15 +46,20 @@ public:
 	int localY = 1;			//キーボード操作時の座標
 
 	// 定数
+	int Green = GetColor(0, 255, 0);
+	int Red = GetColor(255, 0, 0);
+	int Blue = GetColor(0, 0, 255);
+	int White = GetColor(255, 255, 255);
+	int Black = GetColor(0, 0, 0);
 	int bkColorBase = GetColor(255, 255, 245);
-	int frColorBase = GetColor(0, 0, 0);
+	int frColorBase = Black;
 	int bkColorLastHist = GetColor(255, 160, 160);
 	int bkColorStateWin = GetColor(130, 70, 70);
 	int bkColorStateLose = GetColor(70, 70, 130);
 	int bkColorStateDraw = GetColor(70, 130, 70);
-	int frColorNextField = GetColor(255, 0, 0);
-	int frColorCurrentCoord = GetColor(0, 0, 0);
-	int strColorDebug = GetColor(0, 0, 255);
+	int frColorNextField = Red;
+	int frColorCurrentCoord = Black;
+	int strColorDebug = Blue;
 
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 	string mode = "";
@@ -310,6 +315,19 @@ public:
 		}
 		// コメント差し替え
 		comment.update();
+	}
+
+	void drawWinner(int vict) {
+		if (vict == 1) {
+			DrawFormatString(20, 20, Red, "Player1");
+		}
+		else if (vict == -1) {
+			DrawFormatString(20, 20, Black, "Player2");
+		}
+		else {
+			DrawFormatString(20, 20, Green, "No one");
+		}
+		DrawFormatString(20 + 96, 20, Green, "Won");
 	}
 
 

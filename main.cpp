@@ -128,7 +128,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//int MovieGraphHandle = LoadGraph("movie/battle.ogv");
 
 	// 3DÉÇÉfÉãä÷åW
-	
+	/*
 	int ModelHandle = MV1LoadModel("movie/max0.mv1");
 	float totalTime, playTime = 0.0;
 	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
@@ -138,7 +138,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
 	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
 	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
-	
+	*/
 
 	srand((unsigned)time(NULL));
 	fireflower tama[FIRE_FLOWER_NUM]; tama[0].sound = 1;
@@ -262,6 +262,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Button senko(TEXT1_X, TEXT1_Y, "êÊçU");
 	Button koko(TEXT2_X, TEXT2_Y, "å„çU");
+	Button again(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "Ç‡Ç§àÍâÒ");
 
 
 	//ÉÅÉCÉìÉãÅ[Év
@@ -418,7 +419,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		// Game Loop
 		else if (game.flg == 1) {
 			// î’ñ ÇÃï`âÊ
-			MV1DrawModel(ModelHandle);
+			//MV1DrawModel(ModelHandle);
 			game.drawBase();
 			game.drawGlobalState();
 			game.drawHistLast();
@@ -571,7 +572,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				theta -= (game.mouse.distDragX()) * 0.05;
 				game.mouse.set();
 			}
-			MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
+			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			// âiâìÇ…èüîsÇ™Ç¬Ç©Ç»Ç¢èÍçáÇÃèàóù
 			game.stopDrawGame();
@@ -585,49 +586,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		// èüîsï\é¶
 		else if (game.flg == 2) {
+			// î’ñ ÇÃï`âÊ
 			//MV1DrawModel(ModelHandle);
-			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
-			if (game.hist.canCancel()) {
-				/*if (game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] == 1) {
-					DrawExtendGraph(176.5 + 100 * game.hist.last[0] + 33 * game.hist.last[2] - 15, 96.5 + 100 * game.hist.last[1] + 33 * game.hist.last[3] - 15,
-						176.5 + 100 * game.hist.last[0] + 33 * game.hist.last[2] + 15, 96.5 + 100 * game.hist.last[1] + 33 * game.hist.last[3] + 15, stone1_t, TRUE);
-				}
-				else if (game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] == -1) {
-					DrawExtendGraph(176.5 + 100 * game.hist.last[0] + 33 * game.hist.last[2] - 15, 96.5 + 100 * game.hist.last[1] + 33 * game.hist.last[3] - 15,
-						176.5 + 100 * game.hist.last[0] + 33 * game.hist.last[2] + 15, 96.5 + 100 * game.hist.last[1] + 33 * game.hist.last[3] + 15, stone2_t, TRUE);
-				}*/
-				DrawBox(160 + 100 * game.hist.last[0] + 33 * game.hist.last[2], 80 + 100 * game.hist.last[1] + 33 * game.hist.last[3],
-					160 + 100 * game.hist.last[0] + 33 * (game.hist.last[2] + 1), 80 + 100 * game.hist.last[1] + 33 * (game.hist.last[3] + 1), GetColor(255, 200, 200), TRUE);
-			}
-			for (int i = 0; i < 3; ++i) {
-				for (int j = 0; j < 3; ++j) {
-					if (game.mother.state[i][j] == 1) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(130, 70, 70), TRUE);
-					}
-					else if (game.mother.state[i][j] == -1) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(70, 70, 130), TRUE);
-					}
-					else if (game.mother.state[i][j] != 0) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(70, 130, 70), TRUE);
-					}
-					DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Black, FALSE);
-					if (game.nextField == 3 * i + j) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Red, FALSE);
-						DrawBox(160 + 100 * i + 1, 80 + 100 * j + 1, 160 + 100 * (i + 1) - 1, 80 + 100 * (j + 1) - 1, Red, FALSE);
-					}
-					else if (game.nextField == -1 && game.child[i][j].victory() == 0) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Red, FALSE);
-					}
-					for (int k = 0; k < 3; ++k) {
-						for (int l = 0; l < 3; ++l) {
-							game.child[i][j].draw(176.5 + 100 * i, 96.5 + 100 * j, 33);
-						}
-					}
-				}
-			}
-			//if (BkFlg) DrawGraph(versionX, versionY, BkGraphHandle, TRUE);
+			game.drawBase();
+			game.drawGlobalState();
+			game.drawHistLast();
+			game.drawNextField();
+			game.drawLocalState();
 
-			//ÉJÉÅÉâëÄçÏ
+			// ÉÅÉbÉZÅ[ÉWÇÃï`âÊ
+			game.drawWinner(vict);
+			again.display(game.mouse, game.option.strColor);
+			if (again.isClicked(game.mouse) || game.key.onReturn()){
+				game.initialize();
+				initializeTrain();
+			}
+
+			// ìÆçÏÇÃéÊÇËè¡Çµ
+			if (game.key.onBack() && game.goBackHist()) {
+				game.flg = 1;
+			}
+
+			// ÉJÉÅÉâëÄçÏ
 			if (game.mouse.click()) {
 				game.mouse.set();
 			}
@@ -637,39 +617,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 			game.camera.zoom(game.mouse.wheel);
 
-			//ìÆçÏÇÃéÊÇËè¡Çµ
-			if (game.key.onBack()) {
-				if (game.hist.canCancel()) {
-					game.child[game.hist.last[0]][game.hist.last[1]].state[game.hist.last[2]][game.hist.last[3]] = 0;
-					game.mother.state[game.hist.last[0]][game.hist.last[1]] = 0;
-					game.mother.update(game.hist.last[0], game.hist.last[1], game.child[game.hist.last[0]][game.hist.last[1]].victory());
-					game.nextField = game.hist.last[4];
-					game.hist.goBack();
-					game.cnt--;
-					game.flg = 1;
-				}
-			}
-
-			//ï∂éöÇÃï`âÊ
-			if (vict == 1) {
-				DrawFormatString(20, 20, Red, "Player 1");
-			}
-			else if (vict == -1) {
-				DrawFormatString(20, 20, Black, "Player 2");
-			}
-			else {
-				DrawFormatString(20, 20, Green, "No one");
-			}
-			DrawFormatString(20 + 96, 20, Green, "Won");
-			DrawFormatString(20 + 24, 20 + 24, game.option.strColor, "Ç‡Ç§àÍâÒ");
-			if (game.mouse.onButton(20 + 24 - 8, 20 + 24 - 8, 20 + 24 + 88, 20 + 24 + 24) || game.key.onReturn()) {
-				DrawFormatString(20 + 24, 20 + 24, Red, "Ç‡Ç§àÍâÒ");
-				if (game.mouse.click() || game.key.onReturn()) {
-					game.initialize();
-					initializeTrain();
-				}
-			}
-
+			// é©ìÆäwèKÉÇÅ[Éh
 			if (game.taijin == 2) {
 				game.initialize();
 				initializeTrain();
@@ -1259,7 +1207,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	InitGraph();
 	//DeleteGraph(MovieGraphHandle); 
-	MV1DeleteModel(ModelHandle);
+	//MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
 	return 0;
