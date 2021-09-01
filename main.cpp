@@ -34,19 +34,13 @@ int COMGy = 1;
 int COMLx = 1;
 int COMLy = 1;							//COMの選ぶ座標
 
-//一時記憶に用いる変数
-int mindex[2];
-
-int Font0, Font1, Font2, Font3, Font4;
 //ゲームの処理に用いる変数
 int Soloflg = 0;						// シナリオ管理用フラグ
 int Scenflg = 0;						// シナリオ管理用フラグ
-int selectMode = 0;
 int COMWait = 0;
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 //ゲームの演出に用いる変数
 double logoX = 0.0;
-int windowFlg = 1;
 int max_id = 0;
 double max_val = 0.0;
 
@@ -69,6 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetGlobalAmbientLight(GetColorF(1.0, 0.0, 0.0, 0.0));
 	ChangeLightTypePoint(VGet(320.0, 240.0, -300.0), 2000.0, 0.0, 0.001f, 0.0);
 	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
+	srand((unsigned)time(NULL));
 
 
 	Game game;
@@ -80,14 +75,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	unsigned int Blue = GetColor(0, 0, 255);
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
-	unsigned int col = Green;
 
 	// フォント
-	Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	Font1 = CreateFontToHandle("Times New Roman", 10, 1, -1);
-	Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
-	Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font1 = CreateFontToHandle("Times New Roman", 10, 1, -1);
+	int Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	// 画像読み込み
 	int MLogo = LoadGraph("graph/M.png");
@@ -134,7 +128,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	*/
 	double theta = 0.3;
 
-	srand((unsigned)time(NULL));
 	fireflower tama[FIRE_FLOWER_NUM];
 	tama[0].sound = 1;
 	for (int i = 0; i < 3; ++i) {
