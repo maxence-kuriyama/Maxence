@@ -2,9 +2,9 @@
 
 #include <time.h>
 #include "lib/const.h"
+#include "lib/basic.h"
 #include "lib/field.h"
 #include "lib/hist.h"
-#include "lib/basic.h"
 #include "lib/anime.h"
 #include "lib/keyboard.h"
 #include "lib/comment.h"

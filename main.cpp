@@ -15,7 +15,6 @@
 
 using namespace DxLib;
 using namespace std;
-#include "lib/const.h"
 #include "lib/fireflower.h"
 #include "lib/scenario.h"
 #include "lib/ending.h"
@@ -23,14 +22,10 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-int MultiByteLength(const char* String);
 //VectorXd StateToInput(int dim, int side);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
-
-int Soloflg = 0;						// シナリオ管理用フラグ
-int Scenflg = 0;						// シナリオ管理用フラグ
 
 int COMGx = 1;
 int COMGy = 1;
@@ -64,6 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	Game game;
+	Scenario scenario;
 
 
 	// 種々のハンドル
@@ -89,8 +85,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int Logo2 = LoadGraph("graph/Maxence_after2.png");
 	int Logo3 = LoadGraph("graph/Maxence_after3.png");
 	int Logo4 = LoadGraph("graph/Maxence_after4.png");
-	int Room = LoadGraph("graph/room.bmp");
-	int Card = LoadGraph("graph/card.bmp");
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
@@ -134,17 +128,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.child[i][j].stone2_t = stone2_t;
 		}
 	}
-
-	//シナリオ関係
-	int scen_char_cnt = 0;
-	int scen_txt_cnt = 0;
-	int scen_txt_len = 0;
-	int eqx = 0; 
-	int eqy = 0;
-	int visible[5] = { 1,1,1,1,0 };
-	string scen_txt[40];
-	int scen_who[40];
-	init_scene_text(scen_txt, scen_who);
 
 	//エンディング関係
 	int end_cnt = 0;
@@ -556,7 +539,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.toggleHighSpeedLearning();
 
 			// 対戦スキップ（一人用デバッグ）
-			game.skipBattle(Scenflg);
+			game.skipBattle(scenario.flg);
 
 		}
 		// 勝敗表示
@@ -1013,161 +996,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// シナリオ
 		else if (game.flg == -6) {
-			if (Soloflg == 0) {
-				DrawExtendGraph(0 + eqx, -50, 640 + eqx, 380, Room, FALSE);
-				if (visible[0]) DrawGraph(160 + eqx, 120, stripe[10], TRUE);
-				if (visible[1]) DrawGraph(480 + eqx, 120, stripe[11], TRUE);
-				if (visible[2]) DrawGraph(160 + eqx, 240, stripe[12], TRUE);
-				if (visible[3]) DrawGraph(480 + eqx, 240, stripe[13], TRUE);
-				if (Scenflg == 2) DrawExtendGraph(0, 0, 640, 400, Card, FALSE);
-				DrawRoundBox(15, 380, 10, 609, 89, GetColor(250, 250, 150)); 
-				DrawMessage(scen_char_cnt, 110, 390, 600, GetFontSize(), scen_txt[scen_txt_cnt].c_str(), game.option.strColor, Font0, GetColor(250, 250, 150));
-				switch (scen_who[scen_txt_cnt]) {
-				case 1:
-					DrawGraph(30, 380, stripe[10], TRUE); break;
-				case 2:
-					DrawGraph(30, 380, stripe[11], TRUE); break;
-				case 3:
-					DrawGraph(30, 380, stripe[12], TRUE); break;
-				case 4:
-					DrawGraph(30, 380, stripe[13], TRUE); break;
-				case 5:
-					DrawGraph(30, 380, stripe[14], TRUE); break;
-				}
-
-				if (CheckMusic() != 1) {
-					if (Scenflg == 0 || Scenflg == 7 || Scenflg == 12) PlayMusic("sound/bgm03.mp3", DX_PLAYTYPE_BACK);
-					if (Scenflg == 21) PlayMusic("sound/bgm07.mp3", DX_PLAYTYPE_BACK);
-				}
-				switch (Scenflg) {
-				case 1:
-					//鹿が現れる
-					DrawGraph(480, 120, stripe[11], TRUE);
-					DrawGraph(270, 200, stripe[14], TRUE);
-					if (game.mouse.click()) {
-						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
-					}
-					break;
-				case 2:
-					//カードを見つける、青消える
-					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
-					if (game.fpsCnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
-					if (game.mouse.click()) {
-						if (scen_char_cnt < scen_txt_len) { scen_char_cnt = scen_txt_len; }
-						else {
-							visible[1] = 0;
-							Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
-						}
-					}
-					break;
-				case 4:
-					//地震
-					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0); 
-					if (game.mouse.click()) {
-						eqx = 0;
-						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
-					}
-					break;
-				case 6:
-					//第一戦
-					PlayMusic("sound/bgm04.mp3", DX_PLAYTYPE_BACK);
-					scen_txt_cnt++; scen_char_cnt = 0;
-					game.initialize();
-					initializeTrain();
-					break;
-				case 8:
-					//赤が死ぬ
-					visible[2] = 0; 
-					if (game.mouse.click()) {
-						Scenflg++;
-					}
-					break;
-				case 9:
-					//地震
-					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
-					if (game.mouse.click()) {
-						eqx = 0;
-						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
-					}
-					break;
-				case 11:
-					//第二戦
-					PlayMusic("sound/bgm05.mp3", DX_PLAYTYPE_BACK);
-					scen_txt_cnt++; scen_char_cnt = 0;
-					game.initialize();
-					initializeTrain();
-					break;
-				case 13:
-					//緑が死ぬ
-					visible[3] = 0; 
-					if (game.mouse.click()) {
-						Scenflg++; 
-					}
-					break;
-				case 14:
-					//地震
-					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
-					if (game.mouse.click()) {
-						eqx = 0;
-						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
-					}
-					break;
-				case 15:
-					//青が出てくる
-					visible[1] = 1;
-					if (game.mouse.click()) {
-						Scenflg++; ;
-					}
-					break;
-				case 17:
-					//第三戦
-					PlayMusic("sound/bgm06.mp3", DX_PLAYTYPE_BACK);
-					scen_txt_cnt++; scen_char_cnt = 0;
-					game.initialize();
-					initializeTrain();
-					break;
-				case 19:
-					//青が死ぬ
-					visible[1] = 0;
-					if (game.mouse.click()) {
-						Scenflg++; 
-					}
-					break;
-				case 20:
-					//地震
-					eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
-					if (game.mouse.click()) {
-						eqx = 0;
-						Scenflg++; scen_txt_cnt++; scen_char_cnt = 0;
-					}
-					break;
-				case 22:
-					//第四戦
-					PlayMusic("sound/bgm08.mp3", DX_PLAYTYPE_BACK);
-					scen_txt_cnt++; scen_char_cnt = 0;
-					game.initialize();
-					initializeTrain();
-					break;
-				default:
-					scen_txt_len = MultiByteLength(scen_txt[scen_txt_cnt].c_str());
-					if (game.fpsCnt % 2 == 0 && scen_char_cnt < scen_txt_len) scen_char_cnt++;
-					if (game.mouse.click()) {
-						if (scen_char_cnt < scen_txt_len) { scen_char_cnt = scen_txt_len; }
-						else { 
-							if (scen_txt_cnt == 0 || scen_txt_cnt == 3 || scen_txt_cnt == 5 || scen_txt_cnt == 8 
-								|| scen_txt_cnt == 12 || scen_txt_cnt == 14 || scen_txt_cnt == 18 || scen_txt_cnt == 20 || scen_txt_cnt == 26) {
-								Scenflg++;
-							}
-							else {
-								scen_txt_cnt = min(27, scen_txt_cnt + 1);
-								scen_char_cnt = 0;
-							}
-						}
-					}
-					break;
-				}
-				DrawFormatString(5, 5, game.option.strColor, "Scenflg:%d", Scenflg);
-				//DrawFormatString(5, 25, StringColor, "char_cnt:%d", char_cnt);
+			if (scenario.display(game.mouse, game.option.strColor)) {
+				game.initialize();
+				initializeTrain();
 			}
 		}
 

@@ -1,5 +1,231 @@
 #pragma once
 
+#include "lib/basic.h"
+
+void init_scene_text(string* scen_txt, int* scen_who);
+void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
+int MultiByteLength(const char* String);
+
+class Scenario {
+public:
+	int flg = 0;	// シナリオ管理用フラグ
+	int imgRoom;
+	int imgCard;
+	int imgStripe[15];
+	int Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int charCnt = 0;	// 文字描画カウンタ (<= textLen)
+	int textCnt = 0;	// テキストカウンタ
+	int textLen = 0;	// テキスト長
+	int eqx = 0;
+	int eqy = 0;
+	int visible[5] = { 1, 1, 1, 1, 0 };
+	string text[40];
+	int who[40];
+	int cnt = 0;	// フレームカウンタ
+
+	Scenario() {
+		init_scene_text(text, who);
+		imgRoom = LoadGraph("graph/room.bmp");
+		imgCard = LoadGraph("graph/card.bmp");
+		for (int i = 1; i <= 15; ++i) {
+			string pict_name;
+			pict_name = "graph/stripe" + to_string(i) + ".png";
+			imgStripe[i - 1] = LoadGraph(pict_name.c_str());
+		}
+		initialize();
+	}
+
+	void initialize() {
+		flg = 0;
+	}
+
+	int display(Mouse& mouse, int strColor) {
+		DrawExtendGraph(0 + eqx, -50, 640 + eqx, 380, imgRoom, FALSE);
+		if (visible[0]) DrawGraph(160 + eqx, 120, imgStripe[10], TRUE);
+		if (visible[1]) DrawGraph(480 + eqx, 120, imgStripe[11], TRUE);
+		if (visible[2]) DrawGraph(160 + eqx, 240, imgStripe[12], TRUE);
+		if (visible[3]) DrawGraph(480 + eqx, 240, imgStripe[13], TRUE);
+		if (flg == 2) DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
+		DrawRoundBox(15, 380, 10, 609, 89, GetColor(250, 250, 150));
+		DrawMessage(charCnt, 110, 390, 600, GetFontSize(), text[textCnt].c_str(), strColor, Font0, GetColor(250, 250, 150));
+
+		switch (who[textCnt]) {
+		case 1:
+			DrawGraph(30, 380, imgStripe[10], TRUE);
+			break;
+		case 2:
+			DrawGraph(30, 380, imgStripe[11], TRUE);
+			break;
+		case 3:
+			DrawGraph(30, 380, imgStripe[12], TRUE);
+			break;
+		case 4:
+			DrawGraph(30, 380, imgStripe[13], TRUE);
+			break;
+		case 5:
+			DrawGraph(30, 380, imgStripe[14], TRUE);
+			break;
+		}
+
+		if (CheckMusic() != 1) {
+			if (flg == 0 || flg == 7 || flg == 12) {
+				PlayMusic("sound/bgm03.mp3", DX_PLAYTYPE_BACK);
+			}
+			if (flg == 21) {
+				PlayMusic("sound/bgm07.mp3", DX_PLAYTYPE_BACK);
+			}
+		}
+
+		cnt++;
+
+		DrawFormatString(5, 5, strColor, "flg:%d", flg);
+		//DrawFormatString(5, 25, StringColor, "char_cnt:%d", char_cnt);
+
+		switch (flg) {
+		case 1:
+			//鹿が現れる
+			DrawGraph(480, 120, imgStripe[11], TRUE);
+			DrawGraph(270, 200, imgStripe[14], TRUE);
+			if (mouse.click()) {
+				flg++;
+				textCnt++;
+				charCnt = 0;
+			}
+			break;
+		case 2:
+			//カードを見つける、青消える
+			textLen = MultiByteLength(text[textCnt].c_str());
+			if (cnt % 2 == 0 && charCnt < textLen) {
+				charCnt++;
+			}
+			if (mouse.click()) {
+				if (charCnt < textLen) {
+					charCnt = textLen;
+				}
+				else {
+					visible[1] = 0;
+					flg++;
+					textCnt++;
+					charCnt = 0;
+				}
+			}
+			break;
+		case 4:
+			//地震
+			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			if (mouse.click()) {
+				eqx = 0;
+				flg++;
+				textCnt++;
+				charCnt = 0;
+			}
+			break;
+		case 6:
+			//第一戦
+			PlayMusic("sound/bgm04.mp3", DX_PLAYTYPE_BACK);
+			textCnt++;
+			charCnt = 0;
+			return 1;
+		case 8:
+			//赤が死ぬ
+			visible[2] = 0;
+			if (mouse.click()) {
+				flg++;
+			}
+			break;
+		case 9:
+			//地震
+			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			if (mouse.click()) {
+				eqx = 0;
+				flg++;
+				textCnt++;
+				charCnt = 0;
+			}
+			break;
+		case 11:
+			//第二戦
+			PlayMusic("sound/bgm05.mp3", DX_PLAYTYPE_BACK);
+			textCnt++;
+			charCnt = 0;
+			return 1;
+		case 13:
+			//緑が死ぬ
+			visible[3] = 0;
+			if (mouse.click()) {
+				flg++;
+			}
+			break;
+		case 14:
+			//地震
+			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			if (mouse.click()) {
+				eqx = 0;
+				flg++; textCnt++; charCnt = 0;
+			}
+			break;
+		case 15:
+			//青が出てくる
+			visible[1] = 1;
+			if (mouse.click()) {
+				flg++; ;
+			}
+			break;
+		case 17:
+			//第三戦
+			PlayMusic("sound/bgm06.mp3", DX_PLAYTYPE_BACK);
+			textCnt++;
+			charCnt = 0;
+			return 1;
+		case 19:
+			//青が死ぬ
+			visible[1] = 0;
+			if (mouse.click()) {
+				flg++;
+			}
+			break;
+		case 20:
+			//地震
+			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			if (mouse.click()) {
+				eqx = 0;
+				flg++;
+				textCnt++;
+				charCnt = 0;
+			}
+			break;
+		case 22:
+			//第四戦
+			PlayMusic("sound/bgm08.mp3", DX_PLAYTYPE_BACK);
+			textCnt++;
+			charCnt = 0;
+			return 1;
+		default:
+			textLen = MultiByteLength(text[textCnt].c_str());
+			if (cnt % 2 == 0 && charCnt < textLen) {
+				charCnt++;
+			}
+			if (mouse.click()) {
+				if (charCnt < textLen) {
+					charCnt = textLen;
+				}
+				else {
+					if (textCnt == 0 || textCnt == 3 || textCnt == 5 || textCnt == 8 || textCnt == 12 || textCnt == 14 || textCnt == 18 || textCnt == 20 || textCnt == 26) {
+						flg++;
+					}
+					else {
+						textCnt = min(27, textCnt + 1);
+						charCnt = 0;
+					}
+				}
+			}
+			break;
+		}
+
+		return 0;
+	}
+};
+
 void init_scene_text(string* scen_txt, int* scen_who) {
 
 	scen_who[0] = 0;
@@ -75,4 +301,81 @@ void init_scene_text(string* scen_txt, int* scen_who) {
 	scen_who[35] = 5;
 	scen_txt[35] = "鹿: …………";
 
+}
+
+void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor) {
+	char TempStr[3];
+	int StrLen;
+	int i;
+	int DrawX;
+	int DrawY;
+	int CharLen;
+	int DrawWidth;
+	int BoxWidth;
+	int BoxHeight;
+	double rate = 1.2;	//デフォルトのフォントサイズ20に対して、今はフォントサイズ24にするため1.2倍
+	int Counter = cnt;
+
+	// 文字列全体のバイト数を取得
+	StrLen = strlen(String);
+
+	DrawX = x;
+	DrawY = y;
+	for (i = 0; i < StrLen; ) {
+		// 指定された文字数で描画をやめる
+		if (Counter <= 0) break;
+
+		if (_mbbtype((unsigned char)String[i], 0) == _MBC_LEAD) {
+			// 全角文字の場合
+			TempStr[0] = String[i];
+			TempStr[1] = String[i + 1];
+			TempStr[2] = '\0';
+			CharLen = 2;
+			Counter--;
+		}
+		else {
+			// 半角文字の場合
+			TempStr[0] = String[i];
+			TempStr[1] = '\0';
+			CharLen = 1;
+			Counter--;
+		}
+		// １文字の描画幅を取得
+		DrawWidth = GetDrawStringWidth(String + i, CharLen) * rate;
+		// 描画範囲からはみ出る場合は改行
+		if (DrawX + DrawWidth > RightX)
+		{
+			DrawX = x;
+			DrawY += AddY * rate;
+		}
+		// １文字描画
+		DrawStringToHandle(DrawX, DrawY, TempStr, StrColor, FontHandle);
+		// 描画座標をずらす
+		DrawX += DrawWidth;
+		// 描画する文字を進める
+		i += CharLen;
+	}
+}
+
+int MultiByteLength(const char* String) {
+	int StrLen;
+	int i;
+	int CharLen;
+	int Counter = 0;
+
+	// 文字列全体のバイト数を取得
+	StrLen = strlen(String);
+
+	for (i = 0; i < StrLen; ) {
+		if (_mbbtype((unsigned char)String[i], 0) == _MBC_LEAD) {
+			CharLen = 2;
+			Counter++;
+		}
+		else {
+			CharLen = 1;
+			Counter++;
+		}
+		i += CharLen;
+	}
+	return Counter;
 }
