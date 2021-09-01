@@ -29,18 +29,15 @@ int MultiByteLength(const char* String);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
 
+int Soloflg = 0;						// シナリオ管理用フラグ
+int Scenflg = 0;						// シナリオ管理用フラグ
+
 int COMGx = 1;
 int COMGy = 1;
 int COMLx = 1;
 int COMLy = 1;							//COMの選ぶ座標
-
-//ゲームの処理に用いる変数
-int Soloflg = 0;						// シナリオ管理用フラグ
-int Scenflg = 0;						// シナリオ管理用フラグ
 int COMWait = 0;
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
-//ゲームの演出に用いる変数
-double logoX = 0.0;
 int max_id = 0;
 double max_val = 0.0;
 
@@ -102,13 +99,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	for (int i = 1; i <= 15; ++i) {
 		string pict_name;
 		pict_name = "graph/stripe" + to_string(i) + ".png";
-		stripe[i-1] = LoadGraph(pict_name.c_str());
+		stripe[i - 1] = LoadGraph(pict_name.c_str());
 	}
 	int end_pict[20];
 	for (int i = 1; i <= 20; ++i) {
 		string pict_name;
 		pict_name = "graph/end_pict" + to_string(i) + ".png";
-		end_pict[i-1] = LoadGraph(pict_name.c_str());
+		end_pict[i - 1] = LoadGraph(pict_name.c_str());
 	}
 
 	// 動画
@@ -129,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double theta = 0.3;
 
 	fireflower tama[FIRE_FLOWER_NUM];
-	tama[0].sound = 1;
+	tama[0].sound = 0;
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			game.child[i][j].stone1 = stone1;
@@ -241,6 +238,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	int vict = 0;	// 勝敗格納用の一時変数
+	double logoX = 0.0;		// デモ画面用変数
 
 
 	//メインループ
