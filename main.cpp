@@ -126,7 +126,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double theta = 0.3;
 
 	fireflower tama[FIRE_FLOWER_NUM];
-	tama[0].sound = 0;
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			game.child[i][j].stone1 = stone1;
@@ -383,11 +382,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			else if (game.isVsCOM()) {
 				int choice = game.menuChoose();
 				if (choice == 0) {
-					game.flg = -6;
+					game.goScenario();
 					game.teban = 0;
 				}
 				else if (choice == 1) {
-					game.flg = -6;
+					game.goScenario();
 					game.teban = 1;
 				}
 			}
@@ -499,7 +498,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 勝利判定
 			vict = game.mother.victory();
 			if (vict != 0) {
-				game.flg = 2;
+				game.goResult();
 				game.key.initWait();
 				//学習
 				/*if (game.vsCOM()) {
@@ -580,7 +579,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// 動作の取り消し
 			if (game.key.onBack() && game.goBackHist()) {
-				game.flg = 1;
+				game.goBattle();
 			}
 
 			// カメラ操作
@@ -846,7 +845,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		//高速学習モード
 		//else if (game.flg == 5) {
-		//	if (debugFlg == 1) {
+		//	if (game.debugFlg == 1) {
 		//		//デバッグ
 		//		if (Key[KEY_INPUT_D] == 1) {
 		//			if (dbg_cnt == 0) printf("%d\n", trainCnt);
@@ -872,7 +871,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//			debugFlg = 2;
 		//		}
 		//	}
-		//	else if (debugFlg == 0) {
+		//	else if (game.debugFlg == 0) {
 		//		//操作の処理
 		//
 		//		while (true) {
@@ -950,8 +949,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//		tmp_loss = critic.loss(train_i, train_o);
 		//		loss_per_epic[epic] += tmp_loss;
 		//
-		//		//debugFlg = 1;
-		//		InitializeGame(5);
+		//		//game.debugFlg = 1;
+		//		game.initialize(5);
 		//
 		//		//テキストの描画
 		//		DrawFormatString(80, 400, StringColor, "試合数: %d", train_game_cnt);
@@ -1000,15 +999,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//
 		//		if (Key[KEY_INPUT_A] == 1) {
 		//			game.mouse.set();
-		//			game.flg = 0;
+		//			game.goTitle();
 		//			game.taijin = 0;
 		//			for (int i = 0; i < 3; ++i) tama[i].initialize();
 		//		}
 		//
 		//	}
 		//	else if(debugFlg == 2){
-		//		InitializeGame(5);
-		//		debugFlg = 0;
+		//		game.initialize(5);
+		//		game.debugFlg = 0;
 		//	}
 		//}
 

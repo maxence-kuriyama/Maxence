@@ -138,7 +138,7 @@ public:
 		start = clock();
 	}
 
-	// 永遠に勝敗がつかない場合の処理
+	// 自動学習モードで永遠に勝敗がつかない場合の処理
 	void stopDrawGame() {
 		if (drawCnt > 10000) {
 			flg = 2;
@@ -150,7 +150,7 @@ public:
 
 
 	/*===========================*/
-	//    Bool
+	//    Boolean
 	/*===========================*/
 	bool isPlayTurn() {
 		// 対人戦、あるいは人vsCOMの人の手番
@@ -164,6 +164,31 @@ public:
 	bool isVsCOM() {
 		return taijin == 1;
 	}
+
+
+	/*===========================*/
+	//    フラグ関連
+	/*===========================*/
+	void goTitle() {
+		flg = 0;
+	}
+
+	void goBattle() {
+		flg = 1;
+	}
+
+	void goResult() {
+		flg = 2;
+	}
+
+	void goScenario() {
+		flg = -6;
+	}
+
+	void goEnding() {
+		flg = -4;
+	}
+
 
 
 	/*===========================*/

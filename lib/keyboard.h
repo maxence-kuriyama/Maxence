@@ -8,8 +8,8 @@ public:
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
 	int strColor = White;
-	int musicFlg = 1;
-	int soundFlg = 1;
+	int musicFlg = 0;
+	int soundFlg = 0;
 	int likeliFlg = 0;		// 学習機械の出力フラグ 0: 非表示, 1: 色で表示, 2: 数値も表示
 	int commentFlg = 0;
 
