@@ -60,6 +60,7 @@ public:
 	int frColorNextField = Red;
 	int frColorCurrentCoord = Black;
 	int strColorDebug = Blue;
+	int Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 	string mode = "";
@@ -74,13 +75,32 @@ public:
 	Logo logo;
 	Anime cutin;
 	Comment comment;
+	Menu menu;
 	Button lonely;
 	Button vsHuman;
-	Menu menu;
+	Button senko;
+	Button koko;
+	Button again;
 
 	Game() {
+		// ボタン初期化
 		lonely.initialize(TEXT1_X, TEXT1_Y, "ぼっちで");
 		vsHuman.initialize(TEXT2_X, TEXT2_Y, "隣の人と");
+		senko.initialize(TEXT1_X, TEXT1_Y, "先攻");
+		koko.initialize(TEXT2_X, TEXT2_Y, "後攻");
+		again.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
+		// ロゴ初期化
+		logo.image = LoadGraph("graph/Maxence_after4.png");
+		// カットイン画像初期化
+		int Cutin1 = LoadGraph("graph/cutin1.png");
+		int Cutin10 = LoadGraph("graph/cutin10.png");
+		GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
+		cutin.image0 = Cutin1;
+		cutin.image1 = Cutin10;
+		// コメント初期化
+		comment.font = Font0;
+		comment.initialize();
+		// game初期化
 		initialize(-3);
 	}
 
@@ -182,6 +202,10 @@ public:
 	/*===========================*/
 	int menuChoose() {
 		return menu.choose(keyboardFlg, mouse, key, option.strColor);
+	}
+
+	void setOrderMenu() {
+		menu.set(senko, koko);
 	}
 
 

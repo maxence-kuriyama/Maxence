@@ -28,7 +28,6 @@ int MultiByteLength(const char* String);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 //VectorXd softmax(const VectorXd &src, double alpha);
 
-Game game;
 
 int COMGx = 1;
 int COMGy = 1;
@@ -48,14 +47,11 @@ int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 //ゲームの演出に用いる変数
 double logoX = 0.0;
 int windowFlg = 1;
-//char SEname[8][20] = { "sound/se_amb01.wav" ,"sound/se_amb02.wav" ,"sound/se_amb03.wav" ,
-		//"sound/se_amb04.wav" ,"sound/se_amb05.wav" ,"sound/se_amb06.wav" ,"sound/se_amb07.wav" ,"sound/se_amb08.wav" };
 int max_id = 0;
 double max_val = 0.0;
 
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	SetOutApplicationLogValidFlag(FALSE);
 	ChangeWindowMode(TRUE);
@@ -74,6 +70,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ChangeLightTypePoint(VGet(320.0, 240.0, -300.0), 2000.0, 0.0, 0.001f, 0.0);
 	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 
+
+	Game game;
+
+
 	// 種々のハンドル
 	unsigned int Green = GetColor(0, 255, 0);
 	unsigned int Red = GetColor(255, 0, 0);
@@ -88,7 +88,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
-	game.comment.font = Font0;
 
 	// 画像読み込み
 	int MLogo = LoadGraph("graph/M.png");
@@ -99,14 +98,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int Logo2 = LoadGraph("graph/Maxence_after2.png");
 	int Logo3 = LoadGraph("graph/Maxence_after3.png");
 	int Logo4 = LoadGraph("graph/Maxence_after4.png");
-	game.logo.image = Logo4;
 	int Room = LoadGraph("graph/room.bmp");
 	int Card = LoadGraph("graph/card.bmp");
-	int Cutin1 = LoadGraph("graph/cutin1.png");
-	int Cutin10 = LoadGraph("graph/cutin10.png");
-	GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
-	game.cutin.image0 = Cutin1;
-	game.cutin.image1 = Cutin10;
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
@@ -139,9 +132,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
 	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
 	*/
+	double theta = 0.3;
 
 	srand((unsigned)time(NULL));
-	fireflower tama[FIRE_FLOWER_NUM]; tama[0].sound = 1;
+	fireflower tama[FIRE_FLOWER_NUM];
+	tama[0].sound = 1;
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			game.child[i][j].stone1 = stone1;
@@ -150,12 +145,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			game.child[i][j].stone2_t = stone2_t;
 		}
 	}
-	VECTOR CentK = VGet(150.0, 200.0, 0.0);
-	double theta = 0.3;
-	game.comment.initialize();
-
-	//時間関連
-	long current = clock();
 
 	//シナリオ関係
 	int scen_char_cnt = 0;
@@ -259,10 +248,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	int vict = 0;	// 勝敗格納用の一時変数
-
-	Button senko(TEXT1_X, TEXT1_Y, "先攻");
-	Button koko(TEXT2_X, TEXT2_Y, "後攻");
-	Button again(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
 
 
 	//メインループ
@@ -379,7 +364,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				if (choice == 0) {
 					game.mode = "ぼっちで";
 					game.taijin = 1;
-					game.menu.set(senko, koko);
+					game.setOrderMenu();
 				}
 				else if (choice == 1) {
 					////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
@@ -596,8 +581,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 			// メッセージの描画
 			game.drawWinner(vict);
-			again.display(game.mouse, game.option.strColor);
-			if (again.isClicked(game.mouse) || game.key.onReturn()){
+			game.again.display(game.mouse, game.option.strColor);
+			if (game.again.isClicked(game.mouse) || game.key.onReturn()){
 				game.initialize();
 				initializeTrain();
 			}

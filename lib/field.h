@@ -2,8 +2,10 @@
 class Field {
 public:
 	int state[3][3];	// 0:None, 1:Black, -1:White
-	int stone1, stone2;
-	int stone1_t, stone2_t;
+	int stone1;
+	int stone2;
+	int stone1_t;
+	int stone2_t;
 
 	Field() {
 		initialize();
