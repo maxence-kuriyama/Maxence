@@ -6,18 +6,32 @@ void init_scene_text(string* scen_txt, int* scen_who);
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 int MultiByteLength(const char* String);
 
+class MrK {
+public:
+	int x;
+	int y;
+	int img;
+
+	void set(int posX, int posY, const char* imgName) {
+		x = posX;
+		y = posY;
+		img = LoadGraph(imgName);
+	}
+};
+
 class Scenario {
 public:
 	int flg = 0;	// シナリオ管理用フラグ
 	int imgRoom;
 	int imgCard;
-	int imgStripe[15];
+	MrK mrK[4];
+	MrK deer;
 	int Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int charCnt = 0;	// 文字描画カウンタ (<= textLen)
 	int textCnt = 0;	// テキストカウンタ
 	int textLen = 0;	// テキスト長
-	int eqx = 0;
-	int eqy = 0;
+	int eqX = 0;
+	int eqY = 0;		// eq = earthquake
 	int visible[5] = { 1, 1, 1, 1, 0 };
 	string text[40];
 	int who[40];
@@ -27,11 +41,11 @@ public:
 		init_scene_text(text, who);
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
-		for (int i = 1; i <= 15; ++i) {
-			string pict_name;
-			pict_name = "graph/stripe" + to_string(i) + ".png";
-			imgStripe[i - 1] = LoadGraph(pict_name.c_str());
-		}
+		mrK[0].set(160, 120, "graph/stripe11.png");
+		mrK[1].set(480, 120, "graph/stripe12.png");
+		mrK[2].set(160, 240, "graph/stripe13.png");
+		mrK[3].set(480, 240, "graph/stripe14.png");
+		deer.set(0, 0, "graph/stripe15.png");
 		initialize();
 	}
 
@@ -40,30 +54,31 @@ public:
 	}
 
 	int display(Mouse& mouse, int strColor) {
-		DrawExtendGraph(0 + eqx, -50, 640 + eqx, 380, imgRoom, FALSE);
-		if (visible[0]) DrawGraph(160 + eqx, 120, imgStripe[10], TRUE);
-		if (visible[1]) DrawGraph(480 + eqx, 120, imgStripe[11], TRUE);
-		if (visible[2]) DrawGraph(160 + eqx, 240, imgStripe[12], TRUE);
-		if (visible[3]) DrawGraph(480 + eqx, 240, imgStripe[13], TRUE);
+		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
+		for (int i = 0; i < 4; ++i) {
+			if (visible[i]) {
+				DrawGraph(mrK[i].x + eqX, mrK[i].y, mrK[i].img, TRUE);
+			}
+		}
 		if (flg == 2) DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
 		DrawRoundBox(15, 380, 10, 609, 89, GetColor(250, 250, 150));
 		DrawMessage(charCnt, 110, 390, 600, GetFontSize(), text[textCnt].c_str(), strColor, Font0, GetColor(250, 250, 150));
 
 		switch (who[textCnt]) {
 		case 1:
-			DrawGraph(30, 380, imgStripe[10], TRUE);
+			DrawGraph(30, 380, mrK[0].img, TRUE);
 			break;
 		case 2:
-			DrawGraph(30, 380, imgStripe[11], TRUE);
+			DrawGraph(30, 380, mrK[1].img, TRUE);
 			break;
 		case 3:
-			DrawGraph(30, 380, imgStripe[12], TRUE);
+			DrawGraph(30, 380, mrK[2].img, TRUE);
 			break;
 		case 4:
-			DrawGraph(30, 380, imgStripe[13], TRUE);
+			DrawGraph(30, 380, mrK[3].img, TRUE);
 			break;
 		case 5:
-			DrawGraph(30, 380, imgStripe[14], TRUE);
+			DrawGraph(30, 380, deer.img, TRUE);
 			break;
 		}
 
@@ -84,8 +99,8 @@ public:
 		switch (flg) {
 		case 1:
 			//鹿が現れる
-			DrawGraph(480, 120, imgStripe[11], TRUE);
-			DrawGraph(270, 200, imgStripe[14], TRUE);
+			DrawGraph(480, 120, mrK[1].img, TRUE);
+			DrawGraph(270, 200, deer.img, TRUE);
 			if (mouse.click()) {
 				flg++;
 				textCnt++;
@@ -112,9 +127,9 @@ public:
 			break;
 		case 4:
 			//地震
-			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
 			if (mouse.click()) {
-				eqx = 0;
+				eqX = 0;
 				flg++;
 				textCnt++;
 				charCnt = 0;
@@ -135,9 +150,9 @@ public:
 			break;
 		case 9:
 			//地震
-			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
 			if (mouse.click()) {
-				eqx = 0;
+				eqX = 0;
 				flg++;
 				textCnt++;
 				charCnt = 0;
@@ -158,17 +173,19 @@ public:
 			break;
 		case 14:
 			//地震
-			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
 			if (mouse.click()) {
-				eqx = 0;
-				flg++; textCnt++; charCnt = 0;
+				eqX = 0;
+				flg++;
+				textCnt++;
+				charCnt = 0;
 			}
 			break;
 		case 15:
 			//青が出てくる
 			visible[1] = 1;
 			if (mouse.click()) {
-				flg++; ;
+				flg++;
 			}
 			break;
 		case 17:
@@ -186,9 +203,9 @@ public:
 			break;
 		case 20:
 			//地震
-			eqx = 10 * sin(eqx + M_PI * (rand() % 10) / 10.0);
+			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
 			if (mouse.click()) {
-				eqx = 0;
+				eqX = 0;
 				flg++;
 				textCnt++;
 				charCnt = 0;
