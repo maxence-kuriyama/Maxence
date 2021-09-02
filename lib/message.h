@@ -63,6 +63,7 @@ public:
 		text = text0;
 		who = who0;
 		charCnt = 0;
+		textLen = MultiByteLength(text0.c_str());
 	}
 
 	int skip() {

@@ -55,6 +55,41 @@ public:
 		eqX = 0;
 	}
 
+	// NEXTが出るまでメッセージを読む
+	void readMsg(Mouse& mouse) {
+		if (mouse.click() && msg.skip()) {
+			if (text[textCnt + 1] == "NEXT") {
+				flg++;
+				textCnt++;
+			}
+			else {
+				textCnt = min(36, textCnt + 1);
+				msgSet();
+			}
+		}
+	}
+
+	// 次のメッセージを読みながら場面転換
+	void nextMsg(Mouse& mouse) {
+		if (mouse.click()) {
+			flg++;
+			msgLoad();
+		}
+	}
+
+	// メッセージを送らずに場面転換
+	void waitClick(Mouse& mouse){
+		if (mouse.click()) {
+			flg++;
+		}
+	}
+
+	void startMusic(const char* musicName) {
+		if (CheckMusic() != 1) {
+			PlayMusic(musicName, DX_PLAYTYPE_BACK);
+		}
+	}
+
 	int show(Mouse& mouse, int strColor) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
@@ -63,135 +98,117 @@ public:
 		}
 		deer.draw();
 
-
-		if (CheckMusic() != 1) {
-			if (flg == 0 || flg == 7 || flg == 12) {
-				PlayMusic("sound/bgm03.mp3", DX_PLAYTYPE_BACK);
-			}
-			if (flg == 21) {
-				PlayMusic("sound/bgm07.mp3", DX_PLAYTYPE_BACK);
-			}
-		}
-
 		DrawFormatString(5, 5, strColor, "flg:%d", flg);
-		//DrawFormatString(5, 25, StringColor, "char_cnt:%d", char_cnt);
 
 		switch (flg) {
+		case 0:
+			startMusic("sound/bgm03.mp3");
+			readMsg(mouse);
+			break;
 		case 1:
-			//鹿が現れる
+			// 鹿が現れる
 			deer.exhibit();
-			if (mouse.click()) {
-				flg++;
-				msgLoad();
-			}
+			nextMsg(mouse);
 			break;
 		case 2:
-			//カードを見つける、青消える
+			// カードを見つける
 			DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
-			msg.textLen = MultiByteLength(text[textCnt].c_str());
-			if (mouse.click() && msg.skip()) {
-				deer.hide();
-				mrK[1].hide();
-				flg++;
-				msgLoad();
-			}
+			nextMsg(mouse);
+			break;
+		case 3:
+			// 青消える
+			deer.hide();
+			mrK[1].hide();
+			readMsg(mouse);
 			break;
 		case 4:
-			//地震
+			// 地震
 			happenEQ();
-			if (mouse.click()) {
-				stopEQ();
-				flg++;
-				msgLoad();
-			}
+			nextMsg(mouse);
+			break;
+		case 5:
+			stopEQ();
+			readMsg(mouse);
 			break;
 		case 6:
-			//第一戦
-			PlayMusic("sound/bgm04.mp3", DX_PLAYTYPE_BACK);
+			// 第一戦
+			StopMusic();
+			startMusic("sound/bgm04.mp3");
 			msgLoad();
 			return 1;
+		case 7:
+			startMusic("sound/bgm03.mp3");
+			readMsg(mouse);
+			break;
 		case 8:
-			//赤が死ぬ
+			// 赤が死ぬ
 			mrK[2].hide();
-			if (mouse.click()) {
-				flg++;
-			}
+			waitClick(mouse);
 			break;
 		case 9:
-			//地震
+			// 地震
 			happenEQ();
-			if (mouse.click()) {
-				stopEQ();
-				flg++;
-				msgLoad();
-			}
+			nextMsg(mouse);
+			break;
+		case 10:
+			stopEQ();
+			readMsg(mouse);
 			break;
 		case 11:
-			//第二戦
-			PlayMusic("sound/bgm05.mp3", DX_PLAYTYPE_BACK);
+			// 第二戦
+			StopMusic();
+			startMusic("sound/bgm05.mp3");
 			msgLoad();
 			return 1;
+		case 12:
+			startMusic("sound/bgm03.mp3");
+			readMsg(mouse);
+			break;
 		case 13:
-			//緑が死ぬ
+			// 緑が死ぬ
 			mrK[3].hide();
-			if (mouse.click()) {
-				flg++;
-			}
+			waitClick(mouse);
 			break;
 		case 14:
-			//地震
+			// 地震
 			happenEQ();
-			if (mouse.click()) {
-				stopEQ();
-				flg++;
-				msgLoad();
-			}
+			waitClick(mouse);
 			break;
 		case 15:
-			//青が出てくる
+			// 青が出てくる
+			stopEQ();
 			mrK[1].exhibit();
-			if (mouse.click()) {
-				flg++;
-			}
+			nextMsg(mouse);
 			break;
 		case 17:
-			//第三戦
-			PlayMusic("sound/bgm06.mp3", DX_PLAYTYPE_BACK);
+			// 第三戦
+			StopMusic();
+			startMusic("sound/bgm06.mp3");
 			msgLoad();
 			return 1;
 		case 19:
-			//青が死ぬ
+			// 青が死ぬ
 			mrK[1].hide();
-			if (mouse.click()) {
-				flg++;
-			}
+			waitClick(mouse);
 			break;
 		case 20:
-			//地震
+			// 地震
 			happenEQ();
-			if (mouse.click()) {
-				stopEQ();
-				flg++;
-				msgLoad();
-			}
+			nextMsg(mouse);
+			break;
+		case 21:
+			stopEQ();
+			startMusic("sound/bgm07.mp3");
+			readMsg(mouse);
 			break;
 		case 22:
-			//第四戦
-			PlayMusic("sound/bgm08.mp3", DX_PLAYTYPE_BACK);
+			// 第四戦
+			StopMusic();
+			startMusic("sound/bgm08.mp3");
 			msgLoad();
 			return 1;
 		default:
-			msg.textLen = MultiByteLength(text[textCnt].c_str());
-			if (mouse.click() && msg.skip()) {
-				if (text[textCnt + 1] == "NEXT") {
-					flg++;
-					textCnt++;
-				}
-				else {
-					textCnt = min(36, textCnt + 1);
-					msgSet();
-				}
-			}
+			readMsg(mouse);
 			break;
 		}
 
