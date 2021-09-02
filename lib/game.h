@@ -7,6 +7,7 @@
 #include "lib/hist.h"
 #include "lib/anime.h"
 #include "lib/keyboard.h"
+#include "lib/menu.h"
 #include "lib/comment.h"
 
 
