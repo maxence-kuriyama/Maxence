@@ -27,9 +27,9 @@ public:
 		visible = 1;
 	}
 
-	void draw() {
+	void draw(int epX = 0, int epY = 0) {
 		if (visible) {
-			DrawGraph(x, y, img, TRUE);
+			DrawGraph(x + epX, y + epY, img, TRUE);
 		}
 	}
 };
