@@ -33,6 +33,7 @@ public:
 	int nextField = -1;		// 次の盤面、-1: anywhere
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
 	int debugFlg = 0;
+	string mode = "";
 
 	// 同期処理関連
 	long start = clock();	// 同期処理開始時刻
@@ -62,9 +63,16 @@ public:
 	int frColorCurrentCoord = Black;
 	int strColorDebug = Blue;
 	int Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font1 = CreateFontToHandle("Times New Roman", 10, 1, -1);
+	int Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int stone1 = LoadGraph("graph/stone1.png");
+	int stone2 = LoadGraph("graph/stone2.png");
+	int stone1_t = LoadGraph("graph/stone1.png");
+	int stone2_t = LoadGraph("graph/stone2.png");
 
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
-	string mode = "";
 
 	Option option;
 	Field mother;
@@ -101,6 +109,15 @@ public:
 		// コメント初期化
 		comment.font = Font0;
 		comment.initialize();
+		// フィールド画像初期化
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				child[i][j].stone1 = stone1;
+				child[i][j].stone2 = stone2;
+				child[i][j].stone1_t = stone1_t;
+				child[i][j].stone2_t = stone2_t;
+			}
+		}
 		// game初期化
 		initialize(-3);
 	}
@@ -141,8 +158,9 @@ public:
 
 	// 自動学習モードで永遠に勝敗がつかない場合の処理
 	void stopDrawGame() {
-		if (drawCnt > 10000) {
-			flg = 2;
+		if (drawCnt > 1000) {
+			goResult();
+			drawCnt = 0;
 		}
 		if (taijin == 2 || flg == 5) {
 			drawCnt++;
@@ -212,8 +230,9 @@ public:
 			if (mouse.onButton(logo.titleX, logo.titleY - 5, logo.titleX + 185, logo.titleY + 65)) {
 				if (mouse.button[0] == 1) {
 					mouse.set();
-					flg = 0;
+					goTitle();
 					taijin = 0;
+					mode = "";
 					StopMusic();
 					return 1;
 				}
@@ -509,6 +528,7 @@ public:
 			DrawFormatString(5, 85, strColor, "teban: %d", teban);
 			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
 			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
+			DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
 			// Option
 			DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
 			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);

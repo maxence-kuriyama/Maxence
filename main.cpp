@@ -60,21 +60,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Game game;
 	Scenario scenario;
+	fireflower tama[FIRE_FLOWER_NUM];
 
 
 	// 種々のハンドル
+	int Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 	unsigned int Green = GetColor(0, 255, 0);
 	unsigned int Red = GetColor(255, 0, 0);
 	unsigned int Blue = GetColor(0, 0, 255);
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
-
-	// フォント
-	int Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font1 = CreateFontToHandle("Times New Roman", 10, 1, -1);
-	int Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	// 画像読み込み
 	int MLogo = LoadGraph("graph/M.png");
@@ -85,10 +82,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int Logo2 = LoadGraph("graph/Maxence_after2.png");
 	int Logo3 = LoadGraph("graph/Maxence_after3.png");
 	int Logo4 = LoadGraph("graph/Maxence_after4.png");
-	int stone1 = LoadGraph("graph/stone1.png");
-	int stone2 = LoadGraph("graph/stone2.png");
-	int stone1_t = LoadGraph("graph/stone1.png");
-	int stone2_t = LoadGraph("graph/stone2.png");
 	int stripe[15];
 	for (int i = 1; i <= 15; ++i) {
 		string pict_name;
@@ -119,15 +112,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	*/
 	double theta = 0.3;
 
-	fireflower tama[FIRE_FLOWER_NUM];
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			game.child[i][j].stone1 = stone1;
-			game.child[i][j].stone2 = stone2;
-			game.child[i][j].stone1_t = stone1_t;
-			game.child[i][j].stone2_t = stone2_t;
-		}
-	}
 
 	//エンディング関係
 	int end_cnt = 0;
@@ -993,7 +977,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//		game.debugFlg = 0;
 		//	}
 		//}
-
 		// シナリオ
 		else if (game.flg == -6) {
 			if (scenario.display(game.mouse, game.option.strColor)) {
