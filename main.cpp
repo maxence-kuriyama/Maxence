@@ -979,7 +979,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//}
 		// ƒVƒiƒŠƒI
 		else if (game.flg == -6) {
-			if (scenario.display(game.mouse, game.option.strColor)) {
+			if (scenario.show(game.mouse, game.option.strColor)) {
 				game.initialize();
 				initializeTrain();
 			}

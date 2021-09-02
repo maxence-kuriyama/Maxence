@@ -1,23 +1,8 @@
 #pragma once
 
-#include "lib/basic.h"
+#include "lib/message.h"
 
 void init_scene_text(string* scen_txt, int* scen_who);
-void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
-int MultiByteLength(const char* String);
-
-class MrK {
-public:
-	int x;
-	int y;
-	int img;
-
-	void set(int posX, int posY, const char* imgName) {
-		x = posX;
-		y = posY;
-		img = LoadGraph(imgName);
-	}
-};
 
 class Scenario {
 public:
@@ -26,13 +11,10 @@ public:
 	int imgCard;
 	MrK mrK[4];
 	MrK deer;
-	int Font0 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int charCnt = 0;	// 文字描画カウンタ (<= textLen)
+	Message msg;
 	int textCnt = 0;	// テキストカウンタ
-	int textLen = 0;	// テキスト長
 	int eqX = 0;
 	int eqY = 0;		// eq = earthquake
-	int visible[5] = { 1, 1, 1, 1, 0 };
 	string text[40];
 	int who[40];
 	int cnt = 0;	// フレームカウンタ
@@ -41,46 +23,31 @@ public:
 		init_scene_text(text, who);
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
-		mrK[0].set(160, 120, "graph/stripe11.png");
-		mrK[1].set(480, 120, "graph/stripe12.png");
-		mrK[2].set(160, 240, "graph/stripe13.png");
-		mrK[3].set(480, 240, "graph/stripe14.png");
-		deer.set(0, 0, "graph/stripe15.png");
+		mrK[0].set(160, 120, "graph/stripe11.png", 1);
+		mrK[1].set(480, 120, "graph/stripe12.png", 1);
+		mrK[2].set(160, 240, "graph/stripe13.png", 1);
+		mrK[3].set(480, 240, "graph/stripe14.png", 1);
+		deer.set(0, 0, "graph/stripe15.png", 0);
 		initialize();
+		msg.initialize();
 	}
 
 	void initialize() {
 		flg = 0;
+		textCnt = 0;
+		msg.set(text[textCnt], who[textCnt]);
 	}
 
-	int display(Mouse& mouse, int strColor) {
+	int show(Mouse& mouse, int strColor) {
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		for (int i = 0; i < 4; ++i) {
-			if (visible[i]) {
+			if (mrK[i].visible) {
 				DrawGraph(mrK[i].x + eqX, mrK[i].y, mrK[i].img, TRUE);
 			}
 		}
 		if (flg == 2) DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
-		DrawRoundBox(15, 380, 10, 609, 89, GetColor(250, 250, 150));
-		DrawMessage(charCnt, 110, 390, 600, GetFontSize(), text[textCnt].c_str(), strColor, Font0, GetColor(250, 250, 150));
 
-		switch (who[textCnt]) {
-		case 1:
-			DrawGraph(30, 380, mrK[0].img, TRUE);
-			break;
-		case 2:
-			DrawGraph(30, 380, mrK[1].img, TRUE);
-			break;
-		case 3:
-			DrawGraph(30, 380, mrK[2].img, TRUE);
-			break;
-		case 4:
-			DrawGraph(30, 380, mrK[3].img, TRUE);
-			break;
-		case 5:
-			DrawGraph(30, 380, deer.img, TRUE);
-			break;
-		}
+		msg.draw();
 
 		if (CheckMusic() != 1) {
 			if (flg == 0 || flg == 7 || flg == 12) {
@@ -104,25 +71,17 @@ public:
 			if (mouse.click()) {
 				flg++;
 				textCnt++;
-				charCnt = 0;
+				msg.set(text[textCnt], who[textCnt]);
 			}
 			break;
 		case 2:
 			//カードを見つける、青消える
-			textLen = MultiByteLength(text[textCnt].c_str());
-			if (cnt % 2 == 0 && charCnt < textLen) {
-				charCnt++;
-			}
-			if (mouse.click()) {
-				if (charCnt < textLen) {
-					charCnt = textLen;
-				}
-				else {
-					visible[1] = 0;
-					flg++;
-					textCnt++;
-					charCnt = 0;
-				}
+			msg.textLen = MultiByteLength(text[textCnt].c_str());
+			if (mouse.click() && msg.skip()) {
+				mrK[1].hide();
+				flg++;
+				textCnt++;
+				msg.set(text[textCnt], who[textCnt]);
 			}
 			break;
 		case 4:
@@ -132,18 +91,18 @@ public:
 				eqX = 0;
 				flg++;
 				textCnt++;
-				charCnt = 0;
+				msg.set(text[textCnt], who[textCnt]);
 			}
 			break;
 		case 6:
 			//第一戦
 			PlayMusic("sound/bgm04.mp3", DX_PLAYTYPE_BACK);
 			textCnt++;
-			charCnt = 0;
+			msg.set(text[textCnt], who[textCnt]);
 			return 1;
 		case 8:
 			//赤が死ぬ
-			visible[2] = 0;
+			mrK[2].hide();
 			if (mouse.click()) {
 				flg++;
 			}
@@ -155,18 +114,18 @@ public:
 				eqX = 0;
 				flg++;
 				textCnt++;
-				charCnt = 0;
+				msg.set(text[textCnt], who[textCnt]);
 			}
 			break;
 		case 11:
 			//第二戦
 			PlayMusic("sound/bgm05.mp3", DX_PLAYTYPE_BACK);
 			textCnt++;
-			charCnt = 0;
+			msg.set(text[textCnt], who[textCnt]);
 			return 1;
 		case 13:
 			//緑が死ぬ
-			visible[3] = 0;
+			mrK[3].hide();
 			if (mouse.click()) {
 				flg++;
 			}
@@ -178,12 +137,12 @@ public:
 				eqX = 0;
 				flg++;
 				textCnt++;
-				charCnt = 0;
+				msg.set(text[textCnt], who[textCnt]);
 			}
 			break;
 		case 15:
 			//青が出てくる
-			visible[1] = 1;
+			mrK[1].exhibit();
 			if (mouse.click()) {
 				flg++;
 			}
@@ -192,11 +151,11 @@ public:
 			//第三戦
 			PlayMusic("sound/bgm06.mp3", DX_PLAYTYPE_BACK);
 			textCnt++;
-			charCnt = 0;
+			msg.set(text[textCnt], who[textCnt]);
 			return 1;
 		case 19:
 			//青が死ぬ
-			visible[1] = 0;
+			mrK[1].hide();
 			if (mouse.click()) {
 				flg++;
 			}
@@ -208,32 +167,24 @@ public:
 				eqX = 0;
 				flg++;
 				textCnt++;
-				charCnt = 0;
+				msg.set(text[textCnt], who[textCnt]);
 			}
 			break;
 		case 22:
 			//第四戦
 			PlayMusic("sound/bgm08.mp3", DX_PLAYTYPE_BACK);
 			textCnt++;
-			charCnt = 0;
+			msg.set(text[textCnt], who[textCnt]);
 			return 1;
 		default:
-			textLen = MultiByteLength(text[textCnt].c_str());
-			if (cnt % 2 == 0 && charCnt < textLen) {
-				charCnt++;
-			}
-			if (mouse.click()) {
-				if (charCnt < textLen) {
-					charCnt = textLen;
+			msg.textLen = MultiByteLength(text[textCnt].c_str());
+			if (mouse.click() && msg.skip()) {
+				if (textCnt == 0 || textCnt == 3 || textCnt == 5 || textCnt == 8 || textCnt == 12 || textCnt == 14 || textCnt == 18 || textCnt == 20 || textCnt == 26) {
+					flg++;
 				}
 				else {
-					if (textCnt == 0 || textCnt == 3 || textCnt == 5 || textCnt == 8 || textCnt == 12 || textCnt == 14 || textCnt == 18 || textCnt == 20 || textCnt == 26) {
-						flg++;
-					}
-					else {
-						textCnt = min(27, textCnt + 1);
-						charCnt = 0;
-					}
+					textCnt = min(27, textCnt + 1);
+					msg.set(text[textCnt], who[textCnt]);
 				}
 			}
 			break;
@@ -318,81 +269,4 @@ void init_scene_text(string* scen_txt, int* scen_who) {
 	scen_who[35] = 5;
 	scen_txt[35] = "鹿: …………";
 
-}
-
-void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor) {
-	char TempStr[3];
-	int StrLen;
-	int i;
-	int DrawX;
-	int DrawY;
-	int CharLen;
-	int DrawWidth;
-	int BoxWidth;
-	int BoxHeight;
-	double rate = 1.2;	//デフォルトのフォントサイズ20に対して、今はフォントサイズ24にするため1.2倍
-	int Counter = cnt;
-
-	// 文字列全体のバイト数を取得
-	StrLen = strlen(String);
-
-	DrawX = x;
-	DrawY = y;
-	for (i = 0; i < StrLen; ) {
-		// 指定された文字数で描画をやめる
-		if (Counter <= 0) break;
-
-		if (_mbbtype((unsigned char)String[i], 0) == _MBC_LEAD) {
-			// 全角文字の場合
-			TempStr[0] = String[i];
-			TempStr[1] = String[i + 1];
-			TempStr[2] = '\0';
-			CharLen = 2;
-			Counter--;
-		}
-		else {
-			// 半角文字の場合
-			TempStr[0] = String[i];
-			TempStr[1] = '\0';
-			CharLen = 1;
-			Counter--;
-		}
-		// １文字の描画幅を取得
-		DrawWidth = GetDrawStringWidth(String + i, CharLen) * rate;
-		// 描画範囲からはみ出る場合は改行
-		if (DrawX + DrawWidth > RightX)
-		{
-			DrawX = x;
-			DrawY += AddY * rate;
-		}
-		// １文字描画
-		DrawStringToHandle(DrawX, DrawY, TempStr, StrColor, FontHandle);
-		// 描画座標をずらす
-		DrawX += DrawWidth;
-		// 描画する文字を進める
-		i += CharLen;
-	}
-}
-
-int MultiByteLength(const char* String) {
-	int StrLen;
-	int i;
-	int CharLen;
-	int Counter = 0;
-
-	// 文字列全体のバイト数を取得
-	StrLen = strlen(String);
-
-	for (i = 0; i < StrLen; ) {
-		if (_mbbtype((unsigned char)String[i], 0) == _MBC_LEAD) {
-			CharLen = 2;
-			Counter++;
-		}
-		else {
-			CharLen = 1;
-			Counter++;
-		}
-		i += CharLen;
-	}
-	return Counter;
 }
