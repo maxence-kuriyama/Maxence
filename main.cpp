@@ -11,7 +11,6 @@
 #include <random>
 #include <mbstring.h>
 #include <mbctype.h>
-#include "lib/vect.h"
 
 using namespace DxLib;
 using namespace std;

@@ -46,8 +46,8 @@ private:
 
 public:
 	Texts texts;
-	int x = rnd() % 200;
-	int y = rnd() % 400;
+	int x = rand() % 200;
+	int y = rand() % 400;
 	int textId = 0;		// テキストのインデックス
 	int textSeq = 0;	// テキストがいくつ連続したかのカウンタ
 	int cnt = 0;		// テキスト差し替え用カウンタ
@@ -56,8 +56,8 @@ public:
 		texts.initialize();
 		cnt = 0;
 		textSeq = 0;
-		x = rnd() % 200;
-		y = rnd() % 400;
+		x = rand() % 200;
+		y = rand() % 400;
 		//font = Font0;
 	}
 
@@ -69,17 +69,17 @@ public:
 		// テキストの差し替え
 		if (cnt > 200) {
 			//ある程度連番が続くように設定
-			if (textId < texts.size && (rnd() % 10000) / 10000.0 < pow(0.95, pow(2.0, textSeq))) {
+			if (textId < texts.size && (rand() % 10000) / 10000.0 < pow(0.95, pow(2.0, textSeq))) {
 				textId++;
 				textSeq++;
 			}
 			else {
-				textId = rnd() % texts.size;
+				textId = rand() % texts.size;
 				textSeq = 0;
 			}
 			cnt = 0;
-			x = rnd() % 200;
-			y = rnd() % 400;
+			x = rand() % 200;
+			y = rand() % 400;
 		}
 		cnt++;
 	}
