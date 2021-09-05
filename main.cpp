@@ -36,9 +36,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	// íX‚Ìƒnƒ“ƒhƒ‹
-	int Font2 = CreateFontToHandle("HG‹³‰È‘‘Ì", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font3 = CreateFontToHandle("HG‹³‰È‘‘Ì", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 	unsigned int Green = GetColor(0, 255, 0);
 	unsigned int Red = GetColor(255, 0, 0);
 	unsigned int Blue = GetColor(0, 0, 255);
