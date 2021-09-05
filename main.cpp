@@ -42,42 +42,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 入力情報を取得
 		game.mouse.update();
 
-		// マウス操作か否かを判定する
-		game.keyboardFlg = 0;
-
-		// OPアニメーション ClickToStartまで
-		if (game.flg == 0) {
-			//タイトル画面その１
-			if (game.isVsHuman()) {
-				game.lonely.display(game.mouse, White);
-				game.vsHuman.display(game.mouse, White);
-				if (game.lonely.isClicked(game.mouse)) {
-					game.mode = "ぼっちで";
-					game.taijin = 1;
-				}
-				if (game.vsHuman.isClicked(game.mouse)) {
-					game.mode = "隣の人と";
-					game.initialize();
-				}
-			}
+		game.drawBase();
+		game.drawNextField();
+		// プレイヤーの操作
+		if (game.playTurn()) {
+			game.update();
 		}
-		// Game Loop
-		else if (game.flg == 1) {
-			// 盤面の描画
-			//MV1DrawModel(ModelHandle);
-			game.drawBase();
-			game.drawGlobalState();
-			game.drawNextField();
-			// プレイヤーの操作
-			if (game.isPlayTurn() && game.playTurn()) {
-				game.update();
-			}
-			game.drawLocalState();
-			game.drawCurrentCoord();
+		game.drawCurrentCoord();
 
-			// 勝利判定
-			game.mother.victory();
-		}
+		// 勝利判定
+		game.mother.victory();
 	}
 
 	InitGraph();

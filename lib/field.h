@@ -12,10 +12,6 @@ private:
 
 public:
 	int state[3][3];	// 0:None, 1:Black, -1:White
-	int stone1;
-	int stone2;
-	int stone1_t;
-	int stone2_t;
 
 	Field() {
 		initialize();
@@ -88,21 +84,6 @@ public:
 			return 0;
 		}
 		return -1;
-	}
-
-	void draw(double baseX, double baseY, double width) {
-		for (int k = 0; k < 3; ++k) {
-			for (int l = 0; l < 3; ++l) {
-				if (state[k][l] == 1) {
-					DrawExtendGraph(baseX + width * k - 15, baseY + width * l - 15, baseX + width * k + 15, baseY + width * l + 15, stone1, TRUE);
-					//DrawCircleAA(baseX + width * k, baseY + width * l, 13, 12, GetColor(50, 50, 50), TRUE);
-				}
-				else if (state[k][l] == -1) {
-					DrawExtendGraph(baseX + width * k - 15, baseY + width * l - 15, baseX + width * k + 15, baseY + width * l + 15, stone2, TRUE);
-					//DrawCircleAA(baseX + width * k, baseY + width * l, 13, 12, GetColor(255, 200, 100), TRUE);
-				}
-			}
-		}
 	}
 
 	Field operator = (const Field& src) {

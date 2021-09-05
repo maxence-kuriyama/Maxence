@@ -12,17 +12,10 @@ private:
 	unsigned int Black = GetColor(0, 0, 0);
 
 public:
-	int flg = -3;	// -3,..,-1: Demo
-					// 0: Menu, 1: Game, 2: Result
-					// -4: Ending
-					// -6: Story
-					// 5: High-speed Learning
 	int taijin = 0;		// 0: vsHuman, 1: vsCOM, 2: AutoLearning
 	int teban = 0;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
 	int nextField = -1;		// 次の盤面、-1: anywhere
-	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
-	int debugFlg = 0;
 	string mode = "";
 
 	// 盤面上の操作関連
@@ -34,19 +27,12 @@ public:
 	Field mother;
 	Field child[3][3];
 	Mouse mouse;
-	Button lonely;
-	Button vsHuman;
 
 	Game() {
-		// ボタン初期化
-		lonely.initialize(200, 300, "ぼっちで");
-		vsHuman.initialize(400, 300, "隣の人と");
-		// game初期化
-		initialize(0);
+		initialize();
 	}
 
-	void initialize(int f = 1) {
-		flg = f;
+	void initialize() {
 		cnt = 0;
 		nextField = -1;
 		mother.initialize();
@@ -58,38 +44,6 @@ public:
 		mouse.set();
 	}
 
-	/*===========================*/
-	//    Boolean
-	/*===========================*/
-	bool isPlayTurn() {
-		// 対人戦、あるいは人vsCOMの人の手番
-		return (isVsHuman() || (isVsCOM() && cnt % 2 == teban));
-	}
-
-	bool isVsHuman() {
-		return taijin == 0;
-	}
-
-	bool isVsCOM() {
-		return taijin == 1;
-	}
-
-
-	/*===========================*/
-	//    フラグ関連
-	/*===========================*/
-	void goTitle() {
-		flg = 0;
-	}
-
-	void goBattle() {
-		flg = 1;
-	}
-
-	void goResult() {
-		flg = 2;
-	}
-
 
 	/*===========================*/
 	//    盤面表示関連
@@ -99,26 +53,6 @@ public:
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
 				DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Black, FALSE);
-			}
-		}
-	}
-
-	void drawGlobalState() {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				int upLeftX = 160 + 100 * i + 1;
-				int upLeftY = 80 + 100 * j + 1;
-				int lowRightX = 160 + 100 * (i + 1) - 1;
-				int lowRightY = 80 + 100 * (j + 1) - 1;
-				if (mother.state[i][j] == 1) {
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, TRUE);
-				}
-				else if (mother.state[i][j] == -1) {
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, TRUE);
-				}
-				else if (mother.state[i][j] != 0) {
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, TRUE);
-				}
 			}
 		}
 	}
@@ -142,14 +76,6 @@ public:
 					int lowRightY = 80 + 100 * (j + 1);
 					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, Black, FALSE);
 				}
-			}
-		}
-	}
-
-	void drawLocalState() {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				child[i][j].draw(176.5 + 100 * i, 96.5 + 100 * j, 33);
 			}
 		}
 	}
