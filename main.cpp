@@ -16,7 +16,6 @@
 using namespace DxLib;
 using namespace std;
 #include "lib/fireflower.h"
-#include "lib/scenario.h"
 #include "lib/ending.h"
 #include "lib/game.h"
 #include "lib/movie.h"
@@ -61,7 +60,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Game game;
 	Movie movie;
-	Scenario scenario;
 	fireflower tama[FIRE_FLOWER_NUM];
 
 
@@ -220,7 +218,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].initialize();
 			}
-			scenario.initialize();
 		}
 		game.drawLogo();
 
@@ -522,7 +519,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.toggleHighSpeedLearning();
 
 			// 対戦スキップ（一人用デバッグ）
-			game.skipBattle(scenario.flg);
 
 		}
 		// 勝敗表示
@@ -977,12 +973,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//	}
 		//}
 		// シナリオ
-		else if (game.flg == -6) {
-			if (scenario.show(game.mouse)) {
-				game.initialize();
-				initializeTrain();
-			}
-		}
 
 
 		// 同期処理
@@ -992,7 +982,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// デバッグ情報出力
 		game.debugDump();
 		movie.debugDump(game.debugFlg);
-		scenario.debugDump(game.debugFlg);
 	}
 
 	InitGraph();
