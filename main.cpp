@@ -25,14 +25,6 @@ public:
 		return 0;
 	}
 
-	bool click() {
-		return button[0] == 1;
-	}
-
-	bool onClick() {
-		return button[0] > 1;
-	}
-
 	bool clickRight() {
 		return button[1] == 1;
 	}
@@ -45,16 +37,6 @@ public:
 
 
 class Field {
-private:
-	int filled() {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				if (state[i][j] == 0) return 0;
-			}
-		}
-		return 1;
-	}
-
 public:
 	int state[3][3];	// 0:None, 1:Black, -1:White
 
@@ -70,60 +52,7 @@ public:
 		}
 	}
 
-	int victory() {
-		int vict = 0;
-		int temp = 0;
-
-		for (int k = 0; k < 3; ++k) {
-			temp = state[0][k];
-			if (temp == state[1][k] && temp == state[2][k]) {
-				//if(temp != 0) cout << "横" << k << endl;
-				if (vict == 0) {
-					vict = temp;
-				}
-				else if (vict != temp && temp != 0) {
-					vict = 100;
-					break;
-				}
-			}
-			temp = state[k][0];
-			if (temp == state[k][1] && temp == state[k][2]) {
-				//if(temp != 0) cout << "縦" << k << endl;
-				if (vict == 0) {
-					vict = temp;
-				}
-				else if (vict != temp && temp != 0) {
-					vict = 100;
-					break;
-				}
-			}
-		}
-		temp = state[0][0];
-		if (temp == state[1][1] && temp == state[2][2]) {
-			//if (temp != 0) cout << "左斜め" << endl;
-			if (vict == 0) {
-				vict = temp;
-			}
-			else if (vict != temp && temp != 0) {
-				vict = 100;
-			}
-		}
-		temp = state[2][0];
-		if (temp == state[1][1] && temp == state[0][2]) {
-			//if (temp != 0) cout << "右斜め" << endl;
-			if (vict == 0) {
-				vict = temp;
-			}
-			else if (vict != temp && temp != 0) {
-				vict = 100;
-			}
-		}
-		if (filled() == 1 && vict == 0) vict = 10;
-		return vict;
-	} // 0:on-game, 1:Black, -1:White, 10: Draw, 100:Error
-
 	int update(int i, int j, int side) {
-		if (victory() != 0) return -1;
 		if (state[i][j] == 0) {
 			state[i][j] = side;
 			return 0;
@@ -202,13 +131,6 @@ public:
 						DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, Black, FALSE);
 					}
 				}
-				else if (nextField == -1 && child[i][j].victory() == 0) {
-					int upLeftX = 160 + 100 * i;
-					int upLeftY = 80 + 100 * j;
-					int lowRightX = 160 + 100 * (i + 1);
-					int lowRightY = 80 + 100 * (j + 1);
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, Black, FALSE);
-				}
 			}
 		}
 	}
@@ -268,15 +190,8 @@ public:
 			if (child[global_x][global_y].update(local_x, local_y, side) == 0) {
 				cnt++;
 				//全体の更新
-				mother.update(global_x, global_y, child[global_x][global_y].victory());
-				if (child[local_x][local_y].victory() != 0) {
-					nextField = -1;
-					return 0;
-				}
-				else {
-					nextField = local_x * 3 + local_y;
-					return 0;
-				}
+				nextField = local_x * 3 + local_y;
+				return 0;
 			}
 		}
 		return -100.0;
@@ -314,9 +229,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.update();
 		}
 		game.drawCurrentCoord();
-
-		// 勝利判定
-		game.mother.victory();
 	}
 
 	InitGraph();
