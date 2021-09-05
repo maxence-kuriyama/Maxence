@@ -1,7 +1,6 @@
 #pragma once
 
 #include <time.h>
-#include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/field.h"
 
@@ -69,25 +68,17 @@ public:
 	int localX = 1;
 	int localY = 1;			//キーボード操作時の座標
 
-	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
-
 	Option option;
 	Field mother;
 	Field child[3][3];
 	Mouse mouse;
 	Button lonely;
 	Button vsHuman;
-	Button senko;
-	Button koko;
-	Button again;
 
 	Game() {
 		// ボタン初期化
-		lonely.initialize(TEXT1_X, TEXT1_Y, "ぼっちで");
-		vsHuman.initialize(TEXT2_X, TEXT2_Y, "隣の人と");
-		senko.initialize(TEXT1_X, TEXT1_Y, "先攻");
-		koko.initialize(TEXT2_X, TEXT2_Y, "後攻");
-		again.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
+		lonely.initialize(200, 300, "ぼっちで");
+		vsHuman.initialize(400, 300, "隣の人と");
 		// フィールド画像初期化
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -104,7 +95,6 @@ public:
 	void initialize(int f = 1) {
 		flg = f;
 		cnt = 0;
-		drawCnt = 0;
 		nextField = -1;
 		mother.initialize();
 		for (int i = 0; i < 3; ++i) {
@@ -125,7 +115,7 @@ public:
 			fpsStart = clock();
 		}
 		// 同期処理
-		while (clock() - start < 1000.0 / FPS && flg != 5) {
+		while (clock() - start < 1000.0 / 60 && flg != 5) {
 			WaitTimer(1);
 		}
 		start = clock();
@@ -236,26 +226,6 @@ public:
 		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
 	}
 
-	void drawBattleMessage() {
-		DrawFormatString(470, 80, option.strColor, "右クリック:");
-		DrawFormatString(540, 100, option.strColor, "石を置く");
-		DrawFormatString(470, 124, option.strColor, "zキー（BkSpキー）:");
-		DrawFormatString(540, 144, option.strColor, "一手戻る");
-	}
-
-	void drawWinner(int vict) {
-		if (vict == 1) {
-			DrawFormatString(20, 20, Red, "Player1");
-		}
-		else if (vict == -1) {
-			DrawFormatString(20, 20, Black, "Player2");
-		}
-		else {
-			DrawFormatString(20, 20, Green, "No one");
-		}
-		DrawFormatString(20 + 96, 20, Green, "Won");
-	}
-
 
 	/*===========================*/
 	//    盤面更新関連
@@ -306,32 +276,14 @@ public:
 				mother.update(global_x, global_y, child[global_x][global_y].victory());
 				if (child[local_x][local_y].victory() != 0) {
 					nextField = -1;
-					return RWD_DOM;
+					return 0;
 				}
 				else {
 					nextField = local_x * 3 + local_y;
-					return RWD_PUT;
+					return 0;
 				}
 			}
 		}
 		return -100.0;
-	}
-
-
-	/*===========================*/
-	//    デバッグ情報
-	/*===========================*/
-	void debugDump() {
-		if (debugFlg) {
-			int strColor = strColorDebug;
-			// Game
-			DrawFormatString(5, 25, strColor, "fps: %d", fps);
-			DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
-			DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
-			DrawFormatString(5, 85, strColor, "teban: %d", teban);
-			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
-			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
-			DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
-		}
 	}
 };

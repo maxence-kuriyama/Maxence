@@ -182,88 +182,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawLocalState();
 			game.drawCurrentCoord();
 
-			// メッセージの描画
-			game.drawBattleMessage();
-
-
-			// COMの手番
-			if (!game.isPlayTurn()) {
-				//input = StateToInput(lay_size[0], 1 - 2 * (game.cnt % 2));
-				//output = critic.predict(input);
-				//max_val = output.maxCoeff(&max_id);
-				//while (COMWait <= 0) {
-				//	if (unif(mt) < anl_rate) {
-				//		COMGx = rand() % 3; COMGy = rand() % 3;
-				//		COMLx = rand() % 3; COMLy = rand() % 3;
-				//		comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
-				//		anl_flg = 1;
-				//	}
-				//	else {
-				//		COMGx = (max_id / 27) % 3;
-				//		COMGy = (max_id / 9) % 3;
-				//		COMLx = (max_id / 3) % 3;
-				//		COMLy = max_id % 3;
-				//		comHistt[trainCnt] = max_id;
-				//		anl_flg = 0;
-				//	}
-				//	//盤面の更新
-				//	rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
-				//	if (rwd_tmp > -10.0) {
-				//		temp_i[trainCnt] = input;
-				//		temp_o[trainCnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
-				//		temp_o[trainCnt](comHistt[trainCnt]) = rwd_tmp;
-				//		if (trainCnt >= 1) {
-				//			if (game.vsCOM()) {
-				//				temp_o[trainCnt - 1](comHistt[trainCnt - 1]) += gamma * max_val + reward2;
-				//			}
-				//			else if (game.taijin == 2) {
-				//				temp_o[trainCnt - 1](comHistt[trainCnt - 1]) -= rwd_tmp;
-				//				if (trainCnt >= 2) {
-				//					temp_o[trainCnt - 2](comHistt[trainCnt - 2]) += gamma * max_val;
-				//				}
-				//			}
-				//		}
-				//		trainCnt++;
-				//		if (game.taijin == 2) COMWait = waitOnCOM;
-				//		break;
-				//	}
-				//}
-			}
-
 			// 勝利判定
 			vict = game.mother.victory();
 			if (vict != 0) {
 				game.goResult();
 			}
 		}
-		// 勝敗表示
-		else if (game.flg == 2) {
-			// 盤面の描画
-			game.drawBase();
-			game.drawGlobalState();
-			game.drawNextField();
-			game.drawLocalState();
-
-			// メッセージの描画
-			game.drawWinner(vict);
-			game.again.display(game.mouse, game.option.strColor);
-			if (game.again.isClicked(game.mouse)){
-				game.initialize();
-			}
-
-			// 自動学習モード
-			if (game.taijin == 2) {
-				game.initialize();
-			}
-		}
-
 
 		// 同期処理
 		game.sync();
 		if (COMWait > 0) COMWait--;
-
-		// デバッグ情報出力
-		game.debugDump();
 	}
 
 	InitGraph();
