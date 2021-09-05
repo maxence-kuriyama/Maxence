@@ -2,13 +2,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <time.h>
-#include <float.h>
 #include <iostream>
-#include <sstream>
 #include <fstream>
-#include <vector>
 #include <string>
-#include <random>
 #include <mbstring.h>
 #include <mbctype.h>
 
