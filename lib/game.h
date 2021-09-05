@@ -5,16 +5,6 @@
 #include "lib/field.h"
 
 
-class Option {
-public:
-	unsigned int White = GetColor(255, 255, 255);
-	unsigned int Black = GetColor(0, 0, 0);
-
-public:
-	int strColor = White;
-};
-
-
 class Game {
 private:
 	// 定数
@@ -68,7 +58,6 @@ public:
 	int localX = 1;
 	int localY = 1;			//キーボード操作時の座標
 
-	Option option;
 	Field mother;
 	Field child[3][3];
 	Mouse mouse;

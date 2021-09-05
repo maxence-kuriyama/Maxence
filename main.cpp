@@ -13,11 +13,6 @@ using namespace std;
 #include "lib/game.h"
 
 #pragma comment(lib, "winmm.lib")
-					//COMの選ぶ座標
-int COMWait = 0;
-int waitOnCOM = 20;						//COMが手を打つまでのウェイト
-int max_id = 0;
-double max_val = 0.0;
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -60,12 +55,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int Logo3 = LoadGraph("graph/Maxence_after3.png");
 	int Logo4 = LoadGraph("graph/Maxence_after4.png");
 	double logoX = 0.0;		// デモ画面用変数
-
-
-	double reward2, rwd_tmp;
-
-
-	int vict = 0;	// 勝敗格納用の一時変数
 
 
 	//メインループ
@@ -171,27 +160,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawNextField();
 			// プレイヤーの操作
 			if (game.isPlayTurn() && game.playTurn()) {
-				rwd_tmp = game.update();
-				if (rwd_tmp > -10.0) {
-					if (game.isVsCOM()) {
-						COMWait = waitOnCOM;
-						// reward2 = -rwd_tmp;
-					}
-				}
+				game.update();
 			}
 			game.drawLocalState();
 			game.drawCurrentCoord();
 
 			// 勝利判定
-			vict = game.mother.victory();
-			if (vict != 0) {
-				game.goResult();
-			}
+			game.mother.victory();
 		}
 
 		// 同期処理
 		game.sync();
-		if (COMWait > 0) COMWait--;
 	}
 
 	InitGraph();
