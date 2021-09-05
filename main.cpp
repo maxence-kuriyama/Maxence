@@ -977,7 +977,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//}
 		// シナリオ
 		else if (game.flg == -6) {
-			if (scenario.show(game.mouse, game.option.strColor)) {
+			if (scenario.show(game.mouse)) {
 				game.initialize();
 				initializeTrain();
 			}
@@ -991,6 +991,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// デバッグ情報出力
 		game.debugDump();
 		movie.debugDump(game.debugFlg);
+		scenario.debugDump(game.debugFlg);
 	}
 
 	InitGraph();

@@ -5,6 +5,9 @@
 void init_scene_text(string* scen_txt, int* scen_who);
 
 class Scenario {
+private:
+	int strColorDebug = GetColor(150, 0, 0);
+
 public:
 	int flg = 0;	// シナリオ管理用フラグ
 	int imgRoom;
@@ -90,15 +93,13 @@ public:
 		}
 	}
 
-	int show(Mouse& mouse, int strColor) {
+	int show(Mouse& mouse) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		for (int i = 0; i < 4; ++i) {
 			mrK[i].draw(eqX);
 		}
 		deer.draw();
-
-		DrawFormatString(5, 5, strColor, "flg:%d", flg);
 
 		switch (flg) {
 		case 0:
@@ -213,9 +214,28 @@ public:
 		}
 
 		msg.draw();
-		cnt++;
+		cnt = (cnt + 1) % 10000;
 
 		return 0;
+	}
+
+	void debugDump(int debug) {
+		if (debug) {
+			int strColor = strColorDebug;
+
+			DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
+			DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
+			DrawFormatString(245, 245, strColor, "textCnt: %d", textCnt);
+			DrawFormatString(245, 265, strColor, "eqX: %d", eqX);
+			DrawFormatString(245, 285, strColor, "textLen: %d", msg.textLen);
+			DrawFormatString(245, 305, strColor, "charCnt: %d", msg.charCnt);
+			DrawFormatString(245, 325, strColor, "who: %d", msg.who);
+			DrawFormatString(245, 345, strColor, "mrK0.vis: %d", mrK[0].visible);
+			DrawFormatString(245, 365, strColor, "mrK1.vis: %d", mrK[1].visible);
+			DrawFormatString(245, 385, strColor, "mrK2.vis: %d", mrK[2].visible);
+			DrawFormatString(245, 405, strColor, "mrK3.vis: %d", mrK[3].visible);
+			DrawFormatString(245, 425, strColor, "deer.vis: %d", deer.visible);
+		}
 	}
 };
 
