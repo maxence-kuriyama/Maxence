@@ -6,21 +6,44 @@ void init_scene_text(string* scen_txt, int* scen_who);
 
 class Scenario {
 private:
-	int strColorDebug = GetColor(150, 0, 0);
-
-public:
-	int flg = 0;	// シナリオ管理用フラグ
+	int cnt = 0;		// フレームカウンタ
+	int textCnt = 0;	// テキストカウンタ
 	int imgRoom;
 	int imgCard;
+	int eqX = 0;
+	int eqY = 0;		// eq = earthquake
+	int strColorDebug = GetColor(150, 0, 0);
+
+	void msgSet() {
+		msg.set(text[textCnt], who[textCnt]);
+	}
+
+	void msgLoad() {
+		textCnt++;
+		msgSet();
+	}
+
+	void happenEQ() {
+		eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
+	}
+
+	void stopEQ() {
+		eqX = 0;
+	}
+
+	void startMusic(const char* musicName) {
+		if (CheckMusic() != 1) {
+			PlayMusic(musicName, DX_PLAYTYPE_BACK);
+		}
+	}
+
+public:
+	int flg = 0;		// シナリオ管理用フラグ
 	MrK mrK[4];
 	MrK deer;
 	Message msg;
-	int textCnt = 0;	// テキストカウンタ
-	int eqX = 0;
-	int eqY = 0;		// eq = earthquake
 	string text[50];
 	int who[50];
-	int cnt = 0;	// フレームカウンタ
 
 	Scenario() {
 		init_scene_text(text, who);
@@ -45,23 +68,6 @@ public:
 		mrK[2].exhibit();
 		mrK[3].exhibit();
 		deer.hide();
-	}
-
-	void msgSet() {
-		msg.set(text[textCnt], who[textCnt]);
-	}
-
-	void msgLoad() {
-		textCnt++;
-		msgSet();
-	}
-
-	void happenEQ() {
-		eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
-	}
-
-	void stopEQ() {
-		eqX = 0;
 	}
 
 	// NEXTが出るまでメッセージを読む
@@ -90,12 +96,6 @@ public:
 	void waitClick(Mouse& mouse){
 		if (mouse.click()) {
 			flg++;
-		}
-	}
-
-	void startMusic(const char* musicName) {
-		if (CheckMusic() != 1) {
-			PlayMusic(musicName, DX_PLAYTYPE_BACK);
 		}
 	}
 

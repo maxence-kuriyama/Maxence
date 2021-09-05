@@ -1,16 +1,31 @@
 #pragma once
 
+#include "lib/basic.h"
+
+
 class Logo {
-public:
-	double acRate = 0.0;
+private:
 	int titleX = 445;
 	int titleY = 400;
 	int image;
+
+public:
+	double acRate = 0.0;
+
+	Logo() {
+		initialize();
+	}
+
+	~Logo() {
+		DeleteGraph(image);
+	}
 
 	void initialize() {
 		acRate = 0.0;
 		titleX = 445;
 		titleY = 400;
+		DeleteGraph(image);
+		image = LoadGraph("graph/Maxence_after4.png");
 	}
 
 	void update() {
@@ -35,5 +50,25 @@ public:
 
 	void draw() {
 		DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, image, TRUE);
+	}
+
+	void draw(Mouse& mouse) {
+		if (mouse.onButton(titleX, titleY - 5, titleX + 185, titleY + 65)) {
+			DrawBox(titleX, titleY - 5, titleX + 185, titleY + 65, GetColor(20, 150, 150), TRUE);
+		}
+		DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, image, TRUE);
+	}
+
+	bool isClicked(Mouse& mouse) {
+		int upLeftX = titleX;
+		int upLeftY = titleY - 5;
+		int lowRightX = titleX + 185;
+		int lowRightY = titleY + 65;
+		if (mouse.x > upLeftX && mouse.x < lowRightX && mouse.y > upLeftY && mouse.y < lowRightY) {
+			if (mouse.click()) {
+				return true;
+			}
+		}
+		return false;
 	}
 };

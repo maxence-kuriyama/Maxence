@@ -98,8 +98,6 @@ public:
 		senko.initialize(TEXT1_X, TEXT1_Y, "æU");
 		koko.initialize(TEXT2_X, TEXT2_Y, "ŒãU");
 		again.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "‚à‚¤ˆê‰ñ");
-		// ƒƒS‰Šú‰»
-		logo.image = LoadGraph("graph/Maxence_after4.png");
 		// ƒJƒbƒgƒCƒ“‰æ‘œ‰Šú‰»
 		int Cutin1 = LoadGraph("graph/cutin1.png");
 		int Cutin10 = LoadGraph("graph/cutin10.png");
@@ -215,10 +213,7 @@ public:
 	/*===========================*/
 	void drawLogo() {
 		if (flg > 0) {
-			if (mouse.onButton(logo.titleX, logo.titleY - 5, logo.titleX + 185, logo.titleY + 65)) {
-				DrawBox(logo.titleX, logo.titleY - 5, logo.titleX + 185, logo.titleY + 65, GetColor(20, 150, 150), TRUE);
-			}
-			logo.draw();
+			logo.draw(mouse);
 			if (flg == 1) {
 				logo.update();
 			}
@@ -227,15 +222,13 @@ public:
 
 	int reset() {
 		if (flg > 0) {
-			if (mouse.onButton(logo.titleX, logo.titleY - 5, logo.titleX + 185, logo.titleY + 65)) {
-				if (mouse.button[0] == 1) {
-					mouse.set();
-					goTitle();
-					taijin = 0;
-					mode = "";
-					StopMusic();
-					return 1;
-				}
+			if (logo.isClicked(mouse)) {
+				mouse.set();
+				goTitle();
+				taijin = 0;
+				mode = "";
+				StopMusic();
+				return 1;
 			}
 		}
 		return 0;

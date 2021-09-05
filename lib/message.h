@@ -36,15 +36,17 @@ public:
 
 
 class Message {
-public:
-	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+private:
+	MrK sprite[6];
+	string text;
 	int strColor = GetColor(255, 255, 255);
 	int boxColor = GetColor(250, 250, 150);
-	MrK sprite[6];
+	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+
+public:
+	int who;
 	int charCnt = 0;	// 文字描画カウンタ (<= textLen)
 	int textLen = 0;	// テキスト長
-	string text;
-	int who;
 
 	void initialize() {
 		for (int i = 0; i < 6; ++i) {
