@@ -34,11 +34,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Game game;
 
-
-	// íX‚Ìƒnƒ“ƒhƒ‹
-	unsigned int Green = GetColor(0, 255, 0);
-	unsigned int Red = GetColor(255, 0, 0);
-	unsigned int Blue = GetColor(0, 0, 255);
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
 

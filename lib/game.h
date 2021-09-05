@@ -8,20 +8,7 @@
 class Game {
 private:
 	// íËêî
-	int Green = GetColor(0, 255, 0);
-	int Red = GetColor(255, 0, 0);
-	int Blue = GetColor(0, 0, 255);
-	int White = GetColor(255, 255, 255);
-	int Black = GetColor(0, 0, 0);
-	int bkColorBase = GetColor(255, 255, 245);
-	int frColorBase = Black;
-	int bkColorLastHist = GetColor(255, 160, 160);
-	int bkColorStateWin = GetColor(130, 70, 70);
-	int bkColorStateLose = GetColor(70, 70, 130);
-	int bkColorStateDraw = GetColor(70, 130, 70);
-	int frColorNextField = Red;
-	int frColorCurrentCoord = Black;
-	int strColorDebug = Blue;
+	unsigned int White = GetColor(100, 100, 100);
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
@@ -143,10 +130,10 @@ public:
 	//    î’ñ ï\é¶ä÷òA
 	/*===========================*/
 	void drawBase() {
-		DrawBox(160, 80, 460, 380, bkColorBase, TRUE);
+		DrawBox(160, 80, 460, 380, White, TRUE);
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), frColorBase, FALSE);
+				DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), White, FALSE);
 			}
 		}
 	}
@@ -159,13 +146,13 @@ public:
 				int lowRightX = 160 + 100 * (i + 1) - 1;
 				int lowRightY = 80 + 100 * (j + 1) - 1;
 				if (mother.state[i][j] == 1) {
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorStateWin, TRUE);
+					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, TRUE);
 				}
 				else if (mother.state[i][j] == -1) {
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorStateLose, TRUE);
+					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, TRUE);
 				}
 				else if (mother.state[i][j] != 0) {
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorStateDraw, TRUE);
+					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, TRUE);
 				}
 			}
 		}
@@ -180,7 +167,7 @@ public:
 						int upLeftY = 80 + 100 * j + w;
 						int lowRightX = 160 + 100 * (i + 1) - w;
 						int lowRightY = 80 + 100 * (j + 1) - w;
-						DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorNextField, FALSE);
+						DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, FALSE);
 					}
 				}
 				else if (nextField == -1 && child[i][j].victory() == 0) {
@@ -188,7 +175,7 @@ public:
 					int upLeftY = 80 + 100 * j;
 					int lowRightX = 160 + 100 * (i + 1);
 					int lowRightY = 80 + 100 * (j + 1);
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorNextField, FALSE);
+					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, FALSE);
 				}
 			}
 		}
@@ -207,7 +194,7 @@ public:
 		int upLeftY = 80 + 100 * globalY + 33 * localY;
 		int lowRightX = 160 + 100 * globalX + 33 * (localX + 1) + 1;
 		int lowRightY = 80 + 100 * globalY + 33 * (localY + 1) + 1;
-		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
+		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, FALSE);
 	}
 
 
