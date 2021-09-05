@@ -9,10 +9,6 @@ class Game {
 private:
 	// 定数
 	unsigned int White = GetColor(100, 100, 100);
-	int stone1 = LoadGraph("graph/stone1.png");
-	int stone2 = LoadGraph("graph/stone2.png");
-	int stone1_t = LoadGraph("graph/stone1.png");
-	int stone2_t = LoadGraph("graph/stone2.png");
 
 	// 同期処理関連
 	long start = clock();	// 同期処理開始時刻
@@ -50,15 +46,6 @@ public:
 		// ボタン初期化
 		lonely.initialize(200, 300, "ぼっちで");
 		vsHuman.initialize(400, 300, "隣の人と");
-		// フィールド画像初期化
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				child[i][j].stone1 = stone1;
-				child[i][j].stone2 = stone2;
-				child[i][j].stone1_t = stone1_t;
-				child[i][j].stone2_t = stone2_t;
-			}
-		}
 		// game初期化
 		initialize(-3);
 	}
