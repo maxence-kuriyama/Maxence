@@ -1,6 +1,7 @@
 #pragma once
 
-#include "lib/message.h"
+#include "lib/basic.h"
+
 
 void init_scene_text(string* scen_txt, int* scen_who);
 
@@ -13,15 +14,6 @@ private:
 	int eqX = 0;
 	int eqY = 0;		// eq = earthquake
 	int strColorDebug = GetColor(150, 0, 0);
-
-	void msgSet() {
-		msg.set(text[textCnt], who[textCnt]);
-	}
-
-	void msgLoad() {
-		textCnt++;
-		msgSet();
-	}
 
 	void happenEQ() {
 		eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
@@ -39,9 +31,6 @@ private:
 
 public:
 	int flg = 0;		// シナリオ管理用フラグ
-	MrK mrK[4];
-	MrK deer;
-	Message msg;
 	string text[50];
 	int who[50];
 
@@ -49,46 +38,19 @@ public:
 		init_scene_text(text, who);
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
-		mrK[0].set(160, 120, "graph/stripe11.png", 1);
-		mrK[1].set(480, 120, "graph/stripe12.png", 1);
-		mrK[2].set(160, 240, "graph/stripe13.png", 1);
-		mrK[3].set(480, 240, "graph/stripe14.png", 1);
-		deer.set(270, 200, "graph/stripe15.png", 0);
 		initialize();
-		msg.initialize();
 	}
 
 	void initialize() {
 		flg = 0;
 		cnt = 0;
 		textCnt = 0;
-		msg.set(text[textCnt], who[textCnt]);
-		mrK[0].exhibit();
-		mrK[1].exhibit();
-		mrK[2].exhibit();
-		mrK[3].exhibit();
-		deer.hide();
-	}
-
-	// NEXTが出るまでメッセージを読む
-	void readMsg(Mouse& mouse) {
-		if (mouse.click() && msg.skip()) {
-			if (text[textCnt + 1] == "NEXT") {
-				flg++;
-				textCnt++;
-			}
-			else {
-				textCnt = min(36, textCnt + 1);
-				msgSet();
-			}
-		}
 	}
 
 	// 次のメッセージを読みながら場面転換
 	void nextMsg(Mouse& mouse) {
 		if (mouse.click()) {
 			flg++;
-			msgLoad();
 		}
 	}
 
@@ -102,19 +64,13 @@ public:
 	int show(Mouse& mouse) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
-		for (int i = 0; i < 4; ++i) {
-			mrK[i].draw(eqX);
-		}
-		deer.draw();
 
 		switch (flg) {
 		case 0:
 			startMusic("sound/bgm03.mp3");
-			readMsg(mouse);
 			break;
 		case 1:
 			// 鹿が現れる
-			deer.exhibit();
 			nextMsg(mouse);
 			break;
 		case 2:
@@ -124,9 +80,6 @@ public:
 			break;
 		case 3:
 			// 青消える
-			deer.hide();
-			mrK[1].hide();
-			readMsg(mouse);
 			break;
 		case 4:
 			// 地震
@@ -135,21 +88,17 @@ public:
 			break;
 		case 5:
 			stopEQ();
-			readMsg(mouse);
 			break;
 		case 6:
 			// 第一戦
 			StopMusic();
 			startMusic("sound/bgm04.mp3");
-			msgLoad();
 			return 1;
 		case 7:
 			startMusic("sound/bgm03.mp3");
-			readMsg(mouse);
 			break;
 		case 8:
 			// 赤が死ぬ
-			mrK[2].hide();
 			waitClick(mouse);
 			break;
 		case 9:
@@ -159,21 +108,17 @@ public:
 			break;
 		case 10:
 			stopEQ();
-			readMsg(mouse);
 			break;
 		case 11:
 			// 第二戦
 			StopMusic();
 			startMusic("sound/bgm05.mp3");
-			msgLoad();
 			return 1;
 		case 12:
 			startMusic("sound/bgm03.mp3");
-			readMsg(mouse);
 			break;
 		case 13:
 			// 緑が死ぬ
-			mrK[3].hide();
 			waitClick(mouse);
 			break;
 		case 14:
@@ -184,18 +129,15 @@ public:
 		case 15:
 			// 青が出てくる
 			stopEQ();
-			mrK[1].exhibit();
 			nextMsg(mouse);
 			break;
 		case 17:
 			// 第三戦
 			StopMusic();
 			startMusic("sound/bgm06.mp3");
-			msgLoad();
 			return 1;
 		case 19:
 			// 青が死ぬ
-			mrK[1].hide();
 			waitClick(mouse);
 			break;
 		case 20:
@@ -206,20 +148,16 @@ public:
 		case 21:
 			stopEQ();
 			startMusic("sound/bgm07.mp3");
-			readMsg(mouse);
 			break;
 		case 22:
 			// 第四戦
 			StopMusic();
 			startMusic("sound/bgm08.mp3");
-			msgLoad();
 			return 1;
 		default:
-			readMsg(mouse);
 			break;
 		}
 
-		msg.draw();
 		cnt = (cnt + 1) % 10000;
 
 		return 0;
@@ -233,14 +171,6 @@ public:
 			DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
 			DrawFormatString(245, 245, strColor, "textCnt: %d", textCnt);
 			DrawFormatString(245, 265, strColor, "eqX: %d", eqX);
-			DrawFormatString(245, 285, strColor, "textLen: %d", msg.textLen);
-			DrawFormatString(245, 305, strColor, "charCnt: %d", msg.charCnt);
-			DrawFormatString(245, 325, strColor, "who: %d", msg.who);
-			DrawFormatString(245, 345, strColor, "mrK0.vis: %d", mrK[0].visible);
-			DrawFormatString(245, 365, strColor, "mrK1.vis: %d", mrK[1].visible);
-			DrawFormatString(245, 385, strColor, "mrK2.vis: %d", mrK[2].visible);
-			DrawFormatString(245, 405, strColor, "mrK3.vis: %d", mrK[3].visible);
-			DrawFormatString(245, 425, strColor, "deer.vis: %d", deer.visible);
 		}
 	}
 };
