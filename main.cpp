@@ -1,15 +1,7 @@
 #include "DxLib.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
-#include <time.h>
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <mbstring.h>
-#include <mbctype.h>
 
 using namespace DxLib;
-using namespace std;
 #include "lib/game.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -26,10 +18,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
-	SetUseZBuffer3D(TRUE);
-	SetWriteZBuffer3D(TRUE);
-	SetBackgroundColor(0, 0, 0);	//îwåiêF
-	srand((unsigned)time(NULL));
 
 
 	Game game;

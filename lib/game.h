@@ -1,6 +1,5 @@
 #pragma once
 
-#include <time.h>
 #include "lib/basic.h"
 #include "lib/field.h"
 
@@ -12,11 +11,8 @@ private:
 	unsigned int Black = GetColor(0, 0, 0);
 
 public:
-	int taijin = 0;		// 0: vsHuman, 1: vsCOM, 2: AutoLearning
-	int teban = 0;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
 	int nextField = -1;		// 次の盤面、-1: anywhere
-	string mode = "";
 
 	// 盤面上の操作関連
 	int globalX = 1;
@@ -41,7 +37,6 @@ public:
 				child[i][j].initialize();
 			}
 		}
-		mouse.set();
 	}
 
 
