@@ -77,7 +77,6 @@ public:
 	Field child[3][3];
 	Mouse mouse;
 	Key key;
-	Logo logo;
 	Menu menu;
 	Button lonely;
 	Button vsHuman;
@@ -181,42 +180,6 @@ public:
 		flg = 2;
 	}
 
-	void goScenario() {
-		flg = -6;
-	}
-
-	void goEnding() {
-		flg = -4;
-	}
-
-
-
-	/*===========================*/
-	//    リセットボタン
-	/*===========================*/
-	void drawLogo() {
-		if (flg > 0) {
-			logo.draw(mouse);
-			if (flg == 1) {
-				logo.update();
-			}
-		}
-	}
-
-	int reset() {
-		if (flg > 0) {
-			if (logo.isClicked(mouse)) {
-				mouse.set();
-				goTitle();
-				taijin = 0;
-				mode = "";
-				StopMusic();
-				return 1;
-			}
-		}
-		return 0;
-	}
-
 
 	/*===========================*/
 	//    メニュー画面
@@ -234,25 +197,9 @@ public:
 	//    キーボード入力関連
 	/*===========================*/
 	void toggleByKey() {
-		key.toggleSetting(option, logo);
+		key.toggleSetting(option);
 		//key.configLearning();
 		key.toggleDebug(debugFlg);
-	}
-
-	void toggleHighSpeedLearning() {
-		if (key.toggleHighSpeedLearning(flg) == 1) {
-			mode = "オート";
-			initialize(flg);
-			initializeTrain();
-		}
-	}
-
-	void toggleAutoLearning() {
-		if (key.toggleAutoLearning(flg, taijin) == 1 || key.toggleHighSpeedLearning(flg) == 1) {
-			mode = "オート";
-			initialize(flg);
-			initializeTrain();
-		}
 	}
 
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "lib/logo.h"
-
 
 class Option {
 public:
@@ -118,16 +116,7 @@ public:
 		return false;
 	}
 
-	void toggleSetting(Option& option, Logo& logo) {
-		// ロゴを動かす
-		if (state[KEY_INPUT_AT] == 1) {
-			if (logo.acRate >= 0.5) {
-				logo.initialize();
-			}
-			else {
-				logo.acRate += 1.0;
-			}
-		}
+	void toggleSetting(Option& option) {
 
 		// 文字色の変更
 		if (state[KEY_INPUT_I] == 1) {
@@ -163,65 +152,10 @@ public:
 		*/
 	}
 
-	// 返り値1でゲームを初期化する
-	int toggleHighSpeedLearning(int& gameFlg) {
-		// 高速自動学習モード
-		if (state[KEY_INPUT_H] == 1) {
-			gameFlg = 5;
-			return 1;
-		}
-		return 0;
-	}
-
-	// 返り値1でゲームを初期化する
-	int toggleAutoLearning(int& gameFlg, int& taijin) {
-		// 自動学習モード
-		if (state[KEY_INPUT_A] == 1) {
-			taijin = 2;
-			gameFlg = 1;
-			return 1;
-		}
-		return 0;
-	}
-
 	void toggleDebug(int& debugFlg) {
 		//デバッグモード解除
 		if (state[KEY_INPUT_G] == 1) {
 			debugFlg = (debugFlg + 1) % 2;
-		}
-	}
-
-	void toggleForDebug(Option& option, int& cutinFlg) {
-		// カットインを入れる
-		if (state[KEY_INPUT_C] == 1) {
-			cutinFlg = 1;
-		}
-
-		// 学習機械の出力を見る
-		if (state[KEY_INPUT_V] == 1) {
-			option.likeliFlg = (option.likeliFlg + 1) % 3;
-		}
-
-		/*
-		// エンディングモード
-		if (state[KEY_INPUT_MINUS] == 1) {
-			if (game.flg != -4) {
-				game.flg = -4;
-			}
-			else {
-				StopMusic();
-				game.flg = 0;
-			}
-			end_cnt = 0;
-		}
-		*/
-	}
-
-	void skipBattle(int& gameFlg, int& sceneFlg) {
-		if (state[KEY_INPUT_B] == 1) {
-			StopMusic();
-			sceneFlg++;
-			gameFlg = -6;
 		}
 	}
 

@@ -74,10 +74,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		game.key.update();
 		game.mouse.update();
 
-		// リセットボタンを表示する
-		game.reset();
-		game.drawLogo();
-
 		// 設定を切り替える
 		game.toggleByKey();
 
@@ -88,7 +84,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (game.key.isUsed()) {
 			game.keyboardFlg = 1;
 		}
-
 
 		// OPアニメーション ClickToStartまで
 		if (game.flg == -3){
@@ -175,21 +170,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					game.initialize();
 					initializeTrain();
 				}
-
-				//オートモード
-				game.toggleAutoLearning();
-			}
-			//タイトル画面その２（「ぼっちで」選択時）
-			else if (game.isVsCOM()) {
-				int choice = game.menuChoose();
-				if (choice == 0) {
-					game.goScenario();
-					game.teban = 0;
-				}
-				else if (choice == 1) {
-					game.goScenario();
-					game.teban = 1;
-				}
 			}
 		}
 		// Game Loop
@@ -269,9 +249,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// 永遠に勝敗がつかない場合の処理
 			game.stopDrawGame();
-
-			// 高速学習モードへの切り替え
-			game.toggleHighSpeedLearning();
 
 		}
 		// 勝敗表示
