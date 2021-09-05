@@ -10,12 +10,6 @@ private:
 	// 定数
 	unsigned int White = GetColor(100, 100, 100);
 
-	// 同期処理関連
-	long start = clock();	// 同期処理開始時刻
-	long fpsStart = clock();	// fps計測開始時刻
-	int fps = 0;			// fps出力用
-	int fpsCnt = 0;			// fps計測用
-
 public:
 	int flg = -3;	// -3,..,-1: Demo
 					// 0: Menu, 1: Game, 2: Result
@@ -62,23 +56,6 @@ public:
 		}
 		mouse.set();
 	}
-
-	// 同期処理
-	void sync() {
-		// 実効fps計測
-		fpsCnt++;
-		if (clock() - fpsStart > 1000.0) {
-			fps = fpsCnt;
-			fpsCnt = 0;
-			fpsStart = clock();
-		}
-		// 同期処理
-		while (clock() - start < 1000.0 / 60 && flg != 5) {
-			WaitTimer(1);
-		}
-		start = clock();
-	}
-
 
 	/*===========================*/
 	//    Boolean

@@ -160,9 +160,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// Ÿ—˜”»’è
 			game.mother.victory();
 		}
-
-		// “¯Šúˆ—
-		game.sync();
 	}
 
 	InitGraph();
