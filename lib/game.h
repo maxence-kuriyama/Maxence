@@ -7,7 +7,6 @@
 #include "lib/hist.h"
 #include "lib/keyboard.h"
 #include "lib/menu.h"
-#include "lib/comment.h"
 
 
 //int trainCnt = 0;
@@ -82,7 +81,6 @@ public:
 	Mouse mouse;
 	Key key;
 	Logo logo;
-	Comment comment;
 	Menu menu;
 	Button lonely;
 	Button vsHuman;
@@ -97,7 +95,6 @@ public:
 		senko.initialize(TEXT1_X, TEXT1_Y, "先攻");
 		koko.initialize(TEXT2_X, TEXT2_Y, "後攻");
 		again.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
-		comment.initialize();
 		// フィールド画像初期化
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -358,15 +355,6 @@ public:
 		DrawFormatString(540, 144, option.strColor, "一手戻る");
 	}
 
-	void drawComment() {
-		// コメント描画
-		if (option.commentFlg) {
-			comment.draw(option.strColor);
-		}
-		// コメント差し替え
-		comment.update();
-	}
-
 	void drawWinner(int vict) {
 		if (vict == 1) {
 			DrawFormatString(20, 20, Red, "Player1");
@@ -522,14 +510,6 @@ public:
 			DrawFormatString(125, 205, strColor, "last[2]: %d", hist.last[2]);
 			DrawFormatString(125, 225, strColor, "last[3]: %d", hist.last[3]);
 			DrawFormatString(125, 245, strColor, "last[4]: %d", hist.last[4]);
-			// Comment
-			DrawFormatString(245, 25, strColor, "maxSize: %d", comment.texts.maxSize);
-			DrawFormatString(245, 45, strColor, "size: %d", comment.texts.size);
-			DrawFormatString(245, 65, strColor, "comX: %d", comment.x);
-			DrawFormatString(245, 85, strColor, "comY: %d", comment.y);
-			DrawFormatString(245, 105, strColor, "textId: %d", comment.textId);
-			DrawFormatString(245, 125, strColor, "textSeq: %d", comment.textSeq);
-			DrawFormatString(245, 145, strColor, "comCnt: %d", comment.cnt);
 			// Menu
 			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
 			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);

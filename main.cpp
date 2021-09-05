@@ -265,10 +265,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//}
 			}
 
-			// ƒRƒƒ“ƒg‚Ì•`‰æ
-			game.drawComment();
-
-
 			// Ÿ—˜”»’è
 			vict = game.mother.victory();
 			if (vict != 0) {
