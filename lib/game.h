@@ -4,7 +4,6 @@
 #include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/field.h"
-#include "lib/menu.h"
 
 
 class Option {
@@ -76,7 +75,6 @@ public:
 	Field mother;
 	Field child[3][3];
 	Mouse mouse;
-	Menu menu;
 	Button lonely;
 	Button vsHuman;
 	Button senko;
@@ -115,7 +113,6 @@ public:
 			}
 		}
 		mouse.set();
-		menu.set(lonely, vsHuman);
 	}
 
 	// ìØä˙èàóù
@@ -165,18 +162,6 @@ public:
 
 	void goResult() {
 		flg = 2;
-	}
-
-
-	/*===========================*/
-	//    ÉÅÉjÉÖÅ[âÊñ 
-	/*===========================*/
-	int menuChoose() {
-		return menu.choose(keyboardFlg, mouse, option.strColor);
-	}
-
-	void setOrderMenu() {
-		menu.set(senko, koko);
 	}
 
 
@@ -347,17 +332,6 @@ public:
 			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
 			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 			DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
-			// Menu
-			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
-			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);
-			DrawFormatString(365, 65, strColor, "btn1.upLX: %d", menu.button[0].upLeftX);
-			DrawFormatString(365, 85, strColor, "btn1.upLY: %d", menu.button[0].upLeftY);
-			DrawFormatString(365, 105, strColor, "btn1.lowRX: %d", menu.button[0].lowRightX);
-			DrawFormatString(365, 125, strColor, "btn1.lowRY: %d", menu.button[0].lowRightY);
-			DrawFormatString(365, 145, strColor, "btn2.upLX: %d", menu.button[1].upLeftX);
-			DrawFormatString(365, 165, strColor, "btn2.upLY: %d", menu.button[1].upLeftY);
-			DrawFormatString(365, 185, strColor, "btn2.lowRX: %d", menu.button[1].lowRightX);
-			DrawFormatString(365, 205, strColor, "btn2.lowRY: %d", menu.button[1].lowRightY);
 		}
 	}
 };

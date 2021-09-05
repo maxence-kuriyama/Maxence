@@ -150,13 +150,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			//タイトル画面その１
 			if (game.isVsHuman()) {
-				int choice = game.menuChoose();
-				if (choice == 0) {
+				game.lonely.display(game.mouse, White);
+				game.vsHuman.display(game.mouse, White);
+				if (game.lonely.isClicked(game.mouse)) {
 					game.mode = "ぼっちで";
 					game.taijin = 1;
-					game.setOrderMenu();
 				}
-				else if (choice == 1) {
+				if (game.vsHuman.isClicked(game.mouse)) {
 					game.mode = "隣の人と";
 					game.initialize();
 				}
