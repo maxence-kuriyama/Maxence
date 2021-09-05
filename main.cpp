@@ -18,7 +18,6 @@ using namespace std;
 #include "lib/fireflower.h"
 #include "lib/ending.h"
 #include "lib/game.h"
-#include "lib/movie.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -59,7 +58,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	Game game;
-	Movie movie;
 	fireflower tama[FIRE_FLOWER_NUM];
 
 
@@ -210,9 +208,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		game.key.update();
 		game.mouse.update();
 
-		// ローディングメッセージ
-		movie.drawLoadMsg();
-
 		// リセットボタンを表示する
 		if (game.reset() == 1) {
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
@@ -324,18 +319,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					game.setOrderMenu();
 				}
 				else if (choice == 1) {
-					movie.loadOnce("movie/battle.ogv");
 					game.mode = "隣の人と";
-				}
-
-				if (movie.isPrepared()){
-					SetBackgroundColor(0, 0, 0);
-					if (movie.play(game.key, game.debugFlg)) {
-						movie.unload();
-						game.initialize();
-						initializeTrain();
-					}
-					SetBackgroundColor(0, 128, 128);
+					game.initialize();
+					initializeTrain();
 				}
 
 				//オートモード
@@ -981,7 +967,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// デバッグ情報出力
 		game.debugDump();
-		movie.debugDump(game.debugFlg);
 	}
 
 	InitGraph();
