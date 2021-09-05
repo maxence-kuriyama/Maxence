@@ -220,6 +220,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].initialize();
 			}
+			scenario.initialize();
 		}
 		game.drawLogo();
 

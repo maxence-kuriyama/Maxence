@@ -37,8 +37,14 @@ public:
 
 	void initialize() {
 		flg = 0;
+		cnt = 0;
 		textCnt = 0;
 		msg.set(text[textCnt], who[textCnt]);
+		mrK[0].exhibit();
+		mrK[1].exhibit();
+		mrK[2].exhibit();
+		mrK[3].exhibit();
+		deer.hide();
 	}
 
 	void msgSet() {
