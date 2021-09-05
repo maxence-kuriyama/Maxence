@@ -18,16 +18,7 @@ using namespace std;
 #include "lib/game.h"
 
 #pragma comment(lib, "winmm.lib")
-
-//VectorXd StateToInput(int dim, int side);
-//VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
-//VectorXd softmax(const VectorXd &src, double alpha);
-
-
-int COMGx = 1;
-int COMGy = 1;
-int COMLx = 1;
-int COMLy = 1;							//COMの選ぶ座標
+					//COMの選ぶ座標
 int COMWait = 0;
 int waitOnCOM = 20;						//COMが手を打つまでのウェイト
 int max_id = 0;
@@ -80,102 +71,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int Logo4 = LoadGraph("graph/Maxence_after4.png");
 	double logoX = 0.0;		// デモ画面用変数
 
-	// 3Dモデル関係
-	/*
-	int ModelHandle = MV1LoadModel("movie/max0.mv1");
-	float totalTime, playTime = 0.0;
-	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
-	MV1SetScale(ModelHandle, VGet(0.1, 0.1, 0.1));
-	//MV1SetRotationXYZ(ModelHandle, VGet(0.0, -0.5 * DX_PI_F, 0.0));
-	MV1SetRotationXYZ(ModelHandle, VGet(0.0, DX_PI_F, 0.0));
-	//int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
-	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
-	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
-	*/
-	double theta = 0.3;
 
-	////学習関連
-	//int train_game_cnt = 0;
-	//int train_turn_cnt = 0;
-	//int train_correct_cnt = 0;
-	//int epic = 0;
-	//int game_per_epic = 20;
-	//int max_epic = 100;
-	//double loss_per_epic[100] = { 0.0 };
-	//int correct_per_epic[100] = { 0 };
-	//int turn_per_epic[100] = { 0 };
-	//double tmp_loss = 0.0;
-	//int dbg_cnt = 0;
-
-	////学習機械関連
-	//int lay_len = 3;//6;
-	//int lay_size[4] = { 162, 800, 400, 81 };
-	////int lay_size[7] = { 162, 1000, 2000, 2000, 1000, 500, 81 };
-	//VectorXd input(lay_size[0]);
-	//VectorXd output;
-	//VectorXd p_output;
-	//double eps = 0.002; //学習定数
-	//double gamma = 0.95; //割引率
-	//double mom = 0.9;
-	//double varc = 0.999;	// adamのパラメータ
-	//VectorXd temp_i[100];
-	//VectorXd temp_o[100];	//学習用データの一時保存用ベクトル
-	//MatrixXd train_i;
-	//MatrixXd train_o;		//バッチ学習用のデザイン行列
 	double reward2, rwd_tmp;
-	//double anl_rate = 0.0;	//epsilon-greedyの割合
-	//double alpha = 2.1;	//softmaxの係数
-	int anl_flg = 0;
-
-	//// MLPの初期化
-	//MatrixXd P1 = MatrixXd::Random(lay_size[0], lay_size[1]);
-	//VectorXd B1 = VectorXd::Random(lay_size[1]);
-	//MatrixXd P2 = MatrixXd::Random(lay_size[1], lay_size[2]);
-	//VectorXd B2 = VectorXd::Random(lay_size[2]);
-	//MatrixXd P3 = MatrixXd::Random(lay_size[2], lay_size[3]);
-	//VectorXd B3 = VectorXd::Random(lay_size[3]);
-	////MatrixXd P4 = MatrixXd::Random(lay_size[3], lay_size[4]);
-	////VectorXd B4 = VectorXd::Random(lay_size[4]);
-	////MatrixXd P5 = MatrixXd::Random(lay_size[4], lay_size[5]);
-	////VectorXd B5 = VectorXd::Random(lay_size[5]);
-	////MatrixXd P6 = MatrixXd::Random(lay_size[5], lay_size[6]);
-	////VectorXd B6 = VectorXd::Random(lay_size[6]);
-	//P1 = P1 * sqrt(0.1 / lay_size[0]);
-	//B1 = B1 * 0.1;
-	//P2 = P2 * sqrt(0.1 / lay_size[1]);
-	//B2 = B2 * 0.1;
-	//P3 = P3 * sqrt(0.1 / lay_size[2]);
-	//B3 = B3 * 0.05;
-	////P4 = P4 * sqrt(0.1 / lay_size[3]);
-	////B4 = B4 * 0.05;
-	////P5 = P5 * sqrt(0.1 / lay_size[4]);
-	////B5 = B5 * 0.05;
-	////P6 = P6 * sqrt(0.1 / lay_size[5]);
-	////B6 = B6 * 0.05;
-	//::Affine Q1(P1, B1, true, mom, varc);
-	//::Affine Q2(P2, B2, true, mom, varc);
-	//::Affine Q3(P3, B3, true, mom, varc);
-	////::Affine Q4(P4, B4, true, mom, varc);
-	////::Affine Q5(P5, B5, true, mom, varc);
-	////::Affine Q6(P6, B6, true, mom, varc);
-	//ActLayer R1("relu");
-	//ActLayer R2("relu");
-	////ActLayer R3("relu");
-	////ActLayer R4("relu");
-	////ActLayer R5("relu");
-	//Machine critic(5, IdentityV, eps, "adam");
-	////Machine critic(11, teacher, eps, "adam");
-	//critic.setLayer(Q1, 0);
-	//critic.setLayer(R1, 1);
-	//critic.setLayer(Q2, 2);
-	//critic.setLayer(R2, 3);
-	//critic.setLayer(Q3, 4);
-	////critic.setLayer(R3, 5);
-	////critic.setLayer(Q4, 6);
-	////critic.setLayer(R4, 7);
-	////critic.setLayer(Q5, 8);
-	////critic.setLayer(R5, 9);
-	////critic.setLayer(Q6, 10);
 
 
 	int vict = 0;	// 勝敗格納用の一時変数
@@ -342,36 +239,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// メッセージの描画
 			game.drawBattleMessage();
-			/*
-			if (anl_flg) {
-				DrawFormatString(540, 0, Green, "annealed!");
-			}
-			*/
 
-			// 学習機械の出力描画
-			if (game.option.likeliFlg >= 1) {
-				for (int i = 0; i < 3; ++i) {
-					for (int j = 0; j < 3; ++j) {
-						for (int k = 0; k < 3; ++k) {
-							for (int l = 0; l < 3; ++l) {
-								/*
-								double col_tmp = min(max(240.0 * (output(27 * i + 9 * j + 3 * k + l) + 0.5), 0.0), 255.0);
-								DrawCircle(160 + 100 * i + 33 * k + 16, 80 + 100 * j + 33 * l + 16, 15, GetColor(255, 255, 255 - col_tmp));
-								if (game.option.likeliFlg == 2) {
-									char str_tmp[10];
-									sprintf_s(str_tmp, "%.4f", output(27 * i + 9 * j + 3 * k + l));
-									DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 2, str_tmp, Red, Font1);
-									if (trainCnt >= 1) {
-										sprintf_s(str_tmp, "%.4f", temp_o[trainCnt - 1](27 * i + 9 * j + 3 * k + l));
-										DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 12, str_tmp, Blue, Font1);
-									}
-								}
-								*/
-							}
-						}
-					}
-				}
-			}
 
 			// COMの手番
 			if (!game.isPlayTurn()) {
@@ -428,41 +296,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (vict != 0) {
 				game.goResult();
 				game.key.initWait();
-				//学習
-				/*if (game.vsCOM()) {
-					if (vict == teban * 2 - 1) {
-						temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
-					}else {
-						temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = -RWD_VICT;
-					}
-				}
-				else if (game.taijin == 2) {
-					temp_o[trainCnt - 2](comHistt[trainCnt - 2]) = -RWD_VICT;
-					temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
-				}
-				train_i.setZero(trainCnt, lay_size[0]);
-				train_o.setZero(trainCnt, lay_size[lay_len]);
-				for (int i = 0; i < trainCnt; ++i) {
-					train_i.block(i, 0, 1, lay_size[0]) = temp_i[i].transpose();
-					train_o.block(i, 0, 1, lay_size[lay_len]) = temp_o[i].transpose();
-				}
-				if(!game.vsHuma()) critic.backprop(train_i, train_o);*/
 			}
 
 			// 動作の取り消し
 			if (game.key.onBack() && game.goBackHist()) {
-				/*
-				for (int i = 0; i < 3; ++i) {
-					for (int j = 0; j < 3; ++j) {
-						for (int k = 0; k < 3; ++k) {
-							for (int l = 0; l < 3; ++l) {
-								input(27 * i + 9 * j + 3 * k + l) = game.child[i][j].state[k][l];
-							}
-						}
-					}
-				}
-				output = critic.predict(input);
-				*/
 				COMWait = waitOnCOM;
 			}
 
@@ -472,10 +309,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				game.mouse.set();
 			}
 			if (game.mouse.onClick()) {
-				theta -= (game.mouse.distDragX()) * 0.05;
 				game.mouse.set();
 			}
-			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			// 永遠に勝敗がつかない場合の処理
 			game.stopDrawGame();
@@ -483,13 +318,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 高速学習モードへの切り替え
 			game.toggleHighSpeedLearning();
 
-			// 対戦スキップ（一人用デバッグ）
-
 		}
 		// 勝敗表示
 		else if (game.flg == 2) {
 			// 盤面の描画
-			//MV1DrawModel(ModelHandle);
 			game.drawBase();
 			game.drawGlobalState();
 			game.drawHistLast();
@@ -525,174 +357,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				initializeTrain();
 			}
 		}
-		//高速学習モード
-		//else if (game.flg == 5) {
-		//	if (game.debugFlg == 1) {
-		//		//デバッグ
-		//		if (Key[KEY_INPUT_D] == 1) {
-		//			if (dbg_cnt == 0) printf("%d\n", trainCnt);
-		//			for (int j = 0; j < 9; ++j) {
-		//				printf("\n");
-		//				for (int k = 0; k < 9; ++k) {
-		//					printf("%.3f  ", train_i(dbg_cnt, j * 9 + k));
-		//					//printf("%.1f  ", temp_i[1](j));
-		//				}
-		//			}
-		//			for (int j = 0; j < 9; ++j) {
-		//				printf("\n");
-		//				for (int k = 0; k < 9; ++k) {
-		//					printf("%.3f  ", train_o(dbg_cnt, j * 9 + k));
-		//					//printf("%.1f  ", temp_o[1](j));
-		//				}
-		//			}
-		//			printf("\n");
-		//			dbg_cnt++;
-		//		}
-		//		if (dbg_cnt >= trainCnt) {
-		//			dbg_cnt = 0;
-		//			debugFlg = 2;
-		//		}
-		//	}
-		//	else if (game.debugFlg == 0) {
-		//		//操作の処理
-		//
-		//		while (true) {
-		//			//COMの手番
-		//			input = StateToInput(lay_size[0], 1 - 2 * (game.cnt % 2));
-		//			output = critic.predict(input);
-		//			max_val = output.maxCoeff(&max_id);
-		//			//COMGx = (max_id / 27) % 3; COMGy = (max_id / 9) % 3;
-		//			//COMLx = (max_id / 3) % 3; COMLy = max_id % 3;
-		//			p_output = softmax(output, alpha);
-		//			double cum_tmp = 0.0;
-		//			double ran_tmp = unif(mt);
-		//			for (int k = 0; k < 81; ++k) {
-		//				cum_tmp += p_output(k);
-		//				if (ran_tmp <= cum_tmp) {
-		//					COMGx = (k / 27) % 3; COMGy = (k / 9) % 3;
-		//					COMLx = (k / 3) % 3; COMLy = k % 3;
-		//					break;
-		//				}
-		//			}
-		//			if (unif(mt) >= anl_rate) {
-		//				//盤面の更新
-		//				rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
-		//				if (rwd_tmp > -10.0) {
-		//					//comHistt[trainCnt] = max_id;
-		//					comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
-		//					train_correct_cnt++;
-		//					correct_per_epic[epic]++;
-		//				}
-		//			}
-		//			else {
-		//				rwd_tmp = -100.0;
-		//			}
-		//			if (rwd_tmp < -10.0) {
-		//				while (true) {
-		//					COMGx = rand() % 3; COMGy = rand() % 3;
-		//					COMLx = rand() % 3; COMLy = rand() % 3;
-		//					//盤面の更新
-		//					rwd_tmp = game.update(COMGx, COMGy, COMLx, COMLy);
-		//					if (rwd_tmp > -10.0) {
-		//						comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
-		//						break;
-		//					}
-		//					//永遠に勝敗がつかない場合の処理
-		//					game.stopDrawGame();
-		//				}
-		//			}
-		//			temp_i[trainCnt] = input;
-		//			temp_o[trainCnt] = Reward1(output, input, 1 - 2 * (game.cnt % 2));
-		//			temp_o[trainCnt](COM_game.hist[trainCnt]) = rwd_tmp;
-		//			//if (trainCnt >= 1) temp_o[trainCnt - 1](comHistt[trainCnt - 1]) -= rwd_tmp;
-		//			if (trainCnt >= 2) temp_o[trainCnt - 2](comHistt[trainCnt - 2]) += gamma * max_val;
-		//			trainCnt++;
-		//			game.cnt++;
-		//			train_turn_cnt++;
-		//			turn_per_epic[epic]++;
-		//
-		//			//勝利判定
-		//			vict = game.mother.victory();
-		//			if (vict != 0) break;
-		//
-		//			//永遠に勝敗がつかない場合の処理
-		//			game.stopDrawGame();
-		//		}
-		//		//学習
-		//		temp_o[trainCnt - 2](comHistt[trainCnt - 2]) = -RWD_VICT;
-		//		temp_o[trainCnt - 1](comHistt[trainCnt - 1]) = RWD_VICT;
-		//		train_i.setZero(trainCnt, lay_size[0]);
-		//		train_o.setZero(trainCnt, lay_size[lay_len]);
-		//		for (int i = 0; i < trainCnt; ++i) {
-		//			train_i.block(i, 0, 1, lay_size[0]) = temp_i[i].transpose();
-		//			train_o.block(i, 0, 1, lay_size[lay_len]) = temp_o[i].transpose();
-		//		}
-		//		critic.backprop(train_i, train_o);
-		//		tmp_loss = critic.loss(train_i, train_o);
-		//		loss_per_epic[epic] += tmp_loss;
-		//
-		//		//game.debugFlg = 1;
-		//		game.initialize(5);
-		//
-		//		//テキストの描画
-		//		DrawFormatString(80, 400, StringColor, "試合数: %d", train_game_cnt);
-		//		DrawFormatString(80, 424, StringColor, "試行手数: %d", train_turn_cnt);
-		//		DrawFormatString(80, 448, StringColor, "正当率: %.2f%%", 100.0*(double)correct_per_epic[epic] / max(turn_per_epic[epic], 1));
-		//		//DrawFormatString(240, 400, StringColor, "損失: %d", (int)tmp_loss);
-		//		//DrawFormatString(240, 424, StringColor, "TPE: %d", turn_per_epic[epic]);
-		//		DrawFormatString(240, 448, StringColor, "平均損失: %.2f", log(max(loss_per_epic[epic], 1.0)) - log(max(turn_per_epic[epic], 1.0)));
-		//		DrawFormatString(40, 50, Red, "5.0");
-		//		DrawFormatString(30, 350, Red, "-5.0");
-		//		DrawFormatString(570, 50, Blue, "100%%");
-		//		DrawFormatString(570, 350, Blue, "0%%");
-		//
-		//		train_game_cnt++;
-		//		if (epic >= max_epic - 1) {
-		//			if (train_game_cnt % game_per_epic == 0) {
-		//				for (int k = 0; k < max_epic - 1; ++k) {
-		//					loss_per_epic[k] = loss_per_epic[k + 1];
-		//					correct_per_epic[k] = correct_per_epic[k + 1];
-		//					turn_per_epic[k] = turn_per_epic[k + 1];
-		//				}
-		//				loss_per_epic[max_epic - 1] = 0;
-		//				correct_per_epic[max_epic - 1] = 0;
-		//				turn_per_epic[max_epic - 1] = 0;
-		//				epic = max_epic - 1;
-		//			}
-		//		}
-		//		else {
-		//			epic = train_game_cnt / game_per_epic;
-		//		}
-		//
-		//		for (int l = 0; l < 51; ++l) { DrawLine(70, 50 + 6 * l, 570, 50 + 6 * l, Black); }
-		//		for (int l = 0; l < 11; ++l) { DrawLine(70, 50 + 30 * l + 1, 570, 50 + 30 * l + 1, Black); }
-		//		for (int k = 1; k < max_epic; ++k) {
-		//			DrawLine(500.0*(k - 1) / max_epic + 70,
-		//				350.0 - 300.0*correct_per_epic[k - 1] / max(turn_per_epic[k - 1], 1),
-		//				500.0*k / max_epic + 70,
-		//				350.0 - 300.0*correct_per_epic[k] / max(turn_per_epic[k], 1),
-		//				Blue);
-		//			DrawLine(500.0*(k - 1) / max_epic + 70,
-		//				350.0 - 30.0 * (5.0 + log(max(loss_per_epic[k - 1], 1.0)) - log(max(turn_per_epic[k - 1], 1))),
-		//				500.0*k / max_epic + 70,
-		//				350.0 - 30.0 * (5.0 + log(max(loss_per_epic[k], 1.0)) - log(max(turn_per_epic[k], 1))),
-		//				Red);
-		//		}
-		//
-		//		if (Key[KEY_INPUT_A] == 1) {
-		//			game.mouse.set();
-		//			game.goTitle();
-		//			game.taijin = 0;
-		//			for (int i = 0; i < 3; ++i) tama[i].initialize();
-		//		}
-		//
-		//	}
-		//	else if(debugFlg == 2){
-		//		game.initialize(5);
-		//		game.debugFlg = 0;
-		//	}
-		//}
-		// シナリオ
 
 
 		// 同期処理
@@ -704,60 +368,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	InitGraph();
-	//MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
 	return 0;
 }
 
-
-//VectorXd StateToInput(int dim, int side) {
-//	VectorXd trg(dim);
-//	for (int i1 = 0; i1 < 3; ++i1) {
-//		for (int j1 = 0; j1 < 3; ++j1) {
-//			for (int k1 = 0; k1 < 3; ++k1) {
-//				for (int l1 = 0; l1 < 3; ++l1) {
-//					trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = game.child[i1][j1].state[k1][l1] * side;
-//					if ((game.nextField == -1 || game.nextField == 3 * i1 + j1)
-//						&& game.child[i1][j1].state[k1][l1] == 0 && game.child[i1][j1].victory() == 0) {
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = 1.0;
-//					}
-//					else {
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = -1.0;
-//					}
-//				}
-//			}
-//		}
-//	}
-//	return trg;
-//}
-
-//VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side) {
-//	VectorXd trg; trg = out;
-//
-//	for (int i1 = 0; i1 < 3; ++i1) {
-//		for (int j1 = 0; j1 < 3; ++j1) {
-//			for (int k1 = 0; k1 < 3; ++k1) {
-//				for (int l1 = 0; l1 < 3; ++l1) {
-//					if (in(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) == -1.0) {
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = RWD_FAULT;
-//					}
-//					else {
-//						//trg(27 * i1 + 9 * j1 + 3 * k1 + l1) += RWD_CANPUT; 
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = RWD_CANPUT;
-//					}
-//				}
-//			}
-//		}
-//	}
-//	return trg;
-//}
-
-//VectorXd softmax(const VectorXd &src, double alpha) {
-//	VectorXd trg;
-//	
-//	trg = (alpha * src).array().exp();
-//	trg = trg / trg.sum();
-//
-//	return trg;
-//}
