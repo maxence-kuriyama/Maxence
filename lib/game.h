@@ -21,32 +21,7 @@ void initializeTrain() {
 }
 
 class Game {
-public:
-	int flg = -3;	// -3,..,-1: Demo
-					// 0: Menu, 1: Game, 2: Result
-					// -4: Ending
-					// -6: Story
-					// 5: High-speed Learning
-	int taijin = 0;		// 0: vsHuman, 1: vsCOM, 2: AutoLearning
-	int teban = 0;		// 0: senko, 1: koko
-	int cnt = 0;		// ターン数
-	int nextField = -1;		// 次の盤面、-1: anywhere
-	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
-	int debugFlg = 0;
-	string mode = "";
-
-	// 同期処理関連
-	long start = clock();	// 同期処理開始時刻
-	long fpsStart = clock();	// fps計測開始時刻
-	int fps = 0;			// fps出力用
-	int fpsCnt = 0;			// fps計測用
-
-	// 盤面上の操作関連
-	int globalX = 1;
-	int globalY = 1;
-	int localX = 1;
-	int localY = 1;			//キーボード操作時の座標
-
+private:
 	// 定数
 	int Green = GetColor(0, 255, 0);
 	int Red = GetColor(255, 0, 0);
@@ -71,6 +46,32 @@ public:
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
 	int stone2_t = LoadGraph("graph/stone2.png");
+
+	// 同期処理関連
+	long start = clock();	// 同期処理開始時刻
+	long fpsStart = clock();	// fps計測開始時刻
+	int fps = 0;			// fps出力用
+	int fpsCnt = 0;			// fps計測用
+
+public:
+	int flg = -3;	// -3,..,-1: Demo
+					// 0: Menu, 1: Game, 2: Result
+					// -4: Ending
+					// -6: Story
+					// 5: High-speed Learning
+	int taijin = 0;		// 0: vsHuman, 1: vsCOM, 2: AutoLearning
+	int teban = 0;		// 0: senko, 1: koko
+	int cnt = 0;		// ターン数
+	int nextField = -1;		// 次の盤面、-1: anywhere
+	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
+	int debugFlg = 0;
+	string mode = "";
+
+	// 盤面上の操作関連
+	int globalX = 1;
+	int globalY = 1;
+	int localX = 1;
+	int localY = 1;			//キーボード操作時の座標
 
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
