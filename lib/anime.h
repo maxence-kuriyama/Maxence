@@ -1,10 +1,12 @@
 #pragma once
 
 class Anime {
-public:
+private:
 	string mode = "CUTIN";
-	int flg = 0;
 	int cnt = 0;
+
+public:
+	int flg = 0;
 	int image0;
 	int image1;
 

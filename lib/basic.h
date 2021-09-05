@@ -4,15 +4,17 @@
 //   マウス関連
 //======================================
 class Mouse {
-public:
-	int x;
-	int y;
+private:
 	int setX = 0;
 	int setY = 0;		// ドラッグ時の始点
 	int preX = 0;
 	int preY = 0;		// 直前のカーソル位置
-	int wheel;
 	unsigned int button[8];
+
+public:
+	int x;
+	int y;
+	int wheel;
 
 	//マウス状態の取得
 	int update() {
@@ -71,15 +73,17 @@ public:
 
 
 class Button {
-public:
+private:
+	unsigned int Red = GetColor(255, 0, 0);
 	int textX;
 	int textY;
+	string text = "";
+
+public:
 	int upLeftX;
 	int upLeftY;
 	int lowRightX;
 	int lowRightY;
-	string text = "";
-	unsigned int Red = GetColor(255, 0, 0);
 
 	Button(int tx, int ty, int ulx, int uly, int lrx, int lry, string label = "") {
 		initialize(tx, ty, ulx, uly, lrx, lry, label);

@@ -104,8 +104,6 @@ public:
 		GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
 		cutin.image0 = Cutin1;
 		cutin.image1 = Cutin10;
-		// コメント初期化
-		comment.font = Font0;
 		comment.initialize();
 		// フィールド画像初期化
 		for (int i = 0; i < 3; ++i) {

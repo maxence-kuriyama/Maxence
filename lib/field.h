@@ -1,5 +1,15 @@
 
 class Field {
+private:
+	int filled() {
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				if (state[i][j] == 0) return 0;
+			}
+		}
+		return 1;
+	}
+
 public:
 	int state[3][3];	// 0:None, 1:Black, -1:White
 	int stone1;
@@ -70,15 +80,6 @@ public:
 		if (filled() == 1 && vict == 0) vict = 10;
 		return vict;
 	} // 0:on-game, 1:Black, -1:White, 10: Draw, 100:Error
-
-	int filled() {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				if (state[i][j] == 0) return 0;
-			}
-		}
-		return 1;
-	}
 
 	int update(int i, int j, int side) {
 		if (victory() != 0) return -1;

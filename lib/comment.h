@@ -4,9 +4,12 @@
 
 void DrawObtainsString2(int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 
+
 class Texts {
-public:
+private:
 	string textFileName = "data/sayings.txt";
+
+public:
 	string text[450];
 	int maxSize = 450;
 	int size = 0;
@@ -38,6 +41,9 @@ public:
 
 
 class Comment {
+private:
+	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+
 public:
 	Texts texts;
 	int x = rnd() % 200;
@@ -45,7 +51,6 @@ public:
 	int textId = 0;		// テキストのインデックス
 	int textSeq = 0;	// テキストがいくつ連続したかのカウンタ
 	int cnt = 0;		// テキスト差し替え用カウンタ
-	int font;
 
 	void initialize() {
 		texts.initialize();

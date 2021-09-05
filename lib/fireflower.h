@@ -1,15 +1,18 @@
 
 class fireflower {
-public:
-	int cnt;
+private:
+	int cnt;			// 花火の寿命カウンタ
 	double particle[12][2];
 	double velocity[12][2];
 	double diffuse;
-	int sound = 0;
+
+public:
+	int sound = 0;		// SEを出すか否か
 
 	fireflower() {
 		initialize();
 	}
+
 	void initialize() {
 		cnt = rand() % 40;
 		diffuse = (2.5 * rand()) / RAND_MAX + 0.5;
@@ -22,6 +25,7 @@ public:
 			velocity[i][1] = diffuse * sin(2 * M_PI * i / 12);
 		}
 	}
+
 	void tick() {
 		cnt++;
 		if (cnt <= 80) {
@@ -43,6 +47,7 @@ public:
 		}
 		if (sound == 1 && cnt == 80) PlaySound("sound/owin31.wav", NULL, SND_ASYNC);
 	}
+
 	void draw() {
 		double norm;
 		for (int i = 0; i < 12; ++i) {

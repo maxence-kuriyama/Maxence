@@ -7,6 +7,8 @@ class Option {
 public:
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
+
+public:
 	int strColor = White;
 	int musicFlg = 0;
 	int soundFlg = 0;
@@ -38,6 +40,8 @@ public:
 	void initWait() {
 		waitCnt = waitConst;
 	}
+
+public:
 
 	int update() {
 		char temp[256];
