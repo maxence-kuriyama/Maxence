@@ -14,7 +14,6 @@
 
 using namespace DxLib;
 using namespace std;
-#include "lib/fireflower.h"
 #include "lib/game.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -47,7 +46,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	Game game;
-	fireflower tama[FIRE_FLOWER_NUM];
 
 
 	// 種々のハンドル
@@ -85,21 +83,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		game.mouse.update();
 
 		// リセットボタンを表示する
-		if (game.reset() == 1) {
-			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
-				tama[i].initialize();
-			}
-		}
+		game.reset();
 		game.drawLogo();
 
 		// 設定を切り替える
 		game.toggleByKey();
-		if (game.option.soundFlg == 1) {
-			tama[0].sound = 1;
-		}
-		else {
-			tama[0].sound = 0;
-		}
 
 		// マウス操作か否かを判定する
 		if (game.mouse.isUsed()) {
@@ -181,10 +169,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		// タイトル画面
 		else if (game.flg == 0) {
-			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
-				tama[i].draw();
-				tama[i].tick();
-			}
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			//タイトル画面その１
 			if (game.isVsHuman()) {
