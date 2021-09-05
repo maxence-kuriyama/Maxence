@@ -4,18 +4,18 @@
 #include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/field.h"
-#include "lib/keyboard.h"
 #include "lib/menu.h"
 
 
-//int trainCnt = 0;
-//int comHistt[100];
-void initializeTrain() {
-	//trainCnt = 0;
-	//for (int i = 0; i < 100; i++) {
-		//comHistt[i] = 0;
-	//}
-}
+class Option {
+public:
+	unsigned int White = GetColor(255, 255, 255);
+	unsigned int Black = GetColor(0, 0, 0);
+
+public:
+	int strColor = White;
+};
+
 
 class Game {
 private:
@@ -76,7 +76,6 @@ public:
 	Field mother;
 	Field child[3][3];
 	Mouse mouse;
-	Key key;
 	Menu menu;
 	Button lonely;
 	Button vsHuman;
@@ -116,7 +115,6 @@ public:
 			}
 		}
 		mouse.set();
-		key.initWait();
 		menu.set(lonely, vsHuman);
 	}
 
@@ -134,17 +132,6 @@ public:
 			WaitTimer(1);
 		}
 		start = clock();
-	}
-
-	// 自動学習モードで永遠に勝敗がつかない場合の処理
-	void stopDrawGame() {
-		if (drawCnt > 1000) {
-			goResult();
-			drawCnt = 0;
-		}
-		if (taijin == 2 || flg == 5) {
-			drawCnt++;
-		}
 	}
 
 
@@ -185,21 +172,11 @@ public:
 	//    メニュー画面
 	/*===========================*/
 	int menuChoose() {
-		return menu.choose(keyboardFlg, mouse, key, option.strColor);
+		return menu.choose(keyboardFlg, mouse, option.strColor);
 	}
 
 	void setOrderMenu() {
 		menu.set(senko, koko);
-	}
-
-
-	/*===========================*/
-	//    キーボード入力関連
-	/*===========================*/
-	void toggleByKey() {
-		key.toggleSetting(option);
-		//key.configLearning();
-		key.toggleDebug(debugFlg);
 	}
 
 
@@ -319,49 +296,10 @@ public:
 		}
 	}
 
-	void moveCoordByKey() {
-		if (key.onUp()) {
-			localY--;
-			if (localY < 0) {
-				globalY = (globalY - 1 + 3) % 3;
-				localY += 3;
-			}
-		}
-		if (key.onDown()) {
-			localY++;
-			if (localY >= 3) {
-				globalY = (globalY + 1) % 3;
-				localY -= 3;
-			}
-		}
-		if (key.onLeft()) {
-			localX--;
-			if (localX < 0) {
-				globalX = (globalX - 1 + 3) % 3;
-				localX += 3;
-			}
-		}
-		if (key.onRight()) {
-			localX++;
-			if (localX > 2) {
-				globalX = (globalX + 1) % 3;
-				localX -= 3;
-			}
-		}
-	}
-
 	bool playTurn() {
-		moveCoordByKey();
-		if (keyboardFlg) {
-			if (key.onCheck()) {
-				return true;
-			}
-		}
-		else {
-			getMouseCoord();
-			if (mouse.clickRight()) {
-				return true;
-			}
+		getMouseCoord();
+		if (mouse.clickRight()) {
+			return true;
 		}
 		return false;
 	}
@@ -409,11 +347,6 @@ public:
 			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
 			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 			DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
-			// Option
-			DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
-			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
-			DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
-			DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
 			// Menu
 			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
 			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);

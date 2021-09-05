@@ -1,7 +1,6 @@
 #pragma once
 
 #include "lib/basic.h"
-#include "lib/keyboard.h"
 
 
 // Mouse‚ÆKey‚Ì“ü—Í‚ğ“‡
@@ -34,33 +33,15 @@ public:
 		button[id].display(1, strColor);
 	}
 
-	void toggle(Key& key) {
-		if (key.onLeft()) {
-			id = (id - 1 + size) % size;
+	int choose(int keyboardFlg, Mouse& mouse, int strColor) {
+		for (int i = 0; i < size; ++i) {
+			button[i].display(mouse, strColor);
 		}
-		if (key.onRight()) {
-			id = (id + 1) % size;
-		}
-	}
-
-	int choose(int keyboardFlg, Mouse& mouse, Key& key, int strColor) {
-		if (keyboardFlg) {
-			display(strColor);
-			if (key.onReturn()) {
-				return id;
+		for (int i = 0; i < size; ++i) {
+			if (button[i].isClicked(mouse)) {
+				return i;
 			}
 		}
-		else {
-			for (int i = 0; i < size; ++i) {
-				button[i].display(mouse, strColor);
-			}
-			for (int i = 0; i < size; ++i) {
-				if (button[i].isClicked(mouse)) {
-					return i;
-				}
-			}
-		}
-		toggle(key);
 		return -1;
 	}
 };

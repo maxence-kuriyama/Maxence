@@ -71,19 +71,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		// 入力情報を取得
-		game.key.update();
 		game.mouse.update();
 
-		// 設定を切り替える
-		game.toggleByKey();
-
 		// マウス操作か否かを判定する
-		if (game.mouse.isUsed()) {
-			game.keyboardFlg = 0;
-		}
-		if (game.key.isUsed()) {
-			game.keyboardFlg = 1;
-		}
+		game.keyboardFlg = 0;
 
 		// OPアニメーション ClickToStartまで
 		if (game.flg == -3){
@@ -108,7 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			logoX += 2.0;
 
-			if (logoX > 480.0 || game.mouse.click() || game.key.onReturn()) {
+			if (logoX > 480.0 || game.mouse.click()) {
 				game.flg = -2;
 				logoX = M_PI_2;
 			}
@@ -123,7 +114,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			DrawExtendGraph(200, 290, 460, 360, ClickToStart, TRUE);
 			SetDrawBright(255, 255, 255);
 
-			if (game.mouse.click() || game.key.onReturn()) {
+			if (game.mouse.click()) {
 				game.flg = -1;
 				SetBackgroundColor(0, 128, 128);	//背景色
 				SetDrawBright(255, 255, 255);
@@ -150,7 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 485 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			}
 			if(logoX < 1000.0) logoX += 1.0;
-			if (logoX > 120 || game.mouse.click() || game.key.onReturn()) {
+			if (logoX > 120 || game.mouse.click()) {
 				game.flg = 0;
 			}
 		}
@@ -168,7 +159,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				else if (choice == 1) {
 					game.mode = "隣の人と";
 					game.initialize();
-					initializeTrain();
 				}
 			}
 		}
@@ -244,12 +234,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			vict = game.mother.victory();
 			if (vict != 0) {
 				game.goResult();
-				game.key.initWait();
 			}
-
-			// 永遠に勝敗がつかない場合の処理
-			game.stopDrawGame();
-
 		}
 		// 勝敗表示
 		else if (game.flg == 2) {
@@ -262,15 +247,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// メッセージの描画
 			game.drawWinner(vict);
 			game.again.display(game.mouse, game.option.strColor);
-			if (game.again.isClicked(game.mouse) || game.key.onReturn()){
+			if (game.again.isClicked(game.mouse)){
 				game.initialize();
-				initializeTrain();
 			}
 
 			// 自動学習モード
 			if (game.taijin == 2) {
 				game.initialize();
-				initializeTrain();
 			}
 		}
 
