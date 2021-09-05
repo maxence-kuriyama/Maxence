@@ -7,7 +7,6 @@
 #include "lib/hist.h"
 #include "lib/keyboard.h"
 #include "lib/menu.h"
-#include "lib/anime.h"
 #include "lib/comment.h"
 
 
@@ -83,7 +82,6 @@ public:
 	Mouse mouse;
 	Key key;
 	Logo logo;
-	Anime cutin;
 	Comment comment;
 	Menu menu;
 	Button lonely;
@@ -99,12 +97,6 @@ public:
 		senko.initialize(TEXT1_X, TEXT1_Y, "先攻");
 		koko.initialize(TEXT2_X, TEXT2_Y, "後攻");
 		again.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
-		// カットイン画像初期化
-		int Cutin1 = LoadGraph("graph/cutin1.png");
-		int Cutin10 = LoadGraph("graph/cutin10.png");
-		GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
-		cutin.image0 = Cutin1;
-		cutin.image1 = Cutin10;
 		comment.initialize();
 		// フィールド画像初期化
 		for (int i = 0; i < 3; ++i) {
@@ -253,9 +245,6 @@ public:
 		key.toggleSetting(option, logo);
 		//key.configLearning();
 		key.toggleDebug(debugFlg);
-		if (debugFlg) {
-			key.toggleForDebug(option, cutin.flg);
-		}
 	}
 
 	void toggleHighSpeedLearning() {

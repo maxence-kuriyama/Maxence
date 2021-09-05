@@ -268,8 +268,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// コメントの描画
 			game.drawComment();
 
-			// カットインアニメーション
-			game.cutin.update();
 
 			// 勝利判定
 			vict = game.mother.victory();
