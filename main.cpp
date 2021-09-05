@@ -6,10 +6,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (DxLib_Init() == -1) {
 		return -1;
 	}
-	SetDrawScreen(DX_SCREEN_BACK);
 
-	//ƒƒCƒ“ƒ‹[ƒv
-	while (!ScreenFlip() && ProcessMessage() == 0 && !ClearDrawScreen()) {
+	while (ProcessMessage() == 0) {
 		WaitTimer(10);
 	}
 
