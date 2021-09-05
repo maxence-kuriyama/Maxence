@@ -53,6 +53,8 @@ public:
 		else {
 			for (int i = 0; i < size; ++i) {
 				button[i].display(mouse, strColor);
+			}
+			for (int i = 0; i < size; ++i) {
 				if (button[i].isClicked(mouse)) {
 					return i;
 				}
