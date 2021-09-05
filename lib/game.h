@@ -8,7 +8,8 @@
 class Game {
 private:
 	// ’è”
-	unsigned int White = GetColor(100, 100, 100);
+	unsigned int White = GetColor(255, 255, 255);
+	unsigned int Black = GetColor(0, 0, 0);
 
 public:
 	int flg = -3;	// -3,..,-1: Demo
@@ -41,7 +42,7 @@ public:
 		lonely.initialize(200, 300, "‚Ú‚Á‚¿‚Å");
 		vsHuman.initialize(400, 300, "—×‚Ìl‚Æ");
 		// game‰Šú‰»
-		initialize(-3);
+		initialize(0);
 	}
 
 	void initialize(int f = 1) {
@@ -97,7 +98,7 @@ public:
 		DrawBox(160, 80, 460, 380, White, TRUE);
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), White, FALSE);
+				DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Black, FALSE);
 			}
 		}
 	}
@@ -131,7 +132,7 @@ public:
 						int upLeftY = 80 + 100 * j + w;
 						int lowRightX = 160 + 100 * (i + 1) - w;
 						int lowRightY = 80 + 100 * (j + 1) - w;
-						DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, FALSE);
+						DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, Black, FALSE);
 					}
 				}
 				else if (nextField == -1 && child[i][j].victory() == 0) {
@@ -139,7 +140,7 @@ public:
 					int upLeftY = 80 + 100 * j;
 					int lowRightX = 160 + 100 * (i + 1);
 					int lowRightY = 80 + 100 * (j + 1);
-					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, FALSE);
+					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, Black, FALSE);
 				}
 			}
 		}
@@ -158,7 +159,7 @@ public:
 		int upLeftY = 80 + 100 * globalY + 33 * localY;
 		int lowRightX = 160 + 100 * globalX + 33 * (localX + 1) + 1;
 		int lowRightY = 80 + 100 * globalY + 33 * (localY + 1) + 1;
-		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, White, FALSE);
+		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, Black, FALSE);
 	}
 
 
