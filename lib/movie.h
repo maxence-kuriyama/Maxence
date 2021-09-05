@@ -13,6 +13,7 @@ private:
 	int strColorDebug = GetColor(0, 200, 0);
 
 public:
+	int vol = 150;
 
 	~Movie() {
 		unload();
@@ -60,6 +61,7 @@ public:
 	// 動画再生（メインループとは別のループに入る）
 	int play(Key& key, int debug = 0) {
 		if (!isLoading()) {
+			ChangeMovieVolumeToGraph(vol, handle);
 			PlayMovieToGraph(handle);
 			while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetMovieStateToGraph(handle)) {
 				key.update();
