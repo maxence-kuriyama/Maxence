@@ -220,4 +220,12 @@ public:
 			gameFlg = -6;
 		}
 	}
+
+	int skipMovie(int movieHandle) {
+		if (state[KEY_INPUT_W] == 1) {
+			PauseMovieToGraph(movieHandle);
+			return 1;
+		}
+		return 0;
+	}
 };

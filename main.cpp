@@ -19,6 +19,7 @@ using namespace std;
 #include "lib/scenario.h"
 #include "lib/ending.h"
 #include "lib/game.h"
+#include "lib/movie.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -59,6 +60,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	Game game;
+	Movie movie;
 	Scenario scenario;
 	fireflower tama[FIRE_FLOWER_NUM];
 
@@ -94,9 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		pict_name = "graph/end_pict" + to_string(i) + ".png";
 		end_pict[i - 1] = LoadGraph(pict_name.c_str());
 	}
-
-	// 動画
-	//int MovieGraphHandle = LoadGraph("movie/battle.ogv");
+	double logoX = 0.0;		// デモ画面用変数
 
 	// 3Dモデル関係
 	/*
@@ -204,7 +204,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	int vict = 0;	// 勝敗格納用の一時変数
-	double logoX = 0.0;		// デモ画面用変数
 
 
 	//メインループ
@@ -212,6 +211,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 入力情報を取得
 		game.key.update();
 		game.mouse.update();
+
+		// ローディングメッセージ
+		movie.drawLoadMsg();
 
 		// リセットボタンを表示する
 		if (game.reset() == 1) {
@@ -324,22 +326,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					game.setOrderMenu();
 				}
 				else if (choice == 1) {
-					////PlayMovie("movie/battle.ogv", 1, DX_MOVIEPLAYTYPE_NORMAL);
-					//PlayMovieToGraph(MovieGraphHandle);
-					//SetBackgroundColor(0, 0, 0);
-					//while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() 
-					//	&& GetMovieStateToGraph(MovieGraphHandle)){
-					//	UpdateKey(Key);
-					//	if (Key[KEY_INPUT_W] == 1) {
-					//		//PauseMovieToGraph(MovieGraphHandle);
-					//		break;
-					//	}
-					//	//DrawExtendGraph(0, 60, 640, 420, MovieGraphHandle, FALSE);
-					//	WaitTimer(10);
-					//}
+					movie.loadOnce("movie/battle.ogv");
 					game.mode = "隣の人と";
-					game.initialize();
-					initializeTrain();
+				}
+
+				if (movie.isPrepared()){
+					SetBackgroundColor(0, 0, 0);
+					if (movie.play(game.key, game.debugFlg)) {
+						movie.unload();
+						game.initialize();
+						initializeTrain();
+					}
+					SetBackgroundColor(0, 128, 128);
 				}
 
 				//オートモード
@@ -992,10 +990,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// デバッグ情報出力
 		game.debugDump();
+		movie.debugDump(game.debugFlg);
 	}
 
 	InitGraph();
-	//DeleteGraph(MovieGraphHandle); 
 	//MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
@@ -1023,7 +1021,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 //	}
 //	return trg;
 //}
-//
+
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side) {
 //	VectorXd trg; trg = out;
 //
@@ -1044,7 +1042,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 //	}
 //	return trg;
 //}
-//
+
 //VectorXd softmax(const VectorXd &src, double alpha) {
 //	VectorXd trg;
 //	

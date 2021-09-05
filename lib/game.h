@@ -5,9 +5,9 @@
 #include "lib/basic.h"
 #include "lib/field.h"
 #include "lib/hist.h"
-#include "lib/anime.h"
 #include "lib/keyboard.h"
 #include "lib/menu.h"
+#include "lib/anime.h"
 #include "lib/comment.h"
 
 

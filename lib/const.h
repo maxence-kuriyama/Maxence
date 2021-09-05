@@ -9,5 +9,5 @@
 #define RWD_PUT		0.0
 #define RWD_CANPUT	0.0
 #define RWD_FAULT	-0.5
-#define FPS			60.0
+#define FPS			60
 #define FIRE_FLOWER_NUM		3
