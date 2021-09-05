@@ -4,7 +4,6 @@
 #include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/field.h"
-#include "lib/hist.h"
 #include "lib/keyboard.h"
 #include "lib/menu.h"
 
@@ -76,8 +75,6 @@ public:
 	Option option;
 	Field mother;
 	Field child[3][3];
-	History hist;
-	Camera camera;
 	Mouse mouse;
 	Key key;
 	Logo logo;
@@ -113,14 +110,12 @@ public:
 		cnt = 0;
 		drawCnt = 0;
 		nextField = -1;
-		camera.initialize();
 		mother.initialize();
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
 				child[i][j].initialize();
 			}
 		}
-		hist.initialize();
 		mouse.set();
 		key.initWait();
 		menu.set(lonely, vsHuman);
@@ -260,12 +255,6 @@ public:
 		}
 	}
 
-	void skipBattle(int& sceneFlg) {
-		if (debugFlg && isVsCOM()) {
-			key.skipBattle(flg, sceneFlg);
-		}
-	}
-
 
 	/*===========================*/
 	//    盤面表示関連
@@ -276,16 +265,6 @@ public:
 			for (int j = 0; j < 3; ++j) {
 				DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), frColorBase, FALSE);
 			}
-		}
-	}
-
-	void drawHistLast() {
-		if (hist.canCancel()) {
-			int upLeftX = 160 + 100 * hist.last[0] + 33 * hist.last[2] + 1;
-			int upLeftY = 80 + 100 * hist.last[1] + 33 * hist.last[3] + 1;
-			int lowRightX = 160 + 100 * hist.last[0] + 33 * (hist.last[2] + 1);
-			int lowRightY = 80 + 100 * hist.last[1] + 33 * (hist.last[3] + 1);
-			DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorLastHist, TRUE);
 		}
 	}
 
@@ -453,8 +432,6 @@ public:
 		if (nextField == 3 * global_x + global_y || nextField == -1) {
 			if (child[global_x][global_y].update(local_x, local_y, side) == 0) {
 				cnt++;
-				//履歴を残す
-				hist.add(global_x, global_y, local_x, local_y, nextField);
 				//全体の更新
 				mother.update(global_x, global_y, child[global_x][global_y].victory());
 				if (child[local_x][local_y].victory() != 0) {
@@ -468,19 +445,6 @@ public:
 			}
 		}
 		return -100.0;
-	}
-
-	bool goBackHist() {
-		if (hist.canCancel() && isVsHuman()) {
-			child[hist.last[0]][hist.last[1]].state[hist.last[2]][hist.last[3]] = 0;
-			mother.state[hist.last[0]][hist.last[1]] = 0;
-			mother.update(hist.last[0], hist.last[1], child[hist.last[0]][hist.last[1]].victory());
-			nextField = hist.last[4];
-			hist.goBack();
-			cnt--;
-			return true;
-		}
-		return false;
 	}
 
 
@@ -503,13 +467,6 @@ public:
 			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
 			DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
 			DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
-			// Hist
-			DrawFormatString(125, 145, strColor, "cancelCnt: %d", hist.cancelCnt);
-			DrawFormatString(125, 165, strColor, "last[0]: %d", hist.last[0]);
-			DrawFormatString(125, 185, strColor, "last[1]: %d", hist.last[1]);
-			DrawFormatString(125, 205, strColor, "last[2]: %d", hist.last[2]);
-			DrawFormatString(125, 225, strColor, "last[3]: %d", hist.last[3]);
-			DrawFormatString(125, 245, strColor, "last[4]: %d", hist.last[4]);
 			// Menu
 			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
 			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);

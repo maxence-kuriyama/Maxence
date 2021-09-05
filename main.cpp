@@ -34,10 +34,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetUseZBuffer3D(TRUE);
 	SetWriteZBuffer3D(TRUE);
 	SetBackgroundColor(0, 0, 0);	//背景色
-	SetCameraNearFar(100.0, 6000.0);
-	SetGlobalAmbientLight(GetColorF(1.0, 0.0, 0.0, 0.0));
-	ChangeLightTypePoint(VGet(320.0, 240.0, -300.0), 2000.0, 0.0, 0.001f, 0.0);
-	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 	srand((unsigned)time(NULL));
 
 
@@ -202,7 +198,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			//MV1DrawModel(ModelHandle);
 			game.drawBase();
 			game.drawGlobalState();
-			game.drawHistLast();
 			game.drawNextField();
 			// プレイヤーの操作
 			if (game.isPlayTurn() && game.playTurn()) {
@@ -272,20 +267,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				game.key.initWait();
 			}
 
-			// 動作の取り消し
-			if (game.key.onBack() && game.goBackHist()) {
-				COMWait = waitOnCOM;
-			}
-
-			// カメラ操作
-			game.camera.set();
-			if (game.mouse.click()) {
-				game.mouse.set();
-			}
-			if (game.mouse.onClick()) {
-				game.mouse.set();
-			}
-
 			// 永遠に勝敗がつかない場合の処理
 			game.stopDrawGame();
 
@@ -298,7 +279,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 盤面の描画
 			game.drawBase();
 			game.drawGlobalState();
-			game.drawHistLast();
 			game.drawNextField();
 			game.drawLocalState();
 
@@ -309,21 +289,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				game.initialize();
 				initializeTrain();
 			}
-
-			// 動作の取り消し
-			if (game.key.onBack() && game.goBackHist()) {
-				game.goBattle();
-			}
-
-			// カメラ操作
-			if (game.mouse.click()) {
-				game.mouse.set();
-			}
-			else if (game.mouse.onClick()) {
-				game.camera.move(game.mouse.distDragX(), game.mouse.distDragY());
-				game.mouse.set();
-			}
-			game.camera.zoom(game.mouse.wheel);
 
 			// 自動学習モード
 			if (game.taijin == 2) {
