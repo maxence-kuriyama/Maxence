@@ -107,14 +107,12 @@ public:
 			mrK[i].draw(eqX);
 		}
 		deer.draw();
-		music.drawLoadMsg();
 
 		switch (flg) {
 		case 0:
-			if (music.isPrepared()) {
-				music.play();
-				readMsg(mouse);
-			}
+			music.play();
+			music.loadOnce("sound/bgm04.mp3");
+			readMsg(mouse);
 			break;
 		case 1:
 			// ­‚ªŒ»‚ê‚é
@@ -143,12 +141,13 @@ public:
 			break;
 		case 6:
 			// ‘æˆêí
-			StopMusic();
-			startMusic("sound/bgm04.mp3");
+			music.swap();
+			music.enableSwap();
 			msgLoad();
 			return 1;
 		case 7:
-			startMusic("sound/bgm03.mp3");
+			music.popOnce();
+			music.loadOnce("sound/bgm05.mp3");
 			readMsg(mouse);
 			break;
 		case 8:
@@ -167,12 +166,13 @@ public:
 			break;
 		case 11:
 			// ‘æ“ñí
-			StopMusic();
-			startMusic("sound/bgm05.mp3");
+			music.swap();
+			music.enableSwap();
 			msgLoad();
 			return 1;
 		case 12:
-			startMusic("sound/bgm03.mp3");
+			music.popOnce();
+			music.loadOnce("sound/bgm06.mp3");
 			readMsg(mouse);
 			break;
 		case 13:
@@ -193,10 +193,15 @@ public:
 			break;
 		case 17:
 			// ‘æOí
-			StopMusic();
-			startMusic("sound/bgm06.mp3");
+			music.pop();
+			music.loadOnce("sound/bgm07.mp3");
 			msgLoad();
 			return 1;
+		case 18:
+			music.stop();
+			music.enableSwap();
+			readMsg(mouse);
+			break;
 		case 19:
 			// Â‚ª€‚Ê
 			mrK[1].hide();
@@ -209,15 +214,19 @@ public:
 			break;
 		case 21:
 			stopEQ();
-			startMusic("sound/bgm07.mp3");
+			music.popOnce();
+			music.loadOnce("sound/bgm08.mp3");
 			readMsg(mouse);
 			break;
 		case 22:
 			// ‘ælí
-			StopMusic();
-			startMusic("sound/bgm08.mp3");
+			music.pop();
 			msgLoad();
 			return 1;
+		case 23:
+			music.stop();
+			readMsg(mouse);
+			break;
 		default:
 			readMsg(mouse);
 			break;

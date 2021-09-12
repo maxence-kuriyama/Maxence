@@ -15,6 +15,7 @@ private:
 	int strColorDebug = GetColor(0, 250, 0);
 	string loadMsgSync = "Loading...";
 	string loadMsgAsyncBase = "Loading";
+	int isSwapped = 0;					// すでにswapされたか否か
 
 public:
 	int vol = 150;		// 1 - 255
@@ -88,18 +89,41 @@ public:
 	}
 
 	// 再生中の音楽を解放し、待機中の音楽を再生する
-	void popMusic() {
-		switchMusic();
+	void pop() {
+		swap();
 		unload(1);
 	}
 
 	// 再生中と待機中の音楽を切り替える
-	void switchMusic() {
+	void swap() {
 		stop();
 		int tmp = handle[0];
 		handle[0] = handle[1];
 		handle[1] = tmp;
+		string tmpStr = musicName[0];
+		musicName[0] = musicName[1];
+		musicName[1] = tmpStr;
 		play();
+		isSwapped = 1;
+	}
+
+	// ループ中に一度だけpopする
+	void popOnce() {
+		if (!isSwapped) {
+			swap();
+			unload(1);
+		}
+	}
+
+	// ループ中に一度だけswapする
+	void swapOnce() {
+		if (!isSwapped) {
+			swap();
+		}
+	}
+
+	void enableSwap() {
+		isSwapped = 0;
 	}
 
 	// fromTop = 1で頭出し再生
