@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/music.h"
 #include "lib/message.h"
 
 void init_scene_text(string* scen_txt, int* scen_who);
@@ -99,18 +100,21 @@ public:
 		}
 	}
 
-	int show(Mouse& mouse) {
+	int show(Mouse& mouse, Music& music) {
 		// îwåiÅEêlï®ÇÃï`âÊ
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		for (int i = 0; i < 4; ++i) {
 			mrK[i].draw(eqX);
 		}
 		deer.draw();
+		music.drawLoadMsg();
 
 		switch (flg) {
 		case 0:
-			startMusic("sound/bgm03.mp3");
-			readMsg(mouse);
+			if (music.isPrepared()) {
+				music.play();
+				readMsg(mouse);
+			}
 			break;
 		case 1:
 			// é≠Ç™åªÇÍÇÈ

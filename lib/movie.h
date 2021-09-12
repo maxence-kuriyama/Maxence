@@ -1,9 +1,11 @@
 #pragma once
 
+#include "DxLib.h"
+#include <string>
 #include "lib/const.h"
 #include "lib/keyboard.h"
 
-class  Movie {
+class Movie {
 private:
 	int handle = -1;
 	int cnt = 0;		// ローディングメッセージ用のカウンタ
@@ -11,9 +13,11 @@ private:
 	int loadMsgY = 0;
 	int loadFlg = 0;	// すでにロードされているかどうか
 	int strColorDebug = GetColor(0, 200, 0);
+	string loadMsgSync = "Loading...";
+	string loadMsgAsyncBase = "Loading";
 
 public:
-	int vol = 150;
+	int vol = 150;		// 1 - 255
 
 	~Movie() {
 		unload();
@@ -31,12 +35,12 @@ public:
 			}
 			else {
 				// 同期的にロードする場合はメッセージを即反映
-				DrawFormatString(loadMsgX, loadMsgY, strColor, "Loading...");
+				DrawFormatString(loadMsgX, loadMsgY, strColor, loadMsgSync.c_str());
 				ScreenFlip();
 				SetUseASyncLoadFlag(FALSE);
 			}
 			handle = LoadGraph(file_name);
-			SetUseASyncLoadFlag(TRUE);
+			SetUseASyncLoadFlag(FALSE);
 
 			loadFlg = 1;
 			cnt = 0;
@@ -85,7 +89,7 @@ public:
 				strColor = GetColor(255, 255, 255);
 			}
 
-			string loading = "Loading";
+			string loading = loadMsgAsyncBase;
 			for (int i = 0; i < cnt / 15; ++i) {
 				loading += ".";
 			}
@@ -111,9 +115,9 @@ public:
 		if (debug) {
 			int strColor = strColorDebug;
 
-			DrawFormatString(5, 205, strColor, "animeCnt: %d", cnt);
-			DrawFormatString(5, 225, strColor, "isLoading: %d", isLoading());
-			DrawFormatString(5, 245, strColor, "isLoaded: %d", loadFlg);
+			DrawFormatString(5, 205, strColor, "animeCntM: %d", cnt);
+			DrawFormatString(5, 225, strColor, "isLoadingM: %d", isLoading());
+			DrawFormatString(5, 245, strColor, "isLoadedM: %d", loadFlg);
 		}
 	}
 };

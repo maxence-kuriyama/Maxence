@@ -20,6 +20,7 @@ using namespace std;
 #include "lib/ending.h"
 #include "lib/game.h"
 #include "lib/movie.h"
+#include "lib/music.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -61,6 +62,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Game game;
 	Movie movie;
+	Music bgm;
 	Scenario scenario;
 	fireflower tama[FIRE_FLOWER_NUM];
 
@@ -313,6 +315,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		// タイトル画面
 		else if (game.flg == 0) {
+			bgm.loadOnce("sound/bgm03.mp3");
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].draw();
 				tama[i].tick();
@@ -978,7 +981,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//}
 		// シナリオ
 		else if (game.flg == -6) {
-			if (scenario.show(game.mouse)) {
+			if (!bgm.drawLoadMsg() && scenario.show(game.mouse, bgm)) {
 				game.initialize();
 				initializeTrain();
 			}
@@ -992,6 +995,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// デバッグ情報出力
 		game.debugDump();
 		movie.debugDump(game.debugFlg);
+		bgm.debugDump(game.debugFlg);
 		scenario.debugDump(game.debugFlg);
 	}
 
