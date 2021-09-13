@@ -52,7 +52,8 @@ public:
 			musicName[0] = file_name;
 			loadedHere = 1;
 		}
-		else if (isEmpty(1)) {
+		// 一つの音楽ファイルで両方のメモリを占有しないようにする
+		else if (isEmpty(1) && musicName[0] != file_name) {
 			handle[1] = LoadSoundMem(file_name);
 			musicName[1] = file_name;
 			loadedHere = 1;
@@ -66,16 +67,6 @@ public:
 		}
 
 		SetUseASyncLoadFlag(FALSE);
-		return 0;
-	}
-
-	// 一つの音楽ファイルで両方のメモリを占有しないようにする
-	// ロードが成功したか否かを返す
-	int loadOnce(const char* file_name, int async = 1, int strColor = 0) {
-		// 再生中のファイルに読み込まれていなければloadする
-		if (musicName[0] != file_name) {
-			return load(file_name, async, strColor);
-		}
 		return 0;
 	}
 

@@ -219,14 +219,15 @@ public:
 		}
 	}
 
-	int reset() {
+	int reset(Music& bgm) {
 		if (flg > 0) {
 			if (logo.isClicked(mouse)) {
 				mouse.set();
 				goTitle();
 				taijin = 0;
 				mode = "";
-				StopMusic();
+				bgm.unload(0);
+				bgm.unload(1);
 				return 1;
 			}
 		}

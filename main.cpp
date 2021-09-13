@@ -218,7 +218,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		movie.drawLoadMsg();
 
 		// リセットボタンを表示する
-		if (game.reset() == 1) {
+		if (game.reset(bgm) == 1) {
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].initialize();
 			}
@@ -315,7 +315,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		// タイトル画面
 		else if (game.flg == 0) {
-			bgm.loadOnce("sound/bgm03.mp3");
+			bgm.load("sound/bgm03.mp3");
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].draw();
 				tama[i].tick();

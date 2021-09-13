@@ -110,8 +110,8 @@ public:
 
 		switch (flg) {
 		case 0:
-			music.play();
-			music.loadOnce("sound/bgm04.mp3");
+			music.play();	// 再生中のメモリにロード済みで待機中のメモリは空である前提
+			music.load("sound/bgm04.mp3");
 			readMsg(mouse);
 			break;
 		case 1:
@@ -147,7 +147,7 @@ public:
 			return 1;
 		case 7:
 			music.popOnce();
-			music.loadOnce("sound/bgm05.mp3");
+			music.load("sound/bgm05.mp3");
 			readMsg(mouse);
 			break;
 		case 8:
@@ -172,7 +172,7 @@ public:
 			return 1;
 		case 12:
 			music.popOnce();
-			music.loadOnce("sound/bgm06.mp3");
+			music.load("sound/bgm06.mp3");
 			readMsg(mouse);
 			break;
 		case 13:
@@ -194,7 +194,7 @@ public:
 		case 17:
 			// 第三戦
 			music.pop();
-			music.loadOnce("sound/bgm07.mp3");
+			music.load("sound/bgm07.mp3");
 			msgLoad();
 			return 1;
 		case 18:
@@ -215,7 +215,7 @@ public:
 		case 21:
 			stopEQ();
 			music.popOnce();
-			music.loadOnce("sound/bgm08.mp3");
+			music.load("sound/bgm08.mp3");
 			readMsg(mouse);
 			break;
 		case 22:
