@@ -38,10 +38,6 @@ private:
 	int frColorCurrentCoord = Black;
 	int strColorDebug = Blue;
 	int Font0 = CreateFontToHandle("HGã≥â»èëëÃ", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font1 = CreateFontToHandle("Times New Roman", 10, 1, -1);
-	int Font2 = CreateFontToHandle("HGã≥â»èëëÃ", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font3 = CreateFontToHandle("HGã≥â»èëëÃ", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
