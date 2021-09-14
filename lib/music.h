@@ -21,8 +21,7 @@ public:
 	int vol = 150;		// 1 - 255
 
 	~Music() {
-		unload(0);
-		unload(1);
+		unloadAll();
 	}
 
 	// 空メモリに指定した音楽ファイルを読み込む
@@ -77,6 +76,12 @@ public:
 			handle[hNum] = -1;	// unloadされた状態
 			musicName[hNum] = "";
 		}
+	}
+
+	// 全てのメモリを解放する
+	void unloadAll() {
+		unload(0);
+		unload(1);
 	}
 
 	// 再生中の音楽を解放し、待機中の音楽を再生する

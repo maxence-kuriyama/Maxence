@@ -191,7 +191,7 @@ public:
 		}
 	}
 
-	void toggleForDebug(Option& option, int& cutinFlg) {
+	void toggleForDebug(Option& option, int& cutinFlg, int& endingFlg) {
 		// カットインを入れる
 		if (state[KEY_INPUT_C] == 1) {
 			cutinFlg = 1;
@@ -202,19 +202,10 @@ public:
 			option.likeliFlg = (option.likeliFlg + 1) % 3;
 		}
 
-		/*
 		// エンディングモード
 		if (state[KEY_INPUT_MINUS] == 1) {
-			if (game.flg != -4) {
-				game.flg = -4;
-			}
-			else {
-				StopMusic();
-				game.flg = 0;
-			}
-			end_cnt = 0;
+			endingFlg = 1;
 		}
-		*/
 	}
 
 	void skipBattle(int& gameFlg, int& sceneFlg) {

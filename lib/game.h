@@ -61,6 +61,7 @@ public:
 	int nextField = -1;		// 次の盤面、-1: anywhere
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
 	int debugFlg = 0;
+	int debugEndingFlg = 0;
 	string mode = "";
 
 	// 盤面上の操作関連
@@ -222,8 +223,7 @@ public:
 				goTitle();
 				taijin = 0;
 				mode = "";
-				bgm.unload(0);
-				bgm.unload(1);
+				bgm.unloadAll();
 				return 1;
 			}
 		}
@@ -246,12 +246,12 @@ public:
 	/*===========================*/
 	//    キーボード入力関連
 	/*===========================*/
-	void toggleByKey() {
+	void toggleByKey(Music& music) {
 		key.toggleSetting(option, logo);
 		//key.configLearning();
 		key.toggleDebug(debugFlg);
 		if (debugFlg) {
-			key.toggleForDebug(option, cutin.flg);
+			key.toggleForDebug(option, cutin.flg, debugEndingFlg);
 		}
 	}
 
