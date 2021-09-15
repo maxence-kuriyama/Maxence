@@ -45,8 +45,9 @@ private:
 
 public:
 	int who;
-	int charCnt = 0;	// 文字描画カウンタ (<= textLen)
-	int textLen = 0;	// テキスト長
+	int cnt = 0;					// 文字描画カウンタ (cnt * cntMlt <= textLen)
+	float cntPerFrame = 15.0 / FPS;	// FPSに依存しないようにする倍率
+	int textLen = 0;				// テキスト長
 
 	void initialize() {
 		for (int i = 0; i < 6; ++i) {
@@ -64,13 +65,13 @@ public:
 	void set(string text0, int who0) {
 		text = text0;
 		who = who0;
-		charCnt = 0;
+		cnt = 0;
 		textLen = MultiByteLength(text0.c_str());
 	}
 
 	int skip() {
-		if (charCnt < textLen) {
-			charCnt = textLen;
+		if (cnt * cntPerFrame < textLen) {
+			cnt = ceil(textLen / cntPerFrame);
 			return 0;
 		}
 		return 1;
@@ -81,8 +82,9 @@ public:
 			strCol = strColor;
 		}
 
+		int charCnt = cnt * cntPerFrame;
 		if (charCnt < textLen) {
-			charCnt++;
+			cnt++;
 		}
 		DrawRoundBox(15, 380, 10, 609, 89, boxColor);
 		DrawMessage(charCnt, 110, 390, 600, GetFontSize(), text.c_str(), strColor, font, boxColor);

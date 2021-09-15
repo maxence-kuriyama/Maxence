@@ -256,7 +256,7 @@ public:
 			DrawFormatString(245, 245, strColor, "textCnt: %d", textCnt);
 			DrawFormatString(245, 265, strColor, "eqX: %d", eqX);
 			DrawFormatString(245, 285, strColor, "textLen: %d", msg.textLen);
-			DrawFormatString(245, 305, strColor, "charCnt: %d", msg.charCnt);
+			DrawFormatString(245, 305, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
 			DrawFormatString(245, 325, strColor, "who: %d", msg.who);
 			DrawFormatString(245, 345, strColor, "mrK0.vis: %d", mrK[0].visible);
 			DrawFormatString(245, 365, strColor, "mrK1.vis: %d", mrK[1].visible);
