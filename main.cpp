@@ -563,37 +563,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		// Ending
 		else if (game.flg == -4) {
-			bgm.load("sound/deer.mp3");
-			DrawBox(160, 80, 460, 380, GetColor(255, 255, 245), TRUE);
-			for (int i = 0; i < 3; ++i) {
-				for (int j = 0; j < 3; ++j) {
-					if (game.mother.state[i][j] == 1) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(130, 70, 70), TRUE);
-					}
-					else if (game.mother.state[i][j] == -1) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(70, 70, 130), TRUE);
-					}
-					else if (game.mother.state[i][j] != 0) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), GetColor(70, 130, 70), TRUE);
-					}
-					DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Black, FALSE);
-					if (game.nextField == 3 * i + j) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Red, FALSE);
-						DrawBox(160 + 100 * i + 1, 80 + 100 * j + 1, 160 + 100 * (i + 1) - 1, 80 + 100 * (j + 1) - 1, Red, FALSE);
-					}
-					else if (game.nextField == -1 && game.child[i][j].victory() == 0) {
-						DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), Red, FALSE);
-					}
-					for (int k = 0; k < 3; ++k) {
-						for (int l = 0; l < 3; ++l) {
-							game.child[i][j].draw(176.5 + 100 * i, 96.5 + 100 * j, 33);
-						}
-					}
-				}
-			}
+			bgm.load("sound/bgm09.mp3");
+			game.drawBase();
+			game.drawGlobalState();
+			game.drawHistLast();
+			game.drawNextField();
+			game.drawLocalState();
+			game.drawCurrentCoord();
 			game.logo.draw();
 			ending.show(bgm);
-			DrawFormatString(5, 25, game.option.strColor, "%d", ending.cnt);
 		}
 		//‚‘¬ŠwKƒ‚[ƒh
 		//else if (game.flg == 5) {
@@ -780,6 +758,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		movie.debugDump(game.debugFlg);
 		bgm.debugDump(game.debugFlg);
 		scenario.debugDump(game.debugFlg);
+		ending.debugDump(game.debugFlg);
 	}
 
 	InitGraph();

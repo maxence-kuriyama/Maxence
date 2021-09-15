@@ -17,6 +17,7 @@ private:
 	unsigned int Blue = GetColor(0, 0, 255);
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
+	unsigned int strColorDebug = GetColor(180, 180, 180);
 	int end_pict[20];
 	int stripe[15];
 
@@ -258,6 +259,15 @@ public:
 		if (cnt <= 6500) cnt++;
 		return 0;
 	}
+
+	void debugDump(int debug) {
+		if (debug) {
+			int strColor = strColorDebug;
+
+			DrawFormatString(365, 265, strColor, "endingCnt: %d", cnt);
+		}
+	}
+
 };
 
 void init_ending_text(string* job, string* who) {
