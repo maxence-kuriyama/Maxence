@@ -16,9 +16,9 @@ private:
 	string loadMsgSync = "Loading...";
 	string loadMsgAsyncBase = "Loading";
 	int isSwapped = 0;					// すでにswapされたか否か
+	int vol = 150;		// 1 - 255
 
 public:
-	int vol = 150;		// 1 - 255
 
 	~Music() {
 		unloadAll();
@@ -149,6 +149,11 @@ public:
 		return 0;
 	}
 
+	// 音量変更
+	void changeVolume(int newVol) {
+		vol = newVol;
+	}
+
 	// 非同期ロード時のローディングメッセージ描画
 	int drawLoadMsg(int strColor = 0, int hNum = 0) {
 		if (isLoading(hNum)) {
@@ -206,12 +211,13 @@ public:
 			int strColor = strColorDebug;
 
 			DrawFormatString(5, 265, strColor, "animeCntS: %d", cnt);
-			DrawFormatString(5, 285, strColor, "isEmptyS0: %d", isEmpty(0));
-			DrawFormatString(5, 305, strColor, "isLoadingS0: %d", isLoading(0));
-			DrawFormatString(5, 325, strColor, "isLoadedS0: %s", musicName[0].c_str());
-			DrawFormatString(5, 345, strColor, "isEmptyS1: %d", isEmpty(1));
-			DrawFormatString(5, 365, strColor, "isLoadingS1: %d", isLoading(1));
-			DrawFormatString(5, 385, strColor, "isLoadedS1: %s", musicName[1].c_str());
+			DrawFormatString(5, 285, strColor, "volume: %d", vol);
+			DrawFormatString(5, 305, strColor, "isEmptyS0: %d", isEmpty(0));
+			DrawFormatString(5, 325, strColor, "isLoadingS0: %d", isLoading(0));
+			DrawFormatString(5, 345, strColor, "isLoadedS0: %s", musicName[0].c_str());
+			DrawFormatString(5, 365, strColor, "isEmptyS1: %d", isEmpty(1));
+			DrawFormatString(5, 385, strColor, "isLoadingS1: %d", isLoading(1));
+			DrawFormatString(5, 405, strColor, "isLoadedS1: %s", musicName[1].c_str());
 		}
 	}
 

@@ -5,6 +5,8 @@ void init_ending_text(string* job, string* who);
 
 class Ending {
 private:
+	double cnt = 0.0;
+	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
 	string job[20];
 	string who[20];
 	int Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
@@ -22,7 +24,6 @@ private:
 	int stripe[15];
 
 public:
-	int cnt = 0;
 
 	Ending() {
 		for (int i = 1; i <= 20; ++i) {
@@ -39,24 +40,24 @@ public:
 	}
 
 	void initialize() {
-		cnt = 0;
+		cnt = 0.0;
 		init_ending_text(job, who);
 	}
 
 	int show(Music& music) {
 		double fade_tmp = min(255.0, 0.01 * pow(max(0.0, cnt - 50.0), 2.0));
 		SetDrawBlendMode(DX_BLENDMODE_SUB, fade_tmp);
-		DrawBox(-1, -1, 641, 481, GetColor(255, 255, 255), TRUE);
-		if (cnt > 280 && cnt <= 900) {
-			SetVolumeMusic(26.0 * pow(cnt - 250.0, 0.3));
+		DrawBox(-1, -1, 641, 481, White, TRUE);
+		if (cnt > 280.0 && cnt <= 900.0) {
+			music.changeVolume(22.0 * pow(cnt - 250.0, 0.3));
 			music.play();
 		}
-		if (cnt <= 300) {
+		if (cnt <= 300.0) {
 			SetDrawBlendMode(DX_BLENDMODE_ADD, fade_tmp);
 			DrawExtendGraph(170, 170, 255, 260, MLogo, TRUE);
 			DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
 		}
-		else if (cnt <= 550) {
+		else if (cnt <= 550.0) {
 			SetDrawBlendMode(DX_BLENDMODE_ADD, fade_tmp);
 			DrawExtendGraph(170, 170 - 1.2 * (cnt - 300.0),
 				255, 260 - 1.2 * (cnt - 300.0), MLogo, TRUE);
@@ -66,32 +67,32 @@ public:
 		//スナップショット
 		for (int i = 0; i < 8; ++i) {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			if (cnt > 640 * i + 550 && cnt <= 640 * (i + 1) + 550) {
+			if (cnt > 640.0 * i + 550.0 && cnt <= 640.0 * (i + 1) + 550.0) {
 				DrawExtendGraph(
 					280,
-					480 - 1.2 * (cnt - 640 * i - 550),
+					480 - 1.2 * (cnt - 640.0 * i - 550.0),
 					600,
-					720 - 1.2 * (cnt - 640 * i - 550),
+					720 - 1.2 * (cnt - 640.0 * i - 550.0),
 					end_pict[2 * i], TRUE);
 				DrawStringToHandle(
-					20, 520 - 1.2 * (cnt - 640 * i - 550),
+					20, 520.0 - 1.2 * (cnt - 640.0 * i - 550.0),
 					job[2 * i].c_str(), White, Font2);
 				DrawStringToHandle(
-					20, 620 - 1.2 * (cnt - 640 * i - 550),
+					20, 620.0 - 1.2 * (cnt - 640.0 * i - 550.0),
 					who[2 * i].c_str(), White, Font3);
 			}
-			if (cnt > 640 * i + 870 && cnt <= 640 * (i + 1) + 870) {
+			if (cnt > 640.0 * i + 870.0 && cnt <= 640.0 * (i + 1) + 870.0) {
 				DrawExtendGraph(
 					40,
-					480 - 1.2 * (cnt - 640 * i - 870),
+					480.0 - 1.2 * (cnt - 640.0 * i - 870.0),
 					360,
-					720 - 1.2 * (cnt - 640 * i - 870),
+					720.0 - 1.2 * (cnt - 640.0 * i - 870.0),
 					end_pict[2 * i + 1], TRUE);
 				DrawStringToHandle(
-					370, 520 - 1.2 * (cnt - 640 * i - 870),
+					370, 520.0 - 1.2 * (cnt - 640.0 * i - 870.0),
 					job[2 * i + 1].c_str(), White, Font2);
 				DrawStringToHandle(
-					370, 620 - 1.2 * (cnt - 640 * i - 870),
+					370, 620.0 - 1.2 * (cnt - 640.0 * i - 870.0),
 					who[2 * i + 1].c_str(), White, Font3);
 			}
 		}
@@ -99,55 +100,55 @@ public:
 		//Mr.K
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		//1人目
-		if (cnt > 1650 && cnt <= 2500) {
-			DrawGraph((cnt - 1750), 415, stripe[0], TRUE);
+		if (cnt > 1650.0 && cnt <= 2500.0) {
+			DrawGraph((cnt - 1750.0), 415, stripe[0], TRUE);
 		}
 		//2人目
-		if (cnt > 2550) {
-			if (cnt <= 2900) {
-				DrawGraph((cnt - 2650), 425, stripe[1], TRUE);
+		if (cnt > 2550.0) {
+			if (cnt <= 2900.0) {
+				DrawGraph((cnt - 2650.0), 425, stripe[1], TRUE);
 			}
-			else if (cnt <= 2910) {
-				DrawGraph(220 + 0.3 * pow(cnt - 2910, 2.0), 425, stripe[1], TRUE);
+			else if (cnt <= 2910.0) {
+				DrawGraph(220.0 + 0.3 * pow(cnt - 2910.0, 2.0), 425, stripe[1], TRUE);
 			}
-			else if (cnt <= 2940) {
-				DrawGraph(220 + (cnt - 2910), 425, stripe[1], TRUE);
+			else if (cnt <= 2940.0) {
+				DrawGraph(220.0 + (cnt - 2910.0), 425, stripe[1], TRUE);
 			}
-			else if (cnt <= 2950) {
-				DrawGraph(220 + 0.3 * pow(cnt - 2950, 2.0), 425, stripe[1], TRUE);
+			else if (cnt <= 2950.0) {
+				DrawGraph(220.0 + 0.3 * pow(cnt - 2950.0, 2.0), 425, stripe[1], TRUE);
 			}
-			else if (cnt <= 2980) {
-				DrawGraph(220 + (cnt - 2950), 425, stripe[1], TRUE);
+			else if (cnt <= 2980.0) {
+				DrawGraph(220.0 + (cnt - 2950.0), 425, stripe[1], TRUE);
 			}
-			else if (cnt <= 2990) {
-				DrawGraph(220 + 0.3 * pow(cnt - 2990, 2.0), 425, stripe[1], TRUE);
+			else if (cnt <= 2990.0) {
+				DrawGraph(220.0 + 0.3 * pow(cnt - 2990.0, 2.0), 425, stripe[1], TRUE);
 			}
-			else if (cnt <= 3500) {
-				DrawGraph(220 + (cnt - 2990), 425, stripe[1], TRUE);
+			else if (cnt <= 3500.0) {
+				DrawGraph(220.0 + (cnt - 2990.0), 425, stripe[1], TRUE);
 			}
 		}
 		//3人目
-		if (cnt > 3600) {
-			if (cnt <= 3900) {
-				DrawGraph((cnt - 3700), 420, stripe[0], TRUE);
+		if (cnt > 3600.0) {
+			if (cnt <= 3900.0) {
+				DrawGraph((cnt - 3700.0), 420, stripe[0], TRUE);
 			}
-			else if (cnt <= 4100) {
+			else if (cnt <= 4100.0) {
 				DrawGraph(200, 420, stripe[0], TRUE);
 			}
-			else if (cnt <= 4600) {
-				DrawGraph(200, 420 - 1.2 * (cnt - 4100), stripe[0], TRUE);
+			else if (cnt <= 4600.0) {
+				DrawGraph(200, 420.0 - 1.2 * (cnt - 4100.0), stripe[0], TRUE);
 			}
 		}
 		//4人目
-		if (cnt > 4800) {
-			if (cnt <= 5300) {
-				DrawGraph((cnt - 4900), 395, stripe[2], TRUE);
+		if (cnt > 4800.0) {
+			if (cnt <= 5300.0) {
+				DrawGraph((cnt - 4900.0), 395, stripe[2], TRUE);
 			}
-			else if (cnt <= 5450) {
+			else if (cnt <= 5450.0) {
 				DrawGraph(400, 395, stripe[2], TRUE);
 			}
-			else if (cnt <= 5550) {
-				if (cnt % 10 < 5) {
+			else if (cnt <= 5550.0) {
+				if (int(cnt) % 10 < 5) {
 					DrawGraph(400, 395, stripe[2], TRUE);
 				}
 				else {
@@ -160,33 +161,33 @@ public:
 		}
 
 		//鹿
-		if (cnt <= 830) {
+		if (cnt <= 830.0) {
 			//SetDrawBlendMode(DX_BLENDMODE_ADD, fade_tmp);
 			//DrawGraph(450, 380, end_str[4], TRUE);
 			//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
-		else if (cnt <= 1200) {
-			if (cnt % 60 < 15) {
-				DrawGraph(650 - (cnt - 830), 380, stripe[4], TRUE);
+		else if (cnt <= 1200.0) {
+			if (int(cnt) % 60 < 15) {
+				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[4], TRUE);
 			}
-			else if (cnt % 60 < 30) {
-				DrawGraph(650 - (cnt - 830), 380, stripe[5], TRUE);
+			else if (int(cnt) % 60 < 30) {
+				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[5], TRUE);
 			}
-			else if (cnt % 60 < 45) {
-				DrawGraph(650 - (cnt - 830), 380, stripe[6], TRUE);
+			else if (int(cnt) % 60 < 45) {
+				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[6], TRUE);
 			}
 			else {
-				DrawGraph(650 - (cnt - 830), 380, stripe[7], TRUE);
+				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[7], TRUE);
 			}
 		}
-		else if (cnt <= 3900) {
-			if (cnt % 60 < 15) {
+		else if (cnt <= 3900.0) {
+			if (int(cnt) % 60 < 15) {
 				DrawGraph(280, 380, stripe[4], TRUE);
 			}
-			else if (cnt % 60 < 30) {
+			else if (int(cnt) % 60 < 30) {
 				DrawGraph(280, 380, stripe[5], TRUE);
 			}
-			else if (cnt % 60 < 45) {
+			else if (int(cnt) % 60 < 45) {
 				DrawGraph(280, 380, stripe[6], TRUE);
 			}
 			else {
@@ -194,22 +195,22 @@ public:
 			}
 		}
 		//3人目
-		else if (cnt <= 4550) {
-			if (cnt <= 4200) {
+		else if (cnt <= 4550.0) {
+			if (cnt <= 4200.0) {
 				DrawGraph(280, 380, stripe[4], TRUE);
 			}
 			else {
 				DrawGraph(280, 380, stripe[8], TRUE);
 			}
 		}
-		else if (cnt <= 5300) {
-			if (cnt % 60 < 15) {
+		else if (cnt <= 5300.0) {
+			if (int(cnt) % 60 < 15) {
 				DrawGraph(280, 380, stripe[4], TRUE);
 			}
-			else if (cnt % 60 < 30) {
+			else if (int(cnt) % 60 < 30) {
 				DrawGraph(280, 380, stripe[5], TRUE);
 			}
-			else if (cnt % 60 < 45) {
+			else if (int(cnt) % 60 < 45) {
 				DrawGraph(280, 380, stripe[6], TRUE);
 			}
 			else {
@@ -217,46 +218,46 @@ public:
 			}
 		}
 		//4人目
-		else if (cnt <= 5600) {
-			if (cnt <= 5450) {
+		else if (cnt <= 5600.0) {
+			if (cnt <= 5450.0) {
 				DrawGraph(280, 380, stripe[4], TRUE);
 			}
-			else if (cnt <= 5550) {
+			else if (cnt <= 5550.0) {
 				DrawGraph(280, 380, stripe[9], TRUE);
 			}
 			else {
 				DrawGraph(280, 380, stripe[4], TRUE);
 			}
 		}
-		else  if (cnt <= 6000) {
-			if (cnt % 40 < 10) {
-				DrawGraph(280 - 1.2 * (cnt - 5600), 380, stripe[4], TRUE);
+		else  if (cnt <= 6000.0) {
+			if (int(cnt) % 40 < 10) {
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[4], TRUE);
 			}
-			else if (cnt % 40 < 20) {
-				DrawGraph(280 - 1.2 * (cnt - 5600), 380, stripe[5], TRUE);
+			else if (int(cnt) % 40 < 20) {
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[5], TRUE);
 			}
-			else if (cnt % 40 < 30) {
-				DrawGraph(280 - 1.2 * (cnt - 5600), 380, stripe[6], TRUE);
+			else if (int(cnt) % 40 < 30) {
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[6], TRUE);
 			}
 			else {
-				DrawGraph(280 - 1.2 * (cnt - 5600), 380, stripe[7], TRUE);
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[7], TRUE);
 			}
 		}
 		//Fin
-		if (cnt > 5680) {
-			if (cnt <= 5950) {
+		if (cnt > 5680.0) {
+			if (cnt <= 5950.0) {
 				DrawStringToHandle(
-					270, 520 - 1.2 * (cnt - 5680),
+					270, 520.0 - 1.2 * (cnt - 5680.0),
 					"Fin", White, Font4);
 			}
 			else {
 				DrawStringToHandle(
-					270, 520 - 1.2 * 270,
+					270, 520.0 - 1.2 * 270.0,
 					"Fin", White, Font4);
 			}
 		}
 
-		if (cnt <= 6500) cnt++;
+		if (cnt <= 6500.0) cnt += 30.0 / FPS;
 		return 0;
 	}
 
@@ -264,7 +265,8 @@ public:
 		if (debug) {
 			int strColor = strColorDebug;
 
-			DrawFormatString(365, 265, strColor, "endingCnt: %d", cnt);
+			DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
+			DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
 		}
 	}
 
