@@ -14,6 +14,7 @@ private:
 	int eqX = 0;
 	int eqY = 0;		// eq = earthquake
 	int strColorDebug = GetColor(150, 0, 0);
+	int strColorLoad = GetColor(0, 0, 0);
 
 	void msgSet() {
 		msg.set(text[textCnt], who[textCnt]);
@@ -141,10 +142,12 @@ public:
 			break;
 		case 6:
 			// ‘æˆêí
-			music.swap();
-			music.enableSwap();
-			msgLoad();
-			return 1;
+			if (music.swap(strColorLoad)) {
+				music.enableSwap();
+				msgLoad();
+				return 1;
+			}
+			break;
 		case 7:
 			music.popOnce();
 			music.load("sound/bgm05.mp3");
@@ -166,10 +169,12 @@ public:
 			break;
 		case 11:
 			// ‘æ“ñí
-			music.swap();
-			music.enableSwap();
-			msgLoad();
-			return 1;
+			if (music.swap(strColorLoad)) {
+				music.enableSwap();
+				msgLoad();
+				return 1;
+			}
+			break;
 		case 12:
 			music.popOnce();
 			music.load("sound/bgm06.mp3");
@@ -193,10 +198,12 @@ public:
 			break;
 		case 17:
 			// ‘æOí
-			music.pop();
-			music.load("sound/bgm07.mp3");
-			msgLoad();
-			return 1;
+			if (music.pop(strColorLoad)) {
+				music.load("sound/bgm07.mp3");
+				msgLoad();
+				return 1;
+			}
+			break;
 		case 18:
 			music.stop();
 			music.enableSwap();
@@ -220,9 +227,11 @@ public:
 			break;
 		case 22:
 			// ‘ælí
-			music.pop();
-			msgLoad();
-			return 1;
+			if (music.pop(strColorLoad)) {
+				msgLoad();
+				return 1;
+			}
+			break;
 		case 23:
 			music.stop();
 			readMsg(mouse);

@@ -85,22 +85,30 @@ public:
 	}
 
 	// 再生中の音楽を解放し、待機中の音楽を再生する
-	void pop() {
-		swap();
-		unload(1);
+	int pop(int strColor = 0) {
+		if (swap(strColor)) {
+			unload(1);
+			return 1;
+		}
+		return 0;
 	}
 
 	// 再生中と待機中の音楽を切り替える
-	void swap() {
-		stop();
-		int tmp = handle[0];
-		handle[0] = handle[1];
-		handle[1] = tmp;
-		string tmpStr = musicName[0];
-		musicName[0] = musicName[1];
-		musicName[1] = tmpStr;
-		play();
-		isSwapped = 1;
+	int swap(int strColor = 0) {
+		if (!isLoading(1)) {
+			stop();
+			int tmp = handle[0];
+			handle[0] = handle[1];
+			handle[1] = tmp;
+			string tmpStr = musicName[0];
+			musicName[0] = musicName[1];
+			musicName[1] = tmpStr;
+			play();
+			isSwapped = 1;
+			return 1;
+		}
+		drawLoadMsg(strColor, 1);
+		return 0;
 	}
 
 	// ループ中に一度だけpopする
@@ -142,8 +150,8 @@ public:
 	}
 
 	// 非同期ロード時のローディングメッセージ描画
-	int drawLoadMsg(int strColor = 0) {
-		if (isLoading()) {
+	int drawLoadMsg(int strColor = 0, int hNum = 0) {
+		if (isLoading(hNum)) {
 			if (strColor == 0) {
 				strColor = GetColor(255, 255, 255);
 			}
