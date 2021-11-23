@@ -1,7 +1,8 @@
 #pragma once
 
-void init_ending_text(string* job, string* who);
+#include "lib/message.h"
 
+void init_ending_text(string* job, string* who);
 
 class Ending {
 private:
@@ -24,6 +25,8 @@ private:
 	int stripe[15];
 
 public:
+	MrK mrK[4];
+	MrK deer;
 
 	Ending() {
 		for (int i = 1; i <= 20; ++i) {
@@ -31,11 +34,18 @@ public:
 			pict_name = "graph/end_pict" + to_string(i) + ".png";
 			end_pict[i - 1] = LoadGraph(pict_name.c_str());
 		}
+		// ↓削除予定
 		for (int i = 1; i <= 15; ++i) {
 			string pict_name;
 			pict_name = "graph/stripe" + to_string(i) + ".png";
 			stripe[i - 1] = LoadGraph(pict_name.c_str());
 		}
+		// ↑
+		mrK[0].set(-100, 415, "graph/stripe1.png", 1);
+		// mrK[1].set(-100, 425, "graph/stripe2.png", 1);
+		// mrK[2].set(-100, 420, "graph/stripe1.png", 1);
+		// mrK[3].set(-100, 395, "graph/stripe3.png", 1);
+		// deer.set(1480, 200, "graph/stripe6.png", 1);
 		initialize();
 	}
 
@@ -45,63 +55,19 @@ public:
 	}
 
 	int show(Music& music) {
-		double fade_tmp = min(255.0, 0.01 * pow(max(0.0, cnt - 50.0), 2.0));
-		SetDrawBlendMode(DX_BLENDMODE_SUB, fade_tmp);
-		DrawBox(-1, -1, 641, 481, White, TRUE);
-		if (cnt > 280.0 && cnt <= 900.0) {
-			music.changeVolume(22.0 * pow(cnt - 250.0, 0.3));
-			music.play();
-		}
-		if (cnt <= 300.0) {
-			SetDrawBlendMode(DX_BLENDMODE_ADD, fade_tmp);
-			DrawExtendGraph(170, 170, 255, 260, MLogo, TRUE);
-			DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
-		}
-		else if (cnt <= 550.0) {
-			SetDrawBlendMode(DX_BLENDMODE_ADD, fade_tmp);
-			DrawExtendGraph(170, 170 - 1.2 * (cnt - 300.0),
-				255, 260 - 1.2 * (cnt - 300.0), MLogo, TRUE);
-			DrawExtendGraph(250, 170 - 1.2 * (cnt - 300.0),
-				490, 260 - 1.2 * (cnt - 300.0), axence, TRUE);
-		}
+		// フェードイン
+		fadeinMusic(music);
+		fadeinTitle();
+
 		//スナップショット
-		for (int i = 0; i < 8; ++i) {
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			if (cnt > 640.0 * i + 550.0 && cnt <= 640.0 * (i + 1) + 550.0) {
-				DrawExtendGraph(
-					280,
-					480 - 1.2 * (cnt - 640.0 * i - 550.0),
-					600,
-					720 - 1.2 * (cnt - 640.0 * i - 550.0),
-					end_pict[2 * i], TRUE);
-				DrawStringToHandle(
-					20, 520.0 - 1.2 * (cnt - 640.0 * i - 550.0),
-					job[2 * i].c_str(), White, Font2);
-				DrawStringToHandle(
-					20, 620.0 - 1.2 * (cnt - 640.0 * i - 550.0),
-					who[2 * i].c_str(), White, Font3);
-			}
-			if (cnt > 640.0 * i + 870.0 && cnt <= 640.0 * (i + 1) + 870.0) {
-				DrawExtendGraph(
-					40,
-					480.0 - 1.2 * (cnt - 640.0 * i - 870.0),
-					360,
-					720.0 - 1.2 * (cnt - 640.0 * i - 870.0),
-					end_pict[2 * i + 1], TRUE);
-				DrawStringToHandle(
-					370, 520.0 - 1.2 * (cnt - 640.0 * i - 870.0),
-					job[2 * i + 1].c_str(), White, Font2);
-				DrawStringToHandle(
-					370, 620.0 - 1.2 * (cnt - 640.0 * i - 870.0),
-					who[2 * i + 1].c_str(), White, Font3);
-			}
-		}
+		drawEndroll();
 
 		//Mr.K
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		//1人目
 		if (cnt > 1650.0 && cnt <= 2500.0) {
-			DrawGraph((cnt - 1750.0), 415, stripe[0], TRUE);
+			mrK[0].set(cnt - 1750.0, 415);
+			mrK[0].draw();
 		}
 		//2人目
 		if (cnt > 2550.0) {
@@ -161,12 +127,7 @@ public:
 		}
 
 		//鹿
-		if (cnt <= 830.0) {
-			//SetDrawBlendMode(DX_BLENDMODE_ADD, fade_tmp);
-			//DrawGraph(450, 380, end_str[4], TRUE);
-			//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		}
-		else if (cnt <= 1200.0) {
+		if (cnt <= 1200.0) {
 			if (int(cnt) % 60 < 15) {
 				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[4], TRUE);
 			}
@@ -243,22 +204,73 @@ public:
 				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[7], TRUE);
 			}
 		}
+
 		//Fin
-		if (cnt > 5680.0) {
-			if (cnt <= 5950.0) {
-				DrawStringToHandle(
-					270, 520.0 - 1.2 * (cnt - 5680.0),
-					"Fin", White, Font4);
-			}
-			else {
-				DrawStringToHandle(
-					270, 520.0 - 1.2 * 270.0,
-					"Fin", White, Font4);
-			}
-		}
+		drawFin();
 
 		if (cnt <= 6500.0) cnt += 30.0 / FPS;
+
 		return 0;
+	}
+
+	void fadeinMusic(Music& music) {
+		if (cnt > 280.0 && cnt <= 900.0) {
+			music.changeVolume(22.0 * pow(cnt - 250.0, 0.3));
+			music.play();
+		}
+	}
+
+	void fadeinTitle() {
+		double fade = min(255.0, 0.01 * pow(max(0.0, cnt - 50.0), 2.0));
+		SetDrawBlendMode(DX_BLENDMODE_SUB, fade);
+		DrawBox(-1, -1, 641, 481, White, TRUE);
+		if (cnt <= 300.0) {
+			SetDrawBlendMode(DX_BLENDMODE_ADD, fade);
+			DrawExtendGraph(170, 170, 255, 260, MLogo, TRUE);
+			DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
+		}
+		else if (cnt <= 550.0) {
+			SetDrawBlendMode(DX_BLENDMODE_ADD, fade);
+			DrawExtendGraph(170, 170 - 1.2 * (cnt - 300.0), 255, 260 - 1.2 * (cnt - 300.0), MLogo, TRUE);
+			DrawExtendGraph(250, 170 - 1.2 * (cnt - 300.0), 490, 260 - 1.2 * (cnt - 300.0), axence, TRUE);
+		}
+	}
+
+	void drawEndroll() {
+		for (int i = 0; i < 8; ++i) {
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			if (cnt > 640.0 * i + 550.0 && cnt <= 640.0 * (i + 1) + 550.0) {
+				DrawExtendGraph(
+					280,
+					480 - 1.2 * (cnt - 640.0 * i - 550.0),
+					600,
+					720 - 1.2 * (cnt - 640.0 * i - 550.0),
+					end_pict[2 * i], TRUE);
+				DrawStringToHandle(20, 520.0 - 1.2 * (cnt - 640.0 * i - 550.0), job[2 * i].c_str(), White, Font2);
+				DrawStringToHandle(20, 620.0 - 1.2 * (cnt - 640.0 * i - 550.0), who[2 * i].c_str(), White, Font3);
+			}
+			if (cnt > 640.0 * i + 870.0 && cnt <= 640.0 * (i + 1) + 870.0) {
+				DrawExtendGraph(
+					40,
+					480.0 - 1.2 * (cnt - 640.0 * i - 870.0),
+					360,
+					720.0 - 1.2 * (cnt - 640.0 * i - 870.0),
+					end_pict[2 * i + 1], TRUE);
+				DrawStringToHandle(370, 520.0 - 1.2 * (cnt - 640.0 * i - 870.0), job[2 * i + 1].c_str(), White, Font2);
+				DrawStringToHandle(370, 620.0 - 1.2 * (cnt - 640.0 * i - 870.0), who[2 * i + 1].c_str(), White, Font3);
+			}
+		}
+	}
+
+	void drawFin() {
+		if (cnt > 5680.0) {
+			if (cnt <= 5950.0) {
+				DrawStringToHandle(270, 520.0 - 1.2 * (cnt - 5680.0), "Fin", White, Font4);
+			}
+			else {
+				DrawStringToHandle(270, 520.0 - 1.2 * 270.0, "Fin", White, Font4);
+			}
+		}
 	}
 
 	void debugDump(int debug) {

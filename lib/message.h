@@ -19,6 +19,11 @@ public:
 		visible = visibility;
 	}
 
+	void set(int posX, int posY) {
+		x = posX;
+		y = posY;
+	}
+
 	void hide() {
 		visible = 0;
 	}
