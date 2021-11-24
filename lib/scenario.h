@@ -2,6 +2,7 @@
 
 #include "lib/music.h"
 #include "lib/message.h"
+#include "lib/sprite.h"
 
 void init_scene_text(string* scen_txt, int* scen_who);
 

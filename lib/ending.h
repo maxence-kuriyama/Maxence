@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/message.h"
+#include "lib/sprite.h"
 
 void init_ending_text(string* job, string* who);
 
