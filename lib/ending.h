@@ -22,7 +22,7 @@ private:
 	unsigned int Black = GetColor(0, 0, 0);
 	unsigned int strColorDebug = GetColor(180, 180, 180);
 	int end_pict[20];
-	int stripe[15];
+	int sprite[15];
 
 public:
 	MrK mrK[4];
@@ -38,13 +38,17 @@ public:
 		for (int i = 1; i <= 15; ++i) {
 			string pict_name;
 			pict_name = "graph/stripe" + to_string(i) + ".png";
-			stripe[i - 1] = LoadGraph(pict_name.c_str());
+			sprite[i - 1] = LoadGraph(pict_name.c_str());
 		}
 		// ↑
-		mrK[0].set(-100, 415, "graph/stripe1.png", 1);
-		// mrK[1].set(-100, 425, "graph/stripe2.png", 1);
-		// mrK[2].set(-100, 420, "graph/stripe1.png", 1);
-		// mrK[3].set(-100, 395, "graph/stripe3.png", 1);
+		mrK[0].set(-100, 415, "graph/stripe1.png");
+		mrK[1].set(-100, 425, "graph/stripe2.png");
+		mrK[2].set(-100, 420, "graph/stripe1.png");
+		mrK[3].img[0] = LoadGraph("graph/stripe3.png");
+		mrK[3].img[1] = LoadGraph("graph/stripe4.png");
+		mrK[3].img[2] = LoadGraph("graph/stripe3.png");
+		mrK[3].img[3] = LoadGraph("graph/stripe4.png");
+		mrK[3].setLoopSpeed(5);
 		// deer.set(1480, 200, "graph/stripe6.png", 1);
 		initialize();
 	}
@@ -64,144 +68,140 @@ public:
 
 		//Mr.K
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//1人目
+		//1人目 死んでいる
 		if (cnt > 1650.0 && cnt <= 2500.0) {
 			mrK[0].set(cnt - 1750.0, 415);
 			mrK[0].draw();
 		}
-		//2人目
-		if (cnt > 2550.0) {
+		//2人目 蹴られる
+		if (cnt > 2550.0 && cnt <= 3500.0) {
+			double tempx = -200.0;
 			if (cnt <= 2900.0) {
-				DrawGraph((cnt - 2650.0), 425, stripe[1], TRUE);
-			}
-			else if (cnt <= 2910.0) {
-				DrawGraph(220.0 + 0.3 * pow(cnt - 2910.0, 2.0), 425, stripe[1], TRUE);
-			}
-			else if (cnt <= 2940.0) {
-				DrawGraph(220.0 + (cnt - 2910.0), 425, stripe[1], TRUE);
-			}
-			else if (cnt <= 2950.0) {
-				DrawGraph(220.0 + 0.3 * pow(cnt - 2950.0, 2.0), 425, stripe[1], TRUE);
-			}
-			else if (cnt <= 2980.0) {
-				DrawGraph(220.0 + (cnt - 2950.0), 425, stripe[1], TRUE);
-			}
-			else if (cnt <= 2990.0) {
-				DrawGraph(220.0 + 0.3 * pow(cnt - 2990.0, 2.0), 425, stripe[1], TRUE);
-			}
-			else if (cnt <= 3500.0) {
-				DrawGraph(220.0 + (cnt - 2990.0), 425, stripe[1], TRUE);
-			}
-		}
-		//3人目
-		if (cnt > 3600.0) {
-			if (cnt <= 3900.0) {
-				DrawGraph((cnt - 3700.0), 420, stripe[0], TRUE);
-			}
-			else if (cnt <= 4100.0) {
-				DrawGraph(200, 420, stripe[0], TRUE);
-			}
-			else if (cnt <= 4600.0) {
-				DrawGraph(200, 420.0 - 1.2 * (cnt - 4100.0), stripe[0], TRUE);
-			}
-		}
-		//4人目
-		if (cnt > 4800.0) {
-			if (cnt <= 5300.0) {
-				DrawGraph((cnt - 4900.0), 395, stripe[2], TRUE);
-			}
-			else if (cnt <= 5450.0) {
-				DrawGraph(400, 395, stripe[2], TRUE);
-			}
-			else if (cnt <= 5550.0) {
-				if (int(cnt) % 10 < 5) {
-					DrawGraph(400, 395, stripe[2], TRUE);
-				}
-				else {
-					DrawGraph(400, 395, stripe[3], TRUE);
-				}
+				tempx = cnt - 2650.0;
 			}
 			else {
-				DrawGraph(400, 395, stripe[2], TRUE);
+				tempx = 220.0 + (cnt - 2990.0);
+				for (int i = 0; i < 3; ++i) {
+					double baseCnt = 2910.0 + i * 40.0;
+					if (cnt <= baseCnt + 30.0) {
+						if (cnt <= baseCnt) {
+							tempx = 220.0 + 0.3 * pow(cnt - baseCnt, 2.0);
+						}
+						else {
+							tempx = 220.0 + (cnt - baseCnt);
+						}
+						break;
+					}
+				}
 			}
+			mrK[1].set(tempx, 425);
+			mrK[1].draw();
+		}
+		//3人目 昇天する
+		if (cnt > 3600.0 && cnt <= 4600.0) {
+			double tempx = 200.0;
+			double tempy = 420.0;
+			if (cnt <= 3900.0) {
+				tempx = cnt - 3700.0;
+			}
+			else if (cnt > 4100.0) {
+				tempy = 420.0 - 1.2 * (cnt - 4100.0);
+			}
+			mrK[2].set(tempx, tempy);
+			mrK[2].draw();
+		}
+		//4人目 見送る
+		if (cnt > 4800.0) {
+			double tempx = 400.0;
+			if (cnt <= 5300.0) {
+				tempx = cnt - 4900.0;
+			}
+			else if (cnt > 5450.0 && cnt <= 5550.0) {
+				mrK[3].walk();
+			}
+			else {
+				mrK[3].stop();
+			}
+			mrK[3].set(tempx, 395);
+			mrK[3].draw();
 		}
 
 		//鹿
 		if (cnt <= 1200.0) {
 			if (int(cnt) % 60 < 15) {
-				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[4], TRUE);
+				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[4], TRUE);
 			}
 			else if (int(cnt) % 60 < 30) {
-				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[5], TRUE);
+				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[5], TRUE);
 			}
 			else if (int(cnt) % 60 < 45) {
-				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[6], TRUE);
+				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[6], TRUE);
 			}
 			else {
-				DrawGraph(650.0 - (cnt - 830.0), 380, stripe[7], TRUE);
+				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[7], TRUE);
 			}
 		}
 		else if (cnt <= 3900.0) {
 			if (int(cnt) % 60 < 15) {
-				DrawGraph(280, 380, stripe[4], TRUE);
+				DrawGraph(280, 380, sprite[4], TRUE);
 			}
 			else if (int(cnt) % 60 < 30) {
-				DrawGraph(280, 380, stripe[5], TRUE);
+				DrawGraph(280, 380, sprite[5], TRUE);
 			}
 			else if (int(cnt) % 60 < 45) {
-				DrawGraph(280, 380, stripe[6], TRUE);
+				DrawGraph(280, 380, sprite[6], TRUE);
 			}
 			else {
-				DrawGraph(280, 380, stripe[7], TRUE);
+				DrawGraph(280, 380, sprite[7], TRUE);
 			}
 		}
 		//3人目
 		else if (cnt <= 4550.0) {
 			if (cnt <= 4200.0) {
-				DrawGraph(280, 380, stripe[4], TRUE);
+				DrawGraph(280, 380, sprite[4], TRUE);
 			}
 			else {
-				DrawGraph(280, 380, stripe[8], TRUE);
+				DrawGraph(280, 380, sprite[8], TRUE);
 			}
 		}
 		else if (cnt <= 5300.0) {
 			if (int(cnt) % 60 < 15) {
-				DrawGraph(280, 380, stripe[4], TRUE);
+				DrawGraph(280, 380, sprite[4], TRUE);
 			}
 			else if (int(cnt) % 60 < 30) {
-				DrawGraph(280, 380, stripe[5], TRUE);
+				DrawGraph(280, 380, sprite[5], TRUE);
 			}
 			else if (int(cnt) % 60 < 45) {
-				DrawGraph(280, 380, stripe[6], TRUE);
+				DrawGraph(280, 380, sprite[6], TRUE);
 			}
 			else {
-				DrawGraph(280, 380, stripe[7], TRUE);
+				DrawGraph(280, 380, sprite[7], TRUE);
 			}
 		}
 		//4人目
 		else if (cnt <= 5600.0) {
 			if (cnt <= 5450.0) {
-				DrawGraph(280, 380, stripe[4], TRUE);
+				DrawGraph(280, 380, sprite[4], TRUE);
 			}
 			else if (cnt <= 5550.0) {
-				DrawGraph(280, 380, stripe[9], TRUE);
+				DrawGraph(280, 380, sprite[9], TRUE);
 			}
 			else {
-				DrawGraph(280, 380, stripe[4], TRUE);
+				DrawGraph(280, 380, sprite[4], TRUE);
 			}
 		}
 		else  if (cnt <= 6000.0) {
 			if (int(cnt) % 40 < 10) {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[4], TRUE);
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[4], TRUE);
 			}
 			else if (int(cnt) % 40 < 20) {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[5], TRUE);
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[5], TRUE);
 			}
 			else if (int(cnt) % 40 < 30) {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[6], TRUE);
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[6], TRUE);
 			}
 			else {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, stripe[7], TRUE);
+				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[7], TRUE);
 			}
 		}
 
@@ -279,6 +279,11 @@ public:
 
 			DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
 			DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
+			DrawFormatString(365, 305, strColor, "mrK0.walkCnt: %d", mrK[0].walkCnt);
+			DrawFormatString(365, 325, strColor, "mrK1.walkCnt: %d", mrK[1].walkCnt);
+			DrawFormatString(365, 345, strColor, "mrK2.walkCnt: %d", mrK[2].walkCnt);
+			DrawFormatString(365, 365, strColor, "mrK3.walkCnt: %d", mrK[3].walkCnt);
+			DrawFormatString(365, 385, strColor, "deer.walkCnt: %d", deer.walkCnt);
 		}
 	}
 

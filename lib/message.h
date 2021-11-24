@@ -21,16 +21,12 @@ public:
 	int textLen = 0;				// テキスト長
 
 	void initialize() {
-		for (int i = 0; i < 6; ++i) {
-			sprite[i].x = 30;
-			sprite[i].y = 380;
-		}
-		sprite[0].img = 0;
-		sprite[1].img = LoadGraph("graph/stripe11.png");
-		sprite[2].img = LoadGraph("graph/stripe12.png");
-		sprite[3].img = LoadGraph("graph/stripe13.png");
-		sprite[4].img = LoadGraph("graph/stripe14.png");
-		sprite[5].img = LoadGraph("graph/stripe15.png");
+		sprite[0].set(30, 380);
+		sprite[1].set(30, 380, "graph/stripe11.png");
+		sprite[2].set(30, 380, "graph/stripe12.png");
+		sprite[3].set(30, 380, "graph/stripe13.png");
+		sprite[4].set(30, 380, "graph/stripe14.png");
+		sprite[5].set(30, 380, "graph/stripe15.png");
 	}
 
 	void set(string text0, int who0) {
