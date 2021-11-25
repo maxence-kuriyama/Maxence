@@ -15,11 +15,7 @@ private:
 	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int MLogo = LoadGraph("graph/M.png");
 	int axence = LoadGraph("graph/axence.png");
-	unsigned int Green = GetColor(0, 255, 0);
-	unsigned int Red = GetColor(255, 0, 0);
-	unsigned int Blue = GetColor(0, 0, 255);
 	unsigned int White = GetColor(255, 255, 255);
-	unsigned int Black = GetColor(0, 0, 0);
 	unsigned int strColorDebug = GetColor(180, 180, 180);
 	int end_pict[20];
 	int sprite[15];
@@ -34,13 +30,6 @@ public:
 			pict_name = "graph/end_pict" + to_string(i) + ".png";
 			end_pict[i - 1] = LoadGraph(pict_name.c_str());
 		}
-		// ↓削除予定
-		for (int i = 1; i <= 15; ++i) {
-			string pict_name;
-			pict_name = "graph/stripe" + to_string(i) + ".png";
-			sprite[i - 1] = LoadGraph(pict_name.c_str());
-		}
-		// ↑
 		mrK[0].set(-100, 415, "graph/stripe1.png");
 		mrK[1].set(-100, 425, "graph/stripe2.png");
 		mrK[2].set(-100, 420, "graph/stripe1.png");
@@ -48,8 +37,14 @@ public:
 		mrK[3].img[1] = LoadGraph("graph/stripe4.png");
 		mrK[3].img[2] = LoadGraph("graph/stripe3.png");
 		mrK[3].img[3] = LoadGraph("graph/stripe4.png");
-		mrK[3].setLoopSpeed(5);
-		// deer.set(1480, 200, "graph/stripe6.png", 1);
+		mrK[3].setLoopSpeed(5 * FPS / 30);
+		deer.img[0] = LoadGraph("graph/stripe5.png");
+		deer.img[1] = LoadGraph("graph/stripe6.png");
+		deer.img[2] = LoadGraph("graph/stripe7.png");
+		deer.img[3] = LoadGraph("graph/stripe8.png");
+		deer.spImg[0] = LoadGraph("graph/stripe9.png");
+		deer.spImg[1] = LoadGraph("graph/stripe10.png");
+		deer.setLoopSpeed(15 * FPS / 30);
 		initialize();
 	}
 
@@ -63,17 +58,17 @@ public:
 		fadeinMusic(music);
 		fadeinTitle();
 
-		//スナップショット
+		// スナップショット
 		drawEndroll();
 
-		//Mr.K
+		// Mr.K
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//1人目 死んでいる
+		// 1人目 死んでいる
 		if (cnt > 1650.0 && cnt <= 2500.0) {
 			mrK[0].set(cnt - 1750.0, 415);
 			mrK[0].draw();
 		}
-		//2人目 蹴られる
+		// 2人目 蹴られる
 		if (cnt > 2550.0 && cnt <= 3500.0) {
 			double tempx = -200.0;
 			if (cnt <= 2900.0) {
@@ -97,7 +92,7 @@ public:
 			mrK[1].set(tempx, 425);
 			mrK[1].draw();
 		}
-		//3人目 昇天する
+		// 3人目 昇天する
 		if (cnt > 3600.0 && cnt <= 4600.0) {
 			double tempx = 200.0;
 			double tempy = 420.0;
@@ -110,7 +105,7 @@ public:
 			mrK[2].set(tempx, tempy);
 			mrK[2].draw();
 		}
-		//4人目 見送る
+		// 4人目 見送る
 		if (cnt > 4800.0) {
 			double tempx = 400.0;
 			if (cnt <= 5300.0) {
@@ -126,84 +121,44 @@ public:
 			mrK[3].draw();
 		}
 
-		//鹿
+		// 鹿
+		// 左へ歩く
 		if (cnt <= 1200.0) {
-			if (int(cnt) % 60 < 15) {
-				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[4], TRUE);
-			}
-			else if (int(cnt) % 60 < 30) {
-				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[5], TRUE);
-			}
-			else if (int(cnt) % 60 < 45) {
-				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[6], TRUE);
-			}
-			else {
-				DrawGraph(650.0 - (cnt - 830.0), 380, sprite[7], TRUE);
-			}
+			deer.walk();
+			deer.set(650.0 - (cnt - 830.0), 380);
 		}
+		// その場歩き
 		else if (cnt <= 3900.0) {
-			if (int(cnt) % 60 < 15) {
-				DrawGraph(280, 380, sprite[4], TRUE);
-			}
-			else if (int(cnt) % 60 < 30) {
-				DrawGraph(280, 380, sprite[5], TRUE);
-			}
-			else if (int(cnt) % 60 < 45) {
-				DrawGraph(280, 380, sprite[6], TRUE);
-			}
-			else {
-				DrawGraph(280, 380, sprite[7], TRUE);
-			}
+			deer.walk();
+			deer.set(280, 380);
 		}
-		//3人目
+		// 3人目
 		else if (cnt <= 4550.0) {
-			if (cnt <= 4200.0) {
-				DrawGraph(280, 380, sprite[4], TRUE);
+			deer.stop();
+			if (cnt > 4200.0) {
+				deer.setSpecialImg(0);
 			}
-			else {
-				DrawGraph(280, 380, sprite[8], TRUE);
-			}
+			deer.set(280, 380);
 		}
+		// その場歩き
 		else if (cnt <= 5300.0) {
-			if (int(cnt) % 60 < 15) {
-				DrawGraph(280, 380, sprite[4], TRUE);
-			}
-			else if (int(cnt) % 60 < 30) {
-				DrawGraph(280, 380, sprite[5], TRUE);
-			}
-			else if (int(cnt) % 60 < 45) {
-				DrawGraph(280, 380, sprite[6], TRUE);
-			}
-			else {
-				DrawGraph(280, 380, sprite[7], TRUE);
-			}
+			deer.walk();
+			deer.set(280, 380);
 		}
-		//4人目
+		// 4人目
 		else if (cnt <= 5600.0) {
-			if (cnt <= 5450.0) {
-				DrawGraph(280, 380, sprite[4], TRUE);
+			deer.stop();
+			if (cnt > 5450.0 && cnt <= 5550.0) {
+				deer.setSpecialImg(1);
 			}
-			else if (cnt <= 5550.0) {
-				DrawGraph(280, 380, sprite[9], TRUE);
-			}
-			else {
-				DrawGraph(280, 380, sprite[4], TRUE);
-			}
+			deer.set(280, 380);
 		}
+		// 退場
 		else  if (cnt <= 6000.0) {
-			if (int(cnt) % 40 < 10) {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[4], TRUE);
-			}
-			else if (int(cnt) % 40 < 20) {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[5], TRUE);
-			}
-			else if (int(cnt) % 40 < 30) {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[6], TRUE);
-			}
-			else {
-				DrawGraph(280.0 - 1.2 * (cnt - 5600.0), 380, sprite[7], TRUE);
-			}
+			deer.walk(10 * FPS / 30);
+			deer.set(280.0 - 1.2 * (cnt - 5600.0), 380);
 		}
+		deer.draw();
 
 		//Fin
 		drawFin();

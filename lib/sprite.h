@@ -5,13 +5,15 @@ public:
 	int x;
 	int y;
 	int img[16];		// 0-3: Front, 4-7: Right, 8-11: Back, 12-15: Left
+	int spImg[4];		// Special
 	int walkCnt = 0;
 	int visible = 1;
 	int walking = 0;
+	int special = -1;	// spImg用のインデックス
 	int loopSpeed = 15;
 
 	~MrK() {
-		for (int i = 0; i < 16; ++i) {
+		for (int i = 0; i < 20; ++i) {
 			DeleteGraph(img[i]);
 		}
 	}
@@ -36,8 +38,11 @@ public:
 		visible = 1;
 	}
 
-	void walk() {
+	void walk(int speed = 0) {
 		walking = 1;
+		if (speed != 0) {
+			setLoopSpeed(speed);
+		}
 	}
 
 	void stop() {
@@ -48,16 +53,25 @@ public:
 		loopSpeed = speed;
 	}
 
+	void setSpecialImg(int idx) {
+		special = idx;
+	}
+
 	void draw(int epX = 0, int epY = 0) {
 		if (visible) {
 			if (walking) {
 				walkCnt = (walkCnt + 1) % (4 * loopSpeed);
-				int idx = walkCnt / 10;
+				int idx = walkCnt / loopSpeed;
 				DrawGraph(x + epX, y + epY, img[idx], TRUE);
+			}
+			else if (special >= 0) {
+				DrawGraph(x + epX, y + epY, spImg[special], TRUE);
 			}
 			else {
 				DrawGraph(x + epX, y + epY, img[0], TRUE);
 			}
 		}
+		special = -1;
 	}
+
 };
