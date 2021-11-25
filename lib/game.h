@@ -45,9 +45,8 @@ private:
 
 	// 同期処理関連
 	long start = clock();	// 同期処理開始時刻
-	long fpsStart = clock();	// fps計測開始時刻
-	int fps = 0;			// fps出力用
-	int fpsCnt = 0;			// fps計測用
+	long fpsStart = clock();	// FPS計測開始時刻
+	int fpsCnt = 0;			// FPS計測用
 
 public:
 	int flg = -3;	// -3,..,-1: Demo
@@ -63,6 +62,7 @@ public:
 	int debugFlg = 0;
 	int debugEndingFlg = 0;
 	string mode = "";
+	int fps = 0;			// 実効FPS
 
 	// 盤面上の操作関連
 	int globalX = 1;

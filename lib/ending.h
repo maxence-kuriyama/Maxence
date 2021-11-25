@@ -53,7 +53,10 @@ public:
 		init_ending_text(job, who);
 	}
 
-	int show(Music& music) {
+	int show(Music& music, int fps) {
+		// 実効FPSを元にアニメーション速度を調整
+		cntInc = 30.2 / fps;
+
 		// フェードイン
 		fadeinMusic(music);
 		fadeinTitle();
@@ -158,12 +161,15 @@ public:
 			deer.walk(10 * FPS / 30);
 			deer.set(280.0 - 1.2 * (cnt - 5600.0), 380);
 		}
-		deer.draw();
+
+		if (cnt <= 6500.0) {
+			cnt += cntInc;
+			deer.draw();
+		}
 
 		//Fin
 		drawFin();
-
-		if (cnt <= 6500.0) cnt += 30.0 / FPS;
+		fadeoutMusic(music);
 
 		return 0;
 	}
@@ -171,6 +177,13 @@ public:
 	void fadeinMusic(Music& music) {
 		if (cnt > 280.0 && cnt <= 900.0) {
 			music.changeVolume(22.0 * pow(cnt - 250.0, 0.3));
+			music.play();
+		}
+	}
+
+	void fadeoutMusic(Music& music) {
+		if (cnt > 6100.0 && cnt <= 6200.0) {
+			music.changeVolume(7.57 * pow(6250.0 - cnt, 0.6));
 			music.play();
 		}
 	}

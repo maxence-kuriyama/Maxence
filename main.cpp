@@ -571,7 +571,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawLocalState();
 			game.drawCurrentCoord();
 			game.logo.draw();
-			ending.show(bgm);
+			ending.show(bgm, game.fps);
 		}
 		//çÇë¨äwèKÉÇÅ[Éh
 		//else if (game.flg == 5) {
