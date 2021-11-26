@@ -470,6 +470,7 @@ public:
 
 	Machine();
 	Machine(int l, FunctionV *teach = IdentityV, double lr = 0.050, string sol = "SGD");
+	void set(int l, FunctionV* teach = IdentityV, double lr = 0.050, string sol = "SGD");
 	void setLayer(Layer &lay, int id);
 	void setTeach(FunctionV *teach);
 	void setSolver(string sol);
@@ -496,6 +497,13 @@ Machine::Machine() {
 Machine::Machine(int l, FunctionV *teach, double lr, string sol) {
 	length = l;
 	layer = (Layer **)calloc(length, sizeof(Layer *));
+	teacher = teach;
+	lRate = lr;
+	setSolver(sol);
+}
+void Machine::set(int l, FunctionV* teach, double lr, string sol) {
+	length = l;
+	layer = (Layer**)calloc(length, sizeof(Layer*));
 	teacher = teach;
 	lRate = lr;
 	setSolver(sol);

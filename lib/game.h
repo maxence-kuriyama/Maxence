@@ -1,6 +1,7 @@
 #pragma once
 
 #include <time.h>
+#include <Eigen/Core>
 #include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/field.h"
@@ -176,6 +177,10 @@ public:
 
 	bool isVsCOM() {
 		return taijin == 1;
+	}
+
+	bool isAutoLearning() {
+		return (taijin == 2 || taijin == 5);
 	}
 
 
@@ -505,6 +510,33 @@ public:
 
 
 	/*===========================*/
+	//    盤面情報
+	/*===========================*/
+	Eigen::VectorXd stateToInput(int side = 0, int dim = 162) {
+		if (side == 0) {
+			side = 1 - 2 * (cnt % 2);
+		}
+		Eigen::VectorXd trg(dim);
+		for (int i1 = 0; i1 < 3; ++i1) {
+			for (int j1 = 0; j1 < 3; ++j1) {
+				for (int k1 = 0; k1 < 3; ++k1) {
+					for (int l1 = 0; l1 < 3; ++l1) {
+						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = child[i1][j1].state[k1][l1] * side;
+						if ((nextField == -1 || nextField == 3 * i1 + j1) && child[i1][j1].state[k1][l1] == 0 && child[i1][j1].victory() == 0) {
+							trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = 1.0;
+						}
+						else {
+							trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = -1.0;
+						}
+					}
+				}
+			}
+		}
+		return trg;
+	}
+
+
+	/*===========================*/
 	//    デバッグ情報
 	/*===========================*/
 	void debugDump() {
@@ -533,11 +565,11 @@ public:
 			// Comment
 			DrawFormatString(245, 25, strColor, "maxSize: %d", comment.texts.maxSize);
 			DrawFormatString(245, 45, strColor, "size: %d", comment.texts.size);
-			DrawFormatString(245, 65, strColor, "comX: %d", comment.x);
-			DrawFormatString(245, 85, strColor, "comY: %d", comment.y);
+			DrawFormatString(245, 65, strColor, "commX: %d", comment.x);
+			DrawFormatString(245, 85, strColor, "commY: %d", comment.y);
 			DrawFormatString(245, 105, strColor, "textId: %d", comment.textId);
 			DrawFormatString(245, 125, strColor, "textSeq: %d", comment.textSeq);
-			DrawFormatString(245, 145, strColor, "comCnt: %d", comment.cnt);
+			DrawFormatString(245, 145, strColor, "commCnt: %d", comment.cnt);
 			// Menu
 			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
 			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);

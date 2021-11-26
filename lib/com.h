@@ -6,31 +6,35 @@
 
 using namespace Eigen;
 
-//VectorXd StateToInput(int dim, int side);
+VectorXd softmax(const VectorXd &src, double alpha);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
-//VectorXd softmax(const VectorXd &src, double alpha);
 
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
 class COM {
 private:
-	int COMGx = 1;
-	int COMGy = 1;
-	int COMLx = 1;
-	int COMLy = 1;						//COMの選ぶ座標
-	int COMWait = 0;
-	int waitOnCOM = 20;					//COMが手を打つまでのウェイト
+	int cnt = 0;
+	int wait = 20;						//COMが手を打つまでのウェイト
 	double eps = 0.002;					//学習定数
-	//double gamma = 0.95;				//割引率
 	double mom = 0.9;
 	double varc = 0.999;				// adamのパラメータ
+	//double gamma = 0.95;				//割引率
+	//double alpha = 2.1;				//softmaxの係数
+	double anl_rate = 0.2;				//epsilon-greedyの割合
+	int anl_flg = 0;
 	::Affine Q1;
 	::Affine Q2;
 	::Affine Q3;
 	ActLayer R1;
 	ActLayer R2;
 	VectorXd output;
+	Machine critic;
+	int Green = GetColor(0, 255, 0);
 
 public:
+	int globalX = 1;
+	int globalY = 1;
+	int localX = 1;
+	int localY = 1;						//COMの選ぶ座標
 	int max_id = 0;
 	double max_val = 0.0;
 
@@ -50,7 +54,6 @@ public:
 	//学習機械関連
 	int lay_len = 3;
 	int lay_size[4] = { 162, 800, 400, 81 };
-	//VectorXd input(lay_size[0]);
 	//VectorXd p_output;
 	//VectorXd temp_i[100];
 	//VectorXd temp_o[100];	//学習用データの一時保存用ベクトル
@@ -58,9 +61,6 @@ public:
 	//MatrixXd train_o;		//バッチ学習用のデザイン行列
 	double reward2 = 0.0;
 	double rwd_tmp = 0.0;
-	//double anl_rate = 0.0;	//epsilon-greedyの割合
-	//double alpha = 2.1;	//softmaxの係数
-	//int anl_flg = 0;
 
 
 	COM() {
@@ -79,7 +79,7 @@ public:
 		Q3.setCoef(mom, varc);
 		R1.setMode("relu");
 		R2.setMode("relu");
-		Machine critic(5, IdentityV, eps, "adam");
+		critic.set(5, IdentityV, eps, "adam");
 		critic.setLayer(Q1, 0);
 		critic.setLayer(R1, 1);
 		critic.setLayer(Q2, 2);
@@ -89,6 +89,10 @@ public:
 	}
 
 	~COM() {}
+
+	void setWait() {
+		cnt = wait;
+	}
 
 	void visualize() {
 		for (int i = 0; i < 3; ++i) {
@@ -112,29 +116,56 @@ public:
 		}
 	}
 
+	void play(VectorXd input) {
+		output = critic.predict(input);
+		max_val = output.maxCoeff(&max_id);
+		// waitを消化したら手を選択する
+		if (cnt <= 0) {
+			if (unif(mt) < anl_rate) {
+				choiceRandom();
+				//comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
+			}
+			else {
+				choiceMax();
+				//comHistt[trainCnt] = max_id;
+			}
+		}
+		cnt--;
+	}
+
+	void choiceRandom() {
+		globalX = rand() % 3;
+		globalY = rand() % 3;
+		localX = rand() % 3;
+		localY = rand() % 3;
+		anl_flg = 1;
+	}
+
+	void choiceMax() {
+		globalX = (max_id / 27) % 3;
+		globalY = (max_id / 9) % 3;
+		localX = (max_id / 3) % 3;
+		localY = max_id % 3;
+		anl_flg = 0;
+	}
+
+	void debugAnneal() {
+		if (anl_flg) {
+			DrawFormatString(540, 0, Green, "annealed!");
+		}
+	}
+
 };
 
 
-//VectorXd StateToInput(int dim, int side) {
-//	VectorXd trg(dim);
-//	for (int i1 = 0; i1 < 3; ++i1) {
-//		for (int j1 = 0; j1 < 3; ++j1) {
-//			for (int k1 = 0; k1 < 3; ++k1) {
-//				for (int l1 = 0; l1 < 3; ++l1) {
-//					trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = game.child[i1][j1].state[k1][l1] * side;
-//					if ((game.nextField == -1 || game.nextField == 3 * i1 + j1)
-//						&& game.child[i1][j1].state[k1][l1] == 0 && game.child[i1][j1].victory() == 0) {
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = 1.0;
-//					}
-//					else {
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = -1.0;
-//					}
-//				}
-//			}
-//		}
-//	}
-//	return trg;
-//}
+VectorXd softmax(const VectorXd &src, double alpha) {
+	VectorXd trg;
+	
+	trg = (alpha * src).array().exp();
+	trg = trg / trg.sum();
+
+	return trg;
+}
 
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side) {
 //	VectorXd trg; trg = out;
@@ -154,14 +185,5 @@ public:
 //			}
 //		}
 //	}
-//	return trg;
-//}
-
-//VectorXd softmax(const VectorXd &src, double alpha) {
-//	VectorXd trg;
-//	
-//	trg = (alpha * src).array().exp();
-//	trg = trg / trg.sum();
-//
 //	return trg;
 //}
