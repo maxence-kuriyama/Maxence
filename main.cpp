@@ -11,7 +11,6 @@
 #include <random>
 #include <mbstring.h>
 #include <mbctype.h>
-#include "lib/vect.h"
 
 using namespace DxLib;
 using namespace std;
@@ -21,6 +20,7 @@ using namespace std;
 #include "lib/ending.h"
 #include "lib/movie.h"
 #include "lib/music.h"
+#include "lib/com.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -66,6 +66,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Scenario scenario;
 	Ending ending;
 	fireflower tama[FIRE_FLOWER_NUM];
+	COM com;
 
 
 	// ŽíX‚Ìƒnƒ“ƒhƒ‹
@@ -132,57 +133,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double reward2, rwd_tmp;
 	//double anl_rate = 0.0;	//epsilon-greedy‚ÌŠ„‡
 	//double alpha = 2.1;	//softmax‚ÌŒW”
-	int anl_flg = 0;
-
-	//// MLP‚Ì‰Šú‰»
-	//MatrixXd P1 = MatrixXd::Random(lay_size[0], lay_size[1]);
-	//VectorXd B1 = VectorXd::Random(lay_size[1]);
-	//MatrixXd P2 = MatrixXd::Random(lay_size[1], lay_size[2]);
-	//VectorXd B2 = VectorXd::Random(lay_size[2]);
-	//MatrixXd P3 = MatrixXd::Random(lay_size[2], lay_size[3]);
-	//VectorXd B3 = VectorXd::Random(lay_size[3]);
-	////MatrixXd P4 = MatrixXd::Random(lay_size[3], lay_size[4]);
-	////VectorXd B4 = VectorXd::Random(lay_size[4]);
-	////MatrixXd P5 = MatrixXd::Random(lay_size[4], lay_size[5]);
-	////VectorXd B5 = VectorXd::Random(lay_size[5]);
-	////MatrixXd P6 = MatrixXd::Random(lay_size[5], lay_size[6]);
-	////VectorXd B6 = VectorXd::Random(lay_size[6]);
-	//P1 = P1 * sqrt(0.1 / lay_size[0]);
-	//B1 = B1 * 0.1;
-	//P2 = P2 * sqrt(0.1 / lay_size[1]);
-	//B2 = B2 * 0.1;
-	//P3 = P3 * sqrt(0.1 / lay_size[2]);
-	//B3 = B3 * 0.05;
-	////P4 = P4 * sqrt(0.1 / lay_size[3]);
-	////B4 = B4 * 0.05;
-	////P5 = P5 * sqrt(0.1 / lay_size[4]);
-	////B5 = B5 * 0.05;
-	////P6 = P6 * sqrt(0.1 / lay_size[5]);
-	////B6 = B6 * 0.05;
-	//::Affine Q1(P1, B1, true, mom, varc);
-	//::Affine Q2(P2, B2, true, mom, varc);
-	//::Affine Q3(P3, B3, true, mom, varc);
-	////::Affine Q4(P4, B4, true, mom, varc);
-	////::Affine Q5(P5, B5, true, mom, varc);
-	////::Affine Q6(P6, B6, true, mom, varc);
-	//ActLayer R1("relu");
-	//ActLayer R2("relu");
-	////ActLayer R3("relu");
-	////ActLayer R4("relu");
-	////ActLayer R5("relu");
-	//Machine critic(5, IdentityV, eps, "adam");
-	////Machine critic(11, teacher, eps, "adam");
-	//critic.setLayer(Q1, 0);
-	//critic.setLayer(R1, 1);
-	//critic.setLayer(Q2, 2);
-	//critic.setLayer(R2, 3);
-	//critic.setLayer(Q3, 4);
-	////critic.setLayer(R3, 5);
-	////critic.setLayer(Q4, 6);
-	////critic.setLayer(R4, 7);
-	////critic.setLayer(Q5, 8);
-	////critic.setLayer(R5, 9);
-	////critic.setLayer(Q6, 10);
+	//int anl_flg = 0;
 
 
 	int vict = 0;	// Ÿ”sŠi”[—p‚ÌˆêŽž•Ï”
@@ -385,27 +336,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// ŠwK‹@ŠB‚Ìo—Í•`‰æ
 			if (game.option.likeliFlg >= 1) {
-				for (int i = 0; i < 3; ++i) {
-					for (int j = 0; j < 3; ++j) {
-						for (int k = 0; k < 3; ++k) {
-							for (int l = 0; l < 3; ++l) {
-								/*
-								double col_tmp = min(max(240.0 * (output(27 * i + 9 * j + 3 * k + l) + 0.5), 0.0), 255.0);
-								DrawCircle(160 + 100 * i + 33 * k + 16, 80 + 100 * j + 33 * l + 16, 15, GetColor(255, 255, 255 - col_tmp));
-								if (game.option.likeliFlg == 2) {
-									char str_tmp[10];
-									sprintf_s(str_tmp, "%.4f", output(27 * i + 9 * j + 3 * k + l));
-									DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 2, str_tmp, Red, Font1);
-									if (trainCnt >= 1) {
-										sprintf_s(str_tmp, "%.4f", temp_o[trainCnt - 1](27 * i + 9 * j + 3 * k + l));
-										DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 12, str_tmp, Blue, Font1);
-									}
-								}
-								*/
-							}
-						}
-					}
-				}
+				com.visualize();
 			}
 
 			// COM‚ÌŽè”Ô
