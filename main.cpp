@@ -280,7 +280,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// ƒƒbƒZ[ƒW‚Ì•`‰æ
 			game.drawBattleMessage();
-			com.debugAnneal();
 
 			// ŠwK‹@ŠB‚Ìo—Í•`‰æ
 			if (game.option.likeliFlg >= 1) {
@@ -619,6 +618,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		bgm.debugDump(game.debugFlg);
 		scenario.debugDump(game.debugFlg);
 		ending.debugDump(game.debugFlg);
+		com.debugDump(game.debugFlg);
 	}
 
 	InitGraph();

@@ -9,6 +9,7 @@ using namespace Eigen;
 VectorXd softmax(const VectorXd &src, double alpha);
 //VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 
+
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
 class COM {
 private:
@@ -19,8 +20,8 @@ private:
 	double varc = 0.999;				// adamのパラメータ
 	//double gamma = 0.95;				//割引率
 	//double alpha = 2.1;				//softmaxの係数
-	double anl_rate = 0.2;				//epsilon-greedyの割合
-	int anl_flg = 0;
+	double annealRate = 1.0;				//epsilon-greedyの割合
+	int anneal = 0;
 	::Affine Q1;
 	::Affine Q2;
 	::Affine Q3;
@@ -28,7 +29,7 @@ private:
 	ActLayer R2;
 	VectorXd output;
 	Machine critic;
-	int Green = GetColor(0, 255, 0);
+	int strColorDebug = GetColor(255, 100, 0);
 
 public:
 	int globalX = 1;
@@ -121,7 +122,7 @@ public:
 		max_val = output.maxCoeff(&max_id);
 		// waitを消化したら手を選択する
 		if (cnt <= 0) {
-			if (unif(mt) < anl_rate) {
+			if (unif(mt) < annealRate) {
 				choiceRandom();
 				//comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 			}
@@ -138,7 +139,7 @@ public:
 		globalY = rand() % 3;
 		localX = rand() % 3;
 		localY = rand() % 3;
-		anl_flg = 1;
+		anneal = 1;
 	}
 
 	void choiceMax() {
@@ -146,12 +147,14 @@ public:
 		globalY = (max_id / 9) % 3;
 		localX = (max_id / 3) % 3;
 		localY = max_id % 3;
-		anl_flg = 0;
+		anneal = 0;
 	}
 
-	void debugAnneal() {
-		if (anl_flg) {
-			DrawFormatString(540, 0, Green, "annealed!");
+	void debugDump(int debug) {
+		if (debug) {
+			int strColor = strColorDebug;
+
+			DrawFormatString(505, 25, strColor, "anneal: %d", anneal);
 		}
 	}
 
