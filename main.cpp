@@ -602,6 +602,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//}
 		// ƒVƒiƒŠƒI
 		else if (game.flg == -6) {
+			scenario.getKey(game.key);
 			if (!bgm.drawLoadMsg() && scenario.show(game.mouse, bgm)) {
 				game.initialize();
 				initializeTrain();

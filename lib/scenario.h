@@ -17,6 +17,9 @@ private:
 	int imgCard;
 	int eqX = 0;
 	int eqY = 0;		// eq = earthquake
+	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
+	int x = 0;
+	int y = 0;			// Mr.Kの位置
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
 
@@ -55,12 +58,13 @@ public:
 		init_scene_text(text, who);
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
-		mrK[0].set(160, 120, "graph/sprite11.png", 1);
+		mrK[0].setSerialImages(16, "graph/move_test", 1);
 		mrK[1].set(480, 120, "graph/sprite12.png", 1);
 		mrK[2].set(160, 240, "graph/sprite13.png", 1);
 		mrK[3].set(480, 240, "graph/sprite14.png", 1);
 		deer.set(270, 200, "graph/sprite15.png", 0);
 		initialize();
+		mrK[0].set(x, y);
 		msg.initialize();
 	}
 
@@ -74,6 +78,43 @@ public:
 		mrK[2].exhibit();
 		mrK[3].exhibit();
 		deer.hide();
+		x = 160;
+		y = 120;
+	}
+
+	// キーボード入力を取得する
+	void getKey(Key& keyboard) {
+		if(keyboard.onGoingDown()){
+			key = 0;
+		}
+		else if (keyboard.onGoingRight()) {
+			key = 1;
+		}
+		else if (keyboard.onGoingUp()) {
+			key = 2;
+		}
+		else if (keyboard.onGoingLeft()) {
+			key = 3;
+		}
+		else {
+			key = -1;
+		}
+	}
+
+	void move() {
+		if (mrK[0].direction == 0) {
+			y += 1;
+		}
+		else if (mrK[0].direction == 1) {
+			x += 1;
+		}
+		else if(mrK[0].direction == 2) {
+			y -= 1;
+		}
+		else if(mrK[0].direction == 3) {
+			x -= 1;
+		}
+		mrK[0].set(x, y);
 	}
 
 	// NEXTが出るまでメッセージを読む
@@ -110,6 +151,7 @@ public:
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		for (int i = 0; i < 4; ++i) {
 			mrK[i].draw(eqX);
+			mrK[0].stop();
 		}
 		deer.draw();
 
@@ -238,7 +280,12 @@ public:
 			break;
 		case 23:
 			music.stop();
-			readMsg(mouse);
+			if (key != -1) {
+				mrK[0].turn(key);
+				move();
+			}
+			mrK[0].walk();
+			//readMsg(mouse);
 			break;
 		default:
 			readMsg(mouse);
@@ -267,6 +314,7 @@ public:
 			DrawFormatString(245, 385, strColor, "mrK2.vis: %d", mrK[2].visible);
 			DrawFormatString(245, 405, strColor, "mrK3.vis: %d", mrK[3].visible);
 			DrawFormatString(245, 425, strColor, "deer.vis: %d", deer.visible);
+			DrawFormatString(245, 445, strColor, "key: %d", key);
 		}
 	}
 };

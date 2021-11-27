@@ -82,6 +82,7 @@ public:
 		}
 		return false;
 	}
+
 	bool onUp() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_UP]== 1 || state[KEY_INPUT_W] == 1)) {
 			initWait();
@@ -90,6 +91,10 @@ public:
 		}
 		return false;
 	}
+	bool onGoingUp() {
+		return (state[KEY_INPUT_UP] > 0 || state[KEY_INPUT_W] > 0);
+	}
+
 	bool onDown() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_DOWN] == 1 || state[KEY_INPUT_S] == 1)) {
 			initWait();
@@ -98,6 +103,10 @@ public:
 		}
 		return false;
 	}
+	bool onGoingDown() {
+		return (state[KEY_INPUT_DOWN] > 0 || state[KEY_INPUT_S] > 0);
+	}
+
 	bool onLeft() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_LEFT] == 1 || state[KEY_INPUT_A] == 1)) {
 			initWait();
@@ -106,6 +115,10 @@ public:
 		}
 		return false;
 	}
+	bool onGoingLeft() {
+		return (state[KEY_INPUT_LEFT] > 0 || state[KEY_INPUT_A] > 0);
+	}
+
 	bool onRight() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_RIGHT] == 1 || state[KEY_INPUT_D] == 1)) {
 			initWait();
@@ -113,6 +126,9 @@ public:
 			return true;
 		}
 		return false;
+	}
+	bool onGoingRight() {
+		return (state[KEY_INPUT_RIGHT] > 0 || state[KEY_INPUT_D] > 0);
 	}
 
 	bool isUsed() {
