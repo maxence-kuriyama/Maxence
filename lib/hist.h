@@ -1,5 +1,8 @@
 #pragma once
 
+
+// 試合中の指し手の履歴を保持するクラス
+// Gameオブジェクトのメンバとしての使用を想定
 class History {
 public:
 	int last[5];

@@ -6,6 +6,9 @@
 
 void init_scene_text(string* scen_txt, int* scen_who);
 
+
+// シナリオ管理用クラス
+// 単体での使用を想定
 class Scenario {
 private:
 	int cnt = 0;		// フレームカウンタ

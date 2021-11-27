@@ -5,6 +5,10 @@
 #include "lib/const.h"
 #include "lib/keyboard.h"
 
+
+// 音楽のロード・再生をするクラス
+// 特に非同期読み込みのwrapper
+// 単体での使用を想定
 class Music {
 private:
 	int handle[2] = { -1, -1 };			// 再生する音楽と待機中の音楽のハンドル

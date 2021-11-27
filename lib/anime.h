@@ -1,5 +1,7 @@
 #pragma once
 
+// 試合中のアニメーションクラス
+// 短いアニメーションを必要とするクラスのメンバ変数として使う
 class Anime {
 private:
 	string mode = "CUTIN";

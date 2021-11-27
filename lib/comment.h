@@ -5,6 +5,8 @@
 void DrawObtainsString2(int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 
 
+// テキストの読み込み、保持オブジェクト
+// Commentクラスのメンバとしての使用を想定
 class Texts {
 private:
 	string textFileName = "data/sayings.txt";
@@ -40,6 +42,8 @@ public:
 };
 
 
+// 試合中に流れるコメントのクラス
+// Gameオブジェクトのメンバとしての使用を想定
 class Comment {
 private:
 	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);

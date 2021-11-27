@@ -11,6 +11,7 @@ VectorXd softmax(const VectorXd &src, double alpha);
 
 
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
+// 単体での使用を想定（Gameオブジェクトから呼び出すべきか？）
 class COM {
 private:
 	int cnt = 0;

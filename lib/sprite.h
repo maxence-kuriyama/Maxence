@@ -1,5 +1,9 @@
 #pragma once
 
+
+// キャラクターオブジェクトのクラス
+// グラフィックの表示を主に行っているが、メッセージの保持も行うべきか？
+// ScenarioやEndingなどでの使用を想定
 class MrK {
 public:
 	int x;

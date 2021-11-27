@@ -1,4 +1,8 @@
+#pragma once
 
+
+// 試合中の盤面保持、勝利判定を行うクラス
+// Gameオブジェクトのメンバとしての使用を想定
 class Field {
 private:
 	int filled() {

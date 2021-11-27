@@ -1,4 +1,7 @@
+#pragma once
 
+
+// 花火オブジェクト
 class fireflower {
 private:
 	int cnt;			// 花火の寿命カウンタ

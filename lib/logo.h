@@ -3,6 +3,8 @@
 #include "lib/basic.h"
 
 
+// ロゴマークオブジェクト
+// リセットボタンとしての機能など
 class Logo {
 private:
 	int titleX = 445;

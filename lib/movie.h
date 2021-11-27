@@ -5,6 +5,10 @@
 #include "lib/const.h"
 #include "lib/keyboard.h"
 
+
+// 動画のロード・再生をするクラス
+// 非同期読み込みのwrapper
+// 単体での使用を想定
 class Movie {
 private:
 	int handle = -1;

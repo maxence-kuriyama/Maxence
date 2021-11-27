@@ -6,6 +6,10 @@
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 int MultiByteLength(const char* String);
 
+
+// シナリオメッセージ管理用クラス
+// Scenarioオブジェクトのメンバとして使用
+// 一括管理ではなく各キャラクターオブジェクトに紐づけるべきか？
 class Message {
 private:
 	MrK sprite[6];

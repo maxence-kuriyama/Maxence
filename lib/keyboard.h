@@ -3,6 +3,9 @@
 #include "lib/logo.h"
 
 
+// ゲームのオプション
+// Gameオブジェクトのメンバとしての使用を想定
+// キー入力で変更する機会が多いため、Keyクラスとまとめている
 class Option {
 public:
 	unsigned int White = GetColor(255, 255, 255);
@@ -26,6 +29,8 @@ public:
 };
 
 
+// キー入力に対する処理を行うクラス
+// Gameオブジェクトのメンバとして使用（単体で使用すべきか？）
 class Key {
 public:
 	int state[256];

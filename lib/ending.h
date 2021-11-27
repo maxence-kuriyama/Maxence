@@ -4,6 +4,9 @@
 
 void init_ending_text(string* job, string* who);
 
+
+//エンディング管理用クラス
+// 単体での使用を想定
 class Ending {
 private:
 	double cnt = 0.0;

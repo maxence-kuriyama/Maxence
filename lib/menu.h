@@ -4,7 +4,9 @@
 #include "lib/keyboard.h"
 
 
+// メニュー画面管理用クラス
 // MouseとKeyの入力を統合
+// 単体での使用を想定、Gameオブジェクトのメンバとしても使用
 class Menu {
 public:
 	Button button[4];
