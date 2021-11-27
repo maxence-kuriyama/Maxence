@@ -33,16 +33,16 @@ public:
 			pict_name = "graph/end_pict" + to_string(i) + ".png";
 			end_pict[i - 1] = LoadGraph(pict_name.c_str());
 		}
-		mrK[0].set(-100, 415, "graph/stripe1.png");
-		mrK[1].set(-100, 425, "graph/stripe2.png");
-		mrK[2].set(-100, 420, "graph/stripe1.png");
-		mrK[3].img[0] = LoadGraph("graph/stripe3.png");
-		mrK[3].img[1] = LoadGraph("graph/stripe4.png");
-		mrK[3].img[2] = LoadGraph("graph/stripe3.png");
-		mrK[3].img[3] = LoadGraph("graph/stripe4.png");
-		deer.setSerialImages(4, "graph/stripe", 5);
-		deer.spImg[0] = LoadGraph("graph/stripe9.png");
-		deer.spImg[1] = LoadGraph("graph/stripe10.png");
+		mrK[0].set(-100, 415, "graph/sprite1.png");
+		mrK[1].set(-100, 425, "graph/sprite2.png");
+		mrK[2].set(-100, 420, "graph/sprite1.png");
+		mrK[3].img[0] = LoadGraph("graph/sprite3.png");
+		mrK[3].img[1] = LoadGraph("graph/sprite4.png");
+		mrK[3].img[2] = LoadGraph("graph/sprite3.png");
+		mrK[3].img[3] = LoadGraph("graph/sprite4.png");
+		deer.setSerialImages(4, "graph/sprite", 5);
+		deer.spImg[0] = LoadGraph("graph/sprite9.png");
+		deer.spImg[1] = LoadGraph("graph/sprite10.png");
 		mrK[3].setLoopSpeed(5 * FPS / 30);
 		deer.setLoopSpeed(15 * FPS / 30);
 		initialize();

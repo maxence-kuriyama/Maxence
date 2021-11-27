@@ -55,11 +55,11 @@ public:
 		init_scene_text(text, who);
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
-		mrK[0].set(160, 120, "graph/stripe11.png", 1);
-		mrK[1].set(480, 120, "graph/stripe12.png", 1);
-		mrK[2].set(160, 240, "graph/stripe13.png", 1);
-		mrK[3].set(480, 240, "graph/stripe14.png", 1);
-		deer.set(270, 200, "graph/stripe15.png", 0);
+		mrK[0].set(160, 120, "graph/sprite11.png", 1);
+		mrK[1].set(480, 120, "graph/sprite12.png", 1);
+		mrK[2].set(160, 240, "graph/sprite13.png", 1);
+		mrK[3].set(480, 240, "graph/sprite14.png", 1);
+		deer.set(270, 200, "graph/sprite15.png", 0);
 		initialize();
 		msg.initialize();
 	}

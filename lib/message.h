@@ -26,11 +26,11 @@ public:
 
 	void initialize() {
 		sprite[0].set(30, 380);
-		sprite[1].set(30, 380, "graph/stripe11.png");
-		sprite[2].set(30, 380, "graph/stripe12.png");
-		sprite[3].set(30, 380, "graph/stripe13.png");
-		sprite[4].set(30, 380, "graph/stripe14.png");
-		sprite[5].set(30, 380, "graph/stripe15.png");
+		sprite[1].set(30, 380, "graph/sprite11.png");
+		sprite[2].set(30, 380, "graph/sprite12.png");
+		sprite[3].set(30, 380, "graph/sprite13.png");
+		sprite[4].set(30, 380, "graph/sprite14.png");
+		sprite[5].set(30, 380, "graph/sprite15.png");
 	}
 
 	void set(string text0, int who0) {
