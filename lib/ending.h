@@ -40,13 +40,10 @@ public:
 		mrK[3].img[1] = LoadGraph("graph/stripe4.png");
 		mrK[3].img[2] = LoadGraph("graph/stripe3.png");
 		mrK[3].img[3] = LoadGraph("graph/stripe4.png");
-		mrK[3].setLoopSpeed(5 * FPS / 30);
-		deer.img[0] = LoadGraph("graph/stripe5.png");
-		deer.img[1] = LoadGraph("graph/stripe6.png");
-		deer.img[2] = LoadGraph("graph/stripe7.png");
-		deer.img[3] = LoadGraph("graph/stripe8.png");
+		deer.setSerialImages(4, "graph/stripe", 5);
 		deer.spImg[0] = LoadGraph("graph/stripe9.png");
 		deer.spImg[1] = LoadGraph("graph/stripe10.png");
+		mrK[3].setLoopSpeed(5 * FPS / 30);
 		deer.setLoopSpeed(15 * FPS / 30);
 		initialize();
 	}
