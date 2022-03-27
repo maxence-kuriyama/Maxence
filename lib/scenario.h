@@ -49,6 +49,7 @@ public:
 		deer.hide();
 		x = 160;
 		y = 120;
+		imgFront = "";
 	}
 
 	int show(Mouse& mouse, Music& music) {
@@ -59,6 +60,7 @@ public:
 			mrK[0].stop();
 		}
 		deer.draw();
+		showGraph();
 
 		Scene scene = sceneList[flg];
 
@@ -80,51 +82,17 @@ public:
 			performMusic(scene.how, music);
 			break;
 		case SCENE_ACTION_GRAPH:
-			waitClick(mouse);
+			performGraph(scene.how, mouse);
 			break;
 		case SCENE_ACTION_EQ:
 			(scene.how == "true") ?	happenEQ() : stopEQ();
 			waitClick(mouse);
 			break;
 		case SCENE_ACTION_BATTLE:
-			goBattle(scene.how, music);
-			break;
+			return 1;
 		case SCENE_ACTION_STOP:
 			break;
 		}
-
-		//deer.exhibit();
-		//case 2:
-		//	// カードを見つける
-		//	DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
-		//	// 第一戦
-		//	if (music.swap(strColorLoad)) {
-		//		music.enableSwap();
-		//		msgLoad();
-		//		return 1;
-		//	}
-		//	break;
-		//case 7:
-		//	music.popOnce();
-		//	music.load("sound/bgm05.mp3");
-		//	readMsg(mouse);
-		//case 18:
-		//	music.stop();
-		//	music.enableSwap();
-		//	readMsg(mouse);
-		//case 23:
-		//	music.stop();
-		//	if (key != -1) {
-		//		mrK[0].turn(key);
-		//		move();
-		//	}
-		//	mrK[0].walk();
-		//	//readMsg(mouse);
-		//	break;
-		//default:
-		//	readMsg(mouse);
-		//	break;
-		//}
 
 		msg.draw();
 		cnt = (cnt + 1) % 10000;
@@ -176,6 +144,7 @@ private:
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
 	bool hasMsg = false;	// メッセージがセットされているか
+	string imgFront;	// フロントサイドに表示する画像
 	int imgRoom;
 	int imgCard;
 	int eqX = 0;
@@ -190,18 +159,20 @@ private:
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"exibit" },
+		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
-		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"imgCard" },
-		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"hide" },
-		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"hide_nowait" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide_nowait" },
+		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: なにっ！？" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 世界が滅びるというのは本当の事のようだな。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: しかし、一体我々のうちの誰が滅ぼすというのだ？ 貴様か？ Mr.K！！！" },
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_RED,		"swap" },
-		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"pop_once" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"swap" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_RED,		"" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_RED,		"sound/bgm05.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 馬鹿な、そんなはずではなかったのに…。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 最後の最期は後悔しないと決めていたのに、こんな死に様とはな。" },
@@ -213,8 +184,9 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: 何故いつも分かり合えないのだろう。でもそれが同じもの同士が集まった時の性なのだろう。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: だからMr.Kよ。殺し合おう。その中で生きた意味を見出そうじゃないか。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: さぁ教えてくれ。" },
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_GREEN,	"swap" },
-		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"pop_once" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"swap" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_GREEN,	"" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_GREEN,	"sound/bgm06.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: 俺は見えたよ。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: 残ったお前にもいつか見える時が来るだろう…………。先に逝っているよ。" },
@@ -226,9 +198,10 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: 他の2人を消してくれてありがとう。こうなることはカードを見た時から分かっていたからね。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: そして連戦の貴方を始末すれば、ここは私の世界になる訳だ。そうだろう？" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: 私は世界を滅ぼすつもりじゃないのです。貴方が邪魔なだけなのですよ。" },
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_BLUE,		"pop" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"pop" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_BLUE,		"" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_BLUE,		"sound/bgm07.mp3" },
-		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"stop" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: 馬鹿な、そんな、世界の王に成れるチャンスを逃してしまうなんて、有り得ない。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: …………ああ、生きていたこと自体が大きなチャンスだったのか…………しまったな。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide" },
@@ -242,8 +215,9 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: Mr.K。僕も見えたよ。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: さぁ、後はこの世界にいるのは僕だけだ。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: だからこの王である僕を殺して世界を救ってくれ。" },
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"pop" },
-		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"stop" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,	"pop" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,		"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: ありがとう。" },
 		{ SCENE_ACTION_STOP,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: しかと見届けたぞ。" },
@@ -269,50 +243,64 @@ private:
 		}
 	}
 
-	void doExibit(string action, int who, Mouse& mouse) {
-		if (action == "exibit") {
+	void doExibit(string how, int who, Mouse& mouse) {
+		if (how == "exibit") {
 			if (who == SCENE_WHO_DEER) {
 				deer.exhibit();
 			}
 			else {
 				mrK[who - 1].exhibit();
 			}
+			waitClick(mouse);
 		}
-		else if (action == "hide") {
+		else if (how == "hide") {
 			if (who == SCENE_WHO_DEER) {
 				deer.hide();
 			}
 			else {
 				mrK[who - 1].hide();
 			}
+			waitClick(mouse);
 		}
-		waitClick(mouse);
+		else if (how == "hide_nowait") {
+			if (who == SCENE_WHO_DEER) {
+				deer.hide();
+			}
+			else {
+				mrK[who - 1].hide();
+			}
+			goNext();
+		}
 	}
 
-	void performMusic(string action, Music &music) {
-		if (action == "play") {
+	void performMusic(string how, Music &music) {
+		if (how == "play") {
 			music.play();
 		}
-		else if (action == "stop") {
+		else if (how == "stop") {
 			music.stop();
 			music.enableSwap();
 		}
-		else if (action == "pop_once") {
+		else if (how == "pop_once") {
 			music.popOnce();
 		}
-		goNext();
-	}
-
-	void goBattle(string action, Music& music) {
-		if (action == "swap") {
+		else if (how == "swap") {
 			if (music.swap(strColorLoad)) {
 				music.enableSwap();
 			}
 		}
-		else if (action == "pop") {
+		else if (how == "pop") {
 			music.pop(strColorLoad);
 		}
 		goNext();
+	}
+
+	void performGraph(string how, Mouse &mouse) {
+		imgFront = how;
+		if (how == "clear") {
+			imgFront = "";
+		}
+		waitClick(mouse);
 	}
 
 	void waitClick(Mouse& mouse) {
@@ -336,6 +324,12 @@ private:
 	void startMusic(const char* musicName) {
 		if (CheckMusic() != 1) {
 			PlayMusic(musicName, DX_PLAYTYPE_BACK);
+		}
+	}
+
+	void showGraph() {
+		if (imgFront == "card") {
+			DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
 		}
 	}
 
