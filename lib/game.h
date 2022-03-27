@@ -12,15 +12,6 @@
 #include "lib/comment.h"
 
 
-//int trainCnt = 0;
-//int comHistt[100];
-void initializeTrain() {
-	//trainCnt = 0;
-	//for (int i = 0; i < 100; i++) {
-		//comHistt[i] = 0;
-	//}
-}
-
 class Game {
 private:
 	// 定数
@@ -54,8 +45,7 @@ public:
 					// 0: Menu, 1: Game, 2: Result
 					// -4: Ending
 					// -6: Story
-					// 5: High-speed Learning
-	int taijin = 0;		// 0: vsHuman, 1: vsCOM, 2: AutoLearning
+	int taijin = 0;		// 0: vsHuman, 1: vsCOM
 	int teban = 0;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
 	int nextField = -1;		// 次の盤面、-1: anywhere
@@ -151,17 +141,6 @@ public:
 		start = clock();
 	}
 
-	// 自動学習モードで永遠に勝敗がつかない場合の処理
-	void stopDrawGame() {
-		if (drawCnt > 1000) {
-			goResult();
-			drawCnt = 0;
-		}
-		if (taijin == 2 || flg == 5) {
-			drawCnt++;
-		}
-	}
-
 
 	/*===========================*/
 	//    Boolean
@@ -177,10 +156,6 @@ public:
 
 	bool isVsCOM() {
 		return taijin == 1;
-	}
-
-	bool isAutoLearning() {
-		return (taijin == 2 || taijin == 5);
 	}
 
 
@@ -257,22 +232,6 @@ public:
 		key.toggleDebug(debugFlg);
 		if (debugFlg) {
 			key.toggleForDebug(option, cutin.flg, debugEndingFlg);
-		}
-	}
-
-	void toggleHighSpeedLearning() {
-		if (key.toggleHighSpeedLearning(flg) == 1) {
-			mode = "オート";
-			initialize(flg);
-			initializeTrain();
-		}
-	}
-
-	void toggleAutoLearning() {
-		if (key.toggleAutoLearning(flg, taijin) == 1 || key.toggleHighSpeedLearning(flg) == 1) {
-			mode = "オート";
-			initialize(flg);
-			initializeTrain();
 		}
 	}
 

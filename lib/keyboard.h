@@ -184,27 +184,6 @@ public:
 		*/
 	}
 
-	// 返り値1でゲームを初期化する
-	int toggleHighSpeedLearning(int& gameFlg) {
-		// 高速自動学習モード
-		if (state[KEY_INPUT_H] == 1) {
-			gameFlg = 5;
-			return 1;
-		}
-		return 0;
-	}
-
-	// 返り値1でゲームを初期化する
-	int toggleAutoLearning(int& gameFlg, int& taijin) {
-		// 自動学習モード
-		if (state[KEY_INPUT_A] == 1) {
-			taijin = 2;
-			gameFlg = 1;
-			return 1;
-		}
-		return 0;
-	}
-
 	void toggleDebug(int& debugFlg) {
 		//デバッグモード解除
 		if (state[KEY_INPUT_G] == 1) {

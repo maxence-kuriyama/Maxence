@@ -7,7 +7,6 @@
 using namespace Eigen;
 
 VectorXd softmax(const VectorXd &src, double alpha);
-//VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side);
 
 
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
@@ -40,27 +39,9 @@ public:
 	int max_id = 0;
 	double max_val = 0.0;
 
-	////学習関連
-	//int train_game_cnt = 0;
-	//int train_turn_cnt = 0;
-	//int train_correct_cnt = 0;
-	//int epic = 0;
-	//int game_per_epic = 20;
-	//int max_epic = 100;
-	//double loss_per_epic[100] = { 0.0 };
-	//int correct_per_epic[100] = { 0 };
-	//int turn_per_epic[100] = { 0 };
-	//double tmp_loss = 0.0;
-	//int dbg_cnt = 0;
-
 	//学習機械関連
 	int lay_len = 3;
 	int lay_size[4] = { 162, 800, 400, 81 };
-	//VectorXd p_output;
-	//VectorXd temp_i[100];
-	//VectorXd temp_o[100];	//学習用データの一時保存用ベクトル
-	//MatrixXd train_i;
-	//MatrixXd train_o;		//バッチ学習用のデザイン行列
 	double reward2 = 0.0;
 	double rwd_tmp = 0.0;
 
@@ -125,11 +106,9 @@ public:
 		if (cnt <= 0) {
 			if (unif(mt) < annealRate) {
 				choiceRandom();
-				//comHistt[trainCnt] = COMGx * 27 + COMGy * 9 + COMLx * 3 + COMLy;
 			}
 			else {
 				choiceMax();
-				//comHistt[trainCnt] = max_id;
 			}
 		}
 		cnt--;
@@ -170,24 +149,3 @@ VectorXd softmax(const VectorXd &src, double alpha) {
 
 	return trg;
 }
-
-//VectorXd Reward1(const VectorXd &out, const VectorXd &in, int side) {
-//	VectorXd trg; trg = out;
-//
-//	for (int i1 = 0; i1 < 3; ++i1) {
-//		for (int j1 = 0; j1 < 3; ++j1) {
-//			for (int k1 = 0; k1 < 3; ++k1) {
-//				for (int l1 = 0; l1 < 3; ++l1) {
-//					if (in(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) == -1.0) {
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = RWD_FAULT;
-//					}
-//					else {
-//						//trg(27 * i1 + 9 * j1 + 3 * k1 + l1) += RWD_CANPUT; 
-//						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = RWD_CANPUT;
-//					}
-//				}
-//			}
-//		}
-//	}
-//	return trg;
-//}
