@@ -53,11 +53,9 @@ public:
 	int show(Mouse& mouse, Music& music) {
 		// îwåiÅEêlï®ÇÃï`âÊ
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
-		for (int i = 0; i < 4; ++i) {
-			mrK[i].draw(eqX);
-		}
-		mrK[0].stop();
+		drawMrKs();
 		deer.draw();
+		mrK[0].stop();
 		showGraph();
 
 		Scene scene = sceneList[flg];
@@ -337,6 +335,19 @@ private:
 	void showGraph() {
 		if (imgFront == "card") {
 			DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
+		}
+	}
+
+	void drawMrKs() {
+		// àÍíUëSàıï`âÊÇ∑ÇÈ
+		for (int i = 1; i < 4; ++i) {
+			mrK[i].draw(eqX);
+		}
+		mrK[0].draw(eqX);
+
+		// 0î‘ÇÊÇËëOÇ…Ç¢ÇÈÉÑÉcÇÇ‡Ç§àÍìxï`âÊ
+		for (int i = 1; i < 4; ++i) {
+			if (mrK[i].y > mrK[0].y) mrK[i].draw(eqX);
 		}
 	}
 
