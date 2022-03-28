@@ -13,7 +13,7 @@ class Scenario {
 struct Scene {
 	int action;
 	int who;
-	string how;
+	char how[100];
 };
 
 
@@ -28,13 +28,13 @@ public:
 	Scenario() {
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
+		mrK[0].set(160, 120);
 		mrK[0].setSerialImages(16, "graph/move_test", 1);
 		mrK[1].set(480, 120, "graph/sprite12.png", 1);
 		mrK[2].set(160, 240, "graph/sprite13.png", 1);
 		mrK[3].set(480, 240, "graph/sprite14.png", 1);
 		deer.set(270, 200, "graph/sprite15.png", 0);
 		initialize();
-		mrK[0].set(x, y);
 		msg.initialize();
 	}
 
@@ -47,8 +47,6 @@ public:
 		mrK[2].exhibit();
 		mrK[3].exhibit();
 		deer.hide();
-		x = 160;
-		y = 120;
 		imgFront = "";
 	}
 
@@ -57,8 +55,8 @@ public:
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		for (int i = 0; i < 4; ++i) {
 			mrK[i].draw(eqX);
-			mrK[0].stop();
 		}
+		mrK[0].stop();
 		deer.draw();
 		showGraph();
 
@@ -69,13 +67,18 @@ public:
 			readMsg(scene.how, scene.who, mouse);
 			break;
 		case SCENE_ACTION_MOVE:
+			if (key != -1) {
+				mrK[0].turn(key);
+				mrK[0].move();
+			}
+			mrK[0].walk();
 			waitClick(mouse);
 			break;
 		case SCENE_ACTION_EXIBIT:
 			doExibit(scene.how, scene.who, mouse);
 			break;
 		case SCENE_ACTION_LOAD:
-			music.load(scene.how.c_str());
+			music.load(scene.how);
 			goNext();
 			break;
 		case SCENE_ACTION_MUSIC:
@@ -85,12 +88,13 @@ public:
 			performGraph(scene.how, mouse);
 			break;
 		case SCENE_ACTION_EQ:
-			(scene.how == "true") ?	happenEQ() : stopEQ();
+			performEQ(scene.how);
 			waitClick(mouse);
 			break;
 		case SCENE_ACTION_BATTLE:
 			return 1;
 		case SCENE_ACTION_STOP:
+		default:
 			break;
 		}
 
@@ -150,14 +154,13 @@ private:
 	int eqX = 0;
 	int eqY = 0;		// eq = earthquake
 	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
-	int x = 0;
-	int y = 0;			// Mr.Kの位置
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
-	struct Scene sceneList[100] = {
+	struct Scene sceneList[400] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている。" },
+		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"exibit" },
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
@@ -176,7 +179,8 @@ private:
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_RED,		"sound/bgm05.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 馬鹿な、そんなはずではなかったのに…。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 最後の最期は後悔しないと決めていたのに、こんな死に様とはな。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: だが、俺が死ねば世界の崩壊が止まるというのなら、俺の死にも意味を持たせられるというものじゃないか…………。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: だが、俺が死ねば世界の崩壊が止まるというのなら" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 俺の死にも意味を持たせられるというものじゃないか…………。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_RED,		"hide" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
@@ -217,7 +221,7 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: だからこの王である僕を殺して世界を救ってくれ。" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,	"pop" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"" },
-		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,		"stop" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,	"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: ありがとう。" },
 		{ SCENE_ACTION_STOP,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: しかと見届けたぞ。" },
@@ -313,12 +317,15 @@ private:
 		flg++;
 	}
 
-	void happenEQ() {
-		eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
-	}
-
-	void stopEQ() {
-		eqX = 0;
+	void performEQ(string how) {
+		if (how == "true") {
+			// happenEQ
+			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
+		}
+		else {
+			// stopEQ
+			eqX = 0;
+		}
 	}
 
 	void startMusic(const char* musicName) {
@@ -331,22 +338,6 @@ private:
 		if (imgFront == "card") {
 			DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
 		}
-	}
-
-	void move() {
-		if (mrK[0].direction == 0) {
-			y += 1;
-		}
-		else if (mrK[0].direction == 1) {
-			x += 1;
-		}
-		else if(mrK[0].direction == 2) {
-			y -= 1;
-		}
-		else if(mrK[0].direction == 3) {
-			x -= 1;
-		}
-		mrK[0].set(x, y);
 	}
 
 };
