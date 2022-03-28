@@ -31,3 +31,7 @@
 #define SCENE_WHO_GREEN		4
 #define SCENE_WHO_DEER		5
 #define SCENE_WHO_PLAYER	-1
+
+#define MRK_TRIGGER_FIRED		1
+#define	MRK_TRIGGER_TALK_ALL	2
+#define MRK_TRIGGER_NON			-1

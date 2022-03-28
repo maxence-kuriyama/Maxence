@@ -38,110 +38,6 @@ public:
 		msg.initialize();
 	}
 
-	void initialize() {
-		flg = 0;
-		cnt = 0;
-		hasMsg = false;
-		mrK[0].exhibit();
-		mrK[1].exhibit();
-		mrK[2].exhibit();
-		mrK[3].exhibit();
-		deer.hide();
-		imgFront = "";
-	}
-
-	int show(Mouse& mouse, Music& music) {
-		// 背景・人物の描画
-		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
-		drawMrKs();
-		deer.draw();
-		mrK[0].stop();
-		showGraph();
-
-		Scene scene = sceneList[flg];
-
-		switch (scene.action) {
-		case SCENE_ACTION_TALK:
-			readMsg(scene.how, scene.who, mouse);
-			break;
-		case SCENE_ACTION_MOVE:
-			if (key != -1) {
-				mrK[0].turn(key);
-				mrK[0].move();
-			}
-			mrK[0].walk();
-			waitClick(mouse);
-			break;
-		case SCENE_ACTION_EXIBIT:
-			doExibit(scene.how, scene.who, mouse);
-			break;
-		case SCENE_ACTION_LOAD:
-			music.load(scene.how);
-			goNext();
-			break;
-		case SCENE_ACTION_MUSIC:
-			performMusic(scene.how, music);
-			break;
-		case SCENE_ACTION_GRAPH:
-			performGraph(scene.how, mouse);
-			break;
-		case SCENE_ACTION_EQ:
-			performEQ(scene.how);
-			waitClick(mouse);
-			break;
-		case SCENE_ACTION_BATTLE:
-			return 1;
-		case SCENE_ACTION_STOP:
-		default:
-			break;
-		}
-
-		msg.draw();
-		cnt = (cnt + 1) % 10000;
-
-		return 0;
-	}
-
-	// キーボード入力を取得する
-	void getKey(Key& keyboard) {
-		if (keyboard.onGoingDown()) {
-			key = 0;
-		}
-		else if (keyboard.onGoingRight()) {
-			key = 1;
-		}
-		else if (keyboard.onGoingUp()) {
-			key = 2;
-		}
-		else if (keyboard.onGoingLeft()) {
-			key = 3;
-		}
-		else {
-			key = -1;
-		}
-	}
-
-	void debugDump(int debug) {
-		if (debug) {
-			int strColor = strColorDebug;
-
-			DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
-			DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
-			//DrawFormatString(245, 245, strColor, "textCnt: %d", textCnt);
-			DrawFormatString(245, 265, strColor, "eqX: %d", eqX);
-			DrawFormatString(245, 285, strColor, "textLen: %d", msg.textLen);
-			DrawFormatString(245, 305, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
-			DrawFormatString(245, 325, strColor, "who: %d", msg.who);
-			DrawFormatString(245, 345, strColor, "mrK0.vis: %d", mrK[0].visible);
-			DrawFormatString(245, 365, strColor, "mrK1.vis: %d", mrK[1].visible);
-			DrawFormatString(245, 385, strColor, "mrK2.vis: %d", mrK[2].visible);
-			DrawFormatString(245, 405, strColor, "mrK3.vis: %d", mrK[3].visible);
-			DrawFormatString(245, 425, strColor, "deer.vis: %d", deer.visible);
-			DrawFormatString(245, 445, strColor, "key: %d", key);
-		}
-	}
-
-
 private:
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
@@ -232,6 +128,114 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: …………" },
 		{ -1,					-1,					"" }
 	};
+
+public:
+
+	void initialize() {
+		flg = 0;
+		cnt = 0;
+		hasMsg = false;
+		mrK[0].exhibit();
+		mrK[1].exhibit();
+		mrK[2].exhibit();
+		mrK[3].exhibit();
+		deer.hide();
+		imgFront = "";
+	}
+
+	int show(Mouse& mouse, Music& music) {
+		// 背景・人物の描画
+		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
+		drawMrKs();
+		deer.draw();
+		mrK[0].stop();
+		showGraph();
+
+		Scene scene = sceneList[flg];
+
+		switch (scene.action) {
+		case SCENE_ACTION_TALK:
+			readMsg(scene.how, scene.who, mouse);
+			break;
+		case SCENE_ACTION_MOVE:
+			if (key != -1) {
+				mrK[0].turn(key);
+				mrK[0].move();
+				mrK[0].walk();
+			}
+			if (mrK[0].isTriggered()) goNext();
+			break;
+		case SCENE_ACTION_EXIBIT:
+			doExibit(scene.how, scene.who, mouse);
+			break;
+		case SCENE_ACTION_LOAD:
+			music.load(scene.how);
+			goNext();
+			break;
+		case SCENE_ACTION_MUSIC:
+			performMusic(scene.how, music);
+			break;
+		case SCENE_ACTION_GRAPH:
+			performGraph(scene.how, mouse);
+			break;
+		case SCENE_ACTION_EQ:
+			performEQ(scene.how);
+			waitClick(mouse);
+			break;
+		case SCENE_ACTION_BATTLE:
+			return 1;
+		case SCENE_ACTION_STOP:
+		default:
+			break;
+		}
+
+		msg.draw();
+		cnt = (cnt + 1) % 10000;
+
+		return 0;
+	}
+
+	// キーボード入力を取得する
+	void getKey(Key& keyboard) {
+		if (keyboard.onGoingDown()) {
+			key = 0;
+		}
+		else if (keyboard.onGoingRight()) {
+			key = 1;
+		}
+		else if (keyboard.onGoingUp()) {
+			key = 2;
+		}
+		else if (keyboard.onGoingLeft()) {
+			key = 3;
+		}
+		else {
+			key = -1;
+		}
+	}
+
+	void debugDump(int debug) {
+		if (debug) {
+			int strColor = strColorDebug;
+
+			DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
+			DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
+			//DrawFormatString(245, 245, strColor, "textCnt: %d", textCnt);
+			DrawFormatString(245, 265, strColor, "eqX: %d", eqX);
+			DrawFormatString(245, 285, strColor, "textLen: %d", msg.textLen);
+			DrawFormatString(245, 305, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
+			DrawFormatString(245, 325, strColor, "who: %d", msg.who);
+			DrawFormatString(245, 345, strColor, "mrK0.vis: %d", mrK[0].visible);
+			DrawFormatString(245, 365, strColor, "mrK1.vis: %d", mrK[1].visible);
+			DrawFormatString(245, 385, strColor, "mrK2.vis: %d", mrK[2].visible);
+			DrawFormatString(245, 405, strColor, "mrK3.vis: %d", mrK[3].visible);
+			DrawFormatString(245, 425, strColor, "deer.vis: %d", deer.visible);
+			DrawFormatString(245, 445, strColor, "key: %d", key);
+		}
+	}
+
+
+private:
 
 	// メッセージを読む
 	void readMsg(string str, int who, Mouse& mouse) {
