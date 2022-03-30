@@ -22,8 +22,6 @@ public:
 	MrK mrK[4];
 	MrK deer;
 	Message msg;
-	string text[50];
-	int who[50];
 
 	Scenario() {
 		imgRoom = LoadGraph("graph/room.bmp");
@@ -33,6 +31,9 @@ public:
 		mrK[1].set(480, 120, "graph/sprite12.png", 1);
 		mrK[2].set(160, 240, "graph/sprite13.png", 1);
 		mrK[3].set(480, 240, "graph/sprite14.png", 1);
+		mrK[1].setSayings(sayings1);
+		mrK[2].setSayings(sayings2);
+		mrK[3].setSayings(sayings3);
 		deer.set(270, 200, "graph/sprite15.png", 0);
 		initialize();
 		msg.initialize();
@@ -42,19 +43,22 @@ private:
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
 	bool hasMsg = false;	// メッセージがセットされているか
+	bool isTalking = false;	// NPCと会話中か否か
 	string imgFront;	// フロントサイドに表示する画像
 	int imgRoom;
 	int imgCard;
 	int eqX = 0;
 	int eqY = 0;		// eq = earthquake
 	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
+	int onOk = 0;		// キーボード入力（Enter or Space）
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
 	struct Scene sceneList[400] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている。" },
-		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
+		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"10" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"exibit" },
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
@@ -128,6 +132,18 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: …………" },
 		{ -1,					-1,					"" }
 	};
+	struct Saying sayings1[20] = {
+		{ "aaa",	1,		"10" },
+		{ "",		-1,		"10" }
+	};
+	struct Saying sayings2[20] = {
+		{ "bbb",	3,		"10" },
+		{ "",		-1,		"10" }
+	};
+	struct Saying sayings3[20] = {
+		{ "ccc",	4,		"10" },
+		{ "",		-1,		"10" }
+	};
 
 public:
 
@@ -141,6 +157,8 @@ public:
 		mrK[3].exhibit();
 		deer.hide();
 		imgFront = "";
+		onOk = 0;
+		isTalking = false;
 	}
 
 	int show(Mouse& mouse, Music& music) {
@@ -157,13 +175,25 @@ public:
 		case SCENE_ACTION_TALK:
 			readMsg(scene.how, scene.who, mouse);
 			break;
+		case SCENE_ACTION_COCK:
+			setTrigger(scene.how);
+			break;
 		case SCENE_ACTION_MOVE:
-			if (key != -1) {
-				mrK[0].turn(key);
-				mrK[0].move();
-				mrK[0].walk();
+			if (isTalking) {
+				int who = checkMrK();
+				talkMrK(who, scene.how, mouse);
 			}
-			if (mrK[0].isTriggered()) goNext();
+			else {
+				if (key != -1) {
+					mrK[0].turn(key);
+					mrK[0].move();
+				}
+				if (onOk || mouse.click()) {
+					int who = checkMrK();
+					talkResetMrK(who);
+				}
+				if (isTriggered()) goNext();
+			}
 			break;
 		case SCENE_ACTION_EXIBIT:
 			doExibit(scene.how, scene.who, mouse);
@@ -212,6 +242,13 @@ public:
 		else {
 			key = -1;
 		}
+
+		if (keyboard.onReturn()) {
+			onOk = 1;
+		}
+		else {
+			onOk = 0;
+		}
 	}
 
 	void debugDump(int debug) {
@@ -220,22 +257,33 @@ public:
 
 			DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
 			DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
-			//DrawFormatString(245, 245, strColor, "textCnt: %d", textCnt);
-			DrawFormatString(245, 265, strColor, "eqX: %d", eqX);
-			DrawFormatString(245, 285, strColor, "textLen: %d", msg.textLen);
-			DrawFormatString(245, 305, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
-			DrawFormatString(245, 325, strColor, "who: %d", msg.who);
-			DrawFormatString(245, 345, strColor, "mrK0.vis: %d", mrK[0].visible);
-			DrawFormatString(245, 365, strColor, "mrK1.vis: %d", mrK[1].visible);
-			DrawFormatString(245, 385, strColor, "mrK2.vis: %d", mrK[2].visible);
-			DrawFormatString(245, 405, strColor, "mrK3.vis: %d", mrK[3].visible);
-			DrawFormatString(245, 425, strColor, "deer.vis: %d", deer.visible);
-			DrawFormatString(245, 445, strColor, "key: %d", key);
+			DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
+			DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
+			DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
+			DrawFormatString(245, 305, strColor, "who: %d", msg.who);
+			DrawFormatString(245, 325, strColor, "mrK0.vis: %d", mrK[0].visible);
+			DrawFormatString(245, 345, strColor, "mrK1.vis: %d", mrK[1].visible);
+			DrawFormatString(245, 365, strColor, "mrK2.vis: %d", mrK[2].visible);
+			DrawFormatString(245, 385, strColor, "mrK3.vis: %d", mrK[3].visible);
+			DrawFormatString(245, 405, strColor, "deer.vis: %d", deer.visible);
+			DrawFormatString(245, 425, strColor, "key: %d", key);
+			DrawFormatString(245, 445, strColor, "isTalking: %s", isTalking ? "true" : "false");
+			DrawFormatString(245, 465, strColor, "hasMsg: %s", hasMsg ? "true" : "false");
 		}
 	}
 
 
 private:
+
+	void waitClick(Mouse& mouse) {
+		if (mouse.click()) {
+			flg++;
+		}
+	}
+
+	void goNext() {
+		flg++;
+	}
 
 	// メッセージを読む
 	void readMsg(string str, int who, Mouse& mouse) {
@@ -309,16 +357,6 @@ private:
 		waitClick(mouse);
 	}
 
-	void waitClick(Mouse& mouse) {
-		if (mouse.click()) {
-			flg++;
-		}
-	}
-
-	void goNext() {
-		flg++;
-	}
-
 	void performEQ(string how) {
 		if (how == "true") {
 			// happenEQ
@@ -328,6 +366,30 @@ private:
 			// stopEQ
 			eqX = 0;
 		}
+	}
+
+	void setTrigger(string trigger) {
+		if (trigger == "talk_all") {
+			mrK[0].setTrigger("fired");
+			for (int i = 1; i < 4; ++i) {
+				mrK[i].setTrigger("talk");
+			}
+		}
+		else if (trigger == "none") {
+			for (int i = 0; i < 4; ++i) {
+				mrK[i].setTrigger("fired");
+			}
+		}
+		goNext();
+	}
+
+	bool isTriggered() {
+		for (int i = 0; i < 4; ++i) {
+			if (!mrK[i].isTriggered()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	void startMusic(const char* musicName) {
@@ -352,6 +414,41 @@ private:
 		// 0番より前にいるヤツをもう一度描画
 		for (int i = 1; i < 4; ++i) {
 			if (mrK[i].y > mrK[0].y) mrK[i].draw(eqX);
+		}
+	}
+
+	int checkMrK() {
+		// 0番の近くにいるヤツをpick up
+		for (int i = 1; i < 4; ++i) {
+			if (abs(mrK[i].y - mrK[0].y) < 45 && abs(mrK[i].x - mrK[0].x) < 45) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	void talkResetMrK(int who) {
+		if (who) {
+			isTalking = true;
+			mrK[who].talkReset();
+		}
+	}
+
+	void talkMrK(int who, const char key[], Mouse &mouse) {
+		if (who) {
+			Saying saying = mrK[who].talk(key);
+			if (strcmp(saying.say, "") == 0 || saying.who == -1) {
+				isTalking = false;
+				return;
+			}
+			if (!hasMsg) {
+				msg.set(saying.say, saying.who);
+				hasMsg = true;
+			}
+			if ((onOk || mouse.click()) && msg.skip()) {
+				mrK[who].talkNext();
+				hasMsg = false;
+			}
 		}
 	}
 

@@ -2,6 +2,12 @@
 
 #include <string>
 
+struct Saying {
+	char say[100];
+	int who;
+	char key[4];
+};
+
 // キャラクターオブジェクトのクラス
 // グラフィックの表示を主に行っているが、メッセージの保持も行うべきか？
 // ScenarioやEndingなどでの使用を想定
@@ -13,13 +19,17 @@ public:
 	int walkCnt = 0;
 	int img[16];		// 0-3: Front, 4-7: Right, 8-11: Back, 12-15: Left
 	int spImg[4];		// Special
-	int trigger = MRK_TRIGGER_NON;	// 次のシナリオに進むトリガー
+	int trigger = MRK_TRIGGER_NONE;	// 次のシナリオに進むトリガー
 
 private:
 	int direction = 0;	// 0: Front, 1: Right, 2; Back, 3; Left
 	int special = -1;	// spImg用のインデックス
 	int walking = 0;	// 0: Stop, 1: Walking
+	int walkSpeed = 2;
 	int loopSpeed = 15;
+	bool talked = 0;	// 会話した回数
+	struct Saying *sayings;
+	int sayCnt = 0;
 
 public:
 
@@ -52,6 +62,10 @@ public:
 		}
 	}
 
+	void setSayings(struct Saying src[]) {
+		sayings = src;
+	}
+
 	void hide() {
 		visible = 0;
 	}
@@ -73,17 +87,18 @@ public:
 
 	void move() {
 		if (direction == 0) {
-			y += 1;
+			y += walkSpeed;
 		}
 		else if (direction == 1) {
-			x += 1;
+			x += walkSpeed;
 		}
 		else if (direction == 2) {
-			y -= 1;
+			y -= walkSpeed;
 		}
 		else if (direction == 3) {
-			x -= 1;
+			x -= walkSpeed;
 		}
+		walk();
 	}
 
 	void stop() {
@@ -138,6 +153,53 @@ public:
 
 	bool isTriggered() {
 		return (trigger == MRK_TRIGGER_FIRED);
+	}
+
+	void setTrigger(string how) {
+		resetTrigger();
+		if (how == "talk") {
+			trigger = MRK_TRIGGER_TALK;
+		}
+		else if (how == "fired") {
+			trigger = MRK_TRIGGER_FIRED;
+		}
+	}
+
+	void resetTrigger() {
+		trigger = MRK_TRIGGER_NONE;
+		talked = 0;
+	}
+
+	Saying talk(const char key[]) {
+		talked++;
+		if (trigger == MRK_TRIGGER_TALK) {
+			trigger = MRK_TRIGGER_FIRED;
+		}
+		int cnt = 0;
+		int n = 0;
+		while (true) {
+			Saying say = sayings[n];
+			if (strcmp(sayings[n].say, "") == 0 || sayings[n].who == -1) {
+				return sayings[n];
+			}
+			if (strcmp(sayings[n].key, key) == 0) {
+				if (cnt >= sayCnt) {
+					return sayings[n];
+				}
+				else {
+					cnt++;
+				}
+			}
+			n++;
+		}
+	}
+
+	void talkNext() {
+		sayCnt++;
+	}
+
+	void talkReset() {
+		sayCnt = 0;
 	}
 
 };
