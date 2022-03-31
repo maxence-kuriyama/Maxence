@@ -63,86 +63,118 @@ private:
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"hide_nowait" },
-		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide_nowait" },
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"clear" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: なにっ！？" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"なにっ！？" },
+		//{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
+		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"20" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 世界が滅びるというのは本当の事のようだな。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: しかし、一体我々のうちの誰が滅ぼすというのだ？ 貴様か？ Mr.K！！！" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_red" },
+		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"30" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"swap" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_RED,		"" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_RED,		"sound/bgm05.mp3" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 馬鹿な、そんなはずではなかったのに…。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 最後の最期は後悔しないと決めていたのに、こんな死に様とはな。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: だが、俺が死ねば世界の崩壊が止まるというのなら" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"Mr.K: 俺の死にも意味を持たせられるというものじゃないか…………。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"馬鹿な、そんなはずではなかったのに…。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"最後の最期は後悔しないと決めていたのに、こんな死に様とはな。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"だが、俺が死ねば世界の崩壊が止まるというのなら" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"俺の死にも意味を持たせられるというものじゃないか…………。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_RED,		"hide" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide_nowait" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: 貴様、Mr.Kを殺したな！" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: 何故いつも分かり合えないのだろう。でもそれが同じもの同士が集まった時の性なのだろう。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: だからMr.Kよ。殺し合おう。その中で生きた意味を見出そうじゃないか。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: さぁ教えてくれ。" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_green" },
+		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"40" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"swap" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_GREEN,	"" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_GREEN,	"sound/bgm06.mp3" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: 俺は見えたよ。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: 残ったお前にもいつか見える時が来るだろう…………。先に逝っているよ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"俺は見えたよ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"残ったお前にもいつか見える時が来るだろう…………。先に逝っているよ。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_GREEN,	"hide" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"exibit" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: あなた1人になるまで隠れていました。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: 他の2人を消してくれてありがとう。こうなることはカードを見た時から分かっていたからね。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: そして連戦の貴方を始末すれば、ここは私の世界になる訳だ。そうだろう？" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: 私は世界を滅ぼすつもりじゃないのです。貴方が邪魔なだけなのですよ。" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_blue" },
+		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"50" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"pop" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_BLUE,		"" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_BLUE,		"sound/bgm07.mp3" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"stop" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: 馬鹿な、そんな、世界の王に成れるチャンスを逃してしまうなんて、有り得ない。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"Mr.K: …………ああ、生きていたこと自体が大きなチャンスだったのか…………しまったな。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"馬鹿な、そんな、世界の王に成れるチャンスを逃してしまうなんて、有り得ない。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"…………ああ、生きていたこと自体が大きなチャンスだったのか…………しまったな。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_YELLOW,	"sound/bgm08.mp3" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: Mr.Kは王になろうとしていたのか…………。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: 王、そうか！" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: Kとは king のことだったのか。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: Mr.K。僕も見えたよ。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: さぁ、後はこの世界にいるのは僕だけだ。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: だからこの王である僕を殺して世界を救ってくれ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.Kは王になろうとしていたのか…………。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"王、そうか！" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Kとは king のことだったのか。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K。僕も見えたよ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"さぁ、後はこの世界にいるのは僕だけだ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"だからこの王である僕を殺して世界を救ってくれ。" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,	"pop" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,	"stop" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K: ありがとう。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"ありがとう。" },
 		{ SCENE_ACTION_STOP,	SCENE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: しかと見届けたぞ。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: 鹿と見届けたぞ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"しかと見届けたぞ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿と見届けたぞ。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_PLAYER,	"このゲームの王が世界を滅ぼすというなら…" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_PLAYER,	"王であるプレイヤーが、この世界に居る貴様を滅ぼすのだろう？" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: 気づいてしまったか。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: ならば鹿他無い。唯、私が上であることを確認するだけだ。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: かかって来なさい。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"鹿: …………" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"気づいてしまったか。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"ならば鹿他無い。唯、私が上であることを確認するだけだ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"かかって来なさい。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"…………" },
 		{ -1,					-1,					"" }
 	};
 	struct Saying sayings1[20] = {
-		{ "aaa",	1,		"10" },
-		{ "",		-1,		"10" }
+		{ "10",		SCENE_WHO_BLUE,		"貴方は私にとって、利用価値のある存在です。" },
+		{ "10",		SCENE_WHO_BLUE,		"これからも是非お付き合いください。" },
+		{ "10",		SCENE_WHO_YELLOW,	"……（こいつ切るか）。" },
+		{ "20",		SCENE_WHO_BLUE,		"あのカード…" },
+		{ "20",		SCENE_WHO_BLUE,		"本当か分からないが、チャンスかも知れないな。" },
+		{ "20",		SCENE_WHO_YELLOW,	"心の声、漏れているよ。" },
+		{ "20",		SCENE_WHO_BLUE,		"ホッ！" },
+		{ "30",		SCENE_WHO_BLUE,		"ブツブツ…（これは使える！やりましょう！）" },
+		{ "30",		SCENE_WHO_YELLOW,	"何言ってんだこいつ。" },
+		{ "40",		SCENE_WHO_DESC,		"机: ………。" },
+		{ "40",		SCENE_WHO_DESC,		"机: …………………。" },
+		{ "40",		SCENE_WHO_DESC,		"私は机だ！まだ話しかけるな！！" },
+		{ "50",		SCENE_WHO_BLUE,		"あなた1人になるまで隠れていました。" },
+		{ "50",		SCENE_WHO_BLUE,		"他の2人を消してくれてありがとう。こうなることはカードを見た時から分かっていたからね。" },
+		{ "50",		SCENE_WHO_BLUE,		"そして連戦の貴方を始末すれば、ここは私の世界になる訳だ。そうだろう？" },
+		{ "50",		SCENE_WHO_BLUE,		"私は世界を滅ぼすつもりじゃないのです。貴方が邪魔なだけなのですよ。" },
+		{ "999",	-1,					"" }
 	};
 	struct Saying sayings2[20] = {
-		{ "bbb",	3,		"10" },
-		{ "",		-1,		"10" }
+		{ "10",		SCENE_WHO_RED,		"俺たちはチーム！そして何より正義だ！" },
+		{ "10",		SCENE_WHO_YELLOW,	"あぁ、そうだな。これから先もだ。" },
+		{ "20",		SCENE_WHO_RED,		"何だこのカードはぁ！俺を馬鹿にしているのかぁ！！" },
+		{ "20",		SCENE_WHO_RED,		"ドカッ！（何かを蹴る音）" },
+		{ "20",		SCENE_WHO_BLUE,		"！" },
+		{ "20",		SCENE_WHO_YELLOW,	"うわぁ、落ち着けよ。怖いなぁ。" },
+		{ "30",		SCENE_WHO_RED,		"世界が滅びるというのは本当の事のようだな。"},
+		{ "30",		SCENE_WHO_RED,		"しかし、一体我々のうちの誰が滅ぼすというのだ？ 貴様か？ Mr.K！！！"},
+		{ "999",	-1,					"" }
 	};
 	struct Saying sayings3[20] = {
-		{ "ccc",	4,		"10" },
-		{ "",		-1,		"10" }
+		{ "10",		SCENE_WHO_GREEN,	"この平和の中、何のために生きているのだろう。" },
+		{ "10",		SCENE_WHO_YELLOW,	"お前はいつもそれだな。考えてもしょうがないのに。" },
+		{ "10",		SCENE_WHO_BLUE,		"私はこの世界を手に入れたいですねぇ。" },
+		{ "20",		SCENE_WHO_GREEN,	"何かが動き出したのですね…。貴方はどう見ますか？" },
+		{ "20",		SCENE_WHO_YELLOW,	"さっき突然現れた奴が何者かが気になるなぁ。" },
+		{ "20",		SCENE_WHO_GREEN,	"私も同感です。奴の意図は読めませんね。" },
+		{ "30",		SCENE_WHO_GREEN,	"この地震と先程のカードの関係はあるのでしょうか？" },
+		{ "30",		SCENE_WHO_YELLOW,	"でもこのままでは世界が保たないぞ。" },
+		{ "30",		SCENE_WHO_GREEN,	"そうですね。そろそろですねぇ…。" },
+		{ "40",		SCENE_WHO_GREEN,	"貴様、Mr.Kを殺したな！" },
+		{ "40",		SCENE_WHO_GREEN,	"何故いつも分かり合えないのだろう。でもそれが同じもの同士が集まった時の性なのだろう。" },
+		{ "40",		SCENE_WHO_GREEN,	"だからMr.Kよ。殺し合おう。その中で生きた意味を見出そうじゃないか。" },
+		{ "40",		SCENE_WHO_GREEN,	"さぁ教えてくれ。" },
+		{ "999",	-1,					"" }
 	};
 
 public:
@@ -374,6 +406,24 @@ private:
 			for (int i = 1; i < 4; ++i) {
 				mrK[i].setTrigger("talk");
 			}
+		}
+		else if (trigger == "talk_red") {
+			for (int i = 0; i < 4; ++i) {
+				mrK[i].setTrigger("fired");
+			}
+			mrK[SCENE_WHO_RED - 1].setTrigger("talk");
+		}
+		else if (trigger == "talk_green") {
+			for (int i = 0; i < 4; ++i) {
+				mrK[i].setTrigger("fired");
+			}
+			mrK[SCENE_WHO_GREEN - 1].setTrigger("talk");
+		}
+		else if (trigger == "talk_blue") {
+			for (int i = 0; i < 4; ++i) {
+				mrK[i].setTrigger("fired");
+			}
+			mrK[SCENE_WHO_BLUE - 1].setTrigger("talk");
 		}
 		else if (trigger == "none") {
 			for (int i = 0; i < 4; ++i) {

@@ -3,9 +3,9 @@
 #include <string>
 
 struct Saying {
-	char say[100];
-	int who;
 	char key[4];
+	int who;
+	char say[100];
 };
 
 // キャラクターオブジェクトのクラス
