@@ -57,14 +57,17 @@ private:
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"10" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"exibit" },
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"hide_nowait" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"なにっ！？" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		//{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"20" },
@@ -79,8 +82,9 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"馬鹿な、そんなはずではなかったのに…。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"最後の最期は後悔しないと決めていたのに、こんな死に様とはな。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"だが、俺が死ねば世界の崩壊が止まるというのなら" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"俺の死にも意味を持たせられるというものじゃないか…………。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"俺の死にも意味を持たせられるというものじゃないか……。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_RED,		"hide" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide_nowait" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
@@ -91,11 +95,13 @@ private:
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_GREEN,	"sound/bgm06.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"俺は見えたよ。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"残ったお前にもいつか見える時が来るだろう…………。先に逝っているよ。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"残ったお前にもいつか見える時が来るだろう……。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"先に逝っているよ。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_GREEN,	"hide" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
-		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"exibit" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"exibit_nowait" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_blue" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"50" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"pop" },
@@ -103,13 +109,16 @@ private:
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_BLUE,		"sound/bgm07.mp3" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"馬鹿な、そんな、世界の王に成れるチャンスを逃してしまうなんて、有り得ない。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"…………ああ、生きていたこと自体が大きなチャンスだったのか…………しまったな。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"……ああ、生きていたこと自体が大きなチャンスだったのか……。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"……しまったな。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_YELLOW,	"sound/bgm08.mp3" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.Kは王になろうとしていたのか…………。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.Kは王になろうとしていたのか……。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"王、そうか！" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Kとは king のことだったのか。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K。僕も見えたよ。" },
@@ -146,7 +155,8 @@ private:
 		{ "50",		SCENE_WHO_BLUE,		"あなた1人になるまで隠れていました。" },
 		{ "50",		SCENE_WHO_BLUE,		"他の2人を消してくれてありがとう。こうなることはカードを見た時から分かっていたからね。" },
 		{ "50",		SCENE_WHO_BLUE,		"そして連戦の貴方を始末すれば、ここは私の世界になる訳だ。そうだろう？" },
-		{ "50",		SCENE_WHO_BLUE,		"私は世界を滅ぼすつもりじゃないのです。貴方が邪魔なだけなのですよ。" },
+		{ "50",		SCENE_WHO_BLUE,		"私は世界を滅ぼすつもりじゃないのです。" },
+		{ "50",		SCENE_WHO_BLUE,		"貴方が邪魔なだけなのですよ。" },
 		{ "999",	-1,					"" }
 	};
 	struct Saying sayings2[20] = {
@@ -157,7 +167,8 @@ private:
 		{ "20",		SCENE_WHO_BLUE,		"！" },
 		{ "20",		SCENE_WHO_YELLOW,	"うわぁ、落ち着けよ。怖いなぁ。" },
 		{ "30",		SCENE_WHO_RED,		"世界が滅びるというのは本当の事のようだな。"},
-		{ "30",		SCENE_WHO_RED,		"しかし、一体我々のうちの誰が滅ぼすというのだ？ 貴様か？ Mr.K！！！"},
+		{ "30",		SCENE_WHO_RED,		"しかし、一体我々のうちの誰が滅ぼすというのだ？"},
+		{ "30",		SCENE_WHO_RED,		"貴様か？ Mr.K！！！"},
 		{ "999",	-1,					"" }
 	};
 	struct Saying sayings3[20] = {
@@ -227,8 +238,7 @@ public:
 			performGraph(scene.how, mouse);
 			break;
 		case SCENE_ACTION_EQ:
-			performEQ(scene.how);
-			waitClick(mouse);
+			performEQ(scene.how, mouse);
 			break;
 		case SCENE_ACTION_BATTLE:
 			return 1;
@@ -306,8 +316,14 @@ private:
 	// メッセージを読む
 	void readMsg(string str, int who, Mouse& mouse) {
 		if (!hasMsg) {
-			msg.set(str, who);
-			hasMsg = true;
+			if (str == "clear") {
+				msg.set("", who);
+				flg++;
+			}
+			else {
+				msg.set(str, who);
+				hasMsg = true;
+			}
 		}
 		if (mouse.click() && msg.skip()) {
 			flg++;
@@ -352,6 +368,15 @@ private:
 			}
 			waitClick(mouse);
 		}
+		else if (how == "exibit_nowait") {
+			if (who == SCENE_WHO_DEER) {
+				deer.exhibit();
+			}
+			else {
+				mrK[who - 1].exhibit();
+			}
+			goNext();
+		}
 		else if (how == "hide_nowait") {
 			if (who == SCENE_WHO_DEER) {
 				deer.hide();
@@ -389,18 +414,23 @@ private:
 		imgFront = how;
 		if (how == "clear") {
 			imgFront = "";
+			goNext();
 		}
-		waitClick(mouse);
+		else {
+			waitClick(mouse);
+		}
 	}
 
-	void performEQ(string how) {
+	void performEQ(string how, Mouse &mouse) {
 		if (how == "true") {
 			// happenEQ
 			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
+			waitClick(mouse);
 		}
 		else {
 			// stopEQ
 			eqX = 0;
+			goNext();
 		}
 	}
 
@@ -493,6 +523,7 @@ private:
 			Saying saying = mrK[who].talk(key);
 			if (strcmp(saying.say, "") == 0 || saying.who == -1) {
 				isTalking = false;
+				msg.set("", SCENE_WHO_DESC);
 				return;
 			}
 			if (!hasMsg) {
