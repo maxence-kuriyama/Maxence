@@ -304,7 +304,7 @@ public:
 private:
 
 	void waitClick(Mouse& mouse) {
-		if (mouse.click()) {
+		if (onOk || mouse.click()) {
 			flg++;
 		}
 	}
@@ -317,7 +317,7 @@ private:
 	void readMsg(string str, int who, Mouse& mouse) {
 		if (!hasMsg) {
 			if (str == "clear") {
-				msg.set("", who);
+				msg.set("", who, false);
 				flg++;
 			}
 			else {
@@ -325,7 +325,7 @@ private:
 				hasMsg = true;
 			}
 		}
-		if (mouse.click() && msg.skip()) {
+		if ((onOk || mouse.click()) && msg.skip()) {
 			flg++;
 			hasMsg = false;
 		}
@@ -523,7 +523,7 @@ private:
 			Saying saying = mrK[who].talk(key);
 			if (strcmp(saying.say, "") == 0 || saying.who == -1) {
 				isTalking = false;
-				msg.set("", SCENE_WHO_DESC);
+				msg.set("", SCENE_WHO_DESC, false);
 				return;
 			}
 			if (!hasMsg) {
