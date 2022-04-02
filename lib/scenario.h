@@ -211,21 +211,7 @@ public:
 			setTrigger(scene.how);
 			break;
 		case SCENE_ACTION_MOVE:
-			if (isTalking) {
-				int who = checkMrK();
-				talkMrK(who, scene.how, mouse);
-			}
-			else {
-				if (key != -1) {
-					mrK[0].turn(key);
-					mrK[0].move();
-				}
-				if (onOk || mouse.click()) {
-					int who = checkMrK();
-					talkResetMrK(who);
-				}
-				if (isTriggered()) goNext();
-			}
+			doMove(scene.how, mouse);
 			break;
 		case SCENE_ACTION_EXIBIT:
 			doExibit(scene.how, scene.who, mouse);
@@ -326,6 +312,24 @@ private:
 		if (mouse.click() && msg.skip()) {
 			flg++;
 			hasMsg = false;
+		}
+	}
+
+	void doMove(const char how[], Mouse &mouse) {
+		if (isTalking) {
+			int who = checkMrK();
+			talkMrK(who, how, mouse);
+		}
+		else {
+			if (key != -1) {
+				mrK[0].turn(key);
+				mrK[0].move();
+			}
+			if (onOk || mouse.click()) {
+				int who = checkMrK();
+				talkResetMrK(who);
+			}
+			if (isTriggered()) goNext();
 		}
 	}
 
