@@ -23,6 +23,7 @@ public:
 	int flg = 0;		// シナリオ管理用フラグ
 	MrK mrK[4];
 	MrK deer;
+	MrK card;
 	Message msg;
 
 	Scenario() {
@@ -32,12 +33,14 @@ public:
 		mrK[0].setExpand(SPRITE_EXPAND_RATE, 72, 85);
 		mrK[0].setSerialImages(16, "graph/move_test", 1);
 		mrK[1].set(320, 80, "graph/sprite12.png", 1);
-		mrK[2].set(220, 210, "graph/sprite13.png", 1);
+		mrK[2].set(200, 230, "graph/sprite13.png", 1);
 		mrK[3].set(500, 260, "graph/sprite14.png", 1);
 		mrK[1].setSayings(sayings1);
 		mrK[2].setSayings(sayings2);
 		mrK[3].setSayings(sayings3);
-		deer.set(270, 200, "graph/sprite15.png", 0);
+		card.setSayings(sayingsCard);
+		deer.set(300, 160, "graph/sprite15.png", 0);
+		card.set(230, 160, "graph/sprite16.png", 0);
 		initialize();
 		msg.initialize();
 	}
@@ -63,6 +66,7 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"10" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_CARD,		"exibit_nowait" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"exibit" },
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
@@ -190,6 +194,10 @@ private:
 		{ "40",		SCENE_WHO_GREEN,	"さぁ教えてくれ。" },
 		{ "999",	-1,					"" }
 	};
+	struct Saying sayingsCard[2] = {
+		{ "20",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
+		{ "999",	-1,					"" }
+	};
 
 public:
 
@@ -202,6 +210,7 @@ public:
 		mrK[2].exhibit();
 		mrK[3].exhibit();
 		deer.hide();
+		card.hide();
 		imgFront = "";
 		onOk = 0;
 		isTalking = false;
@@ -210,8 +219,9 @@ public:
 	int show(Mouse& mouse, Music& music) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
-		drawMrKs();
 		deer.draw();
+		card.draw(eqX);
+		drawMrKs();
 		mrK[0].stop();
 		showGraph();
 
@@ -511,19 +521,34 @@ private:
 				return i;
 			}
 		}
+		if (abs(card.y - mrK[0].y) < 45 && abs(card.x - mrK[0].x) < 45) {
+			return SCENE_WHO_CARD;
+		}
 		return 0;
 	}
 
 	void talkResetMrK(int who) {
 		if (who) {
 			isTalking = true;
-			mrK[who].talkReset();
+			if (who == SCENE_WHO_CARD) {
+				card.talkReset();
+			}
+			else {
+				mrK[who].talkReset();
+			}
 		}
 	}
 
 	void talkMrK(int who, const char key[], Mouse &mouse) {
 		if (who) {
-			Saying saying = mrK[who].talk(key);
+			MrK *obj;
+			if (who == SCENE_WHO_CARD) {
+				obj = &card;
+			}
+			else {
+				obj = &mrK[who];
+			}
+			Saying saying = obj->talk(key);
 			if (strcmp(saying.say, "") == 0 || saying.who == -1) {
 				isTalking = false;
 				msg.set("", SCENE_WHO_DESC, false);
@@ -534,7 +559,7 @@ private:
 				hasMsg = true;
 			}
 			if ((onOk || mouse.click()) && msg.skip()) {
-				mrK[who].talkNext();
+				obj->talkNext();
 				hasMsg = false;
 			}
 		}

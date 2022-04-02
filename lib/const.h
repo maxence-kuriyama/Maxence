@@ -31,6 +31,7 @@
 #define SCENE_WHO_RED		3
 #define SCENE_WHO_GREEN		4
 #define SCENE_WHO_DEER		5
+#define SCENE_WHO_CARD		6
 #define SCENE_WHO_PLAYER	-1
 
 #define MRK_TRIGGER_FIRED		1
