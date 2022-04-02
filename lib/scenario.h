@@ -4,6 +4,8 @@
 #include "lib/message.h"
 #include "lib/sprite.h"
 
+#define SPRITE_EXPAND_RATE	0.0006
+
 
 // シナリオ管理用クラス
 // 単体での使用を想定
@@ -26,11 +28,12 @@ public:
 	Scenario() {
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
-		mrK[0].set(160, 120);
+		mrK[0].set(170, 30);
+		mrK[0].setExpand(SPRITE_EXPAND_RATE, 72, 85);
 		mrK[0].setSerialImages(16, "graph/move_test", 1);
-		mrK[1].set(480, 120, "graph/sprite12.png", 1);
-		mrK[2].set(160, 240, "graph/sprite13.png", 1);
-		mrK[3].set(480, 240, "graph/sprite14.png", 1);
+		mrK[1].set(320, 80, "graph/sprite12.png", 1);
+		mrK[2].set(220, 210, "graph/sprite13.png", 1);
+		mrK[3].set(500, 260, "graph/sprite14.png", 1);
 		mrK[1].setSayings(sayings1);
 		mrK[2].setSayings(sayings2);
 		mrK[3].setSayings(sayings3);

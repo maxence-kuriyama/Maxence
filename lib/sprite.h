@@ -30,6 +30,10 @@ private:
 	bool talked = 0;	// âÔòbÇµÇΩâÒêî
 	struct Saying *sayings;
 	int sayCnt = 0;
+	double expandRate = 0.0;
+	bool expandFlg = false;
+	int orgSizeX = 0;
+	int orgSizeY = 0;
 
 public:
 
@@ -40,6 +44,11 @@ public:
 		for (int i = 0; i < 4; ++i) {
 			DeleteGraph(spImg[i]);
 		}
+	}
+
+	void set(int posX, int posY, const char* imgName, double rate, int sizeX, int sizeY, int visibility = 1) {
+		set(posX, posY, imgName, visibility);
+		setExpand(rate, sizeX, sizeY);
 	}
 
 	void set(int posX, int posY, const char* imgName, int visibility = 1) {
@@ -64,6 +73,13 @@ public:
 
 	void setSayings(struct Saying src[]) {
 		sayings = src;
+	}
+
+	void setExpand(double rate, int sizeX, int sizeY) {
+		expandRate = rate;
+		orgSizeX = sizeX;
+		orgSizeY = sizeY;
+		expandFlg = true;
 	}
 
 	void hide() {
@@ -131,21 +147,30 @@ public:
 
 	void draw(int epX = 0, int epY = 0) {
 		if (visible) {
+			int image = 0;
 			if (walking) {
 				walkCnt = (walkCnt + 1) % (4 * loopSpeed);
 				int idx = direction * 4 + (walkCnt / loopSpeed);
-				DrawGraph(x + epX, y + epY, img[idx], TRUE);
+				image = img[idx];
 			}
 			else if (direction != 0) {
 				walkCnt = (walkCnt + 1) % (4 * loopSpeed);
 				int idx = direction * 4;
-				DrawGraph(x + epX, y + epY, img[idx], TRUE);
+				image = img[idx];
 			}
 			else if (special >= 0) {
-				DrawGraph(x + epX, y + epY, spImg[special], TRUE);
+				image = spImg[special];
 			}
 			else {
-				DrawGraph(x + epX, y + epY, img[0], TRUE);
+				image = img[0];
+			}
+			if (!expandFlg) {
+				DrawGraph(x + epX, y + epY, image, TRUE);
+			}
+			else {
+				int dx = orgSizeX * (1.0 + (y - 240.0) * expandRate);
+				int dy = orgSizeY * (1.0 + (y - 240.0) * expandRate);
+				DrawExtendGraph(x + epX, y + epY, x + epX + dx, y + epY + dy, image, TRUE);
 			}
 		}
 		special = -1;
