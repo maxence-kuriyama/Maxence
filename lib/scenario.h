@@ -3,6 +3,7 @@
 #include "lib/music.h"
 #include "lib/message.h"
 #include "lib/sprite.h"
+#include <regex>
 
 #define SPRITE_EXPAND_RATE	0.0006
 
@@ -57,6 +58,7 @@ private:
 	int eqY = 0;		// eq = earthquake
 	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
 	int onOk = 0;		// キーボード入力（Enter or Space）
+	string seName;		// SEのファイル名（デバッグ用）
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
 	struct Scene sceneList[400] = {
@@ -117,7 +119,7 @@ private:
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"馬鹿な、そんな、世界の王に成れるチャンスを逃してしまうなんて、有り得ない。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"……ああ、生きていたこと自体が大きなチャンスだったのか……。" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"……しまったな。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"しまったな。" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
@@ -127,7 +129,7 @@ private:
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_YELLOW,	"sound/bgm08.mp3" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.Kは王になろうとしていたのか……。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"王、そうか！" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Kとは king のことだったのか。" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Kとは King のことだったのか。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.K。僕も見えたよ。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"さぁ、後はこの世界にいるのは僕だけだ。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"だからこの王である僕を殺して世界を救ってくれ。" },
@@ -147,7 +149,7 @@ private:
 		{ -1,					-1,					"" }
 	};
 	struct Saying sayings1[20] = {
-		{ "10",		SCENE_WHO_BLUE,		"貴方は私にとって、利用価値のある存在です。" },
+		{ "10",		SCENE_WHO_BLUE,		"貴方は私にとって利用価値のある存在です。" },
 		{ "10",		SCENE_WHO_BLUE,		"これからも是非お付き合いください。" },
 		{ "10",		SCENE_WHO_YELLOW,	"……（こいつ切るか）。" },
 		{ "20",		SCENE_WHO_BLUE,		"あのカード…" },
@@ -170,7 +172,8 @@ private:
 		{ "10",		SCENE_WHO_RED,		"俺たちはチーム！そして何より正義だ！" },
 		{ "10",		SCENE_WHO_YELLOW,	"あぁ、そうだな。これから先もだ。" },
 		{ "20",		SCENE_WHO_RED,		"何だこのカードはぁ！俺を馬鹿にしているのかぁ！！" },
-		{ "20",		SCENE_WHO_RED,		"ドカッ！（何かを蹴る音）" },
+		{ "20",		SCENE_WHO_RED,		"SE[sound/kick01.m4a]" },
+		{ "20",		SCENE_WHO_RED,		"（何かを蹴る音）" },
 		{ "20",		SCENE_WHO_BLUE,		"！" },
 		{ "20",		SCENE_WHO_YELLOW,	"うわぁ、落ち着けよ。怖いなぁ。" },
 		{ "30",		SCENE_WHO_RED,		"世界が滅びるというのは本当の事のようだな。"},
@@ -194,8 +197,11 @@ private:
 		{ "40",		SCENE_WHO_GREEN,	"さぁ教えてくれ。" },
 		{ "999",	-1,					"" }
 	};
-	struct Saying sayingsCard[2] = {
+	struct Saying sayingsCard[5] = {
 		{ "20",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
+		{ "30",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
+		{ "40",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
+		{ "50",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
 		{ "999",	-1,					"" }
 	};
 
@@ -296,6 +302,7 @@ public:
 		if (debug) {
 			int strColor = strColorDebug;
 
+			DrawFormatString(245, 185, strColor, "seName: %s", seName.c_str());
 			DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
 			DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
 			DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
@@ -548,12 +555,26 @@ private:
 			else {
 				obj = &mrK[who];
 			}
+
+			// 特殊コマンド
 			Saying saying = obj->talk(key);
 			if (strcmp(saying.say, "") == 0 || saying.who == -1) {
 				isTalking = false;
 				msg.set("", SCENE_WHO_DESC, false);
 				return;
 			}
+			else {
+				std::cmatch m;
+				if (regex_match(saying.say, m, std::regex(R"(SE\[(.+)\])"))) {
+					seName = m[1].str();	// デバッグ用
+					obj->playSE(seName);
+					obj->talkNext();
+					hasMsg = false;
+					return;
+				}
+			}
+
+			// メッセージ表示処理
 			if (!hasMsg) {
 				msg.set(saying.say, saying.who);
 				hasMsg = true;
