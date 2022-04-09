@@ -18,7 +18,6 @@ using namespace std;
 #include "lib/scenario.h"
 #include "lib/game.h"
 #include "lib/ending.h"
-#include "lib/movie.h"
 #include "lib/music.h"
 #include "lib/com.h"
 
@@ -47,7 +46,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	Game game;
-	Movie movie;
 	Music bgm;
 	Scenario scenario;
 	Ending ending;
@@ -97,9 +95,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		game.key.update();
 		game.mouse.update();
 
-		// ローディングメッセージ
-		movie.drawLoadMsg();
-
 		// リセットボタンを表示する
 		if (game.reset(bgm) == 1) {
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
@@ -139,6 +134,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			game.debugEndingFlg = 0;
 		}
+		// SetBackgroundColor(0, 128, 128);
 
 
 		// OPアニメーション ClickToStartまで
@@ -226,17 +222,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					game.setOrderMenu();
 				}
 				else if (choice == 1) {
-					movie.loadOnce("movie/battle.ogv");
 					game.mode = "隣の人と";
-				}
-
-				if (movie.isPrepared()){
-					SetBackgroundColor(0, 0, 0);
-					if (movie.play(game.key, game.debugFlg)) {
-						movie.unload();
-						game.initialize();
-					}
-					SetBackgroundColor(0, 128, 128);
+					game.initialize();
 				}
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
@@ -375,7 +362,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// デバッグ情報出力
 		game.debugDump();
-		movie.debugDump(game.debugFlg);
 		bgm.debugDump(game.debugFlg);
 		scenario.debugDump(game.debugFlg);
 		ending.debugDump(game.debugFlg);
