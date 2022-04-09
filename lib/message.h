@@ -3,6 +3,8 @@
 #include "lib/basic.h"
 #include "lib/sprite.h"
 
+#define NEXT_ICON_BLINK_SPEED	0.6
+
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 int MultiByteLength(const char* String);
 
@@ -17,12 +19,20 @@ private:
 	int strColor = GetColor(255, 255, 255);
 	int boxColor = GetColor(250, 250, 150);
 	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int nextIcon = LoadGraph("graph/next.png");
+	int iconCnt = 0;
+	bool iconVisible = false;
+	bool existsNext = false;
 
 public:
 	int who;
 	int cnt = 0;					// 文字描画カウンタ (cnt * cntMlt <= textLen)
 	float cntPerFrame = 15.0 / FPS;	// FPSに依存しないようにする倍率
 	int textLen = 0;				// テキスト長
+
+	~Message() {
+		DeleteGraph(nextIcon);
+	}
 
 	void initialize() {
 		sprite[0].set(30, 380);
@@ -33,19 +43,24 @@ public:
 		sprite[5].set(30, 380, "graph/sprite15.png");
 	}
 
-	void set(string text0, int who0) {
+	void set(string text0, int who0, bool next = true) {
 		text = text0;
 		who = who0;
 		cnt = 0;
 		textLen = MultiByteLength(text0.c_str());
+		existsNext = next;
 	}
 
 	int skip() {
-		if (cnt * cntPerFrame < textLen) {
+		if (isReading()) {
 			cnt = ceil(textLen / cntPerFrame);
 			return 0;
 		}
 		return 1;
+	}
+
+	int isReading() {
+		return (cnt * cntPerFrame < textLen);
 	}
 
 	int draw(int strCol = 0) {
@@ -59,6 +74,14 @@ public:
 		}
 		DrawRoundBox(15, 380, 10, 609, 89, boxColor);
 		DrawMessage(charCnt, 110, 390, 600, GetFontSize(), text.c_str(), strColor, font, boxColor);
+		if (existsNext) {
+			if (isReading()) {
+				drawIcon(true);
+			}
+			else {
+				drawIcon();
+			}
+		}
 
 		sprite[who].draw();
 
@@ -67,6 +90,17 @@ public:
 		}
 
 		return 0;
+	}
+
+	void drawIcon(bool noBlink = false) {
+		iconCnt++;
+		if (iconCnt > NEXT_ICON_BLINK_SPEED * FPS) {
+			iconVisible = (iconVisible ? false : true);
+			iconCnt = 0;
+		}
+		if (noBlink || iconVisible) {
+			DrawExtendGraph(590, 448, 602, 460, nextIcon, TRUE);
+		}
 	}
 };
 
@@ -81,7 +115,7 @@ void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String
 	int DrawWidth;
 	int BoxWidth;
 	int BoxHeight;
-	double rate = 1.2;	//デフォルトのフォントサイズ20に対して、今はフォントサイズ24にするため1.2倍
+	double rate = 1.45;	// 文字ごとの描画幅。デフォルトのフォントサイズは20に対し、今のフォントサイズ24（1.2倍）＋余裕を持たせる
 	int Counter = cnt;
 
 	// 文字列全体のバイト数を取得

@@ -158,6 +158,26 @@ public:
 		return taijin == 1;
 	}
 
+	bool isTitle() {
+		return (flg == 0);
+	}
+
+	bool isBattle() {
+		return (flg == 1);
+	}
+
+	bool isResult() {
+		return (flg == 2);
+	}
+
+	bool isScenario() {
+		return (flg == -6);
+	}
+
+	bool isEnding() {
+		return (flg == -4);
+	}
+
 
 	/*===========================*/
 	//    ƒtƒ‰ƒOŠÖ˜A
@@ -181,7 +201,6 @@ public:
 	void goEnding() {
 		flg = -4;
 	}
-
 
 
 	/*===========================*/

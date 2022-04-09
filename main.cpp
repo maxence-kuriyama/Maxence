@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetOutApplicationLogValidFlag(FALSE);
 	ChangeWindowMode(TRUE);
 	SetAlwaysRunFlag(TRUE);
-	SetMainWindowText("Maxence 0.4.0");
+	SetMainWindowText("Maxence 0.4.1");
 	SetWindowIconID(101);
 	if (DxLib_Init() == -1) {
 		return -1;
@@ -210,8 +210,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				game.flg = 0;
 			}
 		}
-		// ƒ^ƒCƒgƒ‹‰æ–Ê
-		else if (game.flg == 0) {
+		else if (game.isTitle()) {
 			bgm.load("sound/bgm03.mp3");
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].draw();
@@ -253,8 +252,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				}
 			}
 		}
-		// Game Loop
-		else if (game.flg == 1) {
+		else if (game.isBattle()) {
 			// ”Õ–Ê‚Ì•`‰æ
 			//MV1DrawModel(ModelHandle);
 			game.drawBase();
@@ -322,8 +320,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.skipBattle(scenario.flg);
 
 		}
-		// Ÿ”s•\Ž¦
-		else if (game.flg == 2) {
+		else if (game.isResult()) {
 			// ”Õ–Ê‚Ì•`‰æ
 			//MV1DrawModel(ModelHandle);
 			game.drawBase();
@@ -354,8 +351,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			game.camera.zoom(game.mouse.wheel);
 		}
-		// Ending
-		else if (game.flg == -4) {
+		else if (game.isEnding()) {
 			bgm.load("sound/bgm09.mp3");
 			game.drawBase();
 			game.drawGlobalState();
@@ -366,7 +362,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.logo.draw();
 			ending.show(bgm, game.fps);
 		}
-		else if (game.flg == -6) {
+		else if (game.isScenario()) {
 			scenario.getKey(game.key);
 			if (!bgm.drawLoadMsg() && scenario.show(game.mouse, bgm)) {
 				game.initialize();
