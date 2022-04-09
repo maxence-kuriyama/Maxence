@@ -29,6 +29,7 @@ private:
 	int frColorNextField = Red;
 	int frColorCurrentCoord = Black;
 	int strColorDebug = Blue;
+	int bkGraph = LoadGraph("graph/game_background.png");
 	int Font0 = CreateFontToHandle("HGã≥â»èëëÃ", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
@@ -265,7 +266,10 @@ public:
 	//    î’ñ ï\é¶ä÷òA
 	/*===========================*/
 	void drawBase() {
+		DrawExtendGraph(-50, 40, 690, 420, bkGraph, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
 		DrawBox(160, 80, 460, 380, bkColorBase, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 256);
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
 				DrawBox(160 + 100 * i, 80 + 100 * j, 160 + 100 * (i + 1), 80 + 100 * (j + 1), frColorBase, FALSE);

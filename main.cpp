@@ -95,14 +95,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		game.key.update();
 		game.mouse.update();
 
-		// リセットボタンを表示する
+		// リセットボタン押下処理
 		if (game.reset(bgm) == 1) {
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].initialize();
 			}
 			scenario.initialize();
+			SetBackgroundColor(0, 128, 128);
 		}
-		game.drawLogo();
 
 		// 設定を切り替える
 		game.toggleByKey(bgm);
@@ -134,7 +134,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			game.debugEndingFlg = 0;
 		}
-		// SetBackgroundColor(0, 128, 128);
 
 
 		// OPアニメーション ClickToStartまで
@@ -242,6 +241,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (game.isBattle()) {
 			// 盤面の描画
 			//MV1DrawModel(ModelHandle);
+			SetBackgroundColor(0, 0, 0);	//背景色
 			game.drawBase();
 			game.drawGlobalState();
 			game.drawHistLast();
@@ -310,6 +310,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (game.isResult()) {
 			// 盤面の描画
 			//MV1DrawModel(ModelHandle);
+			SetBackgroundColor(0, 0, 0);	//背景色
 			game.drawBase();
 			game.drawGlobalState();
 			game.drawHistLast();
