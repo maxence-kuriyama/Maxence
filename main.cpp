@@ -254,6 +254,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					if (game.isVsCOM()) {
 						com.setWait();
 					}
+					game.updateCommentInBattle();
 				}
 			}
 			game.drawLocalState();

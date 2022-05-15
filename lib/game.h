@@ -553,6 +553,10 @@ public:
 		return false;
 	}
 
+	void updateCommentInBattle() {
+		comment.forceUpdate("play", 0.40);
+	}
+
 
 	/*===========================*/
 	//    ”Õ–Êî•ñ

@@ -85,7 +85,7 @@ public:
 					goNext();
 				}
 				else {
-					if (rn() < 0.10) goNext();
+					if (rn() < 0.30) goNext();
 				}
 				textSeq++;
 			}
@@ -97,6 +97,19 @@ public:
 			cnt = 0;
 		}
 		cnt++;
+	}
+
+	void forceUpdate(string type, double prob) {
+		if (rn() > prob) return;
+		for (int i = 0; i <= 100; i++) {
+			textNum = rand() % texts.size;
+			if (type == "play") {
+				if (texts.isTypeOf(textNum, "play")) break;
+			}
+		}
+		textSeq = 0;
+		cnt = 0;
+		move();
 	}
 
 	void goNext() {
