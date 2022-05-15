@@ -11,6 +11,7 @@ void DrawObtainsString2(int x, int y, int RightX, int AddY, const char* String, 
 string UTF8toSjis(string src);
 
 const string FILE_JSON_SAYINGS("./data/sayings.json");
+const float REPLACE_TEXT_SECOND(3.0);
 
 
 // テキストを保持するオブジェクト
@@ -19,6 +20,7 @@ class Texts {
 public:
 	nlohmann::json data;
 	int size = 0;
+	string types = "";
 
 	// テキストファイルの読み込み
 	void initialize() {
@@ -30,8 +32,16 @@ public:
 
 	string get(int num) {
 		string str_utf8 = data[num]["msg"].get<string>();
+		types = data[num]["type"].dump();
 		return UTF8toSjis(str_utf8);
 		return string("このメッセージは表示されないはずだよ");
+	}
+
+	bool isTypeOf(int num, string type) {
+		for (const auto& elem : data[num]["type"]) {
+			if (elem.get<string>() == type) return true;
+		}
+		return false;
 	}
 
 };
@@ -43,6 +53,8 @@ class Comment {
 private:
 	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 
+	double rn() { return (rand() % 10000) / 10000.0; }
+
 public:
 	Texts texts;
 	int x = rand() % 200;
@@ -50,7 +62,6 @@ public:
 	int textNum = 0;	// テキストの通し番号
 	int textSeq = 0;	// テキストがいくつ連続したかのカウンタ
 	int cnt = 0;		// テキスト差し替え用カウンタ
-	int debugFlg = 0;
 
 	void initialize() {
 		texts.initialize();
@@ -67,28 +78,42 @@ public:
 
 	void update() {
 		// テキストの差し替え
-		if (cnt > 200) {
+		if (cnt > REPLACE_TEXT_SECOND * FPS) {
 			//ある程度連番が続くように設定
-			if (textNum < texts.size - 1 && (rand() % 10000) / 10000.0 < pow(0.95, pow(2.0, textSeq))) {
-				textNum++;
+			if (textNum < texts.size - 1 && rn() < pow(0.90, pow(2.0, textSeq))) {
+				if (texts.isTypeOf(textNum + 1, "seq")) {
+					goNext();
+				}
+				else {
+					if (rn() < 0.10) goNext();
+				}
 				textSeq++;
 			}
 			else {
 				textNum = rand() % texts.size;
 				textSeq = 0;
+				move();
 			}
 			cnt = 0;
-			x = rand() % 200;
-			y = rand() % 400;
 		}
 		cnt++;
+	}
+
+	void goNext() {
+		textNum++;
+		move();
+	}
+
+	void move() {
+		x = rand() % 200;
+		y = rand() % 400;
 	}
 
 	/*===========================*/
 	//    デバッグ情報
 	/*===========================*/
 	void debugDump(int strColor) {
-		//DrawFormatString(245, 25, strColor, "maxSize: %d", texts.maxSize);
+		DrawFormatString(245, 25, strColor, "types: %s", texts.types);
 		DrawFormatString(245, 45, strColor, "size: %d", texts.size);
 		DrawFormatString(245, 65, strColor, "commX: %d", x);
 		DrawFormatString(245, 85, strColor, "commY: %d", y);
