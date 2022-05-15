@@ -28,13 +28,9 @@ public:
 		size = data.size();
 	}
 
-	string get(int id) {
-		for (const auto& obj : data) {
-			if (obj["id"] == to_string(id + 1)) {
-				string str_utf8 = obj["msg"].get<string>();
-				return UTF8toSjis(str_utf8);
-			}
-		}
+	string get(int num) {
+		string str_utf8 = data[num]["msg"].get<string>();
+		return UTF8toSjis(str_utf8);
 		return string("このメッセージは表示されないはずだよ");
 	}
 
@@ -51,7 +47,7 @@ public:
 	Texts texts;
 	int x = rand() % 200;
 	int y = rand() % 400;
-	int textId = 0;		// テキストのインデックス
+	int textNum = 0;	// テキストの通し番号
 	int textSeq = 0;	// テキストがいくつ連続したかのカウンタ
 	int cnt = 0;		// テキスト差し替え用カウンタ
 	int debugFlg = 0;
@@ -65,7 +61,7 @@ public:
 	}
 
 	void draw(int strColor) {
-		string text = texts.get(textId);
+		string text = texts.get(textNum);
 		DrawObtainsString2(x + 20, y + 10, 560, GetFontSize(), text.c_str(), strColor, font, GetColor(250, 250, 150));
 	}
 
@@ -73,12 +69,12 @@ public:
 		// テキストの差し替え
 		if (cnt > 200) {
 			//ある程度連番が続くように設定
-			if (textId < texts.size && (rand() % 10000) / 10000.0 < pow(0.95, pow(2.0, textSeq))) {
-				textId++;
+			if (textNum < texts.size - 1 && (rand() % 10000) / 10000.0 < pow(0.95, pow(2.0, textSeq))) {
+				textNum++;
 				textSeq++;
 			}
 			else {
-				textId = rand() % texts.size;
+				textNum = rand() % texts.size;
 				textSeq = 0;
 			}
 			cnt = 0;
@@ -96,7 +92,7 @@ public:
 		DrawFormatString(245, 45, strColor, "size: %d", texts.size);
 		DrawFormatString(245, 65, strColor, "commX: %d", x);
 		DrawFormatString(245, 85, strColor, "commY: %d", y);
-		DrawFormatString(245, 105, strColor, "textId: %d", textId);
+		DrawFormatString(245, 105, strColor, "textNum: %d", textNum);
 		DrawFormatString(245, 125, strColor, "textSeq: %d", textSeq);
 		DrawFormatString(245, 145, strColor, "commCnt: %d", cnt);
 	}
