@@ -35,6 +35,8 @@ private:
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
 	int stone2_t = LoadGraph("graph/stone2.png");
+	int player1 = 0;			// プレイヤー画像のハンドラ
+	int player2 = 0;
 
 	// 同期処理関連
 	long start = clock();	// 同期処理開始時刻
@@ -105,11 +107,11 @@ public:
 			}
 		}
 		// game初期化
-		initialize(-3);
+		initialize();
+		flg = -3;		// デモ画面へ
 	}
 
-	void initialize(int f = 1) {
-		flg = f;
+	void initialize() {
 		cnt = 0;
 		drawCnt = 0;
 		nextField = -1;
@@ -187,8 +189,45 @@ public:
 		flg = 0;
 	}
 
-	void goBattle() {
+	void goBattle(int player1 = BATTLE_PLAYER_NONE, int player2 = BATTLE_PLAYER_NONE) {
 		flg = 1;
+		setPlayersGraph(player1, player2);
+	}
+
+	void setPlayersGraph(int pl1, int pl2) {
+		if (pl1 != BATTLE_PLAYER_NONE) DeleteGraph(player1);
+		switch (pl1)
+		{
+		case BATTLE_PLAYER_YELLOW:
+			player1 = LoadGraph("graph/player_yellow.png");
+			break;
+		case BATTLE_PLAYER_PLAYER:
+			player1 = LoadGraph("graph/player_player.png");
+			break;
+		case BATTLE_PLAYER_NONE:
+		default:
+			break;
+		}
+
+		if (pl2 != BATTLE_PLAYER_NONE) DeleteGraph(player2);
+		switch (pl2)
+		{
+		case BATTLE_PLAYER_YELLOW:
+			player2 = LoadGraph("graph/enemy_yellow.png");
+			break;
+		case BATTLE_PLAYER_RED:
+			player2 = LoadGraph("graph/enemy_red.png");
+			break;
+		case BATTLE_PLAYER_BLUE:
+			player2 = LoadGraph("graph/enemy_blue.png");
+			break;
+		case BATTLE_PLAYER_GREEN:
+			player2 = LoadGraph("graph/enemy_green.png");
+			break;
+		case BATTLE_PLAYER_NONE:
+		default:
+			break;
+		}
 	}
 
 	void goResult() {
@@ -224,6 +263,8 @@ public:
 				taijin = 0;
 				mode = "";
 				bgm.unloadAll();
+				DeleteGraph(player1);
+				DeleteGraph(player2);
 				return 1;
 			}
 		}
@@ -360,6 +401,28 @@ public:
 		}
 		// コメント差し替え
 		comment.update();
+	}
+
+	void drawPlayers(int side = 0) {
+		// sideが指定されていなければ、cntとtebanから計算する
+		if (side == 0) {
+			side = 1 - 2 * (cnt % 2);
+			if (isVsCOM()) {
+				side = side * (1 - 2 * (teban % 2));
+			}
+		}
+		if (side == 1) {
+			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
+			SetDrawBright(155, 155, 155);
+			DrawExtendGraph(440, 100, 640, 340, player2, TRUE);
+			SetDrawBright(255, 255, 255);
+		}
+		else if (side == -1) {
+			SetDrawBright(155, 155, 155);
+			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
+			SetDrawBright(255, 255, 255);
+			DrawExtendGraph(440, 100, 640, 340, player2, TRUE);
+		}
 	}
 
 	void drawWinner(int vict) {

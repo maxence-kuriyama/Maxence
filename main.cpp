@@ -223,6 +223,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				else if (choice == 1) {
 					game.mode = "隣の人と";
 					game.initialize();
+					game.goBattle(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
 				}
 			}
 			//タイトル画面その２（「ぼっちで」選択時）
@@ -257,6 +258,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			game.drawLocalState();
 			game.drawCurrentCoord();
+			game.drawPlayers();
 
 			// メッセージの描画
 			game.drawBattleMessage();
@@ -322,6 +324,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.again.display(game.mouse, game.option.strColor);
 			if (game.again.isClicked(game.mouse) || game.key.onReturn()){
 				game.initialize();
+				game.goBattle();
 			}
 
 			// 動作の取り消し
@@ -338,6 +341,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				game.mouse.set();
 			}
 			game.camera.zoom(game.mouse.wheel);
+
+			// TODO シナリオの場合の終了 + 遷移処理
 		}
 		else if (game.isEnding()) {
 			bgm.load("sound/bgm09.mp3");
@@ -354,6 +359,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			scenario.getKey(game.key);
 			if (!bgm.drawLoadMsg() && scenario.show(game.mouse, bgm)) {
 				game.initialize();
+				game.goBattle(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
 			}
 		}
 
