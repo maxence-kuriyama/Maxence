@@ -608,13 +608,7 @@ public:
 			DrawFormatString(125, 225, strColor, "last[3]: %d", hist.last[3]);
 			DrawFormatString(125, 245, strColor, "last[4]: %d", hist.last[4]);
 			// Comment
-			DrawFormatString(245, 25, strColor, "maxSize: %d", comment.texts.maxSize);
-			DrawFormatString(245, 45, strColor, "size: %d", comment.texts.size);
-			DrawFormatString(245, 65, strColor, "commX: %d", comment.x);
-			DrawFormatString(245, 85, strColor, "commY: %d", comment.y);
-			DrawFormatString(245, 105, strColor, "textId: %d", comment.textId);
-			DrawFormatString(245, 125, strColor, "textSeq: %d", comment.textSeq);
-			DrawFormatString(245, 145, strColor, "commCnt: %d", comment.cnt);
+			comment.debugDump(strColor);
 			// Menu
 			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
 			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);
