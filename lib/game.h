@@ -35,7 +35,9 @@ private:
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
 	int stone2_t = LoadGraph("graph/stone2.png");
-	int player1 = 0;			// プレイヤー画像のハンドラ
+
+	// プレイヤー画像のハンドラ
+	int player1 = 0;
 	int player2 = 0;
 
 	// 同期処理関連
@@ -64,6 +66,7 @@ public:
 	int localX = 1;
 	int localY = 1;			//キーボード操作時の座標
 
+	int playCnt = 0;		// 1ターンに費やしたカウント
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
 	Option option;
@@ -132,6 +135,7 @@ public:
 	void sync() {
 		// 実効fps計測
 		fpsCnt++;
+		playCnt = (playCnt + 1) % 10000000;
 		if (clock() - fpsStart > 1000.0) {
 			fps = fpsCnt;
 			fpsCnt = 0;
@@ -400,7 +404,7 @@ public:
 			comment.draw(option.strColor);
 		}
 		// コメント差し替え
-		comment.update();
+		comment.update(playCnt);
 	}
 
 	void drawPlayers(int side = 0) {
@@ -498,12 +502,14 @@ public:
 		moveCoordByKey();
 		if (keyboardFlg) {
 			if (key.onCheck()) {
+				playCnt = 0;
 				return true;
 			}
 		}
 		else {
 			getMouseCoord();
 			if (mouse.clickRight()) {
+				playCnt = 0;
 				return true;
 			}
 		}
@@ -554,7 +560,7 @@ public:
 	}
 
 	void updateCommentInBattle() {
-		comment.forceUpdate("play", 0.40);
+		comment.forceUpdate(COMMENT_CHANGE_TYPE_PLAY_TURN, 0.40);
 	}
 
 
@@ -599,6 +605,7 @@ public:
 			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
 			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 			DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
+			DrawFormatString(5, 165, strColor, "playCnt: %d", playCnt);
 			// Option
 			DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
 			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);

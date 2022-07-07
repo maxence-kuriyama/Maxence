@@ -34,7 +34,6 @@ public:
 		string str_utf8 = data[num]["msg"].get<string>();
 		types = data[num]["type"].dump();
 		return UTF8toSjis(str_utf8);
-		return string("このメッセージは表示されないはずだよ");
 	}
 
 	bool isTypeOf(int num, string type) {
@@ -76,12 +75,15 @@ public:
 		DrawObtainsString2(x + 20, y + 10, 560, GetFontSize(), text.c_str(), strColor, font, GetColor(250, 250, 150));
 	}
 
-	void update() {
+	void update(int playCnt = 0) {
 		// テキストの差し替え
 		if (cnt > REPLACE_TEXT_SECOND * FPS) {
 			//ある程度連番が続くように設定
 			if (textNum < texts.size - 1 && rn() < pow(0.90, pow(2.0, textSeq))) {
-				if (texts.isTypeOf(textNum + 1, "seq")) {
+				if (playCnt > COMMENT_CHANGE_TYPE_LONG_THINKING_TIME && forceUpdate(COMMENT_CHANGE_TYPE_LONG_THINKING, 0.70) {
+					// 長考と判断 + 何もしない
+				}
+				else if (texts.isTypeOf(textNum + 1, COMMENT_CHANGE_TYPE_SEQUENTIAL)) {
 					goNext();
 				}
 				else {
@@ -99,17 +101,16 @@ public:
 		cnt++;
 	}
 
-	void forceUpdate(string type, double prob) {
-		if (rn() > prob) return;
+	bool forceUpdate(string type, double prob) {
+		if (rn() > prob) return false;
 		for (int i = 0; i <= 100; i++) {
 			textNum = rand() % texts.size;
-			if (type == "play") {
-				if (texts.isTypeOf(textNum, "play")) break;
-			}
+			if (texts.isTypeOf(textNum, type)) break;
 		}
 		textSeq = 0;
 		cnt = 0;
 		move();
+		return true;
 	}
 
 	void goNext() {
