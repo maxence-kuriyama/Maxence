@@ -7,6 +7,10 @@
 #define TEXT1_Y		300
 #define TEXT2_X		370
 #define TEXT2_Y		300
+#define TEXT_SAVE_X			200
+#define TEXT_SAVE_Y			440
+#define TEXT_RESET_X		320
+#define TEXT_RESET_Y		440
 
 #define RWD_VICT	1.0
 #define RWD_DOM		1.0

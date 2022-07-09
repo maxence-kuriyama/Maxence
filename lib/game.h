@@ -50,6 +50,8 @@ private:
 	Button btnVsHuman;
 	Button btnSenko;
 	Button btnKoko;
+	Button btnSave;
+	Button btnReset;
 	Logo logo;
 
 public:
@@ -86,8 +88,6 @@ public:
 	Anime cutin;
 	Comment comment;
 	Button btnAgain;
-	Button btnSave;
-	Button btnReset;
 
 	Game() {
 		// ボタン初期化
@@ -96,6 +96,8 @@ public:
 		btnSenko.initialize(TEXT1_X, TEXT1_Y, "先攻");
 		btnKoko.initialize(TEXT2_X, TEXT2_Y, "後攻");
 		btnAgain.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
+		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
+		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
 		// カットイン画像初期化
 		int Cutin1 = LoadGraph("graph/cutin1.png");
 		int Cutin10 = LoadGraph("graph/cutin10.png");
@@ -112,11 +114,13 @@ public:
 				child[i][j].stone2_t = stone2_t;
 			}
 		}
-		// game初期化
+		// 試合情報の初期化
 		initialize();
+		menu.set(btnLonely, btnVsHuman);
 		flg = -3;		// デモ画面へ
 	}
 
+	// 試合情報の初期化（goBattleと統合してもいいかも）
 	void initialize() {
 		cnt = 0;
 		drawCnt = 0;
@@ -131,7 +135,6 @@ public:
 		hist.initialize();
 		mouse.set();
 		key.initWait();
-		menu.set(btnLonely, btnVsHuman);
 	}
 
 	// 同期処理
@@ -199,6 +202,7 @@ public:
 	void goBattle(int player1 = BATTLE_PLAYER_NONE, int player2 = BATTLE_PLAYER_NONE) {
 		flg = 1;
 		setPlayersGraph(player1, player2);
+		menu.set(btnSave, btnReset);
 	}
 
 	void setPlayersGraph(int pl1, int pl2) {
@@ -258,20 +262,15 @@ public:
 		if (isBattle()) logo.update(); // 動く
 	}
 
-	int reset(Music& bgm) {
-		if (flg > 0) {
-			if (logo.isClicked(mouse)) {
-				mouse.set();
-				goTitle();
-				taijin = 0;
-				mode = "";
-				bgm.unloadAll();
-				DeleteGraph(player1);
-				DeleteGraph(player2);
-				return 1;
-			}
-		}
-		return 0;
+	void reset(Music& bgm) {
+		mouse.set();
+		goTitle();
+		taijin = 0;
+		mode = "";
+		bgm.unloadAll();
+		DeleteGraph(player1);
+		DeleteGraph(player2);
+		menu.set(btnLonely, btnVsHuman);
 	}
 
 

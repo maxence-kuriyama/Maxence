@@ -95,15 +95,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		game.key.update();
 		game.mouse.update();
 
-		// リセットボタン押下処理
-		if (game.reset(bgm) == 1) {
-			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
-				tama[i].initialize();
-			}
-			scenario.initialize();
-			SetBackgroundColor(0, 128, 128);
-		}
-
 		// 設定を切り替える
 		game.toggleByKey(bgm);
 		if (game.option.soundFlg == 1) {
@@ -289,6 +280,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 動作の取り消し
 			if (game.key.onBack() && game.goBackHist()) {
 				com.setWait();
+			}
+
+			// セーブ or リセット
+			int choice = game.menuChoose();
+			if (choice == 0 || choice == 1) {
+				game.reset(bgm);
+				for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
+					tama[i].initialize();
+				}
+				scenario.initialize();
+				SetBackgroundColor(0, 128, 128);
 			}
 
 			// カメラ操作
