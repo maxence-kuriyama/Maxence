@@ -114,12 +114,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// マウス操作か否かを判定する
-		if (game.mouse.isUsed()) {
-			game.keyboardFlg = 0;
-		}
-		if (game.key.isUsed()) {
-			game.keyboardFlg = 1;
-		}
+		game.toggleMouseOrKeyboard();
 
 		// エンディングのデバッグ
 		if (game.debugEndingFlg) {
@@ -260,6 +255,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawLocalState();
 			game.drawCurrentCoord();
 			game.drawPlayers();
+			game.drawLogo();
 
 			// メッセージの描画
 			game.drawBattleMessage();
@@ -319,11 +315,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawHistLast();
 			game.drawNextField();
 			game.drawLocalState();
+			game.drawLogo();
 
 			// メッセージの描画
 			game.drawWinner(vict);
-			game.again.display(game.mouse, game.option.strColor);
-			if (game.again.isClicked(game.mouse) || game.key.onReturn()){
+			game.btnAgain.display(game.mouse, game.option.strColor);
+			if (game.btnAgain.isClicked(game.mouse) || game.key.onReturn()){
 				game.initialize();
 				game.goBattle();
 			}
@@ -347,13 +344,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (game.isEnding()) {
 			bgm.load("sound/bgm09.mp3");
+			SetBackgroundColor(0, 0, 0);	//背景色
 			game.drawBase();
 			game.drawGlobalState();
 			game.drawHistLast();
 			game.drawNextField();
 			game.drawLocalState();
 			game.drawCurrentCoord();
-			game.logo.draw();
+			game.drawLogo();
 			ending.show(bgm, game.fps);
 		}
 		else if (game.isScenario()) {

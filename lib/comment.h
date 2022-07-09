@@ -80,7 +80,7 @@ public:
 		if (cnt > REPLACE_TEXT_SECOND * FPS) {
 			//Ç†ÇÈíˆìxòAî‘Ç™ë±Ç≠ÇÊÇ§Ç…ê›íË
 			if (textNum < texts.size - 1 && rn() < pow(0.90, pow(2.0, textSeq))) {
-				if (playCnt > COMMENT_CHANGE_TYPE_LONG_THINKING_TIME && forceUpdate(COMMENT_CHANGE_TYPE_LONG_THINKING, 0.70) {
+				if (playCnt > COMMENT_CHANGE_TYPE_LONG_THINKING_TIME && forceUpdate(COMMENT_CHANGE_TYPE_LONG_THINKING, 0.70)) {
 					// í∑çlÇ∆îªíf + âΩÇ‡ÇµÇ»Ç¢
 				}
 				else if (texts.isTypeOf(textNum + 1, COMMENT_CHANGE_TYPE_SEQUENTIAL)) {

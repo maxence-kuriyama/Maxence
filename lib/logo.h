@@ -55,9 +55,9 @@ public:
 	}
 
 	void draw(Mouse& mouse) {
-		if (mouse.onButton(titleX, titleY - 5, titleX + 185, titleY + 65)) {
-			DrawBox(titleX, titleY - 5, titleX + 185, titleY + 65, GetColor(20, 150, 150), TRUE);
-		}
+		//if (mouse.onButton(titleX, titleY - 5, titleX + 185, titleY + 65)) {
+		//	DrawBox(titleX, titleY - 5, titleX + 185, titleY + 65, GetColor(20, 150, 150), TRUE);
+		//}
 		DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, image, TRUE);
 	}
 

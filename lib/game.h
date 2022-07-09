@@ -45,6 +45,13 @@ private:
 	long fpsStart = clock();	// FPS計測開始時刻
 	int fpsCnt = 0;			// FPS計測用
 
+	Menu menu;
+	Button btnLonely;
+	Button btnVsHuman;
+	Button btnSenko;
+	Button btnKoko;
+	Logo logo;
+
 public:
 	int flg = -3;	// -3,..,-1: Demo
 					// 0: Menu, 1: Game, 2: Result
@@ -76,23 +83,19 @@ public:
 	Camera camera;
 	Mouse mouse;
 	Key key;
-	Logo logo;
 	Anime cutin;
 	Comment comment;
-	Menu menu;
-	Button lonely;
-	Button vsHuman;
-	Button senko;
-	Button koko;
-	Button again;
+	Button btnAgain;
+	Button btnSave;
+	Button btnReset;
 
 	Game() {
 		// ボタン初期化
-		lonely.initialize(TEXT1_X, TEXT1_Y, "ぼっちで");
-		vsHuman.initialize(TEXT2_X, TEXT2_Y, "隣の人と");
-		senko.initialize(TEXT1_X, TEXT1_Y, "先攻");
-		koko.initialize(TEXT2_X, TEXT2_Y, "後攻");
-		again.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
+		btnLonely.initialize(TEXT1_X, TEXT1_Y, "ぼっちで");
+		btnVsHuman.initialize(TEXT2_X, TEXT2_Y, "隣の人と");
+		btnSenko.initialize(TEXT1_X, TEXT1_Y, "先攻");
+		btnKoko.initialize(TEXT2_X, TEXT2_Y, "後攻");
+		btnAgain.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
 		// カットイン画像初期化
 		int Cutin1 = LoadGraph("graph/cutin1.png");
 		int Cutin10 = LoadGraph("graph/cutin10.png");
@@ -128,7 +131,7 @@ public:
 		hist.initialize();
 		mouse.set();
 		key.initWait();
-		menu.set(lonely, vsHuman);
+		menu.set(btnLonely, btnVsHuman);
 	}
 
 	// 同期処理
@@ -251,12 +254,8 @@ public:
 	//    リセットボタン
 	/*===========================*/
 	void drawLogo() {
-		if (flg > 0) {
-			logo.draw(mouse);
-			if (flg == 1) {
-				logo.update();
-			}
-		}
+		logo.draw(mouse);
+		if (isBattle()) logo.update(); // 動く
 	}
 
 	int reset(Music& bgm) {
@@ -284,7 +283,7 @@ public:
 	}
 
 	void setOrderMenu() {
-		menu.set(senko, koko);
+		menu.set(btnSenko, btnKoko);
 	}
 
 
@@ -304,6 +303,11 @@ public:
 		if (debugFlg && isVsCOM()) {
 			key.skipBattle(flg, sceneFlg);
 		}
+	}
+
+	void toggleMouseOrKeyboard() {
+		if (mouse.isUsed()) keyboardFlg = 0;
+		if (key.isUsed()) keyboardFlg = 1;
 	}
 
 
