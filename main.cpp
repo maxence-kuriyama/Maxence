@@ -123,7 +123,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		// OPアニメーション ClickToStartまで
-		if (game.flg == -3){
+		if (game.flg == GAME_FLAG_DEMO_FIRST){
 			SetBackgroundColor(0, 0, 0);	//背景色
 			if (logoX <= 120.0 ) {
 				DrawExtendGraph(270, 170, 358, 260, MLogo, TRUE);
@@ -146,12 +146,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			logoX += 2.0;
 
 			if (logoX > 480.0 || game.mouse.click() || game.key.onReturn()) {
-				game.flg = -2;
+				game.flg = GAME_FLAG_DEMO_SECOND;
 				logoX = M_PI_2;
 			}
 		}
 		// OPアニメーション ClickToStart点滅
-		else if (game.flg == -2) {
+		else if (game.flg == GAME_FLAG_DEMO_SECOND) {
 			DrawExtendGraph(170, 170, 258, 260, MLogo, TRUE);
 			DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
 
@@ -161,13 +161,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			SetDrawBright(255, 255, 255);
 
 			if (game.mouse.click() || game.key.onReturn()) {
-				game.flg = -1;
+				game.flg = GAME_FLAG_DEMO_THIRD;
 				SetBackgroundColor(0, 128, 128);	//背景色
 				SetDrawBright(255, 255, 255);
 			}
 		}
 		// OPアニメーション メインロゴ
-		else if (game.flg == -1) {
+		else if (game.flg == GAME_FLAG_DEMO_THIRD) {
 			if (logoX <= 37.5) {
 				DrawExtendGraph(160, 170, 490, 260, Logo0, TRUE);
 			}
@@ -188,7 +188,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			if(logoX < 1000.0) logoX += 1.0;
 			if (logoX > 120 || game.mouse.click() || game.key.onReturn()) {
-				game.flg = 0;
+				game.goTitle();
 			}
 		}
 		else if (game.isTitle()) {

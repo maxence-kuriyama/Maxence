@@ -56,11 +56,8 @@ private:
 	Board board;
 
 public:
-	int flg = -3;	// -3,..,-1: Demo
-					// 0: Menu, 1: Game, 2: Result
-					// -4: Ending
-					// -6: Story
-	int taijin = 0;		// 0: vsHuman, 1: vsCOM
+	int flg = GAME_FLAG_DEMO_FIRST;
+	int taijin = GAME_VS_HUMAN;
 	int teban = 0;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
@@ -108,7 +105,7 @@ public:
 		// 試合情報の初期化
 		initialize();
 		menu.set(btnLonely, btnVsHuman);
-		flg = -3;		// デモ画面へ
+		flg = GAME_FLAG_DEMO_FIRST;
 	}
 
 	// 試合情報の初期化（goBattleと統合してもいいかも）
@@ -149,31 +146,31 @@ public:
 	}
 
 	bool isVsHuman() {
-		return taijin == 0;
+		return taijin == GAME_VS_HUMAN;
 	}
 
 	bool isVsCOM() {
-		return taijin == 1;
+		return taijin == GAME_VS_COM;
 	}
 
 	bool isTitle() {
-		return (flg == 0);
+		return (flg == GAME_FLAG_TITLE);
 	}
 
 	bool isBattle() {
-		return (flg == 1);
+		return (flg == GAME_FLAG_BATTLE);
 	}
 
 	bool isResult() {
-		return (flg == 2);
+		return (flg == GAME_FLAG_RESULT);
 	}
 
 	bool isScenario() {
-		return (flg == -6);
+		return (flg == GAME_FLAG_SCENARIO);
 	}
 
 	bool isEnding() {
-		return (flg == -4);
+		return (flg == GAME_FLAG_ENDING);
 	}
 
 
@@ -181,11 +178,11 @@ public:
 	//    フラグ関連
 	/*===========================*/
 	void goTitle() {
-		flg = 0;
+		flg = GAME_FLAG_TITLE;
 	}
 
 	void goBattle(int player1 = BATTLE_PLAYER_NONE, int player2 = BATTLE_PLAYER_NONE) {
-		flg = 1;
+		flg = GAME_FLAG_BATTLE;
 		setPlayersGraph(player1, player2);
 		menu.set(btnSave, btnReset);
 	}
@@ -227,15 +224,15 @@ public:
 	}
 
 	void goResult() {
-		flg = 2;
+		flg = GAME_FLAG_RESULT;
 	}
 
 	void goScenario() {
-		flg = -6;
+		flg = GAME_FLAG_SCENARIO;
 	}
 
 	void goEnding() {
-		flg = -4;
+		flg = GAME_FLAG_ENDING;
 	}
 
 
