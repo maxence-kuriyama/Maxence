@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lib/field.h"
-#include "lib/hist.h"
+#include "lib/board/field.h"
+#include "lib/board/hist.h"
 #include "lib/logger.h"
 
 class Board {
