@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/logger.h"
 
 // 試合中の盤面保持、勝利判定を行うクラス
 // Gameオブジェクトのメンバとしての使用を想定
@@ -41,40 +42,52 @@ public:
 	}
 
 	int victory() {
+		stringstream ss;
+		int target = 0;
+
 		for (int k = 0; k < 3; ++k) {
-			if (state[0][k] == state[1][k] && state[0][k] == state[2][k]) {
-				// cout << "縦" << k << endl;
-				return state[0][k];
+			target = state[0][k];
+			if (target != 0 && state[1][k] == target && state[2][k] == target) {
+				ss << "Match Row == y:" << k;
+				Logger::log(ss.str());
+				return target;
 			}
 		}
 		for (int k = 0; k < 3; ++k) {
-			if (state[k][0] == state[k][1] && state[k][0] == state[k][2]) {
-				// cout << "横" << k << endl;
-				return state[k][0];
+			target = state[k][0];
+			if (target != 0 && state[k][1] == target && state[k][2] == target) {
+				ss << "Match Column == x:" << k;
+				Logger::log(ss.str());
+				return target;
 			}
 		}
 
-		if (state[0][0] == state[1][1] && state[0][0] == state[2][2]) {
-			// cout << "左斜め" << endl;
-			return state[0][0];
+		target = state[0][0];
+		if (target != 0 && state[1][1] == target && state[2][2] == target) {
+			Logger::log("Match UpperLeft to LowerRight");
+			return target;
 		}
-		if (state[2][0] == state[1][1] && state[2][0] == state[0][2]) {
-			// cout << "右斜め" << endl;
-			return state[2][0];
+
+		target = state[2][0];
+		if (target != 0 && state[1][1] == target && state[0][2] == target) {
+			Logger::log("Match UpperRight to LowerLeft");
+			return target;
 		}
 		
-		if (filled()) return VICTORY_DRAW;
+		if (filled()) {
+			Logger::log("Match Nothing == Draw");
+			return VICTORY_DRAW;
+		}
 
 		return VICTORY_NONE;
 	}
 
 	int update(int i, int j, int side) {
 		if (victory() != 0) return -1;
-		if (state[i][j] == 0) {
-			state[i][j] = side;
-			return 0;
-		}
-		return -1;
+		if (state[i][j] != 0) return -1;
+
+		state[i][j] = side;
+		return 0;
 	}
 
 	void draw(double baseX, double baseY, double width) {

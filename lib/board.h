@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/field.h"
+#include "lib/logger.h"
 
 class Board {
 private:
@@ -73,8 +74,9 @@ public:
 			if (local[global_x][global_y].update(local_x, local_y, side) == 0) {
 				//ëSëÃÇÃçXêV
 				global.update(global_x, global_y, localVictory(global_x, global_y));
+				loggingUpdate(global_x, global_y, local_x, local_y, side);
 
-				if (local[local_x][local_y].victory() != 0) {
+				if (localVictory(local_x, local_y) != 0) {
 					nextField = -1;
 					return RWD_DOMINANT;
 				}
@@ -102,5 +104,27 @@ public:
 		global.state[global_x][global_y] = 0;
 		global.update(global_x, global_y, localVictory(global_x, global_y));
 		nextField = last_field;
+	}
+
+	void loggingUpdate(int global_x, int global_y, int local_x, int local_y, int side) {
+		stringstream ss;
+		ss << "Update ==== "
+			<< "G(" << global_x << "," << global_y << "), "
+			<< "L(" << local_x << "," << local_y << "), "
+			<< "side: " << side;
+		Logger::log(ss.str());
+		loggingGlobalState();
+	}
+
+	void loggingGlobalState() {
+		stringstream ss;
+		ss << "Global State:" << endl;
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 3; x++) {
+				ss << "  " << globalState(x, y);
+			}
+			ss << endl;
+		}
+		Logger::log(ss.str());
 	}
 };
