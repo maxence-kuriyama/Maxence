@@ -4,12 +4,12 @@
 #include <Eigen/Core>
 #include "lib/const.h"
 #include "lib/basic.h"
-#include "lib/field.h"
 #include "lib/hist.h"
 #include "lib/keyboard.h"
 #include "lib/menu.h"
 #include "lib/anime.h"
 #include "lib/comment.h"
+#include "lib/board.h"
 
 
 class Game {
@@ -53,6 +53,7 @@ private:
 	Button btnSave;
 	Button btnReset;
 	Logo logo;
+	Board board;
 
 public:
 	int flg = -3;	// -3,..,-1: Demo
@@ -62,7 +63,6 @@ public:
 	int taijin = 0;		// 0: vsHuman, 1: vsCOM
 	int teban = 0;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
-	int nextField = -1;		// 次の盤面、-1: anywhere
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
 	int debugFlg = 0;
 	int debugEndingFlg = 0;
@@ -79,8 +79,6 @@ public:
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
 	Option option;
-	Field mother;
-	Field child[3][3];
 	History hist;
 	Camera camera;
 	Mouse mouse;
@@ -106,14 +104,7 @@ public:
 		cutin.image1 = Cutin10;
 		comment.initialize();
 		// フィールド画像初期化
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				child[i][j].stone1 = stone1;
-				child[i][j].stone2 = stone2;
-				child[i][j].stone1_t = stone1_t;
-				child[i][j].stone2_t = stone2_t;
-			}
-		}
+		board.setStoneGraphs(stone1, stone2, stone1_t, stone2_t);
 		// 試合情報の初期化
 		initialize();
 		menu.set(btnLonely, btnVsHuman);
@@ -124,14 +115,8 @@ public:
 	void initialize() {
 		cnt = 0;
 		drawCnt = 0;
-		nextField = -1;
+		board.initialize();
 		camera.initialize();
-		mother.initialize();
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				child[i][j].initialize();
-			}
-		}
 		hist.initialize();
 		mouse.set();
 		key.initWait();
@@ -342,13 +327,13 @@ public:
 				int upLeftY = 80 + 100 * j + 1;
 				int lowRightX = 160 + 100 * (i + 1) - 1;
 				int lowRightY = 80 + 100 * (j + 1) - 1;
-				if (mother.state[i][j] == 1) {
+				if (board.globalState(i, j) == 1) {
 					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorStateWin, TRUE);
 				}
-				else if (mother.state[i][j] == -1) {
+				else if (board.globalState(i, j) == -1) {
 					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorStateLose, TRUE);
 				}
-				else if (mother.state[i][j] != 0) {
+				else if (board.globalState(i, j) != 0) {
 					DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorStateDraw, TRUE);
 				}
 			}
@@ -358,7 +343,7 @@ public:
 	void drawNextField() {
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				if (nextField == 3 * i + j) {
+				if (board.isStrictNext(i, j)) {
 					for (int w = -1; w <= 1; ++w) {
 						int upLeftX = 160 + 100 * i + w;
 						int upLeftY = 80 + 100 * j + w;
@@ -367,7 +352,7 @@ public:
 						DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorNextField, FALSE);
 					}
 				}
-				else if (nextField == -1 && child[i][j].victory() == 0) {
+				else if (board.isNextAny() && board.localVictory(i, j) == 0) {
 					int upLeftX = 160 + 100 * i;
 					int upLeftY = 80 + 100 * j;
 					int lowRightX = 160 + 100 * (i + 1);
@@ -381,7 +366,7 @@ public:
 	void drawLocalState() {
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				child[i][j].draw(176.5 + 100 * i, 96.5 + 100 * j, 33);
+				board.drawLocal(i, j, 176.5 + 100 * i, 96.5 + 100 * j, 33);
 			}
 		}
 	}
@@ -528,33 +513,19 @@ public:
 		if (side == 0) {
 			side = 1 - 2 * (cnt % 2);
 		}
-		//盤面の更新
-		if (nextField == 3 * global_x + global_y || nextField == -1) {
-			if (child[global_x][global_y].update(local_x, local_y, side) == 0) {
-				cnt++;
-				//履歴を残す
-				hist.add(global_x, global_y, local_x, local_y, nextField);
-				//全体の更新
-				mother.update(global_x, global_y, child[global_x][global_y].victory());
-				if (child[local_x][local_y].victory() != 0) {
-					nextField = -1;
-					return RWD_DOM;
-				}
-				else {
-					nextField = local_x * 3 + local_y;
-					return RWD_PUT;
-				}
-			}
+
+		double reward = board.update(global_x, global_y, local_x, local_y, side);
+		if (isUpdated(reward)) {
+			cnt++;
+			//履歴を残す
+			hist.add(global_x, global_y, local_x, local_y, board.nextField);
 		}
-		return -100.0;
+		return reward;
 	}
 
 	bool goBackHist() {
 		if (hist.canCancel() && isVsHuman()) {
-			child[hist.last[0]][hist.last[1]].state[hist.last[2]][hist.last[3]] = 0;
-			mother.state[hist.last[0]][hist.last[1]] = 0;
-			mother.update(hist.last[0], hist.last[1], child[hist.last[0]][hist.last[1]].victory());
-			nextField = hist.last[4];
+			board.goBack(hist.last);
 			hist.goBack();
 			cnt--;
 			return true;
@@ -579,8 +550,8 @@ public:
 			for (int j1 = 0; j1 < 3; ++j1) {
 				for (int k1 = 0; k1 < 3; ++k1) {
 					for (int l1 = 0; l1 < 3; ++l1) {
-						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = child[i1][j1].state[k1][l1] * side;
-						if ((nextField == -1 || nextField == 3 * i1 + j1) && child[i1][j1].state[k1][l1] == 0 && child[i1][j1].victory() == 0) {
+						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = board.localState(i1, j1, k1, l1) * side;
+						if (board.canPut(i1, j1, k1, l1)) {
 							trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = 1.0;
 						}
 						else {
@@ -591,6 +562,14 @@ public:
 			}
 		}
 		return trg;
+	}
+
+	bool isUpdated(double reward) {
+		return (reward > -10.0);
+	}
+
+	int victory() {
+		return board.victory();
 	}
 
 

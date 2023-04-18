@@ -13,11 +13,12 @@
 #define TEXT_RESET_X		320
 #define TEXT_RESET_Y		440
 
-#define RWD_VICT	1.0
-#define RWD_DOM		1.0
-#define RWD_PUT		0.0
-#define RWD_CANPUT	0.0
-#define RWD_FAULT	-0.5
+#define RWD_VICTORY			1.0
+#define RWD_DOMINANT		1.0
+#define RWD_PUT				0.0
+#define RWD_CAN_PUT			0.0
+#define RWD_FAULT			-0.5
+#define RWD_NOT_UPDATED		-100.0
 
 #define BATTLE_PLAYER_NONE		-1
 #define BATTLE_PLAYER_YELLOW	0
@@ -60,4 +61,3 @@
 #define VICTORY_BLACK		1
 #define VICTORY_WHITE		-1
 #define VICTORY_DRAW		10
-

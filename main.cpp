@@ -271,7 +271,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.cutin.update();
 
 			// èüóòîªíË
-			vict = game.mother.victory();
+			vict = game.victory();
 			if (vict != 0) {
 				game.goResult();
 				game.key.initWait();

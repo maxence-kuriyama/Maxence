@@ -33,26 +33,33 @@ public:
 		}
 	}
 
+	void setStoneGraphs(int src1, int src2, int src1_t, int src2_t) {
+		stone1 = src1;
+		stone2 = src2;
+		stone1_t = src1_t;
+		stone2_t = src2_t;
+	}
+
 	int victory() {
 		for (int k = 0; k < 3; ++k) {
 			if (state[0][k] == state[1][k] && state[0][k] == state[2][k]) {
-				//if(temp != 0) cout << "‰¡" << k << endl;
+				// cout << "c" << k << endl;
 				return state[0][k];
 			}
 		}
 		for (int k = 0; k < 3; ++k) {
 			if (state[k][0] == state[k][1] && state[k][0] == state[k][2]) {
-				//if(temp != 0) cout << "c" << k << endl;
+				// cout << "‰¡" << k << endl;
 				return state[k][0];
 			}
 		}
 
 		if (state[0][0] == state[1][1] && state[0][0] == state[2][2]) {
-			//if (temp != 0) cout << "¶ŽÎ‚ß" << endl;
+			// cout << "¶ŽÎ‚ß" << endl;
 			return state[0][0];
 		}
 		if (state[2][0] == state[1][1] && state[2][0] == state[0][2]) {
-			//if (temp != 0) cout << "‰EŽÎ‚ß" << endl;
+			// cout << "‰EŽÎ‚ß" << endl;
 			return state[2][0];
 		}
 		

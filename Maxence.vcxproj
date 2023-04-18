@@ -168,6 +168,8 @@
     <ResourceCompile Include="Maxence.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lib\board.h" />
+    <ClInclude Include="lib\logger.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="vect.h" />
   </ItemGroup>
