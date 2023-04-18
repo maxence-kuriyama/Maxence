@@ -1,12 +1,14 @@
 #pragma once
 
 #include "lib/field.h"
+#include "lib/hist.h"
 #include "lib/logger.h"
 
 class Board {
 private:
 	Field global;
 	Field local[3][3];
+	History history;
 
 public:
 	int nextField = -1; // éüÇÃî’ñ ÅA-1: anywhere
@@ -15,6 +17,7 @@ public:
 	~Board() {}
 
 	void initialize() {
+		history.initialize();
 		global.initialize();
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -70,6 +73,10 @@ public:
 		return local[x][y].victory();
 	}
 
+	int* last() {
+		return history.last;
+	}
+
 
 	/*===========================*/
 	//    Boolean
@@ -93,6 +100,10 @@ public:
 	bool canPut(int index) {
 		int* coord = coordinates(index);
 		return canPut(coord[0], coord[1], coord[2], coord[3]);
+	}
+
+	bool canCancel() {
+		return history.canCancel();
 	}
 
 
@@ -125,7 +136,12 @@ public:
 		return update(coord[0], coord[1], coord[2], coord[3], side);
 	}
 
-	void goBack(int prev_info[5]) {
+	void addHistory(int global_x, int global_y, int local_x, int local_y) {
+		history.add(global_x, global_y, local_x, local_y, nextField);
+	}
+
+	void goBack() {
+		int* prev_info = last();
 		int global_x = prev_info[0];
 		int global_y = prev_info[1];
 		int x = prev_info[2];
@@ -136,6 +152,9 @@ public:
 		global.state[global_x][global_y] = 0;
 		global.update(global_x, global_y, localVictory(global_x, global_y));
 		nextField = last_field;
+		loggingHistory(global_x, global_y, x, y);
+
+		history.goBack();
 	}
 
 
@@ -161,6 +180,14 @@ public:
 			}
 			ss << endl;
 		}
+		Logger::log(ss.str());
+	}
+
+	void loggingHistory(int global_x, int global_y, int local_x, int local_y) {
+		stringstream ss;
+		ss << "History ==== "
+			<< "G(" << global_x << "," << global_y << "), "
+			<< "L(" << local_x << "," << local_y << "), ";
 		Logger::log(ss.str());
 	}
 };

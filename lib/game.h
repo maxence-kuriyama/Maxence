@@ -4,7 +4,6 @@
 #include <Eigen/Core>
 #include "lib/const.h"
 #include "lib/basic.h"
-#include "lib/hist.h"
 #include "lib/keyboard.h"
 #include "lib/menu.h"
 #include "lib/anime.h"
@@ -76,7 +75,6 @@ public:
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
 	Option option;
-	History hist;
 	Camera camera;
 	Mouse mouse;
 	Key key;
@@ -114,7 +112,6 @@ public:
 		drawCnt = 0;
 		board.initialize();
 		camera.initialize();
-		hist.initialize();
 		mouse.set();
 		key.initWait();
 	}
@@ -308,11 +305,17 @@ public:
 	}
 
 	void drawHistLast() {
-		if (hist.canCancel()) {
-			int upLeftX = 160 + 100 * hist.last[0] + 33 * hist.last[2] + 1;
-			int upLeftY = 80 + 100 * hist.last[1] + 33 * hist.last[3] + 1;
-			int lowRightX = 160 + 100 * hist.last[0] + 33 * (hist.last[2] + 1);
-			int lowRightY = 80 + 100 * hist.last[1] + 33 * (hist.last[3] + 1);
+		if (board.canCancel()) {
+			int* last = board.last();
+			int global_x = last[0];
+			int global_y = last[1];
+			int local_x = last[2];
+			int local_y = last[3];
+
+			int upLeftX = 160 + 100 * global_x + 33 * local_x + 1;
+			int upLeftY = 80 + 100 * global_y + 33 * local_y + 1;
+			int lowRightX = 160 + 100 * global_x + 33 * (local_x + 1);
+			int lowRightY = 80 + 100 * global_y + 33 * (local_y + 1);
 			DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorLastHist, TRUE);
 		}
 	}
@@ -515,15 +518,14 @@ public:
 		if (isUpdated(reward)) {
 			cnt++;
 			//履歴を残す
-			hist.add(global_x, global_y, local_x, local_y, board.nextField);
+			board.addHistory(global_x, global_y, local_x, local_y);
 		}
 		return reward;
 	}
 
 	bool goBackHist() {
-		if (hist.canCancel() && isVsHuman()) {
-			board.goBack(hist.last);
-			hist.goBack();
+		if (board.canCancel() && isVsHuman()) {
+			board.goBack();
 			cnt--;
 			return true;
 		}
@@ -584,13 +586,6 @@ public:
 			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
 			DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
 			DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
-			// Hist
-			DrawFormatString(125, 145, strColor, "cancelCnt: %d", hist.cancelCnt);
-			DrawFormatString(125, 165, strColor, "last[0]: %d", hist.last[0]);
-			DrawFormatString(125, 185, strColor, "last[1]: %d", hist.last[1]);
-			DrawFormatString(125, 205, strColor, "last[2]: %d", hist.last[2]);
-			DrawFormatString(125, 225, strColor, "last[3]: %d", hist.last[3]);
-			DrawFormatString(125, 245, strColor, "last[4]: %d", hist.last[4]);
 			// Comment
 			comment.debugDump(strColor);
 			// Menu
