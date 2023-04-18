@@ -78,24 +78,20 @@ public:
 	}
 
 	void visualize() {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				for (int k = 0; k < 3; ++k) {
-					for (int l = 0; l < 3; ++l) {
-						double tempColor = min(max(240.0 * (output(27 * i + 9 * j + 3 * k + l) + 0.5), 0.0), 255.0);
-						DrawCircle(160 + 100 * i + 33 * k + 16, 80 + 100 * j + 33 * l + 16, 15, GetColor(255, 255, 255 - tempColor));
-						//if (game.option.likeliFlg == 2) {
-						//	char str_tmp[10];
-						//	sprintf_s(str_tmp, "%.4f", output(27 * i + 9 * j + 3 * k + l));
-						//	DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 2, str_tmp, Red, Font1);
-						//	if (trainCnt >= 1) {
-						//		sprintf_s(str_tmp, "%.4f", temp_o[trainCnt - 1](27 * i + 9 * j + 3 * k + l));
-						//		DrawStringToHandle(160 + 100 * i + 33 * k + 2, 80 + 100 * j + 33 * l + 12, str_tmp, Blue, Font1);
-						//	}
-						//}
-					}
-				}
-			}
+		for (int index = 0; index < 81; index++) {
+			double temp_color = min(max(240.0 * (output(index) + 0.5), 0.0), 255.0);
+			int color = GetColor(255, 255, 255 - temp_color);
+
+			int* coord_info = Board::coordinates(index);
+			int global_x = coord_info[0];
+			int global_y = coord_info[1];
+			int local_x = coord_info[2];
+			int local_y = coord_info[3];
+
+			int draw_x = 160 + 100 * global_x + 33 * local_x + 16;
+			int draw_y = 80 + 100 * global_y + 33 * local_y + 16;
+			int radius = 15;
+			DrawCircle(draw_x, draw_y, radius, color);
 		}
 	}
 
@@ -123,10 +119,11 @@ public:
 	}
 
 	void choiceMax() {
-		globalX = (max_id / 27) % 3;
-		globalY = (max_id / 9) % 3;
-		localX = (max_id / 3) % 3;
-		localY = max_id % 3;
+		int* coord_info = Board::coordinates(max_id);
+		globalX = coord_info[0];
+		globalY = coord_info[1];
+		localX = coord_info[2];
+		localY = coord_info[3];
 		anneal = 0;
 	}
 

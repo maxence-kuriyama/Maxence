@@ -32,6 +32,23 @@ public:
 		}
 	}
 
+	void drawLocal(int x, int y, double base_x, double base_y, double width) {
+		local[x][y].draw(base_x, base_y, width);
+	}
+
+	static int* coordinates(int index) {
+		int coord[4];
+		coord[0] = (index / 27) % 3;
+		coord[1] = (index / 9) % 3;
+		coord[2] = (index / 3) % 3;
+		coord[3] = index % 3;
+		return coord;
+	}
+
+
+	/*===========================*/
+	//    State getter
+	/*===========================*/
 	int globalState(int x, int y) {
 		return global.state[x][y];
 	}
@@ -44,14 +61,19 @@ public:
 		return local[global_x][global_y].state[x][y];
 	}
 
+	int localState(int index) {
+		int* coord = coordinates(index);
+		return localState(coord[0], coord[1], coord[2], coord[3]);
+	}
+
 	int localVictory(int x, int y) {
 		return local[x][y].victory();
 	}
 
-	void drawLocal(int x, int y, double base_x, double base_y, double width) {
-		local[x][y].draw(base_x, base_y, width);
-	}
 
+	/*===========================*/
+	//    Boolean
+	/*===========================*/
 	bool isNext(int x, int y) {
 		return (isStrictNext(x, y) || isNextAny());
 	}
@@ -68,6 +90,15 @@ public:
 		return (isNext(global_x, global_y) && localState(global_x, global_y, x, y) == 0 && localVictory(global_x, global_y) == 0);
 	}
 
+	bool canPut(int index) {
+		int* coord = coordinates(index);
+		return canPut(coord[0], coord[1], coord[2], coord[3]);
+	}
+
+
+	/*===========================*/
+	//    Updation
+	/*===========================*/
 	double update(int global_x, int global_y, int local_x, int local_y, int side) {
 		//î’ñ ÇÃçXêV
 		if (isNext(global_x, global_y)) {
@@ -89,8 +120,9 @@ public:
 		return RWD_NOT_UPDATED;
 	}
 
-	double update(int index, int side = 0) {
-
+	double update(int index, int side) {
+		int* coord = coordinates(index);
+		return update(coord[0], coord[1], coord[2], coord[3], side);
 	}
 
 	void goBack(int prev_info[5]) {
@@ -106,6 +138,10 @@ public:
 		nextField = last_field;
 	}
 
+
+	/*===========================*/
+	//    Logging
+	/*===========================*/
 	void loggingUpdate(int global_x, int global_y, int local_x, int local_y, int side) {
 		stringstream ss;
 		ss << "Update ==== "

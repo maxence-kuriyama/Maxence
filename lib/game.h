@@ -435,22 +435,22 @@ public:
 	//    ”Õ–ÊXVŠÖ˜A
 	/*===========================*/
 	void getMouseCoord() {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				for (int k = 0; k < 3; ++k) {
-					for (int l = 0; l < 3; ++l) {
-						int upLeftX = 160 + 100 * i + 33 * k;
-						int upLeftY = 80 + 100 * j + 33 * l;
-						int lowRightX = 160 + 100 * i + 33 * (k + 1);
-						int lowRightY = 80 + 100 * j + 33 * (l + 1);
-						if (mouse.onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
-							globalX = i;
-							globalY = j;
-							localX = k;
-							localY = l;
-						}
-					}
-				}
+		for (int index = 0; index < 81; index++) {
+			int* coord_info = Board::coordinates(index);
+			int global_x = coord_info[0];
+			int global_y = coord_info[1];
+			int local_x = coord_info[2];
+			int local_y = coord_info[3];
+
+			int upLeftX = 160 + 100 * global_x + 33 * local_x;
+			int upLeftY = 80 + 100 * global_y + 33 * local_y;
+			int lowRightX = 160 + 100 * global_x + 33 * (local_x + 1);
+			int lowRightY = 80 + 100 * global_y + 33 * (local_y + 1);
+			if (mouse.onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
+				globalX = global_x;
+				globalY = global_y;
+				localX = local_x;
+				localY = local_y;
 			}
 		}
 	}
@@ -546,19 +546,13 @@ public:
 			side = 1 - 2 * (cnt % 2);
 		}
 		Eigen::VectorXd trg(dim);
-		for (int i1 = 0; i1 < 3; ++i1) {
-			for (int j1 = 0; j1 < 3; ++j1) {
-				for (int k1 = 0; k1 < 3; ++k1) {
-					for (int l1 = 0; l1 < 3; ++l1) {
-						trg(27 * i1 + 9 * j1 + 3 * k1 + l1) = board.localState(i1, j1, k1, l1) * side;
-						if (board.canPut(i1, j1, k1, l1)) {
-							trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = 1.0;
-						}
-						else {
-							trg(27 * i1 + 9 * j1 + 3 * k1 + l1 + 81) = -1.0;
-						}
-					}
-				}
+		for (int index = 0; index < 81; index++) {
+			trg(index) = board.localState(index) * side;
+			if (board.canPut(index)) {
+				trg(index + 81) = 1.0;
+			}
+			else {
+				trg(index + 81) = -1.0;
 			}
 		}
 		return trg;

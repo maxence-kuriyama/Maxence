@@ -1,7 +1,5 @@
 #pragma once
 
-#include "lib/logger.h"
-
 // 試合中の盤面保持、勝利判定を行うクラス
 // Gameオブジェクトのメンバとしての使用を想定
 class Field {
@@ -42,40 +40,32 @@ public:
 	}
 
 	int victory() {
-		stringstream ss;
 		int target = 0;
 
 		for (int k = 0; k < 3; ++k) {
 			target = state[0][k];
 			if (target != 0 && state[1][k] == target && state[2][k] == target) {
-				ss << "Match Row == y:" << k;
-				Logger::log(ss.str());
 				return target;
 			}
 		}
 		for (int k = 0; k < 3; ++k) {
 			target = state[k][0];
 			if (target != 0 && state[k][1] == target && state[k][2] == target) {
-				ss << "Match Column == x:" << k;
-				Logger::log(ss.str());
 				return target;
 			}
 		}
 
 		target = state[0][0];
 		if (target != 0 && state[1][1] == target && state[2][2] == target) {
-			Logger::log("Match UpperLeft to LowerRight");
 			return target;
 		}
 
 		target = state[2][0];
 		if (target != 0 && state[1][1] == target && state[0][2] == target) {
-			Logger::log("Match UpperRight to LowerLeft");
 			return target;
 		}
 		
 		if (filled()) {
-			Logger::log("Match Nothing == Draw");
 			return VICTORY_DRAW;
 		}
 
