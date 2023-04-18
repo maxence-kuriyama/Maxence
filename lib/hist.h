@@ -38,7 +38,7 @@ public:
 		return (cancelCnt > 0);
 	}
 
-	// キャンセル可能なら1、そうでなければ0を返す
+	// キャンセルできたら1、できなかったら0を返す
 	int goBack() {
 		if (canCancel()) {
 			for (int i = 0; i < 5; i++) {

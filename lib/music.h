@@ -4,6 +4,7 @@
 #include <string>
 #include "lib/const.h"
 #include "lib/keyboard.h"
+#include "lib/logger.h"
 
 
 // 音楽のロード・再生をするクラス
@@ -64,6 +65,7 @@ public:
 
 		// ロードが行われた場合の処理
 		if (loadedHere) {
+			loggingLoaded(file_name);
 			SetUseASyncLoadFlag(FALSE);
 			cnt = 0;
 			return 1;
@@ -225,4 +227,9 @@ public:
 		}
 	}
 
+	void loggingLoaded(const char* file_name) {
+		stringstream ss;
+		ss << "Load " << file_name;
+		Logger::log(ss.str());
+	}
 };
