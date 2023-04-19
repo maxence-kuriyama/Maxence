@@ -228,8 +228,7 @@ public:
 	}
 
 	void loggingLoaded(const char* file_name) {
-		stringstream ss;
-		ss << "Load " << file_name;
-		Logger::log(ss.str());
+		Logger::ss << "Load " << file_name;
+		Logger::log();
 	}
 };

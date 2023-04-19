@@ -22,6 +22,15 @@ private:
 	~Logger() { delete _instance; }
 
 public:
+	static stringstream ss;
+
+	static void log() {
+		log(ss.str());
+
+		// ‰Šú‰»
+		ss.str("");
+		ss.clear(stringstream::goodbit);
+	}
 
 	static void log(string msg) {
 		if (!DEBUG) return;
@@ -58,3 +67,4 @@ public:
 };
 
 Logger* Logger::_instance = NULL;
+stringstream Logger::ss;

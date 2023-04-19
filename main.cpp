@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetOutApplicationLogValidFlag(FALSE);
 	ChangeWindowMode(TRUE);
 	SetAlwaysRunFlag(TRUE);
-	SetMainWindowText("Maxence 0.4.1");
+	SetMainWindowText("Maxence 0.5.1");
 	SetWindowIconID(101);
 	if (DxLib_Init() == -1) {
 		return -1;

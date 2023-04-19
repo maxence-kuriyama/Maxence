@@ -173,25 +173,23 @@ public:
 	//    Logging
 	/*===========================*/
 	void loggingUpdate(int global_x, int global_y, int local_x, int local_y, int side) {
-		stringstream ss;
-		ss << "Update ==== "
+		Logger::ss << "Update ==== "
 			<< "G(" << global_x << "," << global_y << "), "
 			<< "L(" << local_x << "," << local_y << "), "
 			<< "side: " << side;
-		Logger::log(ss.str());
+		Logger::log();
 		// loggingGlobalState();
 	}
 
 	void loggingGlobalState() {
-		stringstream ss;
-		ss << "Global State:" << endl;
+		Logger::ss << "Global State:" << endl;
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
-				ss << "  " << globalState(x, y);
+				Logger::ss << "  " << globalState(x, y);
 			}
-			ss << endl;
+			Logger::ss << endl;
 		}
-		Logger::log(ss.str());
+		Logger::log();
 	}
 
 	void loggingWholeState() {
@@ -214,10 +212,9 @@ public:
 	}
 
 	void loggingHistory(int global_x, int global_y, int local_x, int local_y) {
-		stringstream ss;
-		ss << "History ==== "
+		Logger::ss << "History ==== "
 			<< "G(" << global_x << "," << global_y << "), "
 			<< "L(" << local_x << "," << local_y << "), ";
-		Logger::log(ss.str());
+		Logger::log();
 	}
 };

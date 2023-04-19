@@ -222,31 +222,28 @@ MinMaxNode* MinMaxNode::childNodeByIndex(int src_index) {
 //    Logging
 /*===========================*/
 void MinMaxNode::loggingSearchForward(int depth) {
-	stringstream ss;
-	ss << "Search (forward) ==== "
+	Logger::ss << "Search (forward) ==== "
 		<< "depth: " << depth << ", "
 		<< "index: " << index;
-	Logger::log(ss.str());
+	Logger::log();
 
 	board.loggingWholeState();
 }
 
 void MinMaxNode::loggingSearchBackward(int depth) {
-	stringstream ss;
-	ss << "Search (backward) ==== "
+	Logger::ss << "Search (backward) ==== "
 		<< "depth: " << depth << ", " 
 		<< "index: " << index << endl;
-	ss << "side: " << side << ", "
+	Logger::ss << "side: " << side << ", "
 		<< "value: " << value << ", "
 		<< "max_child_index: " << max_child_index;
-	Logger::log(ss.str());
+	Logger::log();
 }
 
 void MinMaxNode::loggingSearchTerminal() {
-	stringstream ss;
-	ss << "Terminal ==== "
+	Logger::ss << "Terminal ==== "
 		<< "index: " << index << ", "
 		<< "side: " << side << ", "
 		<< "value: " << value;
-	Logger::log(ss.str());
+	Logger::log();
 }
