@@ -258,9 +258,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// COMの手番
 			if (!game.isPlayTurn()) {
-				VectorXd input = game.stateToInput();
-				com.play(input);
-				//盤面の更新
+				// VectorXd input = game.stateToInput();
+				// com.play(input);
+				com.playMinMax(game.board, game.side());
+				// 盤面の更新
 				game.update(com.globalX, com.globalY, com.localX, com.localY);
 			}
 

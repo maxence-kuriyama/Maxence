@@ -1,0 +1,252 @@
+#pragma once
+
+#include "lib/board.h"
+#include "lib/logger.h"
+
+const float EVALUATION_WIN(1.0);
+const float EVALUATION_LOSE(-1.0);
+const float EVALUATION_DRAW(0.0);
+const float EVALUATION_LOCAL_WIN(0.1);
+const float EVALUATION_LOCAL_LOSE(-0.1);
+
+class MinMaxNode;
+
+class ChildLink {
+public:
+	ChildLink* next;
+	MinMaxNode* node;
+
+	ChildLink(MinMaxNode* src = nullptr) {
+		node = src;
+		next = nullptr;
+	}
+
+	~ChildLink() {
+		delete node;
+	}
+
+	bool hasNext() {
+		return (next != nullptr);
+	}
+
+	void setNext(ChildLink* src) {
+		next = src;
+	}
+
+	void setNode(MinMaxNode* src) {
+		node = src;
+	}
+};
+
+class MinMaxNode {
+private:
+	ChildLink* head;
+	ChildLink* last;
+	
+	void createChildren();
+	void searchRecursive(int depth);
+	bool terminated();
+	void evaluate();
+	void evaluateChildren();
+	int optimalIndex();
+	MinMaxNode* childNodeByIndex(int index);
+	void loggingSearchForward(int depth);
+	void loggingSearchBackward(int depth);
+	void loggingSearchTerminal();
+
+	void setLast(ChildLink* src) {
+		last = src;
+	}
+	
+public:
+	Board board;
+	int side;
+	int index = 0;
+	int max_child_index = 0;
+	double value = 0.0;
+
+	MinMaxNode(const Board& src_board, int src_side, int src_index = 0) {
+		board = src_board;
+		side = src_side;
+		index = src_index;
+
+		head = new ChildLink();
+		last = head;
+	}
+
+	~MinMaxNode() {
+		ChildLink* child = head;
+		while (child->hasNext()) {
+			ChildLink* previous = child;
+			child = child->next;
+			delete previous;
+		}
+		delete child;
+	}
+
+	int search(int depth) {
+		searchRecursive(depth);
+		return max_child_index;
+	}
+
+	string debugStr() {
+		stringstream ss;
+		int local_x = (max_child_index % 9) / 3;
+		int local_y = (max_child_index % 9) % 3;
+		ss << local_x << "," << local_y;
+
+		MinMaxNode* node = this;
+		while (!node->terminated()) {
+			node = node->childNodeByIndex(node->max_child_index);
+			if (!node) break;
+			
+			int local_x = (node->max_child_index % 9) / 3;
+			int local_y = (node->max_child_index % 9) % 3;
+			ss << "->" << local_x << "," << local_y;
+		}
+		return ss.str();
+	}
+};
+
+void MinMaxNode::searchRecursive(int depth) {
+	if (depth == 0 || terminated()) {
+		evaluate();
+		loggingSearchTerminal();
+		return;
+	}
+
+	loggingSearchForward(depth);
+	createChildren();
+
+	ChildLink* child = head;
+	while (child->hasNext()) {
+		child = child->next;
+		child->node->searchRecursive(depth - 1);
+	}
+	evaluateChildren();
+	max_child_index = optimalIndex();
+	loggingSearchBackward(depth);
+}
+
+bool MinMaxNode::terminated() {
+	return (board.victory() != VICTORY_NONE);
+}
+
+// 子を持つノードの評価
+void MinMaxNode::createChildren() {
+	for (int new_index = 0; new_index < 81; new_index++) {
+		Board board_clone;
+		board_clone = board;
+		
+		//盤面の更新
+		double res = board_clone.update(new_index, side);
+		if (res < -10.0) continue;
+
+		MinMaxNode* new_node = new MinMaxNode(board_clone, -side, new_index);
+		ChildLink* child = new ChildLink(new_node);
+		last->setNext(child);
+		setLast(child);
+	}
+
+}
+
+// 末端ノードの評価
+void MinMaxNode::evaluate() {
+	int global_victory = board.victory();
+	if (global_victory != 0) {
+		if (global_victory == side) {
+			value = EVALUATION_WIN;
+		}
+		else if (global_victory == -side) {
+			value = EVALUATION_LOSE;
+		}
+		else {
+			value = EVALUATION_DRAW;
+		}
+		return;
+	}
+	
+	for (int x = 0; x < 3; x++) {
+		for (int y = 0; y < 3; y++) {
+			int local_victory = board.localVictory(x, y);
+			if (local_victory == side) {
+				value += EVALUATION_LOCAL_WIN;
+			}
+			else if (local_victory == -side) {
+				value += EVALUATION_LOCAL_LOSE;
+			}
+		}
+	}
+}
+
+void MinMaxNode::evaluateChildren() {
+	value = -100.0;
+	ChildLink* child = head;
+	while (child->hasNext()) {
+		child = child->next;
+		double child_value = -child->node->value; // 子ノードは相手視点
+		if (value < child_value) value = child_value;
+	}
+}
+
+int MinMaxNode::optimalIndex() {
+	int max_index[81] = { -1 };
+	int count = 0;
+	
+	ChildLink* child = head;
+	while (child->hasNext()) {
+		child = child->next;
+		double child_value = -child->node->value; // 子ノードは相手視点
+		// valueにはすでに最大値が入っている
+		if (child_value > value - 0.001) {
+			max_index[count++] = child->node->index;
+		}
+	}
+
+	if (count == 0) return rand() % 81;
+	if (count == 1) return max_index[0];
+
+	return max_index[rand() % count];
+}
+
+MinMaxNode* MinMaxNode::childNodeByIndex(int src_index) {
+	ChildLink* child = head;
+	while (child->hasNext()) {
+		child = child->next;
+		if (child->node->index == src_index) return child->node;
+	}
+	return NULL;
+}
+
+/*===========================*/
+//    Logging
+/*===========================*/
+void MinMaxNode::loggingSearchForward(int depth) {
+	stringstream ss;
+	ss << "Search (forward) ==== "
+		<< "depth: " << depth << ", "
+		<< "index: " << index;
+	Logger::log(ss.str());
+
+	board.loggingWholeState();
+}
+
+void MinMaxNode::loggingSearchBackward(int depth) {
+	stringstream ss;
+	ss << "Search (backward) ==== "
+		<< "depth: " << depth << ", " 
+		<< "index: " << index << endl;
+	ss << "side: " << side << ", "
+		<< "value: " << value << ", "
+		<< "max_child_index: " << max_child_index;
+	Logger::log(ss.str());
+}
+
+void MinMaxNode::loggingSearchTerminal() {
+	stringstream ss;
+	ss << "Terminal ==== "
+		<< "index: " << index << ", "
+		<< "side: " << side << ", "
+		<< "value: " << value;
+	Logger::log(ss.str());
+}

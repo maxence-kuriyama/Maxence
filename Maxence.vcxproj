@@ -168,8 +168,30 @@
     <ResourceCompile Include="Maxence.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lib\anime.h" />
+    <ClInclude Include="lib\basic.h" />
     <ClInclude Include="lib\board.h" />
+    <ClInclude Include="lib\board\field.h" />
+    <ClInclude Include="lib\board\hist.h" />
+    <ClInclude Include="lib\com.h" />
+    <ClInclude Include="lib\comment.h" />
+    <ClInclude Include="lib\com\minmax.h" />
+    <ClInclude Include="lib\const.h" />
+    <ClInclude Include="lib\ending.h" />
+    <ClInclude Include="lib\fireflower.h" />
+    <ClInclude Include="lib\game.h" />
+    <ClInclude Include="lib\keyboard.h" />
+    <ClInclude Include="lib\load_obj.h" />
     <ClInclude Include="lib\logger.h" />
+    <ClInclude Include="lib\logo.h" />
+    <ClInclude Include="lib\menu.h" />
+    <ClInclude Include="lib\message.h" />
+    <ClInclude Include="lib\movie.h" />
+    <ClInclude Include="lib\music.h" />
+    <ClInclude Include="lib\OBJ_Loader.h" />
+    <ClInclude Include="lib\scenario.h" />
+    <ClInclude Include="lib\sprite.h" />
+    <ClInclude Include="lib\vect.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="vect.h" />
   </ItemGroup>

@@ -48,6 +48,17 @@ public:
 		return coord;
 	}
 
+	Board operator = (const Board& src) {
+		global = src.global;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				local[i][j] = src.local[i][j];
+			}
+		}
+		nextField = src.nextField;
+		return src;
+	}
+
 
 	/*===========================*/
 	//    State getter
@@ -168,7 +179,7 @@ public:
 			<< "L(" << local_x << "," << local_y << "), "
 			<< "side: " << side;
 		Logger::log(ss.str());
-		loggingGlobalState();
+		// loggingGlobalState();
 	}
 
 	void loggingGlobalState() {
@@ -179,6 +190,25 @@ public:
 				ss << "  " << globalState(x, y);
 			}
 			ss << endl;
+		}
+		Logger::log(ss.str());
+	}
+
+	void loggingWholeState() {
+		stringstream ss;
+		ss << "Board State:" << endl;
+		for (int global_y = 0; global_y < 3; global_y++) {
+			for (int y = 0; y < 3; y++) {
+				for (int global_x = 0; global_x < 3; global_x++) {
+					for (int x = 0; x < 3; x++) {
+						ss << setfill(' ') << setw(3)
+							<< localState(global_x, global_y, x, y);
+					}
+					ss << " |";
+				}
+				ss << endl;
+			}
+			ss << "----------|----------|----------" << endl;
 		}
 		Logger::log(ss.str());
 	}

@@ -52,7 +52,6 @@ private:
 	Button btnSave;
 	Button btnReset;
 	Logo logo;
-	Board board;
 
 public:
 	int flg = GAME_FLAG_DEMO_FIRST;
@@ -81,6 +80,7 @@ public:
 	Anime cutin;
 	Comment comment;
 	Button btnAgain;
+	Board board;
 
 	Game() {
 		// ボタン初期化
@@ -395,21 +395,22 @@ public:
 		comment.update(playCnt);
 	}
 
-	void drawPlayers(int side = 0) {
+	void drawPlayers(int src_side = 0) {
 		// sideが指定されていなければ、cntとtebanから計算する
-		if (side == 0) {
-			side = 1 - 2 * (cnt % 2);
+		if (src_side == 0) {
+			src_side = side();
 			if (isVsCOM()) {
-				side = side * (1 - 2 * (teban % 2));
+				src_side = src_side * (1 - 2 * (teban % 2));
 			}
 		}
-		if (side == 1) {
+
+		if (src_side == 1) {
 			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
 			SetDrawBright(155, 155, 155);
 			DrawExtendGraph(440, 100, 640, 340, player2, TRUE);
 			SetDrawBright(255, 255, 255);
 		}
-		else if (side == -1) {
+		else if (src_side == -1) {
 			SetDrawBright(155, 155, 155);
 			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
 			SetDrawBright(255, 255, 255);
@@ -508,13 +509,11 @@ public:
 		return update(globalX, globalY, localX, localY, side);
 	}
 
-	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
+	double update(int global_x, int global_y, int local_x, int local_y, int src_side = 0) {
 		// sideが指定されていなければ、cntから計算する
-		if (side == 0) {
-			side = 1 - 2 * (cnt % 2);
-		}
+		if (src_side == 0) src_side = side();
 
-		double reward = board.update(global_x, global_y, local_x, local_y, side);
+		double reward = board.update(global_x, global_y, local_x, local_y, src_side);
 		if (isUpdated(reward)) {
 			cnt++;
 			//履歴を残す
@@ -540,13 +539,12 @@ public:
 	/*===========================*/
 	//    盤面情報
 	/*===========================*/
-	Eigen::VectorXd stateToInput(int side = 0, int dim = 162) {
-		if (side == 0) {
-			side = 1 - 2 * (cnt % 2);
-		}
+	Eigen::VectorXd stateToInput(int src_side = 0, int dim = 162) {
+		if (src_side == 0) src_side = side();
+
 		Eigen::VectorXd trg(dim);
 		for (int index = 0; index < 81; index++) {
-			trg(index) = board.localState(index) * side;
+			trg(index) = board.localState(index) * src_side;
 			if (board.canPut(index)) {
 				trg(index + 81) = 1.0;
 			}
@@ -563,6 +561,10 @@ public:
 
 	int victory() {
 		return board.victory();
+	}
+
+	int side() {
+		return 1 - 2 * (cnt % 2);
 	}
 
 

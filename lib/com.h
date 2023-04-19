@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "lib/vect.h"
+#include "lib/com/minmax.h"
 
 using namespace Eigen;
 
@@ -30,6 +31,7 @@ private:
 	VectorXd output;
 	Machine critic;
 	int strColorDebug = GetColor(255, 100, 0);
+	string miniMaxDebugStr;
 
 public:
 	int globalX = 1;
@@ -110,6 +112,24 @@ public:
 		cnt--;
 	}
 
+	void playMinMax(const Board board, int side) {
+		cnt--;
+		if (cnt > 0) return;
+
+		MinMaxNode node(board, side);
+		int depth = 2;
+		int index = node.search(depth);
+
+		int* coord_info = Board::coordinates(index);
+		globalX = coord_info[0];
+		globalY = coord_info[1];
+		localX = coord_info[2];
+		localY = coord_info[3];
+		anneal = 0;
+		
+		miniMaxDebugStr = node.debugStr();
+	}
+
 	void choiceRandom() {
 		globalX = rand() % 3;
 		globalY = rand() % 3;
@@ -132,6 +152,7 @@ public:
 			int strColor = strColorDebug;
 
 			DrawFormatString(505, 25, strColor, "anneal: %d", anneal);
+			DrawFormatString(505, 65, strColor, miniMaxDebugStr.c_str());
 		}
 	}
 
