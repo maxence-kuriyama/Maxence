@@ -9,7 +9,6 @@ using namespace Eigen;
 
 VectorXd softmax(const VectorXd &src, double alpha);
 
-
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
 // 単体での使用を想定（Gameオブジェクトから呼び出すべきか？）
 class COM {
@@ -34,10 +33,7 @@ private:
 	string miniMaxDebugStr;
 
 public:
-	int globalX = 1;
-	int globalY = 1;
-	int localX = 1;
-	int localY = 1;						//COMの選ぶ座標
+	Coordinate coordinate;					//COMの選ぶ座標
 	int max_id = 0;
 	double max_val = 0.0;
 
@@ -84,14 +80,9 @@ public:
 			double temp_color = min(max(240.0 * (output(index) + 0.5), 0.0), 255.0);
 			int color = GetColor(255, 255, 255 - temp_color);
 
-			int* coord_info = Board::coordinates(index);
-			int global_x = coord_info[0];
-			int global_y = coord_info[1];
-			int local_x = coord_info[2];
-			int local_y = coord_info[3];
-
-			int draw_x = 160 + 100 * global_x + 33 * local_x + 16;
-			int draw_y = 80 + 100 * global_y + 33 * local_y + 16;
+			Coordinate c = Board::coordinates(index);
+			int draw_x = 160 + 100 * c.global_x + 33 * c.x + 16;
+			int draw_y = 80 + 100 * c.global_y + 33 * c.y + 16;
 			int radius = 15;
 			DrawCircle(draw_x, draw_y, radius, color);
 		}
@@ -120,30 +111,19 @@ public:
 		int depth = 4;
 		int index = node.search(depth);
 
-		int* coord_info = Board::coordinates(index);
-		globalX = coord_info[0];
-		globalY = coord_info[1];
-		localX = coord_info[2];
-		localY = coord_info[3];
+		coordinate = Board::coordinates(index);
 		anneal = 0;
 		
 		miniMaxDebugStr = node.debugStr();
 	}
 
 	void choiceRandom() {
-		globalX = rand() % 3;
-		globalY = rand() % 3;
-		localX = rand() % 3;
-		localY = rand() % 3;
+		coordinate = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
 		anneal = 1;
 	}
 
 	void choiceMax() {
-		int* coord_info = Board::coordinates(max_id);
-		globalX = coord_info[0];
-		globalY = coord_info[1];
-		localX = coord_info[2];
-		localY = coord_info[3];
+		coordinate = Board::coordinates(max_id);
 		anneal = 0;
 	}
 

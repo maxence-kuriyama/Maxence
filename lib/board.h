@@ -4,6 +4,9 @@
 #include "lib/board/hist.h"
 #include "lib/logger.h"
 
+
+const int DUMMY_LAST_FIELD(-1);
+
 class Board {
 private:
 	Field global;
@@ -39,13 +42,13 @@ public:
 		local[x][y].draw(base_x, base_y, width);
 	}
 
-	static int* coordinates(int index) {
-		int coord[4];
-		coord[0] = (index / 27) % 3;
-		coord[1] = (index / 9) % 3;
-		coord[2] = (index / 3) % 3;
-		coord[3] = index % 3;
-		return coord;
+	static Coordinate coordinates(int index) {
+		Coordinate c;
+		c.global_x = (index / 27) % 3;
+		c.global_y = (index / 9) % 3;
+		c.x = (index / 3) % 3;
+		c.y = index % 3;
+		return c;
 	}
 
 	Board operator = (const Board& src) {
@@ -75,17 +78,21 @@ public:
 		return local[global_x][global_y].state[x][y];
 	}
 
+	int localState(Coordinate& c) {
+		return localState(c.global_x, c.global_y, c.x, c.y);
+	}
+
 	int localState(int index) {
-		int* coord = coordinates(index);
-		return localState(coord[0], coord[1], coord[2], coord[3]);
+		Coordinate c = coordinates(index);
+		return localState(c);
 	}
 
 	int localVictory(int x, int y) {
 		return local[x][y].victory();
 	}
 
-	int* last() {
-		return history.last;
+	Coordinate last() {
+		return history.last();
 	}
 
 
@@ -108,9 +115,13 @@ public:
 		return (isNext(global_x, global_y) && localState(global_x, global_y, x, y) == 0 && localVictory(global_x, global_y) == 0);
 	}
 
+	bool canPut(Coordinate& c) {
+		return canPut(c.global_x, c.global_y, c.x, c.y);
+	}
+
 	bool canPut(int index) {
-		int* coord = coordinates(index);
-		return canPut(coord[0], coord[1], coord[2], coord[3]);
+		Coordinate c = coordinates(index);
+		return canPut(c);
 	}
 
 	bool canCancel() {
@@ -128,6 +139,8 @@ public:
 				//全体の更新
 				global.update(global_x, global_y, localVictory(global_x, global_y));
 				loggingUpdate(global_x, global_y, local_x, local_y, side);
+				//履歴を残す
+				addHistory(global_x, global_y, local_x, local_y);
 
 				if (localVictory(local_x, local_y) != 0) {
 					nextField = -1;
@@ -142,9 +155,13 @@ public:
 		return RWD_NOT_UPDATED;
 	}
 
+	double update(Coordinate& c, int side) {
+		return update(c.global_x, c.global_y, c.x, c.y, side);
+	}
+
 	double update(int index, int side) {
-		int* coord = coordinates(index);
-		return update(coord[0], coord[1], coord[2], coord[3], side);
+		Coordinate c = coordinates(index);
+		return update(c, side);
 	}
 
 	void addHistory(int global_x, int global_y, int local_x, int local_y) {
@@ -152,18 +169,13 @@ public:
 	}
 
 	void goBack() {
-		int* prev_info = last();
-		int global_x = prev_info[0];
-		int global_y = prev_info[1];
-		int x = prev_info[2];
-		int y = prev_info[3];
-		int last_field = prev_info[4];
+		Coordinate c = last();
 
-		local[global_x][global_y].state[x][y] = 0;
-		global.state[global_x][global_y] = 0;
-		global.update(global_x, global_y, localVictory(global_x, global_y));
-		nextField = last_field;
-		loggingHistory(global_x, global_y, x, y);
+		local[c.global_x][c.global_y].state[c.x][c.y] = 0;
+		global.state[c.global_x][c.global_y] = 0;
+		global.update(c.global_x, c.global_y, localVictory(c.global_x, c.global_y));
+		nextField = c.last_field;
+		loggingHistory(c);
 
 		history.goBack();
 	}
@@ -211,10 +223,11 @@ public:
 		Logger::log(ss.str());
 	}
 
-	void loggingHistory(int global_x, int global_y, int local_x, int local_y) {
+	void loggingHistory(Coordinate& c) {
 		Logger::ss << "History ==== "
-			<< "G(" << global_x << "," << global_y << "), "
-			<< "L(" << local_x << "," << local_y << "), ";
+			<< "G(" << c.global_x << "," << c.global_y << "), "
+			<< "L(" << c.x << "," << c.y << "), "
+			<< "last_field: " << c.last_field;
 		Logger::log();
 	}
 };

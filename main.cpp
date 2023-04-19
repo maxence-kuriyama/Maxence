@@ -262,7 +262,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				// com.play(input);
 				com.playMinMax(game.board, game.side());
 				// 盤面の更新
-				game.update(com.globalX, com.globalY, com.localX, com.localY);
+				game.update(com.coordinate);
 			}
 
 			// コメントの描画

@@ -65,11 +65,7 @@ public:
 	int fps = 0;			// 実効FPS
 
 	// 盤面上の操作関連
-	int globalX = 1;
-	int globalY = 1;
-	int localX = 1;
-	int localY = 1;			//キーボード操作時の座標
-
+	Coordinate coordinate = { 0, 0, 0, 0, DUMMY_LAST_FIELD }; //キーボード操作時の座標
 	int playCnt = 0;		// 1ターンに費やしたカウント
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
@@ -306,16 +302,12 @@ public:
 
 	void drawHistLast() {
 		if (board.canCancel()) {
-			int* last = board.last();
-			int global_x = last[0];
-			int global_y = last[1];
-			int local_x = last[2];
-			int local_y = last[3];
+			Coordinate c = board.last();
 
-			int upLeftX = 160 + 100 * global_x + 33 * local_x + 1;
-			int upLeftY = 80 + 100 * global_y + 33 * local_y + 1;
-			int lowRightX = 160 + 100 * global_x + 33 * (local_x + 1);
-			int lowRightY = 80 + 100 * global_y + 33 * (local_y + 1);
+			int upLeftX = 160 + 100 * c.global_x + 33 * c.x + 1;
+			int upLeftY = 80 + 100 * c.global_y + 33 * c.y + 1;
+			int lowRightX = 160 + 100 * c.global_x + 33 * (c.x + 1);
+			int lowRightY = 80 + 100 * c.global_y + 33 * (c.y + 1);
 			DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, bkColorLastHist, TRUE);
 		}
 	}
@@ -372,10 +364,11 @@ public:
 	}
 
 	void drawCurrentCoord() {
-		int upLeftX = 160 + 100 * globalX + 33 * localX;
-		int upLeftY = 80 + 100 * globalY + 33 * localY;
-		int lowRightX = 160 + 100 * globalX + 33 * (localX + 1) + 1;
-		int lowRightY = 80 + 100 * globalY + 33 * (localY + 1) + 1;
+		Coordinate c = coordinate;
+		int upLeftX = 160 + 100 * c.global_x + 33 * c.x;
+		int upLeftY = 80 + 100 * c.global_y + 33 * c.y;
+		int lowRightX = 160 + 100 * c.global_x + 33 * (c.x + 1) + 1;
+		int lowRightY = 80 + 100 * c.global_y + 33 * (c.y + 1) + 1;
 		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
 	}
 
@@ -437,26 +430,24 @@ public:
 	/*===========================*/
 	void getMouseCoord() {
 		for (int index = 0; index < 81; index++) {
-			int* coord_info = Board::coordinates(index);
-			int global_x = coord_info[0];
-			int global_y = coord_info[1];
-			int local_x = coord_info[2];
-			int local_y = coord_info[3];
+			Coordinate c = Board::coordinates(index);
 
-			int upLeftX = 160 + 100 * global_x + 33 * local_x;
-			int upLeftY = 80 + 100 * global_y + 33 * local_y;
-			int lowRightX = 160 + 100 * global_x + 33 * (local_x + 1);
-			int lowRightY = 80 + 100 * global_y + 33 * (local_y + 1);
+			int upLeftX = 160 + 100 * c.global_x + 33 * c.x;
+			int upLeftY = 80 + 100 * c.global_y + 33 * c.y;
+			int lowRightX = 160 + 100 * c.global_x + 33 * (c.x + 1);
+			int lowRightY = 80 + 100 * c.global_y + 33 * (c.y + 1);
 			if (mouse.onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
-				globalX = global_x;
-				globalY = global_y;
-				localX = local_x;
-				localY = local_y;
+				coordinate = c;
 			}
 		}
 	}
 
 	void moveCoordByKey() {
+		int globalX = coordinate.global_x;
+		int globalY = coordinate.global_y;
+		int localX = coordinate.x;
+		int localY = coordinate.y;
+
 		if (key.onUp()) {
 			localY--;
 			if (localY < 0) {
@@ -485,6 +476,8 @@ public:
 				localX -= 3;
 			}
 		}
+
+		coordinate = { globalX, globalY, localX, localY, DUMMY_LAST_FIELD };
 	}
 
 	bool playTurn() {
@@ -506,7 +499,11 @@ public:
 	}
 
 	double update(int side = 0) {
-		return update(globalX, globalY, localX, localY, side);
+		return update(coordinate, side);
+	}
+
+	double update(Coordinate& c, int side = 0) {
+		return update(c.global_x, c.global_y, c.x, c.y, side);
 	}
 
 	double update(int global_x, int global_y, int local_x, int local_y, int src_side = 0) {
@@ -516,8 +513,6 @@ public:
 		double reward = board.update(global_x, global_y, local_x, local_y, src_side);
 		if (isUpdated(reward)) {
 			cnt++;
-			//履歴を残す
-			board.addHistory(global_x, global_y, local_x, local_y);
 		}
 		return reward;
 	}
