@@ -75,6 +75,10 @@ public:
 		return global.victory();
 	}
 
+	int globalWaiting(int side) {
+		return global.waitingCount(side);
+	}
+
 	int localState(int global_x, int global_y, int x, int y) {
 		return local[global_x][global_y].state[x][y];
 	}
@@ -90,6 +94,10 @@ public:
 
 	int localVictory(int x, int y) {
 		return local[x][y].victory();
+	}
+
+	int localWaiting(int x, int y, int side) {
+		return local[x][y].waitingCount(side);
 	}
 
 	Coordinate last() {

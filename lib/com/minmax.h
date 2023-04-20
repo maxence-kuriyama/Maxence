@@ -6,8 +6,12 @@
 const float EVALUATION_WIN(1.0);
 const float EVALUATION_LOSE(-1.0);
 const float EVALUATION_DRAW(0.0);
+const float EVALUATION_WAITING(0.2);
+const float EVALUATION_WAITED(-0.2);
 const float EVALUATION_LOCAL_WIN(0.1);
 const float EVALUATION_LOCAL_LOSE(-0.1);
+const float EVALUATION_LOCAL_WAITING(0.01);
+const float EVALUATION_LOCAL_WAITED(-0.01);
 
 class MinMaxNode;
 
@@ -164,6 +168,20 @@ void MinMaxNode::evaluate() {
 			else if (local_victory == -side) {
 				value += EVALUATION_LOCAL_LOSE;
 			}
+		}
+	}
+
+	int waiting_count = board.globalWaiting(side);
+	value += EVALUATION_WAITING * waiting_count;
+	int waited_count = board.globalWaiting(-side);
+	value += EVALUATION_WAITED * waited_count;
+	
+	for (int x = 0; x < 3; x++) {
+		for (int y = 0; y < 3; y++) {
+			int local_waiting = board.localWaiting(x, y, side);
+			value += EVALUATION_LOCAL_WAITING * local_waiting;
+			int local_waited = board.localWaiting(x, y, -side);
+			value += EVALUATION_LOCAL_WAITED * local_waited;
 		}
 	}
 }

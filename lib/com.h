@@ -108,7 +108,7 @@ public:
 		if (cnt > 0) return;
 
 		MinMaxNode node(board, side);
-		int depth = 4;
+		int depth = 2;
 		int index = node.search(depth);
 
 		coordinate = Board::coordinates(index);

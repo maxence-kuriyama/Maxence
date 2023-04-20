@@ -72,6 +72,43 @@ public:
 		return VICTORY_NONE;
 	}
 
+	// ƒŠ[ƒ`‚ÌŒÂ”
+	int waitingCount(int side) {
+		int count = 0;
+		for (int k = 0; k < 3; k++) {
+			int col[3] = { state[0][k], state[1][k], state[2][k] };
+			count += isWaiting(col, side);
+		}
+		for (int k = 0; k < 3; k++) {
+			int row[3] = { state[k][0], state[k][1], state[k][2] };
+			count += isWaiting(row, side);
+		}
+
+		int slash1[3] = { state[0][0], state[1][1], state[2][2] };
+		count += isWaiting(slash1, side);
+
+		int slash2[3] = { state[2][0], state[1][1], state[0][2] };
+		count += isWaiting(slash2, side);
+
+		return count;
+	}
+
+	int isWaiting(int src[3], int side) {
+		int seq[3][3] = {
+			{ 1, 1, 0 },
+			{ 1, 0, 1 },
+			{ 0, 1, 1 }
+		};
+		for (int i = 0; i < 3; i++) {
+			int degree = 0;
+			for (int j = 0; j < 3; j++) {
+				if (src[j] * side == seq[i][j]) degree++;
+			}
+			if (degree == 3) return 1;
+		}
+		return 0;
+	}
+
 	int update(int i, int j, int side) {
 		if (victory() != 0) return -1;
 		if (state[i][j] != 0) return -1;
