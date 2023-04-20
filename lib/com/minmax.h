@@ -139,7 +139,7 @@ void MinMaxNode::createChildren() {
 		board_clone = board;
 		
 		//”Õ–Ê‚ÌXV
-		double res = board_clone.update(new_index, side);
+		double res = board_clone.update(new_index, side, false);
 		if (res < -10.0) continue;
 
 		MinMaxNode* new_node = new MinMaxNode(board_clone, -side, new_index);

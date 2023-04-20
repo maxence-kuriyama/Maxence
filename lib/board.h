@@ -2,6 +2,7 @@
 
 #include "lib/board/field.h"
 #include "lib/board/hist.h"
+#include "lib/const.h"
 #include "lib/logger.h"
 
 
@@ -132,13 +133,13 @@ public:
 	/*===========================*/
 	//    Updation
 	/*===========================*/
-	double update(int global_x, int global_y, int local_x, int local_y, int side) {
+	double update(int global_x, int global_y, int local_x, int local_y, int side, bool logging = true) {
 		//盤面の更新
 		if (isNext(global_x, global_y)) {
 			if (local[global_x][global_y].update(local_x, local_y, side) == 0) {
 				//全体の更新
 				global.update(global_x, global_y, localVictory(global_x, global_y));
-				loggingUpdate(global_x, global_y, local_x, local_y, side);
+				if (logging) loggingUpdate(global_x, global_y, local_x, local_y, side);
 				//履歴を残す
 				addHistory(global_x, global_y, local_x, local_y);
 
@@ -155,13 +156,13 @@ public:
 		return RWD_NOT_UPDATED;
 	}
 
-	double update(Coordinate& c, int side) {
-		return update(c.global_x, c.global_y, c.x, c.y, side);
+	double update(Coordinate& c, int side, bool logging = true) {
+		return update(c.global_x, c.global_y, c.x, c.y, side, logging);
 	}
 
-	double update(int index, int side) {
+	double update(int index, int side, bool logging = true) {
 		Coordinate c = coordinates(index);
-		return update(c, side);
+		return update(c, side, logging);
 	}
 
 	void addHistory(int global_x, int global_y, int local_x, int local_y) {
