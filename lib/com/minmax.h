@@ -16,14 +16,9 @@ public:
 	ChildLink* next;
 	MinMaxNode* node;
 
-	ChildLink(MinMaxNode* src = nullptr) {
-		node = src;
-		next = nullptr;
-	}
-
-	~ChildLink() {
-		delete node;
-	}
+	ChildLink();
+	ChildLink(MinMaxNode* src);
+	~ChildLink();
 
 	bool hasNext() {
 		return (next != nullptr);
@@ -75,13 +70,7 @@ public:
 	}
 
 	~MinMaxNode() {
-		ChildLink* child = head;
-		while (child->hasNext()) {
-			ChildLink* previous = child;
-			child = child->next;
-			delete previous;
-		}
-		delete child;
+		delete head;
 	}
 
 	int search(int depth) {
@@ -246,4 +235,20 @@ void MinMaxNode::loggingSearchTerminal() {
 		<< "side: " << side << ", "
 		<< "value: " << value;
 	Logger::log();
+}
+
+
+ChildLink::ChildLink() {
+	node = nullptr;
+	next = nullptr;
+}
+
+ChildLink::ChildLink(MinMaxNode* src) {
+	node = src;
+	next = nullptr;
+}
+
+ChildLink::~ChildLink() {
+	delete node;
+	delete next;
 }
