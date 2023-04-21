@@ -13,6 +13,8 @@ const float EVALUATION_LOCAL_LOSE(-0.1);
 const float EVALUATION_LOCAL_WAITING(0.01);
 const float EVALUATION_LOCAL_WAITED(-0.01);
 
+const int TRUNCATE_SELECT_THLD(30);
+
 class MinMaxNode;
 
 class ChildLink {
@@ -56,6 +58,10 @@ private:
 
 	void setLast(ChildLink* src) {
 		last = src;
+	}
+
+	bool shouldSkip() {
+		return (board.isNextAny() && board.emptyCount() >= TRUNCATE_SELECT_THLD);
 	}
 	
 public:
@@ -108,7 +114,7 @@ public:
 bool MinMaxNode::truncate = false;
 
 void MinMaxNode::searchRecursive(int depth, bool may_skip) {
-	if (depth == 0 || terminated() || (may_skip && board.isNextAny())) {
+	if (depth == 0 || terminated() || (may_skip && shouldSkip())) {
 		if (depth == 0 || terminated()) {
 			loggingSearchTerminal();
 		}

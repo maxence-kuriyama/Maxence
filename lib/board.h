@@ -100,6 +100,18 @@ public:
 		return local[x][y].waitingCount(side);
 	}
 
+	int emptyCount() {
+		int count = 0;
+		for (int x = 0; x < 3; x++) {
+			for (int y = 0; y < 3; y++) {
+				if (localVictory(x, y) == 0) {
+					count += local[x][y].emptyCount();
+				}
+			}
+		}
+		return count;
+	}
+
 	Coordinate last() {
 		return history.last();
 	}
@@ -181,7 +193,11 @@ public:
 		Coordinate c = last();
 
 		local[c.global_x][c.global_y].state[c.x][c.y] = 0;
+		local[c.global_x][c.global_y].clearCache();
+		
 		global.state[c.global_x][c.global_y] = 0;
+		global.clearCache();
+		
 		global.update(c.global_x, c.global_y, localVictory(c.global_x, c.global_y));
 		nextField = c.last_field;
 		loggingHistory(c);

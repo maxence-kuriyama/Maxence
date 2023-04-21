@@ -19,6 +19,7 @@ public:
 	int stone2;
 	int stone1_t;
 	int stone2_t;
+	int victory_cache = VICTORY_NONE;
 
 	Field() {
 		initialize();
@@ -30,6 +31,11 @@ public:
 				state[i][j] = 0;
 			}
 		}
+		clearCache();
+	}
+
+	void clearCache() {
+		victory_cache = VICTORY_NONE;
 	}
 
 	void setStoneGraphs(int src1, int src2, int src1_t, int src2_t) {
@@ -40,32 +46,39 @@ public:
 	}
 
 	int victory() {
+		if (victory_cache != VICTORY_NONE) return victory_cache;
+
 		int target = 0;
 
 		for (int k = 0; k < 3; ++k) {
 			target = state[0][k];
 			if (target != 0 && state[1][k] == target && state[2][k] == target) {
+				victory_cache = target;
 				return target;
 			}
 		}
 		for (int k = 0; k < 3; ++k) {
 			target = state[k][0];
 			if (target != 0 && state[k][1] == target && state[k][2] == target) {
+				victory_cache = target;
 				return target;
 			}
 		}
 
 		target = state[0][0];
 		if (target != 0 && state[1][1] == target && state[2][2] == target) {
+			victory_cache = target;
 			return target;
 		}
 
 		target = state[2][0];
 		if (target != 0 && state[1][1] == target && state[0][2] == target) {
+			victory_cache = target;
 			return target;
 		}
 		
 		if (filled()) {
+			victory_cache = VICTORY_DRAW;
 			return VICTORY_DRAW;
 		}
 
@@ -107,6 +120,17 @@ public:
 			if (degree == 3) return 1;
 		}
 		return 0;
+	}
+
+	// ‹ó‚«ƒ}ƒX‚ÌŒÂ”
+	int emptyCount() {
+		int count = 0;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (state[i][j] == 0) count++;
+			}
+		}
+		return count;
 	}
 
 	int update(int i, int j, int side) {
