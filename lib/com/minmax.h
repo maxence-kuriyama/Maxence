@@ -6,8 +6,8 @@
 const float EVALUATION_WIN(1.0);
 const float EVALUATION_LOSE(-1.0);
 const float EVALUATION_DRAW(0.0);
-const float EVALUATION_WAITING(0.2);
-const float EVALUATION_WAITED(-0.2);
+const float EVALUATION_WAITING(0.1);
+const float EVALUATION_WAITED(-0.1);
 const float EVALUATION_LOCAL_WIN(0.1);
 const float EVALUATION_LOCAL_LOSE(-0.1);
 const float EVALUATION_LOCAL_WAITING(0.01);
@@ -43,7 +43,7 @@ private:
 	ChildLink* last;
 	
 	void createChildren();
-	void searchRecursive(int depth);
+	void searchRecursive(int depth, bool may_skip = false);
 	bool terminated();
 	void evaluate();
 	void evaluateChildren();
@@ -52,6 +52,7 @@ private:
 	void loggingSearchForward(int depth);
 	void loggingSearchBackward(int depth);
 	void loggingSearchTerminal();
+	void loggingSearchSkip();
 
 	void setLast(ChildLink* src) {
 		last = src;
@@ -64,6 +65,8 @@ public:
 	int max_child_index = 0;
 	double value = 0.0;
 
+	static bool truncate;
+
 	MinMaxNode(const Board& src_board, int src_side, int src_index = 0) {
 		board = src_board;
 		side = src_side;
@@ -75,6 +78,7 @@ public:
 
 	~MinMaxNode() {
 		delete head;
+		truncate = false;
 	}
 
 	int search(int depth) {
@@ -101,10 +105,17 @@ public:
 	}
 };
 
-void MinMaxNode::searchRecursive(int depth) {
-	if (depth == 0 || terminated()) {
+bool MinMaxNode::truncate = false;
+
+void MinMaxNode::searchRecursive(int depth, bool may_skip) {
+	if (depth == 0 || terminated() || (may_skip && board.isNextAny())) {
+		if (depth == 0 || terminated()) {
+			loggingSearchTerminal();
+		}
+		else {
+			loggingSearchSkip();
+		}
 		evaluate();
-		loggingSearchTerminal();
 		return;
 	}
 
@@ -114,7 +125,12 @@ void MinMaxNode::searchRecursive(int depth) {
 	ChildLink* child = head;
 	while (child->hasNext()) {
 		child = child->next;
-		child->node->searchRecursive(depth - 1);
+		if (truncate && depth == 2) {
+			child->node->searchRecursive(depth - 1, board.isNextAny());
+		}
+		else {
+			child->node->searchRecursive(depth - 1);
+		}
 	}
 	evaluateChildren();
 	max_child_index = optimalIndex();
@@ -249,6 +265,14 @@ void MinMaxNode::loggingSearchBackward(int depth) {
 
 void MinMaxNode::loggingSearchTerminal() {
 	Logger::ss << "Terminal ==== "
+		<< "index: " << index << ", "
+		<< "side: " << side << ", "
+		<< "value: " << value;
+	Logger::log();
+}
+
+void MinMaxNode::loggingSearchSkip() {
+	Logger::ss << "Skip recursive search ==== "
 		<< "index: " << index << ", "
 		<< "side: " << side << ", "
 		<< "value: " << value;
