@@ -62,13 +62,5 @@
 #define VICTORY_WHITE		-1
 #define VICTORY_DRAW		10
 
-#define GAME_FLAG_TITLE			0
-#define GAME_FLAG_BATTLE		1
-#define GAME_FLAG_RESULT		2
-#define GAME_FLAG_DEMO_FIRST	-3
-#define GAME_FLAG_DEMO_SECOND	-2
-#define GAME_FLAG_DEMO_THIRD	-1
-#define GAME_FLAG_SCENARIO		-6
-#define GAME_FLAG_ENDING		-4
-#define GAME_VS_HUMAN			0
-#define GAME_VS_COM				1
+#define TEBAN_SENKO			0
+#define TEBAN_KOKO			1

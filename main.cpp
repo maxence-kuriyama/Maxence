@@ -15,6 +15,7 @@
 using namespace DxLib;
 using namespace std;
 #include "lib/fireflower.h"
+#include "lib/logo.h"
 #include "lib/scenario.h"
 #include "lib/game.h"
 #include "lib/ending.h"
@@ -23,6 +24,14 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
+const int FLAG_TITLE(0);
+const int FLAG_BATTLE(1);
+const int FLAG_RESULT(2);
+const int FLAG_DEMO_FIRST(-3);
+const int FLAG_DEMO_SECOND(-2);
+const int FLAG_DEMO_THIRD(-1);
+const int FLAG_SCENARIO(-6);
+const int FLAG_ENDING(-4);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -45,11 +54,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	srand((unsigned)time(NULL));
 
 
-	Game game;
+	Mouse mouse;
+	Key key;
+	Logo logo;
 	Music bgm;
 	Scenario scenario;
 	Ending ending;
 	fireflower tama[FIRE_FLOWER_NUM];
+
+	Game game(&mouse, &key);
+	int flg = FLAG_DEMO_FIRST;
 	COM com;
 
 
@@ -92,8 +106,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		// 入力情報を取得
-		game.key.update();
-		game.mouse.update();
+		key.update();
+		mouse.update();
 
 		// 設定を切り替える
 		game.toggleByKey(bgm);
@@ -109,21 +123,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// エンディングのデバッグ
 		if (game.debugEndingFlg) {
-			if (game.flg != -4) {
+			if (flg != FLAG_ENDING) {
 				bgm.unloadAll();
 				ending.initialize();
-				game.goEnding();
+				flg = FLAG_ENDING;
 			}
 			else {
 				bgm.unloadAll();
-				game.goTitle();
+				flg = FLAG_TITLE;
 			}
 			game.debugEndingFlg = 0;
 		}
 
 
 		// OPアニメーション ClickToStartまで
-		if (game.flg == GAME_FLAG_DEMO_FIRST){
+		if (flg == FLAG_DEMO_FIRST){
 			SetBackgroundColor(0, 0, 0);	//背景色
 			if (logoX <= 120.0 ) {
 				DrawExtendGraph(270, 170, 358, 260, MLogo, TRUE);
@@ -145,13 +159,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			logoX += 2.0;
 
-			if (logoX > 480.0 || game.mouse.click() || game.key.onReturn()) {
-				game.flg = GAME_FLAG_DEMO_SECOND;
+			if (logoX > 480.0 || mouse.click() || key.onReturn()) {
+				flg = FLAG_DEMO_SECOND;
 				logoX = M_PI_2;
 			}
 		}
 		// OPアニメーション ClickToStart点滅
-		else if (game.flg == GAME_FLAG_DEMO_SECOND) {
+		else if (flg == FLAG_DEMO_SECOND) {
 			DrawExtendGraph(170, 170, 258, 260, MLogo, TRUE);
 			DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
 
@@ -160,14 +174,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			DrawExtendGraph(200, 290, 460, 360, ClickToStart, TRUE);
 			SetDrawBright(255, 255, 255);
 
-			if (game.mouse.click() || game.key.onReturn()) {
-				game.flg = GAME_FLAG_DEMO_THIRD;
+			if (mouse.click() || key.onReturn()) {
+				flg = FLAG_DEMO_THIRD;
 				SetBackgroundColor(0, 128, 128);	//背景色
 				SetDrawBright(255, 255, 255);
 			}
 		}
 		// OPアニメーション メインロゴ
-		else if (game.flg == GAME_FLAG_DEMO_THIRD) {
+		else if (flg == FLAG_DEMO_THIRD) {
 			if (logoX <= 37.5) {
 				DrawExtendGraph(160, 170, 490, 260, Logo0, TRUE);
 			}
@@ -187,11 +201,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 485 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 			}
 			if(logoX < 1000.0) logoX += 1.0;
-			if (logoX > 120 || game.mouse.click() || game.key.onReturn()) {
-				game.goTitle();
+			if (logoX > 120 || mouse.click() || key.onReturn()) {
+				flg = FLAG_TITLE;
 			}
 		}
-		else if (game.isTitle()) {
+		else if (flg == FLAG_TITLE) {
 			bgm.load("sound/bgm03.mp3");
 			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 				tama[i].draw();
@@ -209,6 +223,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				else if (choice == 1) {
 					game.mode = "隣の人と";
 					game.initialize();
+					flg = FLAG_BATTLE;
 					game.goBattle(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
 				}
 			}
@@ -216,16 +231,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			else if (game.isVsCOM()) {
 				int choice = game.menuChoose();
 				if (choice == 0) {
-					game.goScenario();
-					game.teban = 0;
+					flg = FLAG_SCENARIO;
+					game.teban = TEBAN_SENKO;
 				}
 				else if (choice == 1) {
-					game.goScenario();
-					game.teban = 1;
+					flg = FLAG_SCENARIO;
+					game.teban = TEBAN_KOKO;
 				}
 			}
 		}
-		else if (game.isBattle()) {
+		else if (flg == FLAG_BATTLE) {
 			// 盤面の描画
 			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);	//背景色
@@ -246,7 +261,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawLocalState();
 			game.drawCurrentCoord();
 			game.drawPlayers();
-			game.drawLogo();
+			logo.draw();
+			logo.update(key); // 動く
 
 			// メッセージの描画
 			game.drawBattleMessage();
@@ -274,18 +290,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 勝利判定
 			vict = game.victory();
 			if (vict != 0) {
-				game.goResult();
-				game.key.initWait();
+				flg = FLAG_RESULT;
+				key.initWait();
 			}
 
 			// 動作の取り消し
-			if (game.key.onBack() && game.goBackHist()) {
+			if (key.onBack() && game.goBackHist()) {
 				com.setWait();
 			}
 
 			// セーブ or リセット
 			int choice = game.menuChoose();
 			if (choice == 0 || choice == 1) {
+				flg = FLAG_TITLE;
 				game.reset(bgm);
 				for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 					tama[i].initialize();
@@ -296,20 +313,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// カメラ操作
 			game.camera.set();
-			if (game.mouse.click()) {
-				game.mouse.set();
+			if (mouse.click()) {
+				mouse.set();
 			}
-			if (game.mouse.onClick()) {
-				theta -= (game.mouse.distDragX()) * 0.05;
-				game.mouse.set();
+			if (mouse.onClick()) {
+				theta -= (mouse.distDragX()) * 0.05;
+				mouse.set();
 			}
 			//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 
 			// 対戦スキップ（一人用デバッグ）
-			game.skipBattle(scenario.flg);
+			if (game.skipBattle(scenario.flg)) {
+				flg = FLAG_SCENARIO;
+			}
 
 		}
-		else if (game.isResult()) {
+		else if (flg == FLAG_RESULT) {
 			// 盤面の描画
 			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);	//背景色
@@ -318,34 +337,36 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawHistLast();
 			game.drawNextField();
 			game.drawLocalState();
-			game.drawLogo();
+			logo.draw();
 
 			// メッセージの描画
 			game.drawWinner(vict);
-			game.btnAgain.display(game.mouse, game.option.strColor);
-			if (game.btnAgain.isClicked(game.mouse) || game.key.onReturn()){
+			game.btnAgain.display(mouse, game.option.strColor);
+			if (game.btnAgain.isClicked(mouse) || key.onReturn()){
 				game.initialize();
+				flg = FLAG_BATTLE;
 				game.goBattle();
 			}
 
 			// 動作の取り消し
-			if (game.key.onBack() && game.goBackHist()) {
+			if (key.onBack() && game.goBackHist()) {
+				flg = FLAG_BATTLE;
 				game.goBattle();
 			}
 
 			// カメラ操作
-			if (game.mouse.click()) {
-				game.mouse.set();
+			if (mouse.click()) {
+				mouse.set();
 			}
-			else if (game.mouse.onClick()) {
-				game.camera.move(game.mouse.distDragX(), game.mouse.distDragY());
-				game.mouse.set();
+			else if (mouse.onClick()) {
+				game.camera.move(mouse.distDragX(), mouse.distDragY());
+				mouse.set();
 			}
-			game.camera.zoom(game.mouse.wheel);
+			game.camera.zoom(mouse.wheel);
 
 			// TODO シナリオの場合の終了 + 遷移処理
 		}
-		else if (game.isEnding()) {
+		else if (flg == FLAG_ENDING) {
 			bgm.load("sound/bgm09.mp3");
 			SetBackgroundColor(0, 0, 0);	//背景色
 			game.drawBase();
@@ -354,13 +375,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			game.drawNextField();
 			game.drawLocalState();
 			game.drawCurrentCoord();
-			game.drawLogo();
+			logo.draw();
 			ending.show(bgm, game.fps);
 		}
-		else if (game.isScenario()) {
-			scenario.getKey(game.key);
-			if (!bgm.drawLoadMsg() && scenario.show(game.mouse, bgm)) {
+		else if (flg == FLAG_SCENARIO) {
+			scenario.getKey(key);
+			if (!bgm.drawLoadMsg() && scenario.show(mouse, bgm)) {
 				game.initialize();
+				flg = FLAG_BATTLE;
 				game.goBattle(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
 			}
 		}

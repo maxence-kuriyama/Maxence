@@ -1,7 +1,5 @@
 #pragma once
 
-#include "lib/logo.h"
-
 
 // ゲームのオプション
 // Gameオブジェクトのメンバとしての使用を想定
@@ -73,6 +71,10 @@ public:
 		return (state[KEY_INPUT_Z] == 1 || state[KEY_INPUT_BACK] == 1);
 	}
 
+	bool onAt() {
+		return (state[KEY_INPUT_AT] == 1);
+	}
+
 	// ゲーム中のキー入力
 	bool onCheck() {
 		if (waitCnt <= 0 && (state[KEY_INPUT_RETURN] == 1 || state[KEY_INPUT_SPACE] == 1)) {
@@ -139,17 +141,7 @@ public:
 		return false;
 	}
 
-	void toggleSetting(Option& option, Logo& logo) {
-		// ロゴを動かす
-		if (state[KEY_INPUT_AT] == 1) {
-			if (logo.acRate >= 0.5) {
-				logo.initialize();
-			}
-			else {
-				logo.acRate += 1.0;
-			}
-		}
-
+	void toggleSetting(Option& option) {
 		// 文字色の変更
 		if (state[KEY_INPUT_I] == 1) {
 			option.toggleStrColor();
@@ -208,12 +200,12 @@ public:
 		}
 	}
 
-	void skipBattle(int& gameFlg, int& sceneFlg) {
+	bool skipBattle() {
 		if (state[KEY_INPUT_B] == 1) {
 			StopMusic();
-			sceneFlg++;
-			gameFlg = -6;
+			return true;
 		}
+		return false;
 	}
 
 	int skipMovie(int movieHandle) {

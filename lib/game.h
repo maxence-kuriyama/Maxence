@@ -11,6 +11,9 @@
 #include "lib/board.h"
 
 
+const int VS_HUMAN(0);
+const int VS_COM(1);
+
 class Game {
 private:
 	// 定数
@@ -51,11 +54,9 @@ private:
 	Button btnKoko;
 	Button btnSave;
 	Button btnReset;
-	Logo logo;
 
 public:
-	int flg = GAME_FLAG_DEMO_FIRST;
-	int taijin = GAME_VS_HUMAN;
+	int taijin = VS_HUMAN;
 	int teban = 0;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
@@ -71,14 +72,16 @@ public:
 
 	Option option;
 	Camera camera;
-	Mouse mouse;
-	Key key;
+	Mouse* mouse;
+	Key* key;
 	Anime cutin;
 	Comment comment;
 	Button btnAgain;
 	Board board;
 
-	Game() {
+	Game(Mouse* src_mouse, Key* src_key) {
+		mouse = src_mouse;
+		key = src_key;
 		// ボタン初期化
 		btnLonely.initialize(TEXT1_X, TEXT1_Y, "ぼっちで");
 		btnVsHuman.initialize(TEXT2_X, TEXT2_Y, "隣の人と");
@@ -99,7 +102,6 @@ public:
 		// 試合情報の初期化
 		initialize();
 		menu.set(btnLonely, btnVsHuman);
-		flg = GAME_FLAG_DEMO_FIRST;
 	}
 
 	// 試合情報の初期化（goBattleと統合してもいいかも）
@@ -108,8 +110,8 @@ public:
 		drawCnt = 0;
 		board.initialize();
 		camera.initialize();
-		mouse.set();
-		key.initWait();
+		mouse->set();
+		key->initWait();
 	}
 
 	// 同期処理
@@ -123,59 +125,13 @@ public:
 			fpsStart = clock();
 		}
 		// 同期処理
-		while (clock() - start < 1000.0 / FPS && flg != 5) {
+		while (clock() - start < 1000.0 / FPS) {
 			WaitTimer(1);
 		}
 		start = clock();
 	}
 
-
-	/*===========================*/
-	//    Boolean
-	/*===========================*/
-	bool isPlayTurn() {
-		// 対人戦、あるいは人vsCOMの人の手番
-		return (isVsHuman() || (isVsCOM() && cnt % 2 == teban));
-	}
-
-	bool isVsHuman() {
-		return taijin == GAME_VS_HUMAN;
-	}
-
-	bool isVsCOM() {
-		return taijin == GAME_VS_COM;
-	}
-
-	bool isTitle() {
-		return (flg == GAME_FLAG_TITLE);
-	}
-
-	bool isBattle() {
-		return (flg == GAME_FLAG_BATTLE);
-	}
-
-	bool isResult() {
-		return (flg == GAME_FLAG_RESULT);
-	}
-
-	bool isScenario() {
-		return (flg == GAME_FLAG_SCENARIO);
-	}
-
-	bool isEnding() {
-		return (flg == GAME_FLAG_ENDING);
-	}
-
-
-	/*===========================*/
-	//    フラグ関連
-	/*===========================*/
-	void goTitle() {
-		flg = GAME_FLAG_TITLE;
-	}
-
 	void goBattle(int player1 = BATTLE_PLAYER_NONE, int player2 = BATTLE_PLAYER_NONE) {
-		flg = GAME_FLAG_BATTLE;
 		setPlayersGraph(player1, player2);
 		menu.set(btnSave, btnReset);
 	}
@@ -216,31 +172,30 @@ public:
 		}
 	}
 
-	void goResult() {
-		flg = GAME_FLAG_RESULT;
+
+	/*===========================*/
+	//    Boolean
+	/*===========================*/
+	bool isPlayTurn() {
+		// 対人戦、あるいは人vsCOMの人の手番
+		return (isVsHuman() || (isVsCOM() && cnt % 2 == teban));
 	}
 
-	void goScenario() {
-		flg = GAME_FLAG_SCENARIO;
+	bool isVsHuman() {
+		return taijin == VS_HUMAN;
 	}
 
-	void goEnding() {
-		flg = GAME_FLAG_ENDING;
+	bool isVsCOM() {
+		return taijin == VS_COM;
 	}
 
 
 	/*===========================*/
 	//    リセットボタン
 	/*===========================*/
-	void drawLogo() {
-		logo.draw(mouse);
-		if (isBattle()) logo.update(); // 動く
-	}
-
 	void reset(Music& bgm) {
-		mouse.set();
-		goTitle();
-		taijin = 0;
+		mouse->set();
+		taijin = VS_HUMAN;
 		mode = "";
 		bgm.unloadAll();
 		DeleteGraph(player1);
@@ -253,7 +208,7 @@ public:
 	//    メニュー画面
 	/*===========================*/
 	int menuChoose() {
-		return menu.choose(keyboardFlg, mouse, key, option.strColor);
+		return menu.choose(keyboardFlg, *mouse, *key, option.strColor);
 	}
 
 	void setOrderMenu() {
@@ -265,23 +220,27 @@ public:
 	//    キーボード入力関連
 	/*===========================*/
 	void toggleByKey(Music& music) {
-		key.toggleSetting(option, logo);
+		key->toggleSetting(option);
 		//key.configLearning();
-		key.toggleDebug(debugFlg);
+		key->toggleDebug(debugFlg);
 		if (debugFlg) {
-			key.toggleForDebug(option, cutin.flg, debugEndingFlg);
+			key->toggleForDebug(option, cutin.flg, debugEndingFlg);
 		}
 	}
 
-	void skipBattle(int& sceneFlg) {
+	bool skipBattle(int& sceneFlg) {
 		if (debugFlg && isVsCOM()) {
-			key.skipBattle(flg, sceneFlg);
+			if (key->skipBattle()) {
+				sceneFlg++;
+				return true;
+			}
 		}
+		return false;
 	}
 
 	void toggleMouseOrKeyboard() {
-		if (mouse.isUsed()) keyboardFlg = 0;
-		if (key.isUsed()) keyboardFlg = 1;
+		if (mouse->isUsed()) keyboardFlg = 0;
+		if (key->isUsed()) keyboardFlg = 1;
 	}
 
 
@@ -436,7 +395,7 @@ public:
 			int upLeftY = 80 + 100 * c.global_y + 33 * c.y;
 			int lowRightX = 160 + 100 * c.global_x + 33 * (c.x + 1);
 			int lowRightY = 80 + 100 * c.global_y + 33 * (c.y + 1);
-			if (mouse.onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
+			if (mouse->onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
 				coordinate = c;
 			}
 		}
@@ -448,28 +407,28 @@ public:
 		int localX = coordinate.x;
 		int localY = coordinate.y;
 
-		if (key.onUp()) {
+		if (key->onUp()) {
 			localY--;
 			if (localY < 0) {
 				globalY = (globalY - 1 + 3) % 3;
 				localY += 3;
 			}
 		}
-		if (key.onDown()) {
+		if (key->onDown()) {
 			localY++;
 			if (localY >= 3) {
 				globalY = (globalY + 1) % 3;
 				localY -= 3;
 			}
 		}
-		if (key.onLeft()) {
+		if (key->onLeft()) {
 			localX--;
 			if (localX < 0) {
 				globalX = (globalX - 1 + 3) % 3;
 				localX += 3;
 			}
 		}
-		if (key.onRight()) {
+		if (key->onRight()) {
 			localX++;
 			if (localX > 2) {
 				globalX = (globalX + 1) % 3;
@@ -483,14 +442,14 @@ public:
 	bool playTurn() {
 		moveCoordByKey();
 		if (keyboardFlg) {
-			if (key.onCheck()) {
+			if (key->onCheck()) {
 				playCnt = 0;
 				return true;
 			}
 		}
 		else {
 			getMouseCoord();
-			if (mouse.clickRight()) {
+			if (mouse->clickRight()) {
 				playCnt = 0;
 				return true;
 			}
@@ -571,7 +530,7 @@ public:
 			int strColor = strColorDebug;
 			// Game
 			DrawFormatString(5, 25, strColor, "fps: %d", fps);
-			DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
+			//DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
 			DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
 			DrawFormatString(5, 85, strColor, "teban: %d", teban);
 			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);

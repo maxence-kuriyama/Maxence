@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/basic.h"
+#include "lib/keyboard.h"
 
 
 // ロゴマークオブジェクト
@@ -30,7 +31,7 @@ public:
 		image = LoadGraph("graph/Maxence_after4.png");
 	}
 
-	void update() {
+	void update(Key& key) {
 		if (acRate >= 0.5 && acRate <= 30.0) {
 			acRate += 0.03;
 		}
@@ -48,16 +49,18 @@ public:
 		if (titleY >= 480 - 80) {
 			titleY = 480 - 80;
 		}
+
+		if (key.onAt()) {
+			if (acRate >= 0.5) {
+				initialize();
+			}
+			else {
+				acRate += 1.0;
+			}
+		}
 	}
 
 	void draw() {
-		DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, image, TRUE);
-	}
-
-	void draw(Mouse& mouse) {
-		//if (mouse.onButton(titleX, titleY - 5, titleX + 185, titleY + 65)) {
-		//	DrawBox(titleX, titleY - 5, titleX + 185, titleY + 65, GetColor(20, 150, 150), TRUE);
-		//}
 		DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, image, TRUE);
 	}
 
