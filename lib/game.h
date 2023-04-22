@@ -6,8 +6,8 @@
 #include "lib/basic.h"
 #include "lib/keyboard.h"
 #include "lib/menu.h"
-#include "lib/anime.h"
-#include "lib/comment.h"
+#include "lib/game/anime.h"
+#include "lib/game/comment.h"
 #include "lib/board.h"
 
 

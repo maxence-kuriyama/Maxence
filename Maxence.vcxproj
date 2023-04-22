@@ -180,6 +180,8 @@
     <ClInclude Include="lib\ending.h" />
     <ClInclude Include="lib\fireflower.h" />
     <ClInclude Include="lib\game.h" />
+    <ClInclude Include="lib\game\anime.h" />
+    <ClInclude Include="lib\game\comment.h" />
     <ClInclude Include="lib\keyboard.h" />
     <ClInclude Include="lib\load_obj.h" />
     <ClInclude Include="lib\logger.h" />
