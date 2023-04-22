@@ -64,3 +64,6 @@
 
 #define TEBAN_SENKO			0
 #define TEBAN_KOKO			1
+
+#define MENU_GAME_MODE		0
+#define MENU_PLAYER_ORDER	1

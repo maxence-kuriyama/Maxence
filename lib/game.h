@@ -48,10 +48,6 @@ private:
 	int fpsCnt = 0;			// FPS計測用
 
 	Menu menu;
-	Button btnLonely;
-	Button btnVsHuman;
-	Button btnSenko;
-	Button btnKoko;
 	Button btnSave;
 	Button btnReset;
 
@@ -83,10 +79,6 @@ public:
 		mouse = src_mouse;
 		key = src_key;
 		// ボタン初期化
-		btnLonely.initialize(TEXT1_X, TEXT1_Y, "ぼっちで");
-		btnVsHuman.initialize(TEXT2_X, TEXT2_Y, "隣の人と");
-		btnSenko.initialize(TEXT1_X, TEXT1_Y, "先攻");
-		btnKoko.initialize(TEXT2_X, TEXT2_Y, "後攻");
 		btnAgain.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
@@ -101,10 +93,9 @@ public:
 		board.setStoneGraphs(stone1, stone2, stone1_t, stone2_t);
 		// 試合情報の初期化
 		initialize();
-		menu.set(btnLonely, btnVsHuman);
 	}
 
-	// 試合情報の初期化（goBattleと統合してもいいかも）
+	// 試合情報の初期化
 	void initialize() {
 		cnt = 0;
 		drawCnt = 0;
@@ -131,6 +122,10 @@ public:
 		start = clock();
 	}
 
+
+	/*===========================*/
+	//    準備処理
+	/*===========================*/
 	void goBattle(int player1 = BATTLE_PLAYER_NONE, int player2 = BATTLE_PLAYER_NONE) {
 		setPlayersGraph(player1, player2);
 		menu.set(btnSave, btnReset);
@@ -172,6 +167,22 @@ public:
 		}
 	}
 
+	void goBattleVsHuman() {
+		setVsHuman();
+		initialize();
+		goBattle(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
+	}
+
+	void setVsHuman() {
+		mode = "隣の人と";
+		taijin = VS_HUMAN;
+	}
+
+	void setVsCOM() {
+		mode = "ぼっちで";
+		taijin = VS_COM;
+	}
+
 
 	/*===========================*/
 	//    Boolean
@@ -191,8 +202,12 @@ public:
 
 
 	/*===========================*/
-	//    リセットボタン
+	//    メニュー画面
 	/*===========================*/
+	int menuChoose() {
+		return menu.choose(keyboardFlg, *mouse, *key, option.strColor);
+	}
+
 	void reset(Music& bgm) {
 		mouse->set();
 		taijin = VS_HUMAN;
@@ -200,19 +215,6 @@ public:
 		bgm.unloadAll();
 		DeleteGraph(player1);
 		DeleteGraph(player2);
-		menu.set(btnLonely, btnVsHuman);
-	}
-
-
-	/*===========================*/
-	//    メニュー画面
-	/*===========================*/
-	int menuChoose() {
-		return menu.choose(keyboardFlg, *mouse, *key, option.strColor);
-	}
-
-	void setOrderMenu() {
-		menu.set(btnSenko, btnKoko);
 	}
 
 
@@ -544,17 +546,6 @@ public:
 			DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
 			// Comment
 			comment.debugDump(strColor);
-			// Menu
-			DrawFormatString(365, 25, strColor, "menu.size: %d", menu.size);
-			DrawFormatString(365, 45, strColor, "menu.id: %d", menu.id);
-			DrawFormatString(365, 65, strColor, "btn1.upLX: %d", menu.button[0].upLeftX);
-			DrawFormatString(365, 85, strColor, "btn1.upLY: %d", menu.button[0].upLeftY);
-			DrawFormatString(365, 105, strColor, "btn1.lowRX: %d", menu.button[0].lowRightX);
-			DrawFormatString(365, 125, strColor, "btn1.lowRY: %d", menu.button[0].lowRightY);
-			DrawFormatString(365, 145, strColor, "btn2.upLX: %d", menu.button[1].upLeftX);
-			DrawFormatString(365, 165, strColor, "btn2.upLY: %d", menu.button[1].upLeftY);
-			DrawFormatString(365, 185, strColor, "btn2.lowRX: %d", menu.button[1].lowRightX);
-			DrawFormatString(365, 205, strColor, "btn2.lowRY: %d", menu.button[1].lowRightY);
 		}
 	}
 };

@@ -14,7 +14,7 @@
 
 using namespace DxLib;
 using namespace std;
-#include "lib/fireflower.h"
+#include "lib/title.h"
 #include "lib/logo.h"
 #include "lib/scenario.h"
 #include "lib/game.h"
@@ -55,13 +55,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Mouse mouse;
 	Key key;
+	Title title;
 	Logo logo;
 	Music bgm;
 	Scenario scenario;
 	Opening opening;
 	Ending ending;
-	fireflower tama[FIRE_FLOWER_NUM];
-	int title_logo = LoadGraph("graph/Maxence_after4.png");
 
 	Game game(&mouse, &key);
 	int flg = FLAG_OPENING;
@@ -94,12 +93,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 設定を切り替える
 		game.toggleByKey(bgm);
-		if (game.option.soundFlg == 1) {
-			tama[0].sound = 1;
-		}
-		else {
-			tama[0].sound = 0;
-		}
+		title.toggleSound(game.option.soundFlg);
 
 		// マウス操作か否かを判定する
 		game.toggleMouseOrKeyboard();
@@ -127,29 +121,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_TITLE) {
 			bgm.load("sound/bgm03.mp3");
-			for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
-				tama[i].draw();
-				tama[i].tick();
-			}
-			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, title_logo, TRUE);
-			//タイトル画面その１
-			if (game.isVsHuman()) {
-				int choice = game.menuChoose();
+			title.show();
+			int title_mode = title.flg;
+			int choice = title.choose(mouse, key);
+			if (title_mode == MENU_GAME_MODE) {
 				if (choice == 0) {
-					game.mode = "ぼっちで";
-					game.taijin = 1;
-					game.setOrderMenu();
+					game.setVsCOM();
 				}
 				else if (choice == 1) {
-					game.mode = "隣の人と";
-					game.initialize();
+					game.goBattleVsHuman();
 					flg = FLAG_BATTLE;
-					game.goBattle(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
 				}
 			}
-			//タイトル画面その２（「ぼっちで」選択時）
-			else if (game.isVsCOM()) {
-				int choice = game.menuChoose();
+			else if (title_mode == MENU_PLAYER_ORDER) {
 				if (choice == 0) {
 					flg = FLAG_SCENARIO;
 					game.teban = TEBAN_SENKO;
@@ -224,9 +208,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (choice == 0 || choice == 1) {
 				flg = FLAG_TITLE;
 				game.reset(bgm);
-				for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
-					tama[i].initialize();
-				}
+				title.initialize();
 				scenario.initialize();
 				SetBackgroundColor(0, 128, 128);
 			}

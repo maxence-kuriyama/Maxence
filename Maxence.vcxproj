@@ -194,6 +194,8 @@
     <ClInclude Include="lib\opening.h" />
     <ClInclude Include="lib\scenario.h" />
     <ClInclude Include="lib\sprite.h" />
+    <ClInclude Include="lib\title.h" />
+    <ClInclude Include="lib\title\fireflower.h" />
     <ClInclude Include="lib\vect.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="vect.h" />
