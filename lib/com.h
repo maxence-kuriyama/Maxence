@@ -7,7 +7,9 @@
 
 using namespace Eigen;
 
-VectorXd softmax(const VectorXd &src, double alpha);
+const float SOFTMAX_ALPHA(2.1); // softmaxの係数
+								// TODO: 完全ランダムやめろ
+const float ANNEALING_RATE(1.0); // epsilon-greedyの割合
 
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
 // 単体での使用を想定（Gameオブジェクトから呼び出すべきか？）
@@ -18,10 +20,8 @@ private:
 	double eps = 0.002;					//学習定数
 	double mom = 0.9;
 	double varc = 0.999;				// adamのパラメータ
-	//double gamma = 0.95;				//割引率
-	//double alpha = 2.1;				//softmaxの係数
-	double annealRate = 1.0;				//epsilon-greedyの割合
-	int anneal = 0;
+	double annealRate = 1.0;				
+	int annealed = 0;
 	::Affine Q1;
 	::Affine Q2;
 	::Affine Q3;
@@ -33,7 +33,7 @@ private:
 	string miniMaxDebugStr;
 
 public:
-	Coordinate coordinate;					//COMの選ぶ座標
+	Coordinate choice;					//COMの選ぶ座標
 	int max_id = 0;
 	double max_val = 0.0;
 
@@ -94,10 +94,10 @@ public:
 		// waitを消化したら手を選択する
 		if (cnt <= 0) {
 			if (unif(mt) < annealRate) {
-				choiceRandom();
+				chooseRandom();
 			}
 			else {
-				choiceMax();
+				chooseMax();
 			}
 		}
 		cnt--;
@@ -108,43 +108,42 @@ public:
 		if (cnt > 0) return;
 
 		MinMaxNode node(board, side);
-		MinMaxNode::truncate = true;
-		int depth = 4;
+		// MinMaxNode::truncate = true;
+		int depth = 3;
 		int index = node.search(depth);
 
-		coordinate = Board::coordinates(index);
-		anneal = 0;
+		choice = Board::coordinates(index);
+		annealed = 0;
 		
 		miniMaxDebugStr = node.debugStr();
 	}
 
-	void choiceRandom() {
-		coordinate = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
-		anneal = 1;
+	void chooseRandom() {
+		choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+		annealed = 1;
 	}
 
-	void choiceMax() {
-		coordinate = Board::coordinates(max_id);
-		anneal = 0;
+	void chooseMax() {
+		choice = Board::coordinates(max_id);
+		annealed = 0;
+	}
+
+	// TODO: softmax使うか要検討
+	VectorXd softmax(const VectorXd& src) {
+		VectorXd trg;
+
+		trg = (SOFTMAX_ALPHA * src).array().exp();
+		trg = trg / trg.sum();
+
+		return trg;
 	}
 
 	void debugDump(int debug) {
 		if (debug) {
 			int strColor = strColorDebug;
 
-			DrawFormatString(505, 25, strColor, "anneal: %d", anneal);
+			DrawFormatString(505, 25, strColor, "anneal: %d", annealed);
 			DrawFormatString(505, 65, strColor, miniMaxDebugStr.c_str());
 		}
 	}
-
 };
-
-
-VectorXd softmax(const VectorXd &src, double alpha) {
-	VectorXd trg;
-	
-	trg = (alpha * src).array().exp();
-	trg = trg / trg.sum();
-
-	return trg;
-}

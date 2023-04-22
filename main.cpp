@@ -260,9 +260,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (!game.isPlayTurn()) {
 				// VectorXd input = game.stateToInput();
 				// com.play(input);
-				com.playMinMax(game.board, game.side());
+				com.playMinMax(game.board, game.currentSide());
 				// 盤面の更新
-				game.update(com.coordinate);
+				game.update(com.choice);
 			}
 
 			// コメントの描画

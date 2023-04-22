@@ -388,22 +388,22 @@ public:
 		comment.update(playCnt);
 	}
 
-	void drawPlayers(int src_side = 0) {
+	void drawPlayers(int side = 0) {
 		// sideが指定されていなければ、cntとtebanから計算する
-		if (src_side == 0) {
-			src_side = side();
+		if (side == 0) {
+			side = currentSide();
 			if (isVsCOM()) {
-				src_side = src_side * (1 - 2 * (teban % 2));
+				side = side * (1 - 2 * (teban % 2));
 			}
 		}
 
-		if (src_side == 1) {
+		if (side == 1) {
 			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
 			SetDrawBright(155, 155, 155);
 			DrawExtendGraph(440, 100, 640, 340, player2, TRUE);
 			SetDrawBright(255, 255, 255);
 		}
-		else if (src_side == -1) {
+		else if (side == -1) {
 			SetDrawBright(155, 155, 155);
 			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
 			SetDrawBright(255, 255, 255);
@@ -506,11 +506,11 @@ public:
 		return update(c.global_x, c.global_y, c.x, c.y, side);
 	}
 
-	double update(int global_x, int global_y, int local_x, int local_y, int src_side = 0) {
+	double update(int global_x, int global_y, int local_x, int local_y, int side = 0) {
 		// sideが指定されていなければ、cntから計算する
-		if (src_side == 0) src_side = side();
+		if (side == 0) side = currentSide();
 
-		double reward = board.update(global_x, global_y, local_x, local_y, src_side);
+		double reward = board.update(global_x, global_y, local_x, local_y, side);
 		if (isUpdated(reward)) {
 			cnt++;
 		}
@@ -534,12 +534,12 @@ public:
 	/*===========================*/
 	//    盤面情報
 	/*===========================*/
-	Eigen::VectorXd stateToInput(int src_side = 0, int dim = 162) {
-		if (src_side == 0) src_side = side();
+	Eigen::VectorXd stateToInput(int side = 0, int dim = 162) {
+		if (side == 0) side = currentSide();
 
 		Eigen::VectorXd trg(dim);
 		for (int index = 0; index < 81; index++) {
-			trg(index) = board.localState(index) * src_side;
+			trg(index) = board.localState(index) * side;
 			if (board.canPut(index)) {
 				trg(index + 81) = 1.0;
 			}
@@ -558,7 +558,7 @@ public:
 		return board.victory();
 	}
 
-	int side() {
+	int currentSide() {
 		return 1 - 2 * (cnt % 2);
 	}
 
