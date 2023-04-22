@@ -191,6 +191,7 @@
     <ClInclude Include="lib\movie.h" />
     <ClInclude Include="lib\music.h" />
     <ClInclude Include="lib\OBJ_Loader.h" />
+    <ClInclude Include="lib\opening.h" />
     <ClInclude Include="lib\scenario.h" />
     <ClInclude Include="lib\sprite.h" />
     <ClInclude Include="lib\vect.h" />
