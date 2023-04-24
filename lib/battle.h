@@ -1,10 +1,10 @@
 #pragma once
 
 #include "lib/const.h"
-#include "lib/game.h"
-#include "lib/game/anime.h"
 #include "lib/com.h"
 #include "lib/menu.h"
+#include "lib/battle/game.h"
+#include "lib/battle/anime.h"
 
 class Battle {
 private:
