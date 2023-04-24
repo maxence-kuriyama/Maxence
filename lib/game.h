@@ -5,8 +5,6 @@
 #include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/keyboard.h"
-#include "lib/menu.h"
-#include "lib/game/anime.h"
 #include "lib/game/comment.h"
 #include "lib/board.h"
 
@@ -47,13 +45,12 @@ private:
 	long fpsStart = clock();	// FPS計測開始時刻
 	int fpsCnt = 0;			// FPS計測用
 
-	Menu menu;
-	Button btnSave;
-	Button btnReset;
+	Mouse* mouse;
+	Key* key;
 
 public:
 	int taijin = VS_HUMAN;
-	int teban = 0;		// 0: senko, 1: koko
+	int teban = TEBAN_SENKO;		// 0: senko, 1: koko
 	int cnt = 0;		// ターン数
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
 	int debugFlg = 0;
@@ -66,33 +63,13 @@ public:
 	int playCnt = 0;		// 1ターンに費やしたカウント
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
-	Option option;
-	Camera camera;
-	Mouse* mouse;
-	Key* key;
-	Anime cutin;
 	Comment comment;
-	Button btnAgain;
 	Board board;
 
-	Game(Mouse* src_mouse, Key* src_key) {
-		mouse = src_mouse;
-		key = src_key;
-		// ボタン初期化
-		btnAgain.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
-		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
-		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
-		// カットイン画像初期化
-		int Cutin1 = LoadGraph("graph/cutin1.png");
-		int Cutin10 = LoadGraph("graph/cutin10.png");
-		GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
-		cutin.image0 = Cutin1;
-		cutin.image1 = Cutin10;
+	Game() {
 		comment.initialize();
 		// フィールド画像初期化
 		board.setStoneGraphs(stone1, stone2, stone1_t, stone2_t);
-		// 試合情報の初期化
-		initialize();
 	}
 
 	// 試合情報の初期化
@@ -100,9 +77,14 @@ public:
 		cnt = 0;
 		drawCnt = 0;
 		board.initialize();
-		camera.initialize();
 		mouse->set();
 		key->initWait();
+	}
+
+	void initialize(Mouse* src_mouse, Key* src_key) {
+		mouse = src_mouse;
+		key = src_key;
+		initialize();
 	}
 
 	// 同期処理
@@ -122,13 +104,22 @@ public:
 		start = clock();
 	}
 
+	void reset(Music& bgm) {
+		mouse->set();
+		taijin = VS_HUMAN;
+		mode = "";
+		bgm.unloadAll();
+		DeleteGraph(player1);
+		DeleteGraph(player2);
+	}
+
 
 	/*===========================*/
 	//    準備処理
 	/*===========================*/
-	void goBattle(int player1 = BATTLE_PLAYER_NONE, int player2 = BATTLE_PLAYER_NONE) {
+	void goBattle(int player1, int player2, bool init = true) {
+		if (init) initialize();
 		setPlayersGraph(player1, player2);
-		menu.set(btnSave, btnReset);
 	}
 
 	void setPlayersGraph(int pl1, int pl2) {
@@ -167,12 +158,6 @@ public:
 		}
 	}
 
-	void goBattleVsHuman() {
-		setVsHuman();
-		initialize();
-		goBattle(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
-	}
-
 	void setVsHuman() {
 		mode = "隣の人と";
 		taijin = VS_HUMAN;
@@ -202,44 +187,8 @@ public:
 
 
 	/*===========================*/
-	//    メニュー画面
-	/*===========================*/
-	int menuChoose() {
-		return menu.choose(keyboardFlg, *mouse, *key, option.strColor);
-	}
-
-	void reset(Music& bgm) {
-		mouse->set();
-		taijin = VS_HUMAN;
-		mode = "";
-		bgm.unloadAll();
-		DeleteGraph(player1);
-		DeleteGraph(player2);
-	}
-
-
-	/*===========================*/
 	//    キーボード入力関連
 	/*===========================*/
-	void toggleByKey(Music& music) {
-		key->toggleSetting(option);
-		//key.configLearning();
-		key->toggleDebug(debugFlg);
-		if (debugFlg) {
-			key->toggleForDebug(option, cutin.flg, debugEndingFlg);
-		}
-	}
-
-	bool skipBattle(int& sceneFlg) {
-		if (debugFlg && isVsCOM()) {
-			if (key->skipBattle()) {
-				sceneFlg++;
-				return true;
-			}
-		}
-		return false;
-	}
-
 	void toggleMouseOrKeyboard() {
 		if (mouse->isUsed()) keyboardFlg = 0;
 		if (key->isUsed()) keyboardFlg = 1;
@@ -333,17 +282,10 @@ public:
 		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
 	}
 
-	void drawBattleMessage() {
-		DrawFormatString(470, 80, option.strColor, "右クリック:");
-		DrawFormatString(540, 100, option.strColor, "石を置く");
-		DrawFormatString(470, 124, option.strColor, "zキー（BkSpキー）:");
-		DrawFormatString(540, 144, option.strColor, "一手戻る");
-	}
-
-	void drawComment() {
+	void drawComment(int comment_flg, int str_color) {
 		// コメント描画
-		if (option.commentFlg) {
-			comment.draw(option.strColor);
+		if (comment_flg) {
+			comment.draw(str_color);
 		}
 		// コメント差し替え
 		comment.update(playCnt);
@@ -372,7 +314,8 @@ public:
 		}
 	}
 
-	void drawWinner(int vict) {
+	void drawWinner() {
+		int vict = victory();
 		if (vict == 1) {
 			DrawFormatString(20, 20, Red, "Player1");
 		}
@@ -539,11 +482,6 @@ public:
 			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 			DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
 			DrawFormatString(5, 165, strColor, "playCnt: %d", playCnt);
-			// Option
-			DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
-			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
-			DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
-			DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
 			// Comment
 			comment.debugDump(strColor);
 		}

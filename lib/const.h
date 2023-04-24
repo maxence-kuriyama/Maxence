@@ -13,6 +13,13 @@
 #define TEXT_RESET_X		320
 #define TEXT_RESET_Y		440
 
+#define FLAG_OPENING		-1
+#define FLAG_TITLE			0
+#define FLAG_BATTLE			1
+#define FLAG_RESULT			2
+#define FLAG_SCENARIO		-6
+#define FLAG_ENDING			-4
+
 #define RWD_VICTORY			1.0
 #define RWD_DOMINANT		1.0
 #define RWD_PUT				0.0

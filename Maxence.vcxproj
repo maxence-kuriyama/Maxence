@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClInclude Include="lib\anime.h" />
     <ClInclude Include="lib\basic.h" />
+    <ClInclude Include="lib\battle.h" />
     <ClInclude Include="lib\board.h" />
     <ClInclude Include="lib\board\field.h" />
     <ClInclude Include="lib\board\hist.h" />

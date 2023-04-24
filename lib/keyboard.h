@@ -159,23 +159,6 @@ public:
 		}
 	}
 
-	void configLearning() {
-		// データの保存
-		if (state[KEY_INPUT_O] == 1) {
-			//save parameters
-		}
-
-		// AIのウェイトを変更する
-		/*
-		if (state[KEY_INPUT_M] == 1) {
-			waitOnCOM++;
-		}
-		else if (state[KEY_INPUT_N] == 1) {
-			waitOnCOM--;
-		}
-		*/
-	}
-
 	void toggleDebug(int& debugFlg) {
 		//デバッグモード解除
 		if (state[KEY_INPUT_G] == 1) {
