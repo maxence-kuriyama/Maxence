@@ -15,6 +15,7 @@ private:
 	Button btnSenko;
 	Button btnKoko;
 	int White = GetColor(255, 255, 255);
+	bool soundFlg = false;
 
 	void showFireFlower() {
 		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
@@ -85,8 +86,9 @@ public:
 		return menu.choose(keyboardFlg, mouse, key, White);
 	}
 
-	void toggleSound(int on) {
-		if (on) {
+	void toggleSound() {
+		soundFlg = !soundFlg;
+		if (soundFlg) {
 			tama[0].sound = 1;
 		}
 		else {

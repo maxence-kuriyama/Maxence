@@ -5,7 +5,7 @@
 #include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/keyboard.h"
-#include "lib/game/comment.h"
+#include "lib/battle/game/comment.h"
 #include "lib/board.h"
 
 

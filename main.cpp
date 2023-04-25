@@ -81,9 +81,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		mouse.update();
 
 		// 設定を切り替える
-		// TODO: 何とかしましょう
-		// battle.toggleByKey(bgm);
-		title.toggleSound(battle.option.soundFlg);
+		battle.toggleByKey();
+		//音楽, SEの有無
+		if (key.state[KEY_INPUT_P] == 1) {
+			title.toggleSound();
+		}
+
+		// 文字色の変更
+		if (key.state[KEY_INPUT_I] == 1) {
+			battle.toggleStrColor();
+		}
 
 		// マウス操作か否かを判定する
 		battle.game.toggleMouseOrKeyboard();

@@ -1,32 +1,5 @@
 #pragma once
 
-
-// ゲームのオプション
-// Gameオブジェクトのメンバとしての使用を想定
-// キー入力で変更する機会が多いため、Keyクラスとまとめている
-class Option {
-public:
-	unsigned int White = GetColor(255, 255, 255);
-	unsigned int Black = GetColor(0, 0, 0);
-
-public:
-	int strColor = White;
-	int musicFlg = 0;
-	int soundFlg = 0;
-	int likeliFlg = 0;		// 学習機械の出力フラグ 0: 非表示, 1: 色で表示, 2: 数値も表示
-	int commentFlg = 0;
-
-	void toggleStrColor() {
-		if (strColor == Black) {
-			strColor = White;
-		}
-		else {
-			strColor = Black;
-		}
-	}
-};
-
-
 // キー入力に対する処理を行うクラス
 // Gameオブジェクトのメンバとして使用（単体で使用すべきか？）
 class Key {
@@ -136,56 +109,6 @@ public:
 	bool isUsed() {
 		if (use > 0) {
 			use = 0;
-			return true;
-		}
-		return false;
-	}
-
-	void toggleSetting(Option& option) {
-		// 文字色の変更
-		if (state[KEY_INPUT_I] == 1) {
-			option.toggleStrColor();
-		}
-
-		//音楽, SEの有無
-		if (state[KEY_INPUT_P] == 1) {
-			option.musicFlg = (option.musicFlg + 1) % 2;
-			option.soundFlg = (option.soundFlg + 1) % 2;
-		}
-
-		// コメントを消す
-		if (state[KEY_INPUT_K] == 1) {
-			option.commentFlg = (option.commentFlg + 1) % 2;
-		}
-	}
-
-	void toggleDebug(int& debugFlg) {
-		//デバッグモード解除
-		if (state[KEY_INPUT_G] == 1) {
-			debugFlg = (debugFlg + 1) % 2;
-		}
-	}
-
-	void toggleForDebug(Option& option, int& cutinFlg, int& endingFlg) {
-		// カットインを入れる
-		if (state[KEY_INPUT_C] == 1) {
-			cutinFlg = 1;
-		}
-
-		// 学習機械の出力を見る
-		if (state[KEY_INPUT_V] == 1) {
-			option.likeliFlg = (option.likeliFlg + 1) % 3;
-		}
-
-		// エンディングモード
-		if (state[KEY_INPUT_MINUS] == 1) {
-			endingFlg = 1;
-		}
-	}
-
-	bool skipBattle() {
-		if (state[KEY_INPUT_B] == 1) {
-			StopMusic();
 			return true;
 		}
 		return false;

@@ -20,11 +20,15 @@ private:
 	Mouse* mouse;
 	Key* key;
 
+	int White = GetColor(255, 255, 255);
+	int Black = GetColor(0, 0, 0);
+	int strColor = White;
 	int strColorDebug = GetColor(0, 0, 255);
+	bool likelihoodFlg = false; // 学習機械の出力フラグ
+	bool commentFlg = false;
 
 public:
 	Game game;
-	Option option;
 	int debugFlg = 0;
 
 	Battle(Mouse* src_mouse, Key* src_key) {
@@ -96,7 +100,7 @@ public:
 		drawMessage();
 
 		// 学習機械の出力描画
-		if (option.likeliFlg >= 1) {
+		if (likelihoodFlg) {
 			com.visualize();
 		}
 
@@ -110,7 +114,7 @@ public:
 		}
 
 		// コメントの描画
-		game.drawComment(option.commentFlg, option.strColor);
+		game.drawComment(commentFlg, strColor);
 
 		// カットインアニメーション
 		cutin.update();
@@ -144,7 +148,8 @@ public:
 	// デバッグ用
 	bool skipBattle(int& sceneFlg) {
 		if (debugFlg && game.isVsCOM()) {
-			if (key->skipBattle()) {
+			if (key->state[KEY_INPUT_B] == 1) {
+				StopMusic();
 				sceneFlg++;
 				return true;
 			}
@@ -153,10 +158,10 @@ public:
 	}
 
 	void drawMessage() {
-		DrawFormatString(470, 80, option.strColor, "右クリック:");
-		DrawFormatString(540, 100, option.strColor, "石を置く");
-		DrawFormatString(470, 124, option.strColor, "zキー（BkSpキー）:");
-		DrawFormatString(540, 144, option.strColor, "一手戻る");
+		DrawFormatString(470, 80, strColor, "右クリック:");
+		DrawFormatString(540, 100, strColor, "石を置く");
+		DrawFormatString(470, 124, strColor, "zキー（BkSpキー）:");
+		DrawFormatString(540, 144, strColor, "一手戻る");
 	}
 
 
@@ -178,7 +183,7 @@ public:
 		drawForResult();
 
 		// メッセージの描画
-		btnAgain.display(*mouse, option.strColor);
+		btnAgain.display(*mouse, strColor);
 		if (btnAgain.isClicked(*mouse) || key->onReturn()) {
 			return_flg = FLAG_BATTLE;
 			start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
@@ -228,16 +233,35 @@ public:
 		int keyboardFlg = 0;
 		if (mouse->isUsed()) keyboardFlg = 0;
 		if (key->isUsed()) keyboardFlg = 1;
-		return menu.choose(keyboardFlg, *mouse, *key, option.strColor);
+		return menu.choose(keyboardFlg, *mouse, *key, strColor);
 	}
 
 	// TODO: こいつなんとかしましょう
-	void toggleByKey(Music& music) {
-		key->toggleSetting(option);
-		key->toggleDebug(game.debugFlg);
-		key->toggleDebug(debugFlg);
+	void toggleByKey() {
+		//デバッグモード解除
+		if (key->state[KEY_INPUT_G] == 1) {
+			debugFlg = (debugFlg + 1) % 2;
+			game.debugFlg = (game.debugFlg + 1) % 2;
+		}
+		// コメントを消す
+		if (key->state[KEY_INPUT_K] == 1) {
+			commentFlg = !commentFlg;
+		}
 		if (debugFlg) {
-			key->toggleForDebug(option, cutin.flg, game.debugEndingFlg);
+			// カットインを入れる
+			if (key->state[KEY_INPUT_C] == 1) {
+				cutin.flg = 1;
+			}
+
+			// 学習機械の出力を見る
+			if (key->state[KEY_INPUT_V] == 1) {
+				likelihoodFlg = !likelihoodFlg;
+			}
+
+			// エンディングモード
+			if (key->state[KEY_INPUT_MINUS] == 1) {
+				game.debugEndingFlg = 1;
+			}
 		}
 	}
 
@@ -278,6 +302,14 @@ public:
 		return false;
 	}
 
+	void toggleStrColor() {
+		if (strColor == Black) {
+			strColor = White;
+		}
+		else {
+			strColor = Black;
+		}
+	}
 
 	/*===========================*/
 	//    デバッグ情報
@@ -288,10 +320,10 @@ public:
 		if (debugFlg) {
 			int strColor = strColorDebug;
 			// Option
-			DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
-			DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
-			DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
-			DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
+			//DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
+			//DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
+			//DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
+			//DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
 		}
 	}
 };
