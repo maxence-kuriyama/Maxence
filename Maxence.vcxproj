@@ -169,7 +169,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\anime.h" />
-    <ClInclude Include="lib\basic.h" />
     <ClInclude Include="lib\battle\anime.h" />
     <ClInclude Include="lib\battle\comment.h" />
     <ClInclude Include="lib\battle\game.h" />
@@ -179,6 +178,7 @@
     <ClInclude Include="lib\board\hist.h" />
     <ClInclude Include="lib\com.h" />
     <ClInclude Include="lib\comment.h" />
+    <ClInclude Include="lib\common.h" />
     <ClInclude Include="lib\com\minmax.h" />
     <ClInclude Include="lib\const.h" />
     <ClInclude Include="lib\fireflower.h" />
@@ -192,11 +192,13 @@
     <ClInclude Include="lib\message.h" />
     <ClInclude Include="lib\modes\battle.h" />
     <ClInclude Include="lib\modes\battle\anime.h" />
+    <ClInclude Include="lib\modes\battle\camera.h" />
     <ClInclude Include="lib\modes\battle\comment.h" />
     <ClInclude Include="lib\modes\battle\game.h" />
     <ClInclude Include="lib\modes\ending.h" />
     <ClInclude Include="lib\modes\opening.h" />
     <ClInclude Include="lib\modes\scenario.h" />
+    <ClInclude Include="lib\modes\scenario\message.h" />
     <ClInclude Include="lib\modes\title.h" />
     <ClInclude Include="lib\modes\title\fireflower.h" />
     <ClInclude Include="lib\movie.h" />
