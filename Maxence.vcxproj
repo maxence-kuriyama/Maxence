@@ -203,6 +203,9 @@
     <ClInclude Include="lib\synchronizer.h" />
     <ClInclude Include="lib\title.h" />
     <ClInclude Include="lib\title\fireflower.h" />
+    <ClInclude Include="lib\user_input.h" />
+    <ClInclude Include="lib\user_input\keyboard.h" />
+    <ClInclude Include="lib\user_input\mouse.h" />
     <ClInclude Include="lib\vect.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="vect.h" />

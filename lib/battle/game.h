@@ -3,8 +3,7 @@
 #include <Eigen/Core>
 #include "lib/const.h"
 #include "lib/basic.h"
-#include "lib/mouse.h"
-#include "lib/keyboard.h"
+#include "lib/user_input.h"
 #include "lib/board.h"
 
 
@@ -39,8 +38,7 @@ private:
 	int player1 = 0;
 	int player2 = 0;
 
-	Mouse* mouse;
-	Key* key;
+	UserInput* ui;
 	int taijin = VS_HUMAN;
 	int cnt = 0;			// ターン数
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
@@ -64,13 +62,11 @@ public:
 		cnt = 0;
 		drawCnt = 0;
 		board.initialize();
-		mouse->set();
-		key->initWait();
+		ui->reset();
 	}
 
-	void initialize(Mouse* src_mouse, Key* src_key) {
-		mouse = src_mouse;
-		key = src_key;
+	void initialize(UserInput* src_ui) {
+		ui = src_ui;
 		initialize();
 	}
 
@@ -79,7 +75,7 @@ public:
 	}
 
 	void reset(Music& bgm) {
-		mouse->set();
+		ui->reset();
 		taijin = VS_HUMAN;
 		mode = "";
 		bgm.unloadAll();
@@ -290,6 +286,7 @@ public:
 	/*===========================*/
 	void getMouseCoord() {
 		for (int index = 0; index < 81; index++) {
+			Mouse* mouse = ui->mouse;
 			Coordinate c = Board::coordinates(index);
 
 			int upLeftX = 160 + 100 * c.global_x + 33 * c.x;
@@ -303,6 +300,7 @@ public:
 	}
 
 	void moveCoordByKey() {
+		Key* key = ui->key;
 		int globalX = coordinate.global_x;
 		int globalY = coordinate.global_y;
 		int localX = coordinate.x;
@@ -340,20 +338,17 @@ public:
 		coordinate = { globalX, globalY, localX, localY, DUMMY_LAST_FIELD };
 	}
 
-	bool playTurn(bool keyboard) {
-		moveCoordByKey();
-		if (keyboard) {
-			if (key->onCheck()) {
-				playCnt = 0;
-				return true;
-			}
+	bool playTurn() {
+		if (ui->keyboard) {
+			moveCoordByKey();
 		}
 		else {
 			getMouseCoord();
-			if (mouse->clickRight()) {
-				playCnt = 0;
-				return true;
-			}
+		}
+
+		if (ui->check()) {
+			playCnt = 0;
+			return true;
 		}
 		return false;
 	}

@@ -17,10 +17,8 @@ private:
 	Anime cutin;
 	Camera camera;
 	Comment comment;
+	UserInput* ui;
 	double theta = 0.3;
-
-	Mouse* mouse;
-	Key* key;
 
 	int White = GetColor(255, 255, 255);
 	int Black = GetColor(0, 0, 0);
@@ -28,15 +26,13 @@ private:
 	int strColorDebug = GetColor(0, 0, 255);
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
-	bool keyboardFlg = false;	// キーボード操作かマウス操作か
 
 public:
 	Game game;
 
-	Battle(Mouse* src_mouse, Key* src_key) {
-		mouse = src_mouse;
-		key = src_key;
-		game.initialize(src_mouse, src_key);
+	Battle(UserInput* src_ui) {
+		ui = src_ui;
+		game.initialize(src_ui);
 		camera.initialize();
 		comment.initialize();
 		// ボタン初期化
@@ -124,7 +120,7 @@ public:
 		int victory = game.victory();
 		if (victory != 0) {
 			return_flg = FLAG_RESULT;
-			key->initWait();
+			ui->reset();
 		}
 
 		// 動作の取り消し
@@ -149,7 +145,7 @@ public:
 	// デバッグ用
 	bool skipBattle(int& sceneFlg) {
 		if (game.isVsCOM()) {
-			if (key->state[KEY_INPUT_B] == 1) {
+			if (ui->onKeySkipDebug()) {
 				StopMusic();
 				sceneFlg++;
 				return true;
@@ -198,8 +194,8 @@ public:
 		drawForResult();
 
 		// メッセージの描画
-		btnAgain.display(*mouse, strColor);
-		if (btnAgain.isClicked(*mouse) || key->onReturn()) {
+		btnAgain.display(*ui, strColor);
+		if (btnAgain.isClicked(*ui) || ui->onReturn()) {
 			return_flg = FLAG_BATTLE;
 			start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 		}
@@ -236,7 +232,7 @@ public:
 	//    操作関連
 	/*===========================*/
 	void playByPlayer(COM& com) {
-		if (game.isPlayTurn() && game.playTurn(keyboardFlg)) {
+		if (game.isPlayTurn() && game.playTurn()) {
 			double res = game.update();
 			if (game.isUpdated(res)) {
 				if (game.isVsCOM()) {
@@ -248,29 +244,29 @@ public:
 	}
 
 	int menuChoose() {
-		bool keyboard = false;
-		return menu.choose(keyboard, *mouse, *key, strColor);
+		bool no_keyboard = true;
+		return menu.choose(*ui, strColor, no_keyboard);
 	}
 
 	void toggleByKey(bool debug) {
 		// コメントを消す
-		if (key->state[KEY_INPUT_K] == 1) {
+		if (ui->onKeyComment()) {
 			commentFlg = !commentFlg;
 		}
 
 		// 文字色の変更
-		if (key->state[KEY_INPUT_I] == 1) {
+		if (ui->onKeyColor()) {
 			toggleStrColor();
 		}
 
 		if (debug) {
 			// カットインを入れる
-			if (key->state[KEY_INPUT_C] == 1) {
+			if (ui->onKeyCutinDebug()) {
 				cutin.flg = 1;
 			}
 
 			// 学習機械の出力を見る
-			if (key->state[KEY_INPUT_V] == 1) {
+			if (ui->onKeyVisualizeDebug()) {
 				likelihoodFlg = !likelihoodFlg;
 			}
 		}
@@ -286,6 +282,7 @@ public:
 	}
 
 	void moveCamera() {
+		Mouse* mouse = ui->mouse;
 		camera.set();
 		if (mouse->click()) {
 			mouse->set();
@@ -298,6 +295,7 @@ public:
 	}
 
 	void moveCameraResult() {
+		Mouse* mouse = ui->mouse;
 		if (mouse->click()) {
 			mouse->set();
 		}
@@ -309,22 +307,17 @@ public:
 	}
 
 	void cancelPlay(COM& com) {
-		if (key->onBack() && game.goBackHist()) {
+		if (ui->onBack() && game.goBackHist()) {
 			com.setWait();
 		}
 	}
 
 	bool cancelResult() {
-		if (key->onBack() && game.goBackHist()) {
+		if (ui->onBack() && game.goBackHist()) {
 			start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE, false);
 			return true;
 		}
 		return false;
-	}
-
-	void toggleMouseOrKeyboard() {
-		if (mouse->isUsed()) keyboardFlg = false;
-		if (key->isUsed()) keyboardFlg = true;
 	}
 
 
@@ -336,7 +329,6 @@ public:
 
 		int strColor = strColorDebug;
 		// Option
-		DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 		DrawFormatString(125, 65, strColor, "likeliFlg: %d", likelihoodFlg);
 		DrawFormatString(125, 85, strColor, "commentFlg: %d", commentFlg);
 		// Comment

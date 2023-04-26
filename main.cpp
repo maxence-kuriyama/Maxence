@@ -51,6 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Mouse mouse;
 	Key key;
+	UserInput ui = { &key, &mouse };
 	Music bgm;
 	Synchronizer sync;
 	Logo logo;
@@ -59,7 +60,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Scenario scenario;
 	Opening opening;
 	Ending ending;
-	Battle battle(&mouse, &key);
+	Battle battle(&ui);
 	int flg = FLAG_OPENING;
 
 	bool debug_flg = false;
@@ -84,24 +85,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		// 入力情報を取得
-		key.update();
-		mouse.update();
+		ui.update();
 
 		// 設定を切り替える
 		battle.toggleByKey(debug_flg);
 
 		//デバッグモード
-		if (key.state[KEY_INPUT_G] == 1) {
+		if (ui.onKeyDebug()) {
 			debug_flg = !debug_flg;
 		}
 
 		//音楽, SEの有無
-		if (key.state[KEY_INPUT_P] == 1) {
+		if (ui.onKeySound()) {
 			title.toggleSound();
 		}
 
 		// エンディングモードのデバッグ
-		if (key.state[KEY_INPUT_MINUS] == 1) {
+		if (ui.onKeyEndingDebug()) {
 			bgm.unloadAll();
 			if (flg != FLAG_ENDING) {
 				ending.initialize();
@@ -113,11 +113,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// マウス操作か否かを判定する
-		battle.toggleMouseOrKeyboard();
+		ui.toggleMouseOrKeyboard();
 
 
 		if (flg == FLAG_OPENING) {
-			opening.showDemo(mouse, key);
+			opening.showDemo(ui);
 			if (opening.isOver()) {
 				flg = FLAG_TITLE;
 			}
@@ -126,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			bgm.load("sound/bgm03.mp3");
 			title.show();
 			int title_mode = title.flg;
-			int choice = title.choose(mouse, key);
+			int choice = title.choose(ui);
 			if (title_mode == MENU_GAME_MODE) {
 				if (choice == 0) {
 					battle.setVsCOM();
@@ -192,6 +192,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (debug_flg) {
 			DrawFormatString(5, 25, strColorDebug, "fps: %d", sync.fps);
 			DrawFormatString(5, 45, strColorDebug, "gameFlg: %d", flg);
+			DrawFormatString(5, 125, strColorDebug, "keyboardFlg: %d", ui.keyboard);
 			battle.debugDump();
 			bgm.debugDump();
 			scenario.debugDump();

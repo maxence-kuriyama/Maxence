@@ -55,18 +55,18 @@ public:
 		DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, title_logo, TRUE);
 	}
 	
-	int choose(Mouse& mouse, Key& key) {
+	int choose(UserInput& ui) {
 		if (flg == MENU_GAME_MODE) {
-			return chooseMode(mouse, key);
+			return chooseMode(ui);
 		}
 		else {
-			return chooseOrder(mouse, key);
+			return chooseOrder(ui);
 		}
 	}
 
 	//タイトル画面その１
-	int chooseMode(Mouse& mouse, Key& key) {
-		int choice = menuChoose(mouse, key);
+	int chooseMode(UserInput& ui) {
+		int choice = menuChoose(ui);
 		if (choice == 0) {
 			setOrderMenu();
 		}
@@ -74,16 +74,13 @@ public:
 	}
 
 	//タイトル画面その２（「ぼっちで」選択時）
-	int chooseOrder(Mouse& mouse, Key& key) {
-		int choice = menuChoose(mouse, key);
+	int chooseOrder(UserInput& ui) {
+		int choice = menuChoose(ui);
 		return choice;
 	}
 
-	int menuChoose(Mouse& mouse, Key& key) {
-		int keyboardFlg;
-		if (mouse.isUsed()) keyboardFlg = 0;
-		if (key.isUsed()) keyboardFlg = 1;
-		return menu.choose(keyboardFlg, mouse, key, White);
+	int menuChoose(UserInput& ui) {
+		return menu.choose(ui, White);
 	}
 
 	void toggleSound() {

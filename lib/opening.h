@@ -2,8 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "lib/mouse.h"
-#include "lib/keyboard.h"
+#include "lib/user_input.h"
 
 const int DEMO_FIRST(1);
 const int DEMO_SECOND(2);
@@ -34,20 +33,20 @@ public:
 		return (flg == DEMO_OVER);
 	}
 
-	void showDemo(Mouse& mouse, Key& key) {
+	void showDemo(UserInput& ui) {
 		if (flg == DEMO_FIRST) {
-			showDemoFirst(mouse, key);
+			showDemoFirst(ui);
 		}
 		else if (flg == DEMO_SECOND) {
-			showDemoSecond(mouse, key);
+			showDemoSecond(ui);
 		}
 		else if (flg == DEMO_THIRD) {
-			showDemoThird(mouse, key);
+			showDemoThird(ui);
 		}
 	}
 
 	// OPアニメーション ClickToStartまで
-	void showDemoFirst(Mouse& mouse, Key& key) {
+	void showDemoFirst(UserInput& ui) {
 		SetBackgroundColor(0, 0, 0);	//背景色
 		if (logoX <= 120.0) {
 			DrawExtendGraph(270, 170, 358, 260, MLogo, TRUE);
@@ -69,14 +68,14 @@ public:
 		}
 		logoX += 2.0;
 
-		if (logoX > 480.0 || mouse.click() || key.onReturn()) {
+		if (logoX > 480.0 || ui.clickOrReturn()) {
 			flg = DEMO_SECOND;
 			logoX = M_PI_2;
 		}
 	}
 
 	// OPアニメーション ClickToStart点滅
-	void showDemoSecond(Mouse& mouse, Key& key) {
+	void showDemoSecond(UserInput& ui) {
 		DrawExtendGraph(170, 170, 258, 260, MLogo, TRUE);
 		DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
 
@@ -85,7 +84,7 @@ public:
 		DrawExtendGraph(200, 290, 460, 360, ClickToStart, TRUE);
 		SetDrawBright(255, 255, 255);
 
-		if (mouse.click() || key.onReturn()) {
+		if (ui.clickOrReturn()) {
 			flg = DEMO_THIRD;
 			SetBackgroundColor(0, 128, 128);	//背景色
 			SetDrawBright(255, 255, 255);
@@ -93,7 +92,7 @@ public:
 	}
 
 	// OPアニメーション メインロゴ
-	void showDemoThird(Mouse& mouse, Key& key) {
+	void showDemoThird(UserInput& ui) {
 		if (logoX <= 37.5) {
 			DrawExtendGraph(160, 170, 490, 260, Logo0, TRUE);
 		}
@@ -113,7 +112,7 @@ public:
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 485 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 		}
 		if (logoX < 1000.0) logoX += 1.0;
-		if (logoX > 120 || mouse.click() || key.onReturn()) {
+		if (logoX > 120 || ui.clickOrReturn()) {
 			flg = DEMO_OVER;
 		}
 	}

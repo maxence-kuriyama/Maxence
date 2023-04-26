@@ -1,7 +1,6 @@
 #pragma once
 
-#include "lib/mouse.h"
-#include "lib/keyboard.h"
+#include "lib/user_input.h"
 
 
 // ロゴマークオブジェクト

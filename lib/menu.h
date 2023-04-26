@@ -1,7 +1,6 @@
 #pragma once
 
-#include "lib/mouse.h"
-#include "lib/keyboard.h"
+#include "lib/user_input.h"
 
 
 // メニュー画面管理用クラス
@@ -51,6 +50,10 @@ public:
 		}
 	}
 
+	void display(UserInput& ui, int strColor) {
+		display(*ui.mouse, strColor);
+	}
+
 	// active = 0/1: inactive/active
 	void display(int active, int strColor) {
 		DrawFormatString(textX, textY, strColor, text.c_str());
@@ -70,6 +73,10 @@ public:
 			}
 		}
 		return false;
+	}
+
+	bool isClicked(UserInput& ui) {
+		return isClicked(*ui.mouse);
 	}
 
 	Button operator = (Button& src) {
@@ -117,24 +124,24 @@ public:
 		}
 	}
 
-	int choose(int keyboardFlg, Mouse& mouse, Key& key, int strColor) {
-		if (keyboardFlg) {
+	int choose(UserInput& ui, int strColor, bool noKeyboard = false) {
+		if (!noKeyboard && ui.keyboard) {
 			display(strColor);
-			if (key.onReturn()) {
+			if (ui.key->onReturn()) {
 				return id;
 			}
 		}
 		else {
 			for (int i = 0; i < size; ++i) {
-				button[i].display(mouse, strColor);
+				button[i].display(ui, strColor);
 			}
 			for (int i = 0; i < size; ++i) {
-				if (button[i].isClicked(mouse)) {
+				if (button[i].isClicked(ui)) {
 					return i;
 				}
 			}
 		}
-		toggle(key);
+		toggle(*ui.key);
 		return -1;
 	}
 };

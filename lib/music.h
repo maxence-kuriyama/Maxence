@@ -3,7 +3,6 @@
 #include "DxLib.h"
 #include <string>
 #include "lib/const.h"
-#include "lib/keyboard.h"
 #include "lib/logger.h"
 
 
