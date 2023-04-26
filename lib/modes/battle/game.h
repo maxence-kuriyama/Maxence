@@ -27,7 +27,6 @@ private:
 	int frColorCurrentCoord = Black;
 	int strColorDebug = Blue;
 	int bkGraph = LoadGraph("graph/game_background.png");
-	int Font0 = CreateFontToHandle("HGã≥â»èëëÃ", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
 	int stone1_t = LoadGraph("graph/stone1.png");
