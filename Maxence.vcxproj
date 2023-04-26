@@ -172,6 +172,7 @@
     <ClInclude Include="lib\basic.h" />
     <ClInclude Include="lib\battle.h" />
     <ClInclude Include="lib\battle\anime.h" />
+    <ClInclude Include="lib\battle\comment.h" />
     <ClInclude Include="lib\battle\game.h" />
     <ClInclude Include="lib\battle\game\comment.h" />
     <ClInclude Include="lib\board.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="lib\opening.h" />
     <ClInclude Include="lib\scenario.h" />
     <ClInclude Include="lib\sprite.h" />
+    <ClInclude Include="lib\synchronizer.h" />
     <ClInclude Include="lib\title.h" />
     <ClInclude Include="lib\title\fireflower.h" />
     <ClInclude Include="lib\vect.h" />

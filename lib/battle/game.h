@@ -1,11 +1,9 @@
 #pragma once
 
-#include <time.h>
 #include <Eigen/Core>
 #include "lib/const.h"
 #include "lib/basic.h"
 #include "lib/keyboard.h"
-#include "lib/battle/game/comment.h"
 #include "lib/board.h"
 
 
@@ -40,31 +38,23 @@ private:
 	int player1 = 0;
 	int player2 = 0;
 
-	// 同期処理関連
-	long start = clock();	// 同期処理開始時刻
-	long fpsStart = clock();	// FPS計測開始時刻
-	int fpsCnt = 0;			// FPS計測用
-
 	Mouse* mouse;
 	Key* key;
 	int taijin = VS_HUMAN;
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
 	int cnt = 0;			// ターン数
-	int playCnt = 0;		// 1ターンに費やしたカウント
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
-	Comment comment;
 
 public:
 	string mode = "";
 	Board board;
-	int teban = TEBAN_SENKO;		// 0: senko, 1: koko
-	int fps = 0;			// 実効FPS
+	int teban = TEBAN_SENKO;	// 0: senko, 1: koko
+	int playCnt = 0;			// 1ターンに費やしたカウント
 
 	Coordinate coordinate = { 0, 0, 0, 0, DUMMY_LAST_FIELD }; //キーボード操作時の座標
 
 
 	Game() {
-		comment.initialize();
 		// フィールド画像初期化
 		board.setStoneGraphs(stone1, stone2, stone1_t, stone2_t);
 	}
@@ -84,21 +74,8 @@ public:
 		initialize();
 	}
 
-	// 同期処理
-	void sync() {
-		// 実効fps計測
-		fpsCnt++;
+	void tick() {
 		playCnt = (playCnt + 1) % 10000000;
-		if (clock() - fpsStart > 1000.0) {
-			fps = fpsCnt;
-			fpsCnt = 0;
-			fpsStart = clock();
-		}
-		// 同期処理
-		while (clock() - start < 1000.0 / FPS) {
-			WaitTimer(1);
-		}
-		start = clock();
 	}
 
 	void reset(Music& bgm) {
@@ -279,15 +256,6 @@ public:
 		DrawBox(upLeftX, upLeftY, lowRightX, lowRightY, frColorCurrentCoord, FALSE);
 	}
 
-	void drawComment(int comment_flg, int str_color) {
-		// コメント描画
-		if (comment_flg) {
-			comment.draw(str_color);
-		}
-		// コメント差し替え
-		comment.update(playCnt);
-	}
-
 	void drawPlayers(int side = 0) {
 		// sideが指定されていなければ、cntとtebanから計算する
 		if (side == 0) {
@@ -427,10 +395,6 @@ public:
 		return false;
 	}
 
-	void updateCommentInBattle() {
-		comment.forceUpdate(COMMENT_CHANGE_TYPE_PLAY_TURN, 0.40);
-	}
-
 
 	/*===========================*/
 	//    盤面情報
@@ -470,15 +434,11 @@ public:
 	void debugDump() {
 		int strColor = strColorDebug;
 		// Game
-		DrawFormatString(5, 25, strColor, "fps: %d", fps);
-		//DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
 		DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
 		DrawFormatString(5, 85, strColor, "teban: %d", teban);
 		DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
 		DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 		DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
 		DrawFormatString(5, 165, strColor, "playCnt: %d", playCnt);
-		// Comment
-		comment.debugDump(strColor);
 	}
 };

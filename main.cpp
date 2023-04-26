@@ -14,13 +14,15 @@
 
 using namespace DxLib;
 using namespace std;
-#include "lib/title.h"
+
+#include "lib/music.h"
+#include "lib/synchronizer.h"
 #include "lib/logo.h"
+#include "lib/title.h"
 #include "lib/scenario.h"
 #include "lib/battle.h"
 #include "lib/opening.h"
 #include "lib/ending.h"
-#include "lib/music.h"
 #include "lib/com.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -49,15 +51,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Mouse mouse;
 	Key key;
-	Title title;
-	Logo logo;
 	Music bgm;
+	Synchronizer sync;
+	Logo logo;
+
+	Title title;
 	Scenario scenario;
 	Opening opening;
 	Ending ending;
 	Battle battle(&mouse, &key);
 	int flg = FLAG_OPENING;
+
 	bool debug_flg = false;
+	int strColorDebug = GetColor(0, 0, 0);
 
 	COM com;
 
@@ -169,8 +175,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			SetBackgroundColor(0, 0, 0);	//背景色
 			battle.drawForEnding();
 			logo.draw();
-			// TODO: なんでfps入れてんの？
-			ending.show(bgm, battle.game.fps);
+			ending.show(bgm, sync.fps);
 		}
 		else if (flg == FLAG_SCENARIO) {
 			scenario.getKey(key);
@@ -180,12 +185,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-
-		// 同期処理
-		battle.game.sync();
+		battle.game.tick();
+		sync.execute();
 
 		// デバッグ情報出力
 		if (debug_flg) {
+			DrawFormatString(5, 25, strColorDebug, "fps: %d", sync.fps);
+			DrawFormatString(5, 45, strColorDebug, "gameFlg: %d", flg);
 			battle.debugDump();
 			bgm.debugDump();
 			scenario.debugDump();
@@ -200,3 +206,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	return 0;
 }
+

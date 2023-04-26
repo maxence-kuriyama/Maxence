@@ -5,6 +5,7 @@
 #include "lib/menu.h"
 #include "lib/battle/game.h"
 #include "lib/battle/anime.h"
+#include "lib/battle/comment.h"
 
 class Battle {
 private:
@@ -15,6 +16,7 @@ private:
 
 	Anime cutin;
 	Camera camera;
+	Comment comment;
 	double theta = 0.3;
 
 	Mouse* mouse;
@@ -35,6 +37,7 @@ public:
 		key = src_key;
 		game.initialize(src_mouse, src_key);
 		camera.initialize();
+		comment.initialize();
 		// ボタン初期化
 		btnAgain.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
@@ -113,7 +116,7 @@ public:
 		}
 
 		// コメントの描画
-		game.drawComment(commentFlg, strColor);
+		drawComment();
 
 		// カットインアニメーション
 		cutin.update();
@@ -163,6 +166,20 @@ public:
 		DrawFormatString(540, 144, strColor, "一手戻る");
 	}
 
+	void drawComment() {
+		// コメント描画
+		if (commentFlg) {
+			comment.draw(strColor);
+		}
+		// コメント差し替え
+		comment.update(game.playCnt);
+	}
+
+	void updateCommentInBattle() {
+		comment.forceUpdate(COMMENT_CHANGE_TYPE_PLAY_TURN, 0.40);
+	}
+
+
 
 	/*===========================*/
 	//    Result Mode
@@ -187,6 +204,9 @@ public:
 			return_flg = FLAG_BATTLE;
 			start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 		}
+
+		// コメントの描画
+		drawComment();
 
 		// 動作の取り消し
 		if (cancelResult()) return_flg = FLAG_BATTLE;
@@ -223,7 +243,7 @@ public:
 				if (game.isVsCOM()) {
 					com.setWait();
 				}
-				game.updateCommentInBattle();
+				updateCommentInBattle();
 			}
 		}
 	}
@@ -256,6 +276,15 @@ public:
 			if (key->state[KEY_INPUT_V] == 1) {
 				likelihoodFlg = !likelihoodFlg;
 			}
+		}
+	}
+
+	void toggleStrColor() {
+		if (strColor == Black) {
+			strColor = White;
+		}
+		else {
+			strColor = Black;
 		}
 	}
 
@@ -296,14 +325,6 @@ public:
 		return false;
 	}
 
-	void toggleStrColor() {
-		if (strColor == Black) {
-			strColor = White;
-		}
-		else {
-			strColor = Black;
-		}
-	}
 
 	/*===========================*/
 	//    デバッグ情報
@@ -313,9 +334,9 @@ public:
 
 		int strColor = strColorDebug;
 		// Option
-		//DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
-		//DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
-		//DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
-		//DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
+		DrawFormatString(125, 65, strColor, "likeliFlg: %d", likelihoodFlg);
+		DrawFormatString(125, 85, strColor, "commentFlg: %d", commentFlg);
+		// Comment
+		comment.debugDump(strColor);
 	}
 };
