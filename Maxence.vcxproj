@@ -193,6 +193,15 @@
     <ClInclude Include="lib\logo.h" />
     <ClInclude Include="lib\menu.h" />
     <ClInclude Include="lib\message.h" />
+    <ClInclude Include="lib\modes\battle.h" />
+    <ClInclude Include="lib\modes\battle\anime.h" />
+    <ClInclude Include="lib\modes\battle\comment.h" />
+    <ClInclude Include="lib\modes\battle\game.h" />
+    <ClInclude Include="lib\modes\ending.h" />
+    <ClInclude Include="lib\modes\opening.h" />
+    <ClInclude Include="lib\modes\scenario.h" />
+    <ClInclude Include="lib\modes\title.h" />
+    <ClInclude Include="lib\modes\title\fireflower.h" />
     <ClInclude Include="lib\mouse.h" />
     <ClInclude Include="lib\movie.h" />
     <ClInclude Include="lib\music.h" />

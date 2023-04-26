@@ -18,11 +18,11 @@ using namespace std;
 #include "lib/music.h"
 #include "lib/synchronizer.h"
 #include "lib/logo.h"
-#include "lib/title.h"
-#include "lib/scenario.h"
-#include "lib/battle.h"
-#include "lib/opening.h"
-#include "lib/ending.h"
+#include "lib/modes/title.h"
+#include "lib/modes/scenario.h"
+#include "lib/modes/battle.h"
+#include "lib/modes/opening.h"
+#include "lib/modes/ending.h"
 #include "lib/com.h"
 
 #pragma comment(lib, "winmm.lib")

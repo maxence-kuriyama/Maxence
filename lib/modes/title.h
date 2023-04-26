@@ -2,7 +2,7 @@
 
 #include "lib/const.h"
 #include "lib/menu.h"
-#include "lib/title/fireflower.h"
+#include "lib/modes/title/fireflower.h"
 
 
 class Title {
