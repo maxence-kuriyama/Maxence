@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/basic.h"
+#include "lib/mouse.h"
 #include "lib/keyboard.h"
 
 
@@ -50,7 +50,7 @@ public:
 			titleY = 480 - 80;
 		}
 
-		if (key.onAt()) {
+		if (key.state[KEY_INPUT_AT] == 1) {
 			if (acRate >= 0.5) {
 				initialize();
 			}

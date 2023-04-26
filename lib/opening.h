@@ -2,7 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "lib/basic.h"
+#include "lib/mouse.h"
 #include "lib/keyboard.h"
 
 const int DEMO_FIRST(1);

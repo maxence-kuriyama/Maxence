@@ -193,6 +193,7 @@
     <ClInclude Include="lib\logo.h" />
     <ClInclude Include="lib\menu.h" />
     <ClInclude Include="lib\message.h" />
+    <ClInclude Include="lib\mouse.h" />
     <ClInclude Include="lib\movie.h" />
     <ClInclude Include="lib\music.h" />
     <ClInclude Include="lib\OBJ_Loader.h" />

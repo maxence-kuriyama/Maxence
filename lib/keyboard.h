@@ -17,8 +17,6 @@ public:
 		waitCnt = waitConst;
 	}
 
-public:
-
 	int update() {
 		char temp[256];
 		GetHitKeyStateAll(temp);
@@ -42,10 +40,6 @@ public:
 
 	bool onBack() {
 		return (state[KEY_INPUT_Z] == 1 || state[KEY_INPUT_BACK] == 1);
-	}
-
-	bool onAt() {
-		return (state[KEY_INPUT_AT] == 1);
 	}
 
 	// ƒQ[ƒ€’†‚ÌƒL[“ü—Í
@@ -112,13 +106,5 @@ public:
 			return true;
 		}
 		return false;
-	}
-
-	int skipMovie(int movieHandle) {
-		if (state[KEY_INPUT_W] == 1) {
-			PauseMovieToGraph(movieHandle);
-			return 1;
-		}
-		return 0;
 	}
 };

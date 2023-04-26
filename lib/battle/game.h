@@ -3,6 +3,7 @@
 #include <Eigen/Core>
 #include "lib/const.h"
 #include "lib/basic.h"
+#include "lib/mouse.h"
 #include "lib/keyboard.h"
 #include "lib/board.h"
 
@@ -41,7 +42,6 @@ private:
 	Mouse* mouse;
 	Key* key;
 	int taijin = VS_HUMAN;
-	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
 	int cnt = 0;			// ターン数
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
@@ -157,15 +157,6 @@ public:
 
 	bool isVsCOM() {
 		return taijin == VS_COM;
-	}
-
-
-	/*===========================*/
-	//    キーボード入力関連
-	/*===========================*/
-	void toggleMouseOrKeyboard() {
-		if (mouse->isUsed()) keyboardFlg = 0;
-		if (key->isUsed()) keyboardFlg = 1;
 	}
 
 
@@ -349,9 +340,9 @@ public:
 		coordinate = { globalX, globalY, localX, localY, DUMMY_LAST_FIELD };
 	}
 
-	bool playTurn() {
+	bool playTurn(bool keyboard) {
 		moveCoordByKey();
-		if (keyboardFlg) {
+		if (keyboard) {
 			if (key->onCheck()) {
 				playCnt = 0;
 				return true;
@@ -437,7 +428,6 @@ public:
 		DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
 		DrawFormatString(5, 85, strColor, "teban: %d", teban);
 		DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
-		DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 		DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
 		DrawFormatString(5, 165, strColor, "playCnt: %d", playCnt);
 	}

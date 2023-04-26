@@ -28,6 +28,7 @@ private:
 	int strColorDebug = GetColor(0, 0, 255);
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
+	bool keyboardFlg = false;	// キーボード操作かマウス操作か
 
 public:
 	Game game;
@@ -102,9 +103,7 @@ public:
 		drawMessage();
 
 		// 学習機械の出力描画
-		if (likelihoodFlg) {
-			com.visualize();
-		}
+		if (likelihoodFlg) com.visualize();
 
 		// COMの手番
 		if (!game.isPlayTurn()) {
@@ -237,7 +236,7 @@ public:
 	//    操作関連
 	/*===========================*/
 	void playByPlayer(COM& com) {
-		if (game.isPlayTurn() && game.playTurn()) {
+		if (game.isPlayTurn() && game.playTurn(keyboardFlg)) {
 			double res = game.update();
 			if (game.isUpdated(res)) {
 				if (game.isVsCOM()) {
@@ -249,10 +248,8 @@ public:
 	}
 
 	int menuChoose() {
-		int keyboardFlg = 0;
-		if (mouse->isUsed()) keyboardFlg = 0;
-		if (key->isUsed()) keyboardFlg = 1;
-		return menu.choose(keyboardFlg, *mouse, *key, strColor);
+		bool keyboard = false;
+		return menu.choose(keyboard, *mouse, *key, strColor);
 	}
 
 	void toggleByKey(bool debug) {
@@ -325,6 +322,11 @@ public:
 		return false;
 	}
 
+	void toggleMouseOrKeyboard() {
+		if (mouse->isUsed()) keyboardFlg = false;
+		if (key->isUsed()) keyboardFlg = true;
+	}
+
 
 	/*===========================*/
 	//    デバッグ情報
@@ -334,6 +336,7 @@ public:
 
 		int strColor = strColorDebug;
 		// Option
+		DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
 		DrawFormatString(125, 65, strColor, "likeliFlg: %d", likelihoodFlg);
 		DrawFormatString(125, 85, strColor, "commentFlg: %d", commentFlg);
 		// Comment

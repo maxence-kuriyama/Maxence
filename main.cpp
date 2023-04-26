@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// É}ÉEÉXëÄçÏÇ©î€Ç©ÇîªíËÇ∑ÇÈ
-		battle.game.toggleMouseOrKeyboard();
+		battle.toggleMouseOrKeyboard();
 
 
 		if (flg == FLAG_OPENING) {
