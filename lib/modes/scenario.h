@@ -1,9 +1,9 @@
 #pragma once
 
-#include "lib/music.h"
-#include "lib/message.h"
-#include "lib/sprite.h"
 #include <regex>
+#include "lib/music.h"
+#include "lib/sprite.h"
+#include "lib/modes/scenario/message.h"
 
 #define SPRITE_EXPAND_RATE	0.0006
 

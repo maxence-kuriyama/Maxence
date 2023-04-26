@@ -170,7 +170,6 @@
   <ItemGroup>
     <ClInclude Include="lib\anime.h" />
     <ClInclude Include="lib\basic.h" />
-    <ClInclude Include="lib\battle.h" />
     <ClInclude Include="lib\battle\anime.h" />
     <ClInclude Include="lib\battle\comment.h" />
     <ClInclude Include="lib\battle\game.h" />
@@ -182,12 +181,10 @@
     <ClInclude Include="lib\comment.h" />
     <ClInclude Include="lib\com\minmax.h" />
     <ClInclude Include="lib\const.h" />
-    <ClInclude Include="lib\ending.h" />
     <ClInclude Include="lib\fireflower.h" />
     <ClInclude Include="lib\game.h" />
     <ClInclude Include="lib\game\anime.h" />
     <ClInclude Include="lib\game\comment.h" />
-    <ClInclude Include="lib\keyboard.h" />
     <ClInclude Include="lib\load_obj.h" />
     <ClInclude Include="lib\logger.h" />
     <ClInclude Include="lib\logo.h" />
@@ -202,15 +199,11 @@
     <ClInclude Include="lib\modes\scenario.h" />
     <ClInclude Include="lib\modes\title.h" />
     <ClInclude Include="lib\modes\title\fireflower.h" />
-    <ClInclude Include="lib\mouse.h" />
     <ClInclude Include="lib\movie.h" />
     <ClInclude Include="lib\music.h" />
     <ClInclude Include="lib\OBJ_Loader.h" />
-    <ClInclude Include="lib\opening.h" />
-    <ClInclude Include="lib\scenario.h" />
     <ClInclude Include="lib\sprite.h" />
     <ClInclude Include="lib\synchronizer.h" />
-    <ClInclude Include="lib\title.h" />
     <ClInclude Include="lib\title\fireflower.h" />
     <ClInclude Include="lib\user_input.h" />
     <ClInclude Include="lib\user_input\keyboard.h" />

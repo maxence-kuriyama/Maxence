@@ -4,6 +4,7 @@
 #include "lib/com.h"
 #include "lib/menu.h"
 #include "lib/modes/battle/game.h"
+#include "lib/modes/battle/camera.h"
 #include "lib/modes/battle/anime.h"
 #include "lib/modes/battle/comment.h"
 

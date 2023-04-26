@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "lib/nlohmann/json.hpp"
-#include "lib/basic.h"
+#include "lib/common.h"
 
 using namespace std;
 

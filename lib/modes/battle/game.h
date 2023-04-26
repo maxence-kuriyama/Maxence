@@ -2,7 +2,6 @@
 
 #include <Eigen/Core>
 #include "lib/const.h"
-#include "lib/basic.h"
 #include "lib/user_input.h"
 #include "lib/board.h"
 
