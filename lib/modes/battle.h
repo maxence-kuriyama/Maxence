@@ -93,14 +93,12 @@ public:
 		game.drawPlayers();
 	}
 
-	int show(COM& com, int& scene_flg, Music& bgm, bool debug) {
+	int show(COM& com, Music& bgm, bool debug) {
 		int return_flg = FLAG_BATTLE;
 
 		drawBeforePlay();
 		playByPlayer(com);
 		drawAfterPlay();
-
-		// メッセージの描画
 		drawMessage();
 
 		// 学習機械の出力描画
@@ -111,24 +109,18 @@ public:
 			// VectorXd input = game.stateToInput();
 			// com.play(input);
 			com.playMinMax(game.board, game.currentSide());
-			// 盤面の更新
 			game.update(com.choice);
 		}
 
-		// コメントの描画
 		drawComment();
-
-		// カットインアニメーション
 		cutin.update();
 
 		// 勝利判定
-		int victory = game.victory();
-		if (victory != 0) {
+		if (game.victory() != 0) {
 			return_flg = FLAG_RESULT;
 			ui->reset();
 		}
 
-		// 動作の取り消し
 		cancelPlay(com);
 
 		// セーブ or リセット
@@ -138,25 +130,17 @@ public:
 			return_flg = FLAG_TITLE;
 		}
 
-		// カメラ操作
 		moveCamera();
 
 		// 対戦スキップ（一人用デバッグ）
-		if (debug && skipBattle(scene_flg)) return_flg = FLAG_SCENARIO;
+		if (debug && skipBattle()) return_flg = FLAG_SCENARIO;
 
 		return return_flg;
 	}
 
 	// デバッグ用
-	bool skipBattle(int& sceneFlg) {
-		if (game.isVsCOM()) {
-			if (ui->onKeySkipDebug()) {
-				StopMusic();
-				sceneFlg++;
-				return true;
-			}
-		}
-		return false;
+	bool skipBattle() {
+		return (game.isVsCOM() && ui->onKeySkipDebug());
 	}
 
 	void drawMessage() {
@@ -168,9 +152,7 @@ public:
 
 	void drawComment() {
 		// コメント描画
-		if (commentFlg) {
-			comment.draw(strColor);
-		}
+		if (commentFlg) comment.draw(strColor);
 		// コメント差し替え
 		comment.update(game.playCnt);
 	}

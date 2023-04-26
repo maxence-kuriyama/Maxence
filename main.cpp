@@ -146,12 +146,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);
 
-			int res = battle.show(com, scenario.flg, bgm, debug_flg);
+			int res = battle.show(com, bgm, debug_flg);
 			logo.draw(ui);
 			if (res == FLAG_TITLE) {
 				title.initialize();
 				scenario.initialize();
 				SetBackgroundColor(0, 128, 128);
+			}
+			else if (res == FLAG_SCENARIO) {
+				StopMusic();
+				scenario.flg++;
 			}
 			flg = res;
 		}
