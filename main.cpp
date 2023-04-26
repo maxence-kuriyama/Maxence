@@ -118,44 +118,36 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		if (flg == FLAG_OPENING) {
 			opening.showDemo(ui);
-			if (opening.isOver()) {
-				flg = FLAG_TITLE;
-			}
+			if (opening.isOver()) flg = FLAG_TITLE;
 		}
 		else if (flg == FLAG_TITLE) {
 			bgm.load("sound/bgm03.mp3");
-			title.show();
-			int title_mode = title.flg;
-			int choice = title.choose(ui);
-			if (title_mode == MENU_GAME_MODE) {
-				if (choice == 0) {
-					battle.setVsCOM();
-				}
-				else if (choice == 1) {
-					battle.startVsHuman();
-					flg = FLAG_BATTLE;
-				}
-			}
-			else if (title_mode == MENU_PLAYER_ORDER) {
-				if (choice == 0) {
-					flg = FLAG_SCENARIO;
-					battle.setSenko();
-				}
-				else if (choice == 1) {
-					flg = FLAG_SCENARIO;
-					battle.setKoko();
-				}
+			int choice = title.show(ui);
+			switch (choice)
+			{
+			case MENU_CHOICE_VS_HUMAN:
+				flg = FLAG_BATTLE;
+				battle.startVsHuman();
+				break;
+			case MENU_CHOICE_VS_COM:
+				battle.setVsCOM();
+				break;
+			case MENU_CHOICE_VS_COM_SENKO:
+				flg = FLAG_SCENARIO;
+				battle.setSenko();
+				break;
+			case MENU_CHOICE_VS_COM_KOKO:
+				flg = FLAG_SCENARIO;
+				battle.setKoko();
+				break;
 			}
 		}
 		else if (flg == FLAG_BATTLE) {
-			// î’ñ ÇÃï`âÊ
 			//MV1DrawModel(ModelHandle);
-			SetBackgroundColor(0, 0, 0);	//îwåiêF
+			SetBackgroundColor(0, 0, 0);
 
 			int res = battle.show(com, scenario.flg, bgm, debug_flg);
-			logo.draw();
-			logo.update(key); // ìÆÇ≠
-
+			logo.draw(ui);
 			if (res == FLAG_TITLE) {
 				title.initialize();
 				scenario.initialize();
@@ -164,15 +156,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			flg = res;
 		}
 		else if (flg == FLAG_RESULT) {
-			// î’ñ ÇÃï`âÊ
-			//MV1DrawModel(ModelHandle);
-			SetBackgroundColor(0, 0, 0);	//îwåiêF
+			SetBackgroundColor(0, 0, 0);
 			flg = battle.showResult();
 			logo.draw();
 		}
 		else if (flg == FLAG_ENDING) {
 			bgm.load("sound/bgm09.mp3");
-			SetBackgroundColor(0, 0, 0);	//îwåiêF
+			SetBackgroundColor(0, 0, 0);
 			battle.drawForEnding();
 			logo.draw();
 			ending.show(bgm, sync.fps);

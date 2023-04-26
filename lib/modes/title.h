@@ -16,6 +16,7 @@ private:
 	Button btnKoko;
 	int White = GetColor(255, 255, 255);
 	bool soundFlg = false;
+	int flg = MENU_GAME_MODE;
 
 	void showFireFlower() {
 		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
@@ -29,8 +30,36 @@ private:
 		flg = MENU_PLAYER_ORDER;
 	}
 
+	//タイトル画面その１
+	int chooseMode(UserInput& ui) {
+		int choice = menuChoose(ui);
+		if (choice == 0) {
+			setOrderMenu();
+			return MENU_CHOICE_VS_COM;
+		}
+		else if (choice == 1) {
+			return MENU_CHOICE_VS_HUMAN;
+		}
+		return MENU_CHOICE_NONE;
+	}
+
+	//タイトル画面その２（「ぼっちで」選択時）
+	int chooseOrder(UserInput& ui) {
+		int choice = menuChoose(ui);
+		if (choice == 0) {
+			return MENU_CHOICE_VS_COM_SENKO;
+		}
+		else if (choice == 1) {
+			return MENU_CHOICE_VS_COM_KOKO;
+		}
+		return MENU_CHOICE_NONE;
+	}
+
+	int menuChoose(UserInput& ui) {
+		return menu.choose(ui, White);
+	}
+
 public:
-	int flg = MENU_GAME_MODE;
 
 	Title() {
 		initialize();
@@ -50,9 +79,10 @@ public:
 		flg = MENU_GAME_MODE;
 	}
 
-	void show() {
+	int show(UserInput& ui) {
 		showFireFlower();
 		DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, title_logo, TRUE);
+		return choose(ui);
 	}
 	
 	int choose(UserInput& ui) {
@@ -62,25 +92,6 @@ public:
 		else {
 			return chooseOrder(ui);
 		}
-	}
-
-	//タイトル画面その１
-	int chooseMode(UserInput& ui) {
-		int choice = menuChoose(ui);
-		if (choice == 0) {
-			setOrderMenu();
-		}
-		return choice;
-	}
-
-	//タイトル画面その２（「ぼっちで」選択時）
-	int chooseOrder(UserInput& ui) {
-		int choice = menuChoose(ui);
-		return choice;
-	}
-
-	int menuChoose(UserInput& ui) {
-		return menu.choose(ui, White);
 	}
 
 	void toggleSound() {
