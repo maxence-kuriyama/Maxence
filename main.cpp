@@ -57,8 +57,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Ending ending;
 	Battle battle(&mouse, &key);
 	int flg = FLAG_OPENING;
-	COM com;
+	bool debug_flg = false;
 
+	COM com;
 
 	// 3Dモデル関係
 	/*
@@ -81,33 +82,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		mouse.update();
 
 		// 設定を切り替える
-		battle.toggleByKey();
+		battle.toggleByKey(debug_flg);
+
+		//デバッグモード
+		if (key.state[KEY_INPUT_G] == 1) {
+			debug_flg = !debug_flg;
+		}
+
 		//音楽, SEの有無
 		if (key.state[KEY_INPUT_P] == 1) {
 			title.toggleSound();
 		}
 
-		// 文字色の変更
-		if (key.state[KEY_INPUT_I] == 1) {
-			battle.toggleStrColor();
-		}
-
-		// マウス操作か否かを判定する
-		battle.game.toggleMouseOrKeyboard();
-
-		// エンディングのデバッグ
-		if (battle.game.debugEndingFlg) {
+		// エンディングモードのデバッグ
+		if (key.state[KEY_INPUT_MINUS] == 1) {
+			bgm.unloadAll();
 			if (flg != FLAG_ENDING) {
-				bgm.unloadAll();
 				ending.initialize();
 				flg = FLAG_ENDING;
 			}
 			else {
-				bgm.unloadAll();
 				flg = FLAG_TITLE;
 			}
-			battle.game.debugEndingFlg = 0;
 		}
+
+		// マウス操作か否かを判定する
+		battle.game.toggleMouseOrKeyboard();
 
 
 		if (flg == FLAG_OPENING) {
@@ -146,7 +146,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);	//背景色
 
-			int res = battle.show(com, scenario.flg, bgm);
+			int res = battle.show(com, scenario.flg, bgm, debug_flg);
 			logo.draw();
 			logo.update(key); // 動く
 
@@ -185,12 +185,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		battle.game.sync();
 
 		// デバッグ情報出力
-		// TODO; debugFlgはmainで持った方がいいよ
-		battle.game.debugDump();
-		bgm.debugDump(battle.debugFlg);
-		scenario.debugDump(battle.debugFlg);
-		ending.debugDump(battle.debugFlg);
-		com.debugDump(battle.debugFlg);
+		if (debug_flg) {
+			battle.debugDump();
+			bgm.debugDump();
+			scenario.debugDump();
+			ending.debugDump();
+			com.debugDump();
+		}
 	}
 
 	InitGraph();

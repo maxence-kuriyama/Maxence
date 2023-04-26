@@ -47,24 +47,21 @@ private:
 
 	Mouse* mouse;
 	Key* key;
-
-public:
 	int taijin = VS_HUMAN;
-	int teban = TEBAN_SENKO;		// 0: senko, 1: koko
-	int cnt = 0;		// ターン数
 	int keyboardFlg = 0;	// 0: マウス操作, 1: キーボード操作
-	int debugFlg = 0;
-	int debugEndingFlg = 0;
-	string mode = "";
-	int fps = 0;			// 実効FPS
-
-	// 盤面上の操作関連
-	Coordinate coordinate = { 0, 0, 0, 0, DUMMY_LAST_FIELD }; //キーボード操作時の座標
+	int cnt = 0;			// ターン数
 	int playCnt = 0;		// 1ターンに費やしたカウント
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
-
 	Comment comment;
+
+public:
+	string mode = "";
 	Board board;
+	int teban = TEBAN_SENKO;		// 0: senko, 1: koko
+	int fps = 0;			// 実効FPS
+
+	Coordinate coordinate = { 0, 0, 0, 0, DUMMY_LAST_FIELD }; //キーボード操作時の座標
+
 
 	Game() {
 		comment.initialize();
@@ -471,19 +468,17 @@ public:
 	//    デバッグ情報
 	/*===========================*/
 	void debugDump() {
-		if (debugFlg) {
-			int strColor = strColorDebug;
-			// Game
-			DrawFormatString(5, 25, strColor, "fps: %d", fps);
-			//DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
-			DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
-			DrawFormatString(5, 85, strColor, "teban: %d", teban);
-			DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
-			DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
-			DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
-			DrawFormatString(5, 165, strColor, "playCnt: %d", playCnt);
-			// Comment
-			comment.debugDump(strColor);
-		}
+		int strColor = strColorDebug;
+		// Game
+		DrawFormatString(5, 25, strColor, "fps: %d", fps);
+		//DrawFormatString(5, 45, strColor, "gameFlg: %d", flg);
+		DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
+		DrawFormatString(5, 85, strColor, "teban: %d", teban);
+		DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
+		DrawFormatString(5, 125, strColor, "keyboardFlg: %d", keyboardFlg);
+		DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
+		DrawFormatString(5, 165, strColor, "playCnt: %d", playCnt);
+		// Comment
+		comment.debugDump(strColor);
 	}
 };

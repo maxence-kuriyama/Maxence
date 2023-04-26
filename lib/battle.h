@@ -29,7 +29,6 @@ private:
 
 public:
 	Game game;
-	int debugFlg = 0;
 
 	Battle(Mouse* src_mouse, Key* src_key) {
 		mouse = src_mouse;
@@ -89,7 +88,7 @@ public:
 		game.drawPlayers();
 	}
 
-	int show(COM& com, int& scene_flg, Music& bgm) {
+	int show(COM& com, int& scene_flg, Music& bgm, bool debug) {
 		int return_flg = FLAG_BATTLE;
 
 		drawBeforePlay();
@@ -140,14 +139,14 @@ public:
 		moveCamera();
 
 		// 対戦スキップ（一人用デバッグ）
-		if (skipBattle(scene_flg)) return_flg = FLAG_SCENARIO;
+		if (debug && skipBattle(scene_flg)) return_flg = FLAG_SCENARIO;
 
 		return return_flg;
 	}
 
 	// デバッグ用
 	bool skipBattle(int& sceneFlg) {
-		if (debugFlg && game.isVsCOM()) {
+		if (game.isVsCOM()) {
 			if (key->state[KEY_INPUT_B] == 1) {
 				StopMusic();
 				sceneFlg++;
@@ -236,18 +235,18 @@ public:
 		return menu.choose(keyboardFlg, *mouse, *key, strColor);
 	}
 
-	// TODO: こいつなんとかしましょう
-	void toggleByKey() {
-		//デバッグモード解除
-		if (key->state[KEY_INPUT_G] == 1) {
-			debugFlg = (debugFlg + 1) % 2;
-			game.debugFlg = (game.debugFlg + 1) % 2;
-		}
+	void toggleByKey(bool debug) {
 		// コメントを消す
 		if (key->state[KEY_INPUT_K] == 1) {
 			commentFlg = !commentFlg;
 		}
-		if (debugFlg) {
+
+		// 文字色の変更
+		if (key->state[KEY_INPUT_I] == 1) {
+			toggleStrColor();
+		}
+
+		if (debug) {
 			// カットインを入れる
 			if (key->state[KEY_INPUT_C] == 1) {
 				cutin.flg = 1;
@@ -256,11 +255,6 @@ public:
 			// 学習機械の出力を見る
 			if (key->state[KEY_INPUT_V] == 1) {
 				likelihoodFlg = !likelihoodFlg;
-			}
-
-			// エンディングモード
-			if (key->state[KEY_INPUT_MINUS] == 1) {
-				game.debugEndingFlg = 1;
 			}
 		}
 	}
@@ -317,13 +311,11 @@ public:
 	void debugDump() {
 		game.debugDump();
 
-		if (debugFlg) {
-			int strColor = strColorDebug;
-			// Option
-			//DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
-			//DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
-			//DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
-			//DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
-		}
+		int strColor = strColorDebug;
+		// Option
+		//DrawFormatString(125, 25, strColor, "musicFlg: %d", option.musicFlg);
+		//DrawFormatString(125, 45, strColor, "soundFlg: %d", option.soundFlg);
+		//DrawFormatString(125, 65, strColor, "likeliFlg: %d", option.likeliFlg);
+		//DrawFormatString(125, 85, strColor, "commentFlg: %d", option.commentFlg);
 	}
 };

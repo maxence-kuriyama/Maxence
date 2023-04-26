@@ -138,12 +138,10 @@ public:
 		return trg;
 	}
 
-	void debugDump(int debug) {
-		if (debug) {
-			int strColor = strColorDebug;
+	void debugDump() {
+		int strColor = strColorDebug;
 
-			DrawFormatString(505, 25, strColor, "anneal: %d", annealed);
-			DrawFormatString(505, 65, strColor, miniMaxDebugStr.c_str());
-		}
+		DrawFormatString(505, 25, strColor, "anneal: %d", annealed);
+		DrawFormatString(505, 65, strColor, miniMaxDebugStr.c_str());
 	}
 };

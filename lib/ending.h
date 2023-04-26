@@ -241,18 +241,16 @@ public:
 		}
 	}
 
-	void debugDump(int debug) {
-		if (debug) {
-			int strColor = strColorDebug;
+	void debugDump() {
+		int strColor = strColorDebug;
 
-			DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
-			DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
-			DrawFormatString(365, 305, strColor, "mrK0.walkCnt: %d", mrK[0].walkCnt);
-			DrawFormatString(365, 325, strColor, "mrK1.walkCnt: %d", mrK[1].walkCnt);
-			DrawFormatString(365, 345, strColor, "mrK2.walkCnt: %d", mrK[2].walkCnt);
-			DrawFormatString(365, 365, strColor, "mrK3.walkCnt: %d", mrK[3].walkCnt);
-			DrawFormatString(365, 385, strColor, "deer.walkCnt: %d", deer.walkCnt);
-		}
+		DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
+		DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
+		DrawFormatString(365, 305, strColor, "mrK0.walkCnt: %d", mrK[0].walkCnt);
+		DrawFormatString(365, 325, strColor, "mrK1.walkCnt: %d", mrK[1].walkCnt);
+		DrawFormatString(365, 345, strColor, "mrK2.walkCnt: %d", mrK[2].walkCnt);
+		DrawFormatString(365, 365, strColor, "mrK3.walkCnt: %d", mrK[3].walkCnt);
+		DrawFormatString(365, 385, strColor, "deer.walkCnt: %d", deer.walkCnt);
 	}
 
 };
