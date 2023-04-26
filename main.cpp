@@ -175,7 +175,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		battle.game.tick();
+		battle.tick();
 		sync.execute();
 
 		// デバッグ情報出力

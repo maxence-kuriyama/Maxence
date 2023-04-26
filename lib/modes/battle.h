@@ -19,6 +19,7 @@ private:
 	Camera camera;
 	Comment comment;
 	UserInput* ui;
+	Game game;
 	double theta = 0.3;
 
 	int White = GetColor(255, 255, 255);
@@ -29,7 +30,6 @@ private:
 	bool commentFlg = false;
 
 public:
-	Game game;
 
 	Battle(UserInput* src_ui) {
 		ui = src_ui;
@@ -49,6 +49,10 @@ public:
 	}
 
 	~Battle() {}
+
+	void tick() {
+		game.tick();
+	}
 
 	void start(int player1, int player2, bool init = true) {
 		game.goBattle(player1, player2, init);
