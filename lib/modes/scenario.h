@@ -12,12 +12,12 @@
 // 単体での使用を想定
 class Scenario {
 
-// シーン + 主人公のアクション
-struct Scene {
-	int action;
-	int who;
-	char how[100];
-};
+	// シーン + 主人公のアクション
+	struct Scene {
+		int action;
+		int who;
+		char how[100];
+	};
 
 
 public:
@@ -63,7 +63,7 @@ private:
 	int strColorLoad = GetColor(0, 0, 0);
 	struct Scene sceneList[400] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
-		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.mp3" },
+		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
@@ -87,7 +87,7 @@ private:
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"swap" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_RED,		"" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"pop_once" },
-		{ SCENE_ACTION_LOAD,	SCENE_WHO_RED,		"sound/bgm05.mp3" },
+		{ SCENE_ACTION_LOAD,	SCENE_WHO_RED,		"sound/bgm05.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"馬鹿な、そんなはずではなかったのに…。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"最後の最期は後悔しないと決めていたのに、こんな死に様とはな。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"だが、俺が死ねば世界の崩壊が止まるというのなら" },
@@ -102,7 +102,7 @@ private:
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"swap" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_GREEN,	"" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"pop_once" },
-		{ SCENE_ACTION_LOAD,	SCENE_WHO_GREEN,	"sound/bgm06.mp3" },
+		{ SCENE_ACTION_LOAD,	SCENE_WHO_GREEN,	"sound/bgm06.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"俺は見えたよ。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"残ったお前にもいつか見える時が来るだろう……。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"先に逝っているよ。" },
@@ -115,7 +115,7 @@ private:
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"50" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"pop" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_BLUE,		"" },
-		{ SCENE_ACTION_LOAD,	SCENE_WHO_BLUE,		"sound/bgm07.mp3" },
+		{ SCENE_ACTION_LOAD,	SCENE_WHO_BLUE,		"sound/bgm07.ogg" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"馬鹿な、そんな、世界の王に成れるチャンスを逃してしまうなんて、有り得ない。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"……ああ、生きていたこと自体が大きなチャンスだったのか……。" },
@@ -126,7 +126,7 @@ private:
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"pop_once" },
-		{ SCENE_ACTION_LOAD,	SCENE_WHO_YELLOW,	"sound/bgm08.mp3" },
+		{ SCENE_ACTION_LOAD,	SCENE_WHO_YELLOW,	"sound/bgm08.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Mr.Kは王になろうとしていたのか……。" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"王、そうか！" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Kとは King のことだったのか。" },
@@ -420,6 +420,9 @@ private:
 		else if (how == "swap") {
 			if (music.swap(strColorLoad)) {
 				music.enableSwap();
+			}
+			else {
+				return;
 			}
 		}
 		else if (how == "pop") {

@@ -6,6 +6,9 @@
 #include "lib/logger.h"
 
 
+const string MUSIC_LOAD_MSG_SYNC("Loading...");
+const string MUSIC_LOAD_MSG_ASYNC_BASE("Loading");
+
 // 音楽のロード・再生をするクラス
 // 特に非同期読み込みのwrapper
 // 単体での使用を想定
@@ -16,11 +19,10 @@ private:
 	int cnt = 0;						// ローディングメッセージ用のカウンタ
 	int loadMsgX = 540;
 	int loadMsgY = 0;
-	int strColorDebug = GetColor(0, 250, 0);
-	string loadMsgSync = "Loading...";
-	string loadMsgAsyncBase = "Loading";
 	int isSwapped = 0;					// すでにswapされたか否か
-	int vol = 150;		// 1 - 255
+	int vol = 150;						// from 1 to 255
+
+	int strColorDebug = GetColor(0, 250, 250);
 
 public:
 
@@ -35,7 +37,7 @@ public:
 			strColor = GetColor(255, 255, 255);
 		}
 
-		int loadedHere = 0;		// ロードが行われたか否か
+		int loadedHere = 0; // ロードが行われたか否か
 
 		if (async) {
 			SetUseASyncLoadFlag(TRUE);
@@ -43,7 +45,7 @@ public:
 		else {
 			if (isEmpty(0) || isEmpty(1)) {
 				// 同期的にロードする場合はメッセージを即反映
-				DrawFormatString(loadMsgX, loadMsgY, strColor, loadMsgSync.c_str());
+				DrawFormatString(loadMsgX, loadMsgY, strColor, MUSIC_LOAD_MSG_SYNC.c_str());
 				ScreenFlip();
 				SetUseASyncLoadFlag(FALSE);
 			}
@@ -79,6 +81,7 @@ public:
 		if (hNum == 0 || hNum == 1) {
 			DeleteSoundMem(handle[hNum]);
 			handle[hNum] = -1;	// unloadされた状態
+			loggingUnloaded(musicName[hNum]);
 			musicName[hNum] = "";
 		}
 	}
@@ -100,7 +103,7 @@ public:
 
 	// 再生中と待機中の音楽を切り替える
 	int swap(int strColor = 0) {
-		if (!isLoading(1)) {
+		if (isPrepared(1)) {
 			stop();
 			int tmp = handle[0];
 			handle[0] = handle[1];
@@ -136,8 +139,8 @@ public:
 	}
 
 	// fromTop = 1で頭出し再生
-	int play(int fromTop = 0, int debug = 0) {
-		if (!isLoading()) {
+	int play(int fromTop = 0) {
+		if (isPrepared()) {
 			ChangeVolumeSoundMem(vol, handle[0]);
 			PlaySoundMem(handle[0], DX_PLAYTYPE_BACK, fromTop);
 			return 1;
@@ -147,7 +150,7 @@ public:
 
 	// 一時停止
 	int stop() {
-		if (!isLoading()) {
+		if (isPrepared()) {
 			StopSoundMem(handle[0]);
 			return 1;
 		}
@@ -166,7 +169,7 @@ public:
 				strColor = GetColor(255, 255, 255);
 			}
 
-			string loading = loadMsgAsyncBase;
+			string loading = MUSIC_LOAD_MSG_ASYNC_BASE;
 			for (int i = 0; i < (cnt % FPS) / 15; ++i) {
 				loading += ".";
 			}
@@ -182,33 +185,21 @@ public:
 		if (hNum == 0 || hNum == 1) {
 			return handle[hNum] == -1;
 		}
-		return true;	// 不正な指定に対しては空であるとする
+		return true; // 不正な指定に対しては空であるとする
 	}
 
 	// 指定したハンドルがロード中かどうか
 	bool isLoading(int hNum = 0) {
-		if (hNum == 0 || hNum == 1) {
-			// 空ハンドルに対して別途処理
-			if (isEmpty(hNum)) {
-				return false;
-			}
-			// ロード中か否かの判定
-			return CheckHandleASyncLoad(handle[hNum]);
-		}
-		return false;
+		if (isEmpty(hNum)) return false;
+		// ロード中か否かの判定
+		return CheckHandleASyncLoad(handle[hNum]);
 	}
 
 	// 指定したハンドルが再生可能かどうか
 	bool isPrepared(int hNum = 0) {
-		if (hNum == 0 || hNum == 1) {
-			// 空ハンドルに対して別途処理
-			if (isEmpty(hNum)) {
-				return false;
-			}
-			// ロードが終わっているか否かの判定
-			return !CheckHandleASyncLoad(handle[hNum]);
-		}
-		return false;
+		if (isEmpty(hNum)) return false;
+		// ロードが終わっているか否かの判定
+		return !CheckHandleASyncLoad(handle[hNum]);
 	}
 
 	void debugDump() {
@@ -226,6 +217,11 @@ public:
 
 	void loggingLoaded(const char* file_name) {
 		Logger::ss << "Load " << file_name;
+		Logger::log();
+	}
+
+	void loggingUnloaded(string music_name) {
+		Logger::ss << "Unload " << music_name;
 		Logger::log();
 	}
 };

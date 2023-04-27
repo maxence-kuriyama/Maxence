@@ -110,7 +110,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (opening.isOver()) flg = FLAG_TITLE;
 		}
 		else if (flg == FLAG_TITLE) {
-			bgm.load("sound/bgm03.mp3");
+			bgm.load("sound/bgm03.ogg");
 			int choice = title.show(ui);
 			routesTitle(choice, &flg, battle);
 		}
