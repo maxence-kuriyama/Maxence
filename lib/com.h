@@ -4,6 +4,7 @@
 #include <math.h>
 #include "lib/vect.h"
 #include "lib/com/minmax.h"
+#include "lib/com/loader.h"
 
 using namespace Eigen;
 
@@ -29,6 +30,8 @@ private:
 	ActLayer R2;
 	VectorXd output;
 	Machine critic;
+	Loader loader;
+
 	int strColorDebug = GetColor(255, 100, 0);
 	string miniMaxDebugStr;
 
@@ -67,15 +70,22 @@ public:
 		critic.setLayer(R2, 3);
 		critic.setLayer(Q3, 4);
 		output = VectorXd::Zero(lay_size[3]);
+		load();
 	}
 
 	~COM() {}
+
+	void load() {
+		::Affine* layers[3] = { &Q1, &Q2, &Q3 };
+		loader.read(lay_len, lay_size, layers);
+	}
 
 	void setWait() {
 		cnt = wait;
 	}
 
-	void visualize() {
+	void visualize(VectorXd input) {
+		output = critic.predict(input);
 		for (int index = 0; index < 81; index++) {
 			double temp_color = min(max(240.0 * (output(index) + 0.5), 0.0), 255.0);
 			int color = GetColor(255, 255, 255 - temp_color);
@@ -88,9 +98,13 @@ public:
 		}
 	}
 
-	void play(VectorXd input) {
+	void predict(VectorXd input) {
 		output = critic.predict(input);
 		max_val = output.maxCoeff(&max_id);
+	}
+
+	void play(VectorXd input) {
+		predict(input);
 		// wait‚ðÁ‰»‚µ‚½‚çŽè‚ð‘I‘ð‚·‚é
 		if (cnt <= 0) {
 			if (unif(mt) < annealRate) {

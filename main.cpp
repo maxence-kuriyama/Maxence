@@ -31,6 +31,7 @@ void routesTitle(int choice, int* flg, Battle& battle);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
 void goTitle(int* flg, Title& title, Scenario& scenario);
 void goBackScenario(int* flg, Scenario& scenario);
+void goResult(int* flg);
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -127,6 +128,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			case FLAG_SCENARIO:
 				goBackScenario(&flg, scenario);
 				break;
+			case FLAG_RESULT:
+				goResult(&flg);
+				break;
 			}
 		}
 		else if (flg == FLAG_RESULT) {
@@ -214,4 +218,8 @@ void goBackScenario(int* flg, Scenario& scenario) {
 	StopMusic();
 	scenario.flg++;
 	*flg = FLAG_SCENARIO;
+}
+
+void goResult(int* flg) {
+	*flg = FLAG_RESULT;
 }

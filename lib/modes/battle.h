@@ -100,20 +100,23 @@ public:
 
 		drawBeforePlay();
 		playByPlayer(com);
-		drawAfterPlay();
-		drawMessage();
 
 		// ŠwK‹@ŠB‚Ìo—Í•`‰æ
-		if (likelihoodFlg) com.visualize();
+		if (likelihoodFlg) {
+			VectorXd input = game.stateToInput();
+			com.visualize(input);
+		}
 
 		// COM‚Ìè”Ô
 		if (!game.isPlayTurn()) {
-			// VectorXd input = game.stateToInput();
-			// com.play(input);
-			com.playMinMax(game.board, game.currentSide());
+			VectorXd input = game.stateToInput();
+			com.play(input);
+			//com.playMinMax(game.board, game.currentSide());
 			game.update(com.choice);
 		}
 
+		drawAfterPlay();
+		drawMessage();
 		drawComment();
 		cutin.update();
 
