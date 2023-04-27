@@ -27,6 +27,11 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
+void routesTitle(int choice, int* flg, Battle& battle);
+void goEndingDebug(int* flg, Music& bgm, Ending& ending);
+void goTitle(int* flg, Title& title, Scenario& scenario);
+void goBackScenario(int* flg, Scenario& scenario);
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -91,29 +96,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		battle.toggleByKey(debug_flg);
 
 		//デバッグモード
-		if (ui.onKeyDebug()) {
-			debug_flg = !debug_flg;
-		}
+		if (ui.onKeyDebug()) debug_flg = !debug_flg;
 
 		//音楽, SEの有無
-		if (ui.onKeySound()) {
-			title.toggleSound();
-		}
+		if (ui.onKeySound()) title.toggleSound();
 
 		// エンディングモードのデバッグ
-		if (ui.onKeyEndingDebug()) {
-			bgm.unloadAll();
-			if (flg != FLAG_ENDING) {
-				ending.initialize();
-				flg = FLAG_ENDING;
-			}
-			else {
-				flg = FLAG_TITLE;
-			}
-		}
-
-		// マウス操作か否かを判定する
-		ui.toggleMouseOrKeyboard();
+		if (ui.onKeyEndingDebug()) goEndingDebug(&flg, bgm, ending);
 
 
 		if (flg == FLAG_OPENING) {
@@ -123,41 +112,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_TITLE) {
 			bgm.load("sound/bgm03.mp3");
 			int choice = title.show(ui);
-			switch (choice)
-			{
-			case MENU_CHOICE_VS_HUMAN:
-				flg = FLAG_BATTLE;
-				battle.startVsHuman();
-				break;
-			case MENU_CHOICE_VS_COM:
-				battle.setVsCOM();
-				break;
-			case MENU_CHOICE_VS_COM_SENKO:
-				flg = FLAG_SCENARIO;
-				battle.setSenko();
-				break;
-			case MENU_CHOICE_VS_COM_KOKO:
-				flg = FLAG_SCENARIO;
-				battle.setKoko();
-				break;
-			}
+			routesTitle(choice, &flg, battle);
 		}
 		else if (flg == FLAG_BATTLE) {
 			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);
-
 			int res = battle.show(com, bgm, debug_flg);
 			logo.draw(ui);
-			if (res == FLAG_TITLE) {
-				title.initialize();
-				scenario.initialize();
-				SetBackgroundColor(0, 128, 128);
+
+			switch (res) {
+			case FLAG_TITLE:
+				goTitle(&flg, title, scenario);
+				break;
+			case FLAG_SCENARIO:
+				goBackScenario(&flg, scenario);
+				break;
 			}
-			else if (res == FLAG_SCENARIO) {
-				StopMusic();
-				scenario.flg++;
-			}
-			flg = res;
 		}
 		else if (flg == FLAG_RESULT) {
 			SetBackgroundColor(0, 0, 0);
@@ -202,3 +172,46 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return 0;
 }
 
+void routesTitle(int choice, int* flg, Battle& battle) {
+	switch (choice) {
+	case MENU_CHOICE_VS_HUMAN:
+		*flg = FLAG_BATTLE;
+		battle.startVsHuman();
+		break;
+	case MENU_CHOICE_VS_COM:
+		battle.setVsCOM();
+		break;
+	case MENU_CHOICE_VS_COM_SENKO:
+		*flg = FLAG_SCENARIO;
+		battle.setSenko();
+		break;
+	case MENU_CHOICE_VS_COM_KOKO:
+		*flg = FLAG_SCENARIO;
+		battle.setKoko();
+		break;
+	}
+}
+
+void goEndingDebug(int* flg, Music& bgm, Ending& ending) {
+	bgm.unloadAll();
+	if (*flg != FLAG_ENDING) {
+		ending.initialize();
+		*flg = FLAG_ENDING;
+	}
+	else {
+		*flg = FLAG_TITLE;
+	}
+}
+
+void goTitle(int* flg, Title& title, Scenario& scenario) {
+	title.initialize();
+	scenario.initialize();
+	SetBackgroundColor(0, 128, 128);
+	*flg = FLAG_TITLE;
+}
+
+void goBackScenario(int* flg, Scenario& scenario) {
+	StopMusic();
+	scenario.flg++;
+	*flg = FLAG_SCENARIO;
+}

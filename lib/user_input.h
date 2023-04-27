@@ -12,6 +12,7 @@ public:
 	void update() {
 		key->update();
 		mouse->update();
+		toggleMouseOrKeyboard();
 	}
 
 	void reset() {
