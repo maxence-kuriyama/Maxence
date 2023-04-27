@@ -36,7 +36,6 @@ private:
 	int player1 = 0;
 	int player2 = 0;
 
-	UserInput* ui;
 	int taijin = VS_HUMAN;
 	int cnt = 0;			// ターン数
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
@@ -60,12 +59,6 @@ public:
 		cnt = 0;
 		drawCnt = 0;
 		board.initialize();
-		ui->reset();
-	}
-
-	void initialize(UserInput* src_ui) {
-		ui = src_ui;
-		initialize();
 	}
 
 	void tick() {
@@ -73,7 +66,6 @@ public:
 	}
 
 	void reset(Music& bgm) {
-		ui->reset();
 		taijin = VS_HUMAN;
 		mode = "";
 		bgm.unloadAll();
@@ -282,50 +274,48 @@ public:
 	/*===========================*/
 	//    盤面更新関連
 	/*===========================*/
-	void getMouseCoord() {
+	void getMouseCoord(Mouse& mouse) {
 		for (int index = 0; index < 81; index++) {
-			Mouse* mouse = ui->mouse;
 			Coordinate c = Board::coordinates(index);
 
 			int upLeftX = 160 + 100 * c.global_x + 33 * c.x;
 			int upLeftY = 80 + 100 * c.global_y + 33 * c.y;
 			int lowRightX = 160 + 100 * c.global_x + 33 * (c.x + 1);
 			int lowRightY = 80 + 100 * c.global_y + 33 * (c.y + 1);
-			if (mouse->onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
+			if (mouse.onButton(upLeftX, upLeftY, lowRightX, lowRightY)) {
 				coordinate = c;
 			}
 		}
 	}
 
-	void moveCoordByKey() {
-		Key* key = ui->key;
+	void moveCoordByKey(Key& key) {
 		int globalX = coordinate.global_x;
 		int globalY = coordinate.global_y;
 		int localX = coordinate.x;
 		int localY = coordinate.y;
 
-		if (key->onUp()) {
+		if (key.onUp()) {
 			localY--;
 			if (localY < 0) {
 				globalY = (globalY - 1 + 3) % 3;
 				localY += 3;
 			}
 		}
-		if (key->onDown()) {
+		if (key.onDown()) {
 			localY++;
 			if (localY >= 3) {
 				globalY = (globalY + 1) % 3;
 				localY -= 3;
 			}
 		}
-		if (key->onLeft()) {
+		if (key.onLeft()) {
 			localX--;
 			if (localX < 0) {
 				globalX = (globalX - 1 + 3) % 3;
 				localX += 3;
 			}
 		}
-		if (key->onRight()) {
+		if (key.onRight()) {
 			localX++;
 			if (localX > 2) {
 				globalX = (globalX + 1) % 3;
@@ -336,15 +326,15 @@ public:
 		coordinate = { globalX, globalY, localX, localY, DUMMY_LAST_FIELD };
 	}
 
-	bool playTurn() {
-		if (ui->keyboard) {
-			moveCoordByKey();
+	bool playTurn(UserInput& ui) {
+		if (ui.keyboard) {
+			moveCoordByKey(*ui.key);
 		}
 		else {
-			getMouseCoord();
+			getMouseCoord(*ui.mouse);
 		}
 
-		if (ui->check()) {
+		if (ui.check()) {
 			playCnt = 0;
 			return true;
 		}

@@ -33,7 +33,8 @@ public:
 
 	Battle(UserInput* src_ui) {
 		ui = src_ui;
-		game.initialize(src_ui);
+		ui->reset();
+		game.initialize();
 		camera.initialize();
 		comment.initialize();
 		// ボタン初期化
@@ -55,6 +56,7 @@ public:
 	}
 
 	void start(int player1, int player2, bool init = true) {
+		ui->reset();
 		game.goBattle(player1, player2, init);
 		menu.set(btnSave, btnReset);
 	}
@@ -117,8 +119,8 @@ public:
 
 		// 勝利判定
 		if (game.victory() != 0) {
-			return_flg = FLAG_RESULT;
 			ui->reset();
+			return_flg = FLAG_RESULT;
 		}
 
 		cancelPlay(com);
@@ -126,6 +128,7 @@ public:
 		// セーブ or リセット
 		int choice = menuChoose();
 		if (choice == 0 || choice == 1) {
+			ui->reset();
 			game.reset(bgm);
 			return_flg = FLAG_TITLE;
 		}
@@ -219,7 +222,7 @@ public:
 	//    操作関連
 	/*===========================*/
 	void playByPlayer(COM& com) {
-		if (game.isPlayTurn() && game.playTurn()) {
+		if (game.isPlayTurn() && game.playTurn(*ui)) {
 			double res = game.update();
 			if (game.isUpdated(res)) {
 				if (game.isVsCOM()) {
