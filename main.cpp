@@ -161,9 +161,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// デバッグ情報出力
 		if (debug_flg) {
-			DrawFormatString(5, 25, strColorDebug, "fps: %d", sync.fps);
-			DrawFormatString(5, 45, strColorDebug, "gameFlg: %d", flg);
-			DrawFormatString(5, 125, strColorDebug, "keyboardFlg: %d", ui.keyboard);
+			DrawFormatString(5, 45, strColorDebug, "fps: %d", sync.fps);
+			DrawFormatString(5, 65, strColorDebug, "gameFlg: %d", flg);
+			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", ui.keyboard);
 			battle.debugDump();
 			bgm.debugDump();
 			scenario.debugDump();

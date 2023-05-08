@@ -25,7 +25,7 @@ private:
 	int White = GetColor(255, 255, 255);
 	int Black = GetColor(0, 0, 0);
 	int strColor = White;
-	int strColorDebug = GetColor(0, 0, 255);
+	int strColorDebug = GetColor(50, 50, 200);
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
 
@@ -322,8 +322,8 @@ public:
 
 		int strColor = strColorDebug;
 		// Option
-		DrawFormatString(125, 65, strColor, "likeliFlg: %d", likelihoodFlg);
-		DrawFormatString(125, 85, strColor, "commentFlg: %d", commentFlg);
+		DrawFormatString(5, 205, strColor, "likeliFlg: %d", likelihoodFlg);
+		DrawFormatString(5, 225, strColor, "commentFlg: %d", commentFlg);
 		// Comment
 		comment.debugDump(strColor);
 	}

@@ -408,10 +408,10 @@ public:
 	void debugDump() {
 		int strColor = strColorDebug;
 		// Game
-		DrawFormatString(5, 65, strColor, "taijin: %d", taijin);
-		DrawFormatString(5, 85, strColor, "teban: %d", teban);
-		DrawFormatString(5, 105, strColor, "cnt: %d", cnt);
-		DrawFormatString(5, 145, strColor, "mode: %s", mode.c_str());
-		DrawFormatString(5, 165, strColor, "playCnt: %d", playCnt);
+		DrawFormatString(5, 105, strColor, "taijin: %d", taijin);
+		DrawFormatString(5, 125, strColor, "teban: %d", teban);
+		DrawFormatString(5, 145, strColor, "cnt: %d", cnt);
+		DrawFormatString(5, 165, strColor, "mode: %s", mode.c_str());
+		DrawFormatString(5, 185, strColor, "playCnt: %d", playCnt);
 	}
 };
