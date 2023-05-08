@@ -152,6 +152,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				battle.start(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
 			}
 		}
+		else if (flg == FLAG_TUTORIAL) {
+			SetBackgroundColor(0, 0, 0);
+		}
 
 		battle.tick();
 		sync.execute();
@@ -192,6 +195,9 @@ void routesTitle(int choice, int* flg, Battle& battle) {
 	case MENU_CHOICE_VS_COM_KOKO:
 		*flg = FLAG_SCENARIO;
 		battle.setKoko();
+		break;
+	case MENU_CHOICE_TUTORIAL:
+		*flg = FLAG_TUTORIAL;
 		break;
 	}
 }

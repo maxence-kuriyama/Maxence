@@ -12,6 +12,7 @@ private:
 	Menu menu;
 	Button btnLonely;
 	Button btnVsHuman;
+	Button btnTutorial;
 	Button btnSenko;
 	Button btnKoko;
 	int White = GetColor(255, 255, 255);
@@ -25,34 +26,47 @@ private:
 		}
 	}
 
-	void setOrderMenu() {
-		menu.set(btnSenko, btnKoko);
-		flg = MENU_PLAYER_ORDER;
+	int choose(UserInput& ui) {
+		if (flg == MENU_GAME_MODE) {
+			return chooseMode(ui);
+		}
+		else {
+			return chooseOrder(ui);
+		}
 	}
 
 	//タイトル画面その１
 	int chooseMode(UserInput& ui) {
 		int choice = menuChoose(ui);
-		if (choice == 0) {
+		switch (choice)	{
+		case 0:
 			setOrderMenu();
 			return MENU_CHOICE_VS_COM;
-		}
-		else if (choice == 1) {
+		case 1:
 			return MENU_CHOICE_VS_HUMAN;
+		case 2:
+			return MENU_CHOICE_TUTORIAL;
+		default:
+			return MENU_CHOICE_NONE;
 		}
-		return MENU_CHOICE_NONE;
 	}
 
 	//タイトル画面その２（「ぼっちで」選択時）
 	int chooseOrder(UserInput& ui) {
 		int choice = menuChoose(ui);
-		if (choice == 0) {
+		switch (choice) {
+		case 0:
 			return MENU_CHOICE_VS_COM_SENKO;
-		}
-		else if (choice == 1) {
+		case 1:
 			return MENU_CHOICE_VS_COM_KOKO;
+		default:
+			return MENU_CHOICE_NONE;
 		}
-		return MENU_CHOICE_NONE;
+	}
+
+	void setOrderMenu() {
+		menu.set(btnSenko, btnKoko);
+		flg = MENU_PLAYER_ORDER;
 	}
 
 	int menuChoose(UserInput& ui) {
@@ -73,25 +87,25 @@ public:
 		}
 		btnLonely.initialize(TEXT1_X, TEXT1_Y, "ぼっちで");
 		btnVsHuman.initialize(TEXT2_X, TEXT2_Y, "隣の人と");
+		btnTutorial.initialize(TEXT3_X, TEXT3_Y, "教えを乞う");
 		btnSenko.initialize(TEXT1_X, TEXT1_Y, "先攻");
 		btnKoko.initialize(TEXT2_X, TEXT2_Y, "後攻");
-		menu.set(btnLonely, btnVsHuman);
+		menu.set(btnLonely, btnVsHuman, btnTutorial);
 		flg = MENU_GAME_MODE;
 	}
 
 	int show(UserInput& ui) {
 		showFireFlower();
-		DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 490 + (rand() % 11) - 5.0, 260, title_logo, TRUE);
+		showTitleLogo();
 		return choose(ui);
 	}
-	
-	int choose(UserInput& ui) {
-		if (flg == MENU_GAME_MODE) {
-			return chooseMode(ui);
-		}
-		else {
-			return chooseOrder(ui);
-		}
+
+	void showTitleLogo() {
+		int upLeftx = 160 + (rand() % 11) - 5.0;
+		int upLefty = 170;
+		int downRightx = 490 + (rand() % 11) - 5.0;
+		int downRighty = 260;
+		DrawExtendGraph(upLeftx, upLefty, downRightx, downRighty, title_logo, TRUE);
 	}
 
 	void toggleSound() {

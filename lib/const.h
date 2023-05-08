@@ -8,6 +8,8 @@
 #define TEXT1_Y		300
 #define TEXT2_X		370
 #define TEXT2_Y		300
+#define TEXT3_X		290
+#define TEXT3_Y		360
 #define TEXT_SAVE_X			200
 #define TEXT_SAVE_Y			440
 #define TEXT_RESET_X		320
@@ -19,6 +21,7 @@
 #define FLAG_RESULT			2
 #define FLAG_SCENARIO		-6
 #define FLAG_ENDING			-4
+#define FLAG_TUTORIAL		-2
 
 #define RWD_VICTORY			1.0
 #define RWD_DOMINANT		1.0
@@ -74,8 +77,9 @@
 
 #define MENU_GAME_MODE		0
 #define MENU_PLAYER_ORDER	1
-#define MENU_CHOICE_VS_HUMAN		0
-#define MENU_CHOICE_VS_COM			1
-#define MENU_CHOICE_VS_COM_SENKO	2
-#define MENU_CHOICE_VS_COM_KOKO		3
+#define MENU_CHOICE_VS_HUMAN		10
+#define MENU_CHOICE_VS_COM			11
+#define MENU_CHOICE_TUTORIAL		12
+#define MENU_CHOICE_VS_COM_SENKO	20
+#define MENU_CHOICE_VS_COM_KOKO		21
 #define MENU_CHOICE_NONE			-1

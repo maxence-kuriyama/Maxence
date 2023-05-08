@@ -108,6 +108,14 @@ public:
 		size = 2;
 	}
 
+	void set(Button& button0, Button& button1, Button& button2) {
+		button[0] = button0;
+		button[1] = button1;
+		button[2] = button2;
+		id = 0;
+		size = 3;
+	}
+
 	void display(int strColor) {
 		for (int i = 0; i < size; ++i) {
 			button[i].display(0, strColor);
