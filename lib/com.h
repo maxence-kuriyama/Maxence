@@ -87,13 +87,31 @@ public:
 	void visualize(VectorXd input) {
 		output = critic.predict(input);
 		for (int index = 0; index < 81; index++) {
-			double temp_color = min(max(240.0 * (output(index) + 0.5), 0.0), 255.0);
-			int color = GetColor(255, 255, 255 - temp_color);
+			int color;
+			if (output(index) > 0.0) {
+				if (output(index) > 1.0) {
+					color = GetColor(155, 155, 0);
+				}
+				else {
+					double tmp = 255.0 - 255.0 * output(index);
+					color = GetColor(255, 255, tmp);
+				}
+			}
+			else {
+				if (output(index) < -1.0) {
+					color = GetColor(0, 0, 155);
+				}
+				else {
+					double tmp = 255.0 + 255.0 * output(index);
+					color = GetColor(tmp, tmp, 255);
+				}
+			}
 
 			Coordinate c = Board::coordinates(index);
 			int draw_x = 160 + 100 * c.global_x + 33 * c.x + 16;
 			int draw_y = 80 + 100 * c.global_y + 33 * c.y + 16;
 			int radius = 15;
+
 			DrawCircle(draw_x, draw_y, radius, color);
 		}
 	}
@@ -122,8 +140,8 @@ public:
 		if (cnt > 0) return;
 
 		MinMaxNode node(board, side);
-		// MinMaxNode::truncate = true;
-		int depth = 3;
+		MinMaxNode::truncate = true;
+		int depth = 4;
 		int index = node.search(depth);
 
 		choice = Board::coordinates(index);
