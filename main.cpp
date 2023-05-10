@@ -21,6 +21,7 @@ using namespace std;
 #include "lib/modes/title.h"
 #include "lib/modes/scenario.h"
 #include "lib/modes/battle.h"
+#include "lib/modes/battle_result.h"
 #include "lib/modes/opening.h"
 #include "lib/modes/ending.h"
 #include "lib/com.h"
@@ -67,6 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Opening opening;
 	Ending ending;
 	Battle battle(&ui);
+	BattleResult result(&ui);
 	int flg = FLAG_OPENING;
 
 	bool debug_flg = false;
@@ -115,6 +117,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			int choice = title.show(ui);
 			routesTitle(choice, &flg, battle);
 		}
+		else if (flg == FLAG_TUTORIAL) {
+			SetBackgroundColor(0, 0, 0);
+		}
 		else if (flg == FLAG_BATTLE) {
 			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);
@@ -135,13 +140,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_RESULT) {
 			SetBackgroundColor(0, 0, 0);
-			flg = battle.showResult();
+			int res = result.show(battle.game);
 			logo.draw();
+
+			switch (res) {
+			case FLAG_BATTLE:
+				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+				break;
+			case FLAG_RESULT_CANCEL:
+				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE, false);
+				res = FLAG_BATTLE;
+				break;
+			}
+			flg = res;
 		}
 		else if (flg == FLAG_ENDING) {
 			bgm.load("sound/bgm09.mp3");
 			SetBackgroundColor(0, 0, 0);
-			battle.drawForEnding();
+			ending.drawGameBoard(battle.game);
 			logo.draw();
 			ending.show(bgm, sync.fps);
 		}
@@ -151,9 +167,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				flg = FLAG_BATTLE;
 				battle.start(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
 			}
-		}
-		else if (flg == FLAG_TUTORIAL) {
-			SetBackgroundColor(0, 0, 0);
 		}
 
 		battle.tick();

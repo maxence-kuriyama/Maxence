@@ -3,23 +3,24 @@
 #include "lib/const.h"
 #include "lib/com.h"
 #include "lib/menu.h"
-#include "lib/modes/battle/game.h"
+#include "lib/modes/common/game.h"
 #include "lib/modes/battle/camera.h"
 #include "lib/modes/battle/anime.h"
 #include "lib/modes/battle/comment.h"
 
+// バトルモード
+// 主にGameの操作と描画
+// Gameの描画はEndingとBattleResultでも行うため、公開する必要がある
 class Battle {
 private:
 	Menu menu;
 	Button btnSave;
 	Button btnReset;
-	Button btnAgain;
 
 	Anime cutin;
 	Camera camera;
 	Comment comment;
 	UserInput* ui;
-	Game game;
 	double theta = 0.3;
 
 	int White = GetColor(255, 255, 255);
@@ -30,6 +31,7 @@ private:
 	bool commentFlg = false;
 
 public:
+	Game game;
 
 	Battle(UserInput* src_ui) {
 		ui = src_ui;
@@ -38,7 +40,6 @@ public:
 		camera.initialize();
 		comment.initialize();
 		// ボタン初期化
-		btnAgain.initialize(44, 44, 44 - 8, 44 - 8, 44 + 88, 44 + 24, "もう一回");
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
 		// カットイン画像初期化
@@ -168,59 +169,6 @@ public:
 	}
 
 
-
-	/*===========================*/
-	//    Result Mode
-	/*===========================*/
-	void drawForResult() {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-		game.drawLocalState();
-		game.drawWinner();
-	}
-
-	int showResult() {
-		int return_flg = FLAG_RESULT;
-
-		drawForResult();
-
-		// メッセージの描画
-		btnAgain.display(*ui, strColor);
-		if (btnAgain.isClicked(*ui) || ui->onReturn()) {
-			return_flg = FLAG_BATTLE;
-			start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
-		}
-
-		// コメントの描画
-		drawComment();
-
-		// 動作の取り消し
-		if (cancelResult()) return_flg = FLAG_BATTLE;
-
-		// カメラ操作
-		moveCameraResult();
-
-		// TODO: シナリオの場合の終了 + 遷移処理
-
-		return return_flg;
-	}
-
-
-	/*===========================*/
-	//    Ending Mode
-	/*===========================*/
-	void drawForEnding() {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-		game.drawLocalState();
-		game.drawCurrentCoord();
-	}
-
-
 	/*===========================*/
 	//    操作関連
 	/*===========================*/
@@ -287,30 +235,10 @@ public:
 		//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 	}
 
-	void moveCameraResult() {
-		Mouse* mouse = ui->mouse;
-		if (mouse->click()) {
-			mouse->set();
-		}
-		else if (mouse->onClick()) {
-			camera.move(mouse->distDragX(), mouse->distDragY());
-			mouse->set();
-		}
-		camera.zoom(mouse->wheel);
-	}
-
 	void cancelPlay(COM& com) {
 		if (ui->onBack() && game.goBackHist()) {
 			com.setWait();
 		}
-	}
-
-	bool cancelResult() {
-		if (ui->onBack() && game.goBackHist()) {
-			start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE, false);
-			return true;
-		}
-		return false;
 	}
 
 

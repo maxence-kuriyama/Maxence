@@ -19,6 +19,7 @@
 #define FLAG_TITLE			0
 #define FLAG_BATTLE			1
 #define FLAG_RESULT			2
+#define FLAG_RESULT_CANCEL	10
 #define FLAG_SCENARIO		-6
 #define FLAG_ENDING			-4
 #define FLAG_TUTORIAL		-2

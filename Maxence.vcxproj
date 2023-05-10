@@ -194,9 +194,12 @@
     <ClInclude Include="lib\modes\battle\anime.h" />
     <ClInclude Include="lib\modes\battle\camera.h" />
     <ClInclude Include="lib\modes\battle\comment.h" />
-    <ClInclude Include="lib\modes\battle\game.h" />
+    <ClInclude Include="lib\modes\battle_result.h" />
+    <ClInclude Include="lib\modes\common\game.h" />
+    <ClInclude Include="lib\modes\game.h" />
     <ClInclude Include="lib\modes\ending.h" />
     <ClInclude Include="lib\modes\opening.h" />
+    <ClInclude Include="lib\modes\result.h" />
     <ClInclude Include="lib\modes\scenario.h" />
     <ClInclude Include="lib\modes\scenario\message.h" />
     <ClInclude Include="lib\modes\title.h" />

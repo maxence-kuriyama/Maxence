@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/sprite.h"
+#include "lib/modes/common/game.h"
 
 void init_ending_text(string* job, string* who);
 
@@ -202,6 +203,15 @@ public:
 			DrawExtendGraph(170, 170 - 1.2 * (cnt - 300.0), 255, 260 - 1.2 * (cnt - 300.0), MLogo, TRUE);
 			DrawExtendGraph(250, 170 - 1.2 * (cnt - 300.0), 490, 260 - 1.2 * (cnt - 300.0), axence, TRUE);
 		}
+	}
+
+	void drawGameBoard(Game& game) {
+		game.drawBase();
+		game.drawGlobalState();
+		game.drawHistLast();
+		game.drawNextField();
+		game.drawLocalState();
+		game.drawCurrentCoord();
 	}
 
 	void drawEndroll() {

@@ -9,6 +9,7 @@
 const int VS_HUMAN(0);
 const int VS_COM(1);
 
+// 試合進行管理インスタンスクラス
 class Game {
 private:
 	// 定数
@@ -254,20 +255,6 @@ public:
 			SetDrawBright(255, 255, 255);
 			DrawExtendGraph(440, 100, 640, 340, player2, TRUE);
 		}
-	}
-
-	void drawWinner() {
-		int vict = victory();
-		if (vict == 1) {
-			DrawFormatString(20, 20, Red, "Player1");
-		}
-		else if (vict == -1) {
-			DrawFormatString(20, 20, Black, "Player2");
-		}
-		else {
-			DrawFormatString(20, 20, Green, "No one");
-		}
-		DrawFormatString(20 + 96, 20, Green, "Won");
 	}
 
 
