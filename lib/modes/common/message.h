@@ -1,9 +1,10 @@
 #pragma once
 
 #include "lib/common.h"
-#include "lib/sprite.h"
+#include "lib/modes/common/sprite.h"
 
-#define NEXT_ICON_BLINK_SPEED	0.6
+
+const double NEXT_ICON_BLINK_SPEED(0.6);
 
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 int MultiByteLength(const char* String);
@@ -116,7 +117,9 @@ void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String
 	int BoxWidth;
 	int BoxHeight;
 	double rate = 1.45;	// 文字ごとの描画幅。デフォルトのフォントサイズは20に対し、今のフォントサイズ24（1.2倍）＋余裕を持たせる
+	double marginRateY = 1.2; // 縦はより余裕を持たせた方が見栄えがいいので、その分の倍率
 	int Counter = cnt;
+	bool breakLine = false;
 
 	// 文字列全体のバイト数を取得
 	StrLen = strlen(String);
@@ -126,6 +129,7 @@ void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String
 	for (i = 0; i < StrLen; ) {
 		// 指定された文字数で描画をやめる
 		if (Counter <= 0) break;
+		breakLine = false;
 
 		if (_mbbtype((unsigned char)String[i], 0) == _MBC_LEAD) {
 			// 全角文字の場合
@@ -137,23 +141,29 @@ void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String
 		}
 		else {
 			// 半角文字の場合
-			TempStr[0] = String[i];
-			TempStr[1] = '\0';
+			if (String[i] == '\n') {
+				breakLine = true;
+			}
+			else {
+				TempStr[0] = String[i];
+				TempStr[1] = '\0';
+			}
 			CharLen = 1;
 			Counter--;
 		}
 		// １文字の描画幅を取得
 		DrawWidth = GetDrawStringWidth(String + i, CharLen) * rate;
 		// 描画範囲からはみ出る場合は改行
-		if (DrawX + DrawWidth > RightX)
-		{
+		if (breakLine || DrawX + DrawWidth > RightX) {
 			DrawX = x;
-			DrawY += AddY * rate;
+			DrawY += AddY * rate * marginRateY;
 		}
-		// １文字描画
-		DrawStringToHandle(DrawX, DrawY, TempStr, StrColor, FontHandle);
-		// 描画座標をずらす
-		DrawX += DrawWidth;
+		if (!breakLine) {
+			// １文字描画
+			DrawStringToHandle(DrawX, DrawY, TempStr, StrColor, FontHandle);
+			// 描画座標をずらす
+			DrawX += DrawWidth;
+		}
 		// 描画する文字を進める
 		i += CharLen;
 	}

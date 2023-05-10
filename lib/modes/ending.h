@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/sprite.h"
+#include "lib/modes/common/sprite.h"
 #include "lib/modes/common/game.h"
 
 void init_ending_text(string* job, string* who);

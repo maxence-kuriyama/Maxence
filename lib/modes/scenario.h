@@ -1,67 +1,50 @@
 #pragma once
 
-#include <regex>
-#include "lib/music.h"
-#include "lib/sprite.h"
-#include "lib/modes/scenario/message.h"
+#include "lib/modes/common/scenario_base.h"
 
-#define SPRITE_EXPAND_RATE	0.0006
 
+const int SCENE_ACTION_EQ(11);
+const int SCENE_WHO_CARD(11);
 
 // シナリオ管理用クラス
 // 単体での使用を想定
-class Scenario {
-
-	// シーン + 主人公のアクション
-	struct Scene {
-		int action;
-		int who;
-		char how[100];
-	};
-
+class Scenario : public ScenarioBase {
 
 public:
-	int flg = 0;		// シナリオ管理用フラグ
-	MrK mrK[4];
-	MrK deer;
 	MrK card;
-	Message msg;
 
 	Scenario() {
 		imgRoom = LoadGraph("graph/room.bmp");
 		imgCard = LoadGraph("graph/card.bmp");
+
 		mrK[0].set(170, 30);
 		mrK[0].setExpand(SPRITE_EXPAND_RATE, 72, 85);
 		mrK[0].setSerialImages(16, "graph/move_test", 1);
 		mrK[1].set(320, 80, "graph/sprite12.png", 1);
 		mrK[2].set(200, 230, "graph/sprite13.png", 1);
 		mrK[3].set(500, 260, "graph/sprite14.png", 1);
+		deer.set(300, 160, "graph/sprite15.png", 0);
+		card.set(230, 160, "graph/sprite16.png", 0);
+
 		mrK[1].setSayings(sayings1);
 		mrK[2].setSayings(sayings2);
 		mrK[3].setSayings(sayings3);
 		card.setSayings(sayingsCard);
-		deer.set(300, 160, "graph/sprite15.png", 0);
-		card.set(230, 160, "graph/sprite16.png", 0);
+
+		for (int i = 0; i < MAX_SCENE_NUM; i++) {
+			sceneList[i] = scenes[i];
+		}
 		initialize();
 		msg.initialize();
 	}
 
 private:
-	int cnt = 0;		// フレームカウンタ
-	int textCnt = 0;	// テキストカウンタ
-	bool hasMsg = false;	// メッセージがセットされているか
-	bool isTalking = false;	// NPCと会話中か否か
-	string imgFront;	// フロントサイドに表示する画像
+	int eqX = 0;
+	int eqY = 0; // eq = earthquake
 	int imgRoom;
 	int imgCard;
-	int eqX = 0;
-	int eqY = 0;		// eq = earthquake
-	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
-	int onOk = 0;		// キーボード入力（Enter or Space）
-	string seName;		// SEのファイル名（デバッグ用）
-	int strColorDebug = GetColor(150, 0, 0);
-	int strColorLoad = GetColor(0, 0, 0);
-	struct Scene sceneList[400] = {
+
+	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている" },
@@ -77,7 +60,7 @@ private:
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"なにっ！？" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
-		//{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
+//		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"20" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
@@ -151,7 +134,7 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"ならば鹿他無い\n唯、私が上であることを確認するだけだ" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"かかって来なさい" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DEER,		"…………" },
-		{ -1,					-1,					"" }
+		{ -1,					-1,					"" },
 	};
 	struct Saying sayings1[20] = {
 		{ "10",		SCENE_WHO_BLUE,		"貴方は私にとって利用価値のある存在です" },
@@ -171,7 +154,7 @@ private:
 		{ "50",		SCENE_WHO_BLUE,		"そして連戦の貴方を始末すれば" },
 		{ "50",		SCENE_WHO_BLUE,		"ここは私の世界になる訳だ\nそうだろう？" },
 		{ "50",		SCENE_WHO_BLUE,		"私は世界を滅ぼすつもりじゃないのです" },
-		{ "999",	-1,					"" }
+		{ "999",	-1,					"" },
 	};
 	struct Saying sayings2[20] = {
 		{ "10",		SCENE_WHO_RED,		"俺たちはチーム！\nそして何より正義だ！" },
@@ -183,7 +166,7 @@ private:
 		{ "20",		SCENE_WHO_YELLOW,	"うわぁ、落ち着けよ\n怖いなぁ" },
 		{ "30",		SCENE_WHO_RED,		"世界が滅びるというのは本当の事のようだな"},
 		{ "30",		SCENE_WHO_RED,		"しかし、一体我々のうちの誰が滅ぼすというのだ？"},
-		{ "999",	-1,					"" }
+		{ "999",	-1,					"" },
 	};
 	struct Saying sayings3[20] = {
 		{ "10",		SCENE_WHO_GREEN,	"この平和の中、何のために生きているのだろう" },
@@ -199,252 +182,58 @@ private:
 		{ "40",		SCENE_WHO_GREEN,	"何故いつも分かり合えないのだろう" },
 		{ "40",		SCENE_WHO_GREEN,	"でも、それが同じもの同士が集まった時の性なのだろう…" },
 		{ "40",		SCENE_WHO_GREEN,	"だからMr.Kよ、殺し合おう\nその中で生きた意味を見出そうじゃないか" },
-		{ "999",	-1,					"" }
+		{ "999",	-1,					"" },
 	};
 	struct Saying sayingsCard[5] = {
 		{ "20",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
 		{ "30",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
 		{ "40",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
 		{ "50",		SCENE_WHO_DESC,	"「Mr.Kが世界を滅ぼす」" },
-		{ "999",	-1,					"" }
+		{ "999",	-1,					"" },
 	};
 
 public:
 
 	void initialize() {
-		flg = 0;
-		cnt = 0;
-		hasMsg = false;
-		mrK[0].exhibit();
-		mrK[1].exhibit();
-		mrK[2].exhibit();
-		mrK[3].exhibit();
-		deer.hide();
+		ScenarioBase::initialize();
 		card.hide();
-		imgFront = "";
-		onOk = 0;
-		isTalking = false;
 	}
 
 	int show(Mouse& mouse, Music& music) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
-		deer.draw();
 		card.draw(eqX);
-		drawMrKs();
-		mrK[0].stop();
-		showGraph();
+		
+		int res = ScenarioBase::show(mouse, music);
+		if (res == SCENE_GO_BATTLE) return SCENE_GO_BATTLE;
 
+		return showAdditionalAction(mouse);
+	}
+
+	int showAdditionalAction(Mouse& mouse) {
 		Scene scene = sceneList[flg];
 
 		switch (scene.action) {
-		case SCENE_ACTION_TALK:
-			readMsg(scene.how, scene.who, mouse);
-			break;
-		case SCENE_ACTION_COCK:
-			setTrigger(scene.how);
-			break;
-		case SCENE_ACTION_MOVE:
-			doMove(scene.how, mouse);
-			break;
-		case SCENE_ACTION_EXIBIT:
-			doExibit(scene.how, scene.who, mouse);
-			break;
-		case SCENE_ACTION_LOAD:
-			music.load(scene.how);
-			goNext();
-			break;
-		case SCENE_ACTION_MUSIC:
-			performMusic(scene.how, music);
-			break;
-		case SCENE_ACTION_GRAPH:
-			performGraph(scene.how, mouse);
-			break;
 		case SCENE_ACTION_EQ:
 			performEQ(scene.how, mouse);
 			break;
-		case SCENE_ACTION_BATTLE:
-			return 1;
-		case SCENE_ACTION_STOP:
 		default:
 			break;
 		}
 
-		msg.draw();
-		cnt = (cnt + 1) % 10000;
-
 		return 0;
-	}
-
-	// キーボード入力を取得する
-	void getKey(Key& keyboard) {
-		if (keyboard.onGoingDown()) {
-			key = 0;
-		}
-		else if (keyboard.onGoingRight()) {
-			key = 1;
-		}
-		else if (keyboard.onGoingUp()) {
-			key = 2;
-		}
-		else if (keyboard.onGoingLeft()) {
-			key = 3;
-		}
-		else {
-			key = -1;
-		}
-
-		if (keyboard.onReturn()) {
-			onOk = 1;
-		}
-		else {
-			onOk = 0;
-		}
 	}
 
 	void debugDump() {
 		int strColor = strColorDebug;
 
-		DrawFormatString(245, 185, strColor, "seName: %s", seName.c_str());
-		DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
-		DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
 		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
-		DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
-		DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
-		DrawFormatString(245, 305, strColor, "who: %d", msg.who);
-		DrawFormatString(245, 325, strColor, "mrK0.vis: %d", mrK[0].visible);
-		DrawFormatString(245, 345, strColor, "mrK1.vis: %d", mrK[1].visible);
-		DrawFormatString(245, 365, strColor, "mrK2.vis: %d", mrK[2].visible);
-		DrawFormatString(245, 385, strColor, "mrK3.vis: %d", mrK[3].visible);
-		DrawFormatString(245, 405, strColor, "deer.vis: %d", deer.visible);
-		DrawFormatString(245, 425, strColor, "key: %d", key);
-		DrawFormatString(245, 445, strColor, "isTalking: %s", isTalking ? "true" : "false");
-		DrawFormatString(245, 465, strColor, "hasMsg: %s", hasMsg ? "true" : "false");
+
+		ScenarioBase::debugDump();
 	}
 
 
 private:
-
-	void waitClick(Mouse& mouse) {
-		if (onOk || mouse.click()) {
-			flg++;
-		}
-	}
-
-	void goNext() {
-		flg++;
-	}
-
-	// メッセージを読む
-	void readMsg(string str, int who, Mouse& mouse) {
-		if (!hasMsg) {
-			if (str == "clear") {
-				msg.set("", who, false);
-				flg++;
-			}
-			else {
-				msg.set(str, who);
-				hasMsg = true;
-			}
-		}
-		if ((onOk || mouse.click()) && msg.skip()) {
-			flg++;
-			hasMsg = false;
-		}
-	}
-
-	void doMove(const char how[], Mouse &mouse) {
-		if (isTalking) {
-			int who = checkMrK();
-			talkMrK(who, how, mouse);
-		}
-		else {
-			if (key != -1) {
-				mrK[0].turn(key);
-				mrK[0].move();
-			}
-			if (onOk || mouse.click()) {
-				int who = checkMrK();
-				talkResetMrK(who);
-			}
-			if (isTriggered()) goNext();
-		}
-	}
-
-	void doExibit(string how, int who, Mouse& mouse) {
-		if (how == "exibit") {
-			if (who == SCENE_WHO_DEER) {
-				deer.exhibit();
-			}
-			else {
-				mrK[who - 1].exhibit();
-			}
-			waitClick(mouse);
-		}
-		else if (how == "hide") {
-			if (who == SCENE_WHO_DEER) {
-				deer.hide();
-			}
-			else {
-				mrK[who - 1].hide();
-			}
-			waitClick(mouse);
-		}
-		else if (how == "exibit_nowait") {
-			if (who == SCENE_WHO_DEER) {
-				deer.exhibit();
-			}
-			else {
-				mrK[who - 1].exhibit();
-			}
-			goNext();
-		}
-		else if (how == "hide_nowait") {
-			if (who == SCENE_WHO_DEER) {
-				deer.hide();
-			}
-			else {
-				mrK[who - 1].hide();
-			}
-			goNext();
-		}
-	}
-
-	void performMusic(string how, Music &music) {
-		if (how == "play") {
-			music.play();
-		}
-		else if (how == "stop") {
-			music.stop();
-			music.enableSwap();
-		}
-		else if (how == "pop_once") {
-			music.popOnce();
-		}
-		else if (how == "swap") {
-			if (music.swap(strColorLoad)) {
-				music.enableSwap();
-			}
-			else {
-				return;
-			}
-		}
-		else if (how == "pop") {
-			music.pop(strColorLoad);
-		}
-		goNext();
-	}
-
-	void performGraph(string how, Mouse &mouse) {
-		imgFront = how;
-		if (how == "clear") {
-			imgFront = "";
-			goNext();
-		}
-		else {
-			waitClick(mouse);
-		}
-	}
 
 	void performEQ(string how, Mouse &mouse) {
 		if (how == "true") {
@@ -459,60 +248,14 @@ private:
 		}
 	}
 
-	void setTrigger(string trigger) {
-		if (trigger == "talk_all") {
-			mrK[0].setTrigger("fired");
-			for (int i = 1; i < 4; ++i) {
-				mrK[i].setTrigger("talk");
-			}
-		}
-		else if (trigger == "talk_red") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
-			mrK[SCENE_WHO_RED - 1].setTrigger("talk");
-		}
-		else if (trigger == "talk_green") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
-			mrK[SCENE_WHO_GREEN - 1].setTrigger("talk");
-		}
-		else if (trigger == "talk_blue") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
-			mrK[SCENE_WHO_BLUE - 1].setTrigger("talk");
-		}
-		else if (trigger == "none") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
-		}
-		goNext();
-	}
-
-	bool isTriggered() {
-		for (int i = 0; i < 4; ++i) {
-			if (!mrK[i].isTriggered()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	void startMusic(const char* musicName) {
-		if (CheckMusic() != 1) {
-			PlayMusic(musicName, DX_PLAYTYPE_BACK);
-		}
-	}
-
+	// override
 	void showGraph() {
 		if (imgFront == "card") {
 			DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
 		}
 	}
 
+	// override
 	void drawMrKs() {
 		// 一旦全員描画する
 		for (int i = 1; i < 4; ++i) {
@@ -526,69 +269,30 @@ private:
 		}
 	}
 
+	// override
 	int checkMrK() {
-		// 0番の近くにいるヤツをpick up
-		for (int i = 1; i < 4; ++i) {
-			if (abs(mrK[i].y - mrK[0].y) < 45 && abs(mrK[i].x - mrK[0].x) < 45) {
-				return i;
-			}
-		}
+		int nearest = ScenarioBase::checkMrK();
+		if (nearest != 0) return nearest;
+
 		if (abs(card.y - mrK[0].y) < 45 && abs(card.x - mrK[0].x) < 45) {
 			return SCENE_WHO_CARD;
 		}
 		return 0;
 	}
 
+	// override
 	void talkResetMrK(int who) {
-		if (who) {
+		ScenarioBase::talkResetMrK(who);
+
+		if (who == SCENE_WHO_CARD) {
 			isTalking = true;
-			if (who == SCENE_WHO_CARD) {
-				card.talkReset();
-			}
-			else {
-				mrK[who].talkReset();
-			}
+			card.talkReset();
 		}
 	}
 
-	void talkMrK(int who, const char key[], Mouse &mouse) {
-		if (who) {
-			MrK *obj;
-			if (who == SCENE_WHO_CARD) {
-				obj = &card;
-			}
-			else {
-				obj = &mrK[who];
-			}
-
-			// 特殊コマンド
-			Saying saying = obj->talk(key);
-			if (strcmp(saying.say, "") == 0 || saying.who == -1) {
-				isTalking = false;
-				msg.set("", SCENE_WHO_DESC, false);
-				return;
-			}
-			else {
-				std::cmatch m;
-				if (regex_match(saying.say, m, std::regex(R"(SE\[(.+)\])"))) {
-					seName = m[1].str();	// デバッグ用
-					obj->playSE(seName);
-					obj->talkNext();
-					hasMsg = false;
-					return;
-				}
-			}
-
-			// メッセージ表示処理
-			if (!hasMsg) {
-				msg.set(saying.say, saying.who);
-				hasMsg = true;
-			}
-			if ((onOk || mouse.click()) && msg.skip()) {
-				obj->talkNext();
-				hasMsg = false;
-			}
-		}
+	// override
+	MrK* getObject(int who) {
+		if (who == SCENE_WHO_CARD) return &card;
+		return ScenarioBase::getObject(who);
 	}
-
 };
