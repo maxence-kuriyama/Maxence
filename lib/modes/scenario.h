@@ -7,7 +7,6 @@ const int SCENE_ACTION_EQ(11);
 const int SCENE_WHO_CARD(11);
 
 // シナリオ管理用クラス
-// 単体での使用を想定
 class Scenario : public ScenarioBase {
 
 public:
@@ -210,6 +209,17 @@ public:
 		return showAdditionalAction(mouse);
 	}
 
+	void debugDump() {
+		int strColor = strColorDebug;
+
+		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
+
+		ScenarioBase::debugDump();
+	}
+
+
+private:
+
 	int showAdditionalAction(Mouse& mouse) {
 		Scene scene = sceneList[flg];
 
@@ -223,17 +233,6 @@ public:
 
 		return 0;
 	}
-
-	void debugDump() {
-		int strColor = strColorDebug;
-
-		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
-
-		ScenarioBase::debugDump();
-	}
-
-
-private:
 
 	void performEQ(string how, Mouse &mouse) {
 		if (how == "true") {

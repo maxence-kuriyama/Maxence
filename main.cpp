@@ -19,6 +19,7 @@ using namespace std;
 #include "lib/synchronizer.h"
 #include "lib/logo.h"
 #include "lib/modes/title.h"
+#include "lib/modes/tutorial.h"
 #include "lib/modes/scenario.h"
 #include "lib/modes/battle.h"
 #include "lib/modes/battle_result.h"
@@ -64,6 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Logo logo;
 
 	Title title;
+	Tutorial tutorial;
 	Scenario scenario;
 	Opening opening;
 	Ending ending;
@@ -119,6 +121,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
+			tutorial.show(mouse, bgm);
 		}
 		else if (flg == FLAG_BATTLE) {
 			//MV1DrawModel(ModelHandle);
