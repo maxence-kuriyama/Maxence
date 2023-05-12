@@ -115,13 +115,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (opening.isOver()) flg = FLAG_TITLE;
 		}
 		else if (flg == FLAG_TITLE) {
-			bgm.load("sound/bgm03.ogg");
+			bgm.load("sound/bgm03.ogg"); // シナリオ用
+			bgm.load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show(ui);
 			routesTitle(choice, &flg, battle);
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
-			tutorial.show(mouse, bgm);
+			tutorial.show(ui, bgm);
 		}
 		else if (flg == FLAG_BATTLE) {
 			//MV1DrawModel(ModelHandle);
@@ -165,8 +166,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ending.show(bgm, sync.fps);
 		}
 		else if (flg == FLAG_SCENARIO) {
-			scenario.getKey(key);
-			if (!bgm.drawLoadMsg() && scenario.show(mouse, bgm)) {
+			if (!bgm.drawLoadMsg() && scenario.show(ui, bgm)) {
 				flg = FLAG_BATTLE;
 				battle.start(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
 			}

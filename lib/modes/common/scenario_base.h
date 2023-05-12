@@ -2,6 +2,7 @@
 
 #include <regex>
 #include "lib/music.h"
+#include "lib/user_input.h"
 #include "lib/modes/common/sprite.h"
 #include "lib/modes/common/message.h"
 
@@ -63,10 +64,10 @@ public:
 	Message msg;
 
 	ScenarioBase() {
-		mrK[0].set(170, 30, "graph/sprite11.png", 1);
-		mrK[1].set(320, 80, "graph/sprite12.png", 1);
-		mrK[2].set(200, 230, "graph/sprite13.png", 1);
-		mrK[3].set(500, 260, "graph/sprite14.png", 1);
+		mrK[0].set(200, 80, "graph/sprite11.png", 1);
+		mrK[1].set(440, 80, "graph/sprite12.png", 1);
+		mrK[2].set(200, 260, "graph/sprite13.png", 1);
+		mrK[3].set(440, 260, "graph/sprite14.png", 1);
 		deer.set(300, 160, "graph/sprite15.png", 0);
 		initialize();
 		msg.initialize();
@@ -87,7 +88,10 @@ public:
 		isTalking = false;
 	}
 
-	int show(Mouse& mouse, Music& music) {
+	int show(UserInput& ui, Music& music) {
+		getKey(*ui.key);
+		Mouse mouse = *ui.mouse;
+
 		// êlï®ÇÃï`âÊ
 		deer.draw();
 		drawMrKs();
@@ -267,6 +271,9 @@ protected:
 		}
 		else if (how == "pop") {
 			music.pop(strColorLoad);
+		}
+		else if (how == "unload") {
+			music.unload(1);
 		}
 		goNext();
 	}

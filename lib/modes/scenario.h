@@ -45,6 +45,7 @@ private:
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
+		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"unload" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"Å\Å\ê¢äEÇÕÇPÇ¬ÇÃïîâÆÇ≈èoóàÇƒÇ¢ÇÈ" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
@@ -198,15 +199,15 @@ public:
 		card.hide();
 	}
 
-	int show(Mouse& mouse, Music& music) {
+	int show(UserInput& ui, Music& music) {
 		// îwåiÅEêlï®ÇÃï`âÊ
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 		
-		int res = ScenarioBase::show(mouse, music);
+		int res = ScenarioBase::show(ui, music);
 		if (res == SCENE_GO_BATTLE) return SCENE_GO_BATTLE;
 
-		return showAdditionalAction(mouse);
+		return showAdditionalAction(ui);
 	}
 
 	void debugDump() {
@@ -220,12 +221,12 @@ public:
 
 private:
 
-	int showAdditionalAction(Mouse& mouse) {
+	int showAdditionalAction(UserInput& ui) {
 		Scene scene = sceneList[flg];
 
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
-			performEQ(scene.how, mouse);
+			performEQ(scene.how, *ui.mouse);
 			break;
 		default:
 			break;
