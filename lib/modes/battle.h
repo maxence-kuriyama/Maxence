@@ -84,23 +84,10 @@ public:
 	/*===========================*/
 	//    Battle Mode
 	/*===========================*/
-	void drawBeforePlay() {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-	}
-
-	void drawAfterPlay() {
-		game.drawLocalState();
-		game.drawCurrentCoord();
-		game.drawPlayers();
-	}
-
 	int show(COM& com, Music& bgm, bool debug) {
 		int return_flg = FLAG_BATTLE;
 
-		drawBeforePlay();
+		game.drawBeforePlay();
 
 		if (playByPlayer()) {
 			if (game.isVsCOM()) com.setWait();
@@ -120,7 +107,7 @@ public:
 			game.update(com.choice);
 		}
 
-		drawAfterPlay();
+		game.drawAfterPlay();
 		drawMessage();
 		drawComment();
 		cutin.update();

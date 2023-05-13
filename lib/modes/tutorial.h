@@ -54,32 +54,11 @@ private:
 	int showGame(UserInput& ui) {
 		int return_flg = FLAG_BATTLE;
 
-		drawBeforePlay();
+		game.drawBeforePlay();
 		playByPlayer(ui);
-		game.drawPlayers();
-		drawMessage();
+		game.drawAfterPlay();
 
 		return return_flg;
-	}
-
-	void drawBeforePlay() {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-	}
-
-	void drawAfterPlay() {
-		game.drawLocalState();
-		game.drawCurrentCoord();
-		game.drawPlayers();
-	}
-
-	void drawMessage() {
-		DrawFormatString(470, 80, strColor, "右クリック:");
-		DrawFormatString(540, 100, strColor, "石を置く");
-		DrawFormatString(470, 124, strColor, "zキー（BkSpキー）:");
-		DrawFormatString(540, 144, strColor, "一手戻る");
 	}
 
 	bool playByPlayer(UserInput& ui) {

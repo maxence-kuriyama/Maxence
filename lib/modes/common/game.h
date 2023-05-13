@@ -155,6 +155,19 @@ public:
 	/*===========================*/
 	//    ”Õ–Ê•\Ž¦ŠÖ˜A
 	/*===========================*/
+	void drawBeforePlay() {
+		drawBase();
+		drawGlobalState();
+		drawHistLast();
+		drawNextField();
+	}
+
+	void drawAfterPlay() {
+		drawLocalState();
+		drawCurrentCoord();
+		drawPlayers();
+	}
+
 	void drawBase() {
 		DrawExtendGraph(-50, 40, 690, 420, bkGraph, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
