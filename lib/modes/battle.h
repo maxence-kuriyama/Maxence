@@ -85,7 +85,7 @@ public:
 	int show(COM& com, Music& bgm, bool debug) {
 		int return_flg = FLAG_BATTLE;
 
-		game.drawForPlay();
+		game.drawBeforePlay();
 
 		if (playByPlayer()) {
 			if (game.isVsCOM()) com.setWait();
@@ -105,6 +105,7 @@ public:
 			game.update(com.choice);
 		}
 
+		game.drawAfterPlay();
 		drawMessage();
 		drawComment();
 		cutin.update();

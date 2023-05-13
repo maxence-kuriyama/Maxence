@@ -96,6 +96,12 @@ public:
 		return local[x][y].victory();
 	}
 
+	int localVictory(int index) {
+		int x = index / 3;
+		int y = index % 3;
+		return localVictory(x, y);
+	}
+
 	int localWaiting(int x, int y, int side) {
 		return local[x][y].waitingCount(side);
 	}

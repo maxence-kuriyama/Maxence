@@ -6,6 +6,7 @@
 
 
 const int SCENE_ACTION_PLAY(21);
+const int SCENE_ACTION_BACK(22);
 
 // チュートリアルのシナリオクラス
 class Tutorial : public ScenarioBase {
@@ -45,8 +46,17 @@ private:
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"あなたの手番" },
-		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"play_once" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"local_victory" },
 		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"終わりまで続けましょう" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"victory" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"終わり" },
+		{ SCENE_ACTION_BACK,	SCENE_WHO_YELLOW,	"" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_YELLOW,	"exibit_nowait" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"おかえり" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"つづきはまだない" },
 		{ -1,					-1,					"" },
 	};
@@ -92,6 +102,10 @@ private:
 		case SCENE_ACTION_PLAY:
 			doGame(ui);
 			break;
+		case SCENE_ACTION_BACK:
+			onGame = false;
+			goNext();
+			break;
 		default:
 			break;
 		}
@@ -105,6 +119,10 @@ private:
 		goNext();
 	}
 
+	void unsetTrigger() {
+		trigger = "";
+	}
+
 	// override
 	bool isTriggered() {
 		if (trigger == "") return true;
@@ -112,21 +130,35 @@ private:
 		if (trigger == "play_once") {
 			// do nothing here (see doGame)
 		}
+		else if (trigger == "local_victory") {
+			for (int index = 0; index < 9; index++) {
+				if (game.board.localVictory(index)) {
+					unsetTrigger();
+					return true;
+				}
+			}
+		}
+		else if (trigger == "victory") {
+			if (game.victory() != 0) {
+				unsetTrigger();
+				return true;
+			}
+		}
+
 		return false;
 	}
 
-	void solveTrigger() {
-		trigger = "";
-	}
-
 	void showGame() {
-		game.drawForPlay();
+		game.drawBeforePlay();
+		game.drawAfterPlay();
 	}
 
 	void doGame(UserInput& ui) {
-		if (playByPlayer(ui) || playByCom()) {
-			if (trigger == "play_once") solveTrigger();
+		if (playTurn(ui)) {
+			if (trigger == "play_once") unsetTrigger();
 		}
+
+		game.drawAfterPlay();
 
 		// 勝利判定
 		if (game.victory() != 0) {
@@ -136,9 +168,16 @@ private:
 		if (isTriggered()) goNext();
 	}
 
-	bool playByPlayer(UserInput& ui) {
-		if (!game.isPlayTurn()) return false;
+	bool playTurn(UserInput& ui) {
+		if (game.isPlayTurn()) {
+			return playByPlayer(ui);
+		}
+		else {
+			return playByCom();
+		}
+	}
 
+	bool playByPlayer(UserInput& ui) {
 		if (!game.playTurn(ui)) return false;
 
 		double res = game.update();
@@ -146,10 +185,8 @@ private:
 	}
 
 	bool playByCom() {
-		if (game.isPlayTurn()) return false;
-
 		MinMaxNode node(game.board, game.currentSide());
-		int depth = 3;
+		int depth = 2;
 		int index = node.search(depth);
 		Coordinate choice = Board::coordinates(index);
 
