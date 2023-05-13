@@ -16,6 +16,7 @@ public:
 
 private:
 	Game game;
+	int strColor = GetColor(255, 255, 255);
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"swap" },
@@ -42,8 +43,52 @@ public:
 		int res = ScenarioBase::show(ui, music);
 		if (res == SCENE_RES_GO_BATTLE) {
 			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+			showGame(ui);
 		}
 
 		return SCENE_RES_DEFAULT;
+	}
+
+private:
+
+	int showGame(UserInput& ui) {
+		int return_flg = FLAG_BATTLE;
+
+		drawBeforePlay();
+		playByPlayer(ui);
+		game.drawPlayers();
+		drawMessage();
+
+		return return_flg;
+	}
+
+	void drawBeforePlay() {
+		game.drawBase();
+		game.drawGlobalState();
+		game.drawHistLast();
+		game.drawNextField();
+	}
+
+	void drawAfterPlay() {
+		game.drawLocalState();
+		game.drawCurrentCoord();
+		game.drawPlayers();
+	}
+
+	void drawMessage() {
+		DrawFormatString(470, 80, strColor, "右クリック:");
+		DrawFormatString(540, 100, strColor, "石を置く");
+		DrawFormatString(470, 124, strColor, "zキー（BkSpキー）:");
+		DrawFormatString(540, 144, strColor, "一手戻る");
+	}
+
+	bool playByPlayer(UserInput& ui) {
+		if (game.isPlayTurn() && game.playTurn(ui)) {
+			double res = game.update();
+			if (game.isUpdated(res)) {
+				return true;
+			}
+		}
+		return false;
 	}
 };

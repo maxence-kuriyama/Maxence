@@ -101,7 +101,10 @@ public:
 		int return_flg = FLAG_BATTLE;
 
 		drawBeforePlay();
-		playByPlayer(com);
+
+		if (playByPlayer()) {
+			if (game.isVsCOM()) com.setWait();
+		}
 
 		// ŠwK‹@ŠB‚Ìo—Í•`‰æ
 		if (likelihoodFlg) {
@@ -173,17 +176,16 @@ public:
 	/*===========================*/
 	//    ‘€ìŠÖ˜A
 	/*===========================*/
-	void playByPlayer(COM& com) {
+	bool playByPlayer() {
 		if (game.isPlayTurn() && game.playTurn(*ui)) {
 			double res = game.update();
 			if (game.isUpdated(res)) {
-				if (game.isVsCOM()) {
-					com.setWait();
-				}
 				updateCommentInBattle();
+				playCnt = 0;
+				return true;
 			}
-			playCnt = 0;
 		}
+		return false;
 	}
 
 	int menuChoose() {
