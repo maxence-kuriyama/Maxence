@@ -126,6 +126,12 @@ public:
 		taijin = VS_COM;
 	}
 
+	void setTutorial() {
+		mode = "チュートリアル";
+		taijin = VS_COM;
+		teban = TEBAN_SENKO;
+	}
+
 	void setSenko() {
 		teban = TEBAN_SENKO;
 	}
@@ -404,6 +410,8 @@ public:
 	//    デバッグ情報
 	/*===========================*/
 	void debugDump() {
+		if (mode == "") return;
+
 		int strColor = strColorDebug;
 		// Game
 		DrawFormatString(5, 105, strColor, "taijin: %d", taijin);

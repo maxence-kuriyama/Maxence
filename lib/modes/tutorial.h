@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/com.h"
 #include "lib/modes/common/scenario_base.h"
 #include "lib/modes/common/game.h"
 
@@ -40,6 +41,12 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"‘ŠŽè‚ÌŽè”Ô" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"play_once" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"‚ ‚È‚½‚ÌŽè”Ô" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"play_once" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"‚Â‚Ã‚«‚Í‚Ü‚¾‚È‚¢" },
 		{ -1,					-1,					"" },
 	};
@@ -49,8 +56,6 @@ public:
 	void initialize() {
 		onGame = false;
 		game.initialize();
-		game.setVsCOM();
-		game.setSenko();
 		trigger = "";
 	}
 
@@ -60,6 +65,7 @@ public:
 		int res = ScenarioBase::show(ui, music);
 		if (res == SCENE_RES_GO_BATTLE) {
 			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+			game.setTutorial();
 			onGame = true;
 			goNext();
 		}
@@ -73,6 +79,8 @@ public:
 
 		DrawFormatString(365, 405, strColor, "trigger: %s", trigger);
 		DrawFormatString(365, 425, strColor, "tutoAction: %d", scene.action);
+
+		game.debugDump();
 	}
 
 private:
@@ -116,7 +124,7 @@ private:
 	}
 
 	void doGame(UserInput& ui) {
-		if (playByPlayer(ui)) {
+		if (playByPlayer(ui) || playByCom()) {
 			if (trigger == "play_once") solveTrigger();
 		}
 
@@ -129,12 +137,23 @@ private:
 	}
 
 	bool playByPlayer(UserInput& ui) {
-		if (game.isPlayTurn() && game.playTurn(ui)) {
-			double res = game.update();
-			if (game.isUpdated(res)) {
-				return true;
-			}
-		}
-		return false;
+		if (!game.isPlayTurn()) return false;
+
+		if (!game.playTurn(ui)) return false;
+
+		double res = game.update();
+		return game.isUpdated(res);
+	}
+
+	bool playByCom() {
+		if (game.isPlayTurn()) return false;
+
+		MinMaxNode node(game.board, game.currentSide());
+		int depth = 3;
+		int index = node.search(depth);
+		Coordinate choice = Board::coordinates(index);
+
+		double res = game.update(choice);
+		return game.isUpdated(res);
 	}
 };
