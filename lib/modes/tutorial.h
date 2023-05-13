@@ -3,6 +3,9 @@
 #include "lib/modes/common/scenario_base.h"
 #include "lib/modes/common/game.h"
 
+
+const int SCENE_ACTION_PLAY(21);
+
 // チュートリアルのシナリオクラス
 class Tutorial : public ScenarioBase {
 
@@ -16,6 +19,7 @@ public:
 
 private:
 	Game game;
+	bool onGame = false;
 	int strColor = GetColor(255, 255, 255);
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
@@ -27,6 +31,12 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"バトるか" },
 		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_YELLOW,	"hide_nowait" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_RED,		"hide_nowait" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide_nowait" },
+		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_GREEN,	"hide_nowait" },
+		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"バトル画面やで" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"つづきはまだない" },
 		{ -1,					-1,					"" },
 	};
@@ -34,16 +44,23 @@ private:
 public:
 
 	void initialize() {
+		onGame = false;
 		game.initialize();
 		game.setVsCOM();
 		game.setSenko();
 	}
 
 	int show(UserInput& ui, Music& music) {
+
+		if (onGame) {
+			showGame(ui);
+		}
+
 		int res = ScenarioBase::show(ui, music);
 		if (res == SCENE_RES_GO_BATTLE) {
 			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-			showGame(ui);
+			onGame = true;
+			goNext();
 		}
 
 		return SCENE_RES_DEFAULT;
@@ -51,14 +68,22 @@ public:
 
 private:
 
-	int showGame(UserInput& ui) {
-		int return_flg = FLAG_BATTLE;
+	void showGame(UserInput& ui) {
+		Scene scene = getCurrentScene();
 
 		game.drawBeforePlay();
-		playByPlayer(ui);
+		if (scene.action == SCENE_ACTION_PLAY) {
+			if (playByPlayer(ui)) {
+				goNext();
+			}
+		}
 		game.drawAfterPlay();
 
-		return return_flg;
+		// 勝利判定
+		if (game.victory() != 0) {
+			ui.reset();
+			goNext();
+		}
 	}
 
 	bool playByPlayer(UserInput& ui) {

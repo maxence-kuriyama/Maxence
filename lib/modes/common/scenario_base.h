@@ -194,6 +194,10 @@ protected:
 		flg++;
 	}
 
+	Scene getCurrentScene() {
+		return sceneList[flg];
+	}
+
 	// メッセージを読む
 	void readMsg(string str, int who, Mouse& mouse) {
 		if (!hasMsg) {
