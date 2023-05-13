@@ -23,9 +23,7 @@ private:
 	UserInput* ui;
 	double theta = 0.3;
 
-	int White = GetColor(255, 255, 255);
-	int Black = GetColor(0, 0, 0);
-	int strColor = White;
+	int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(50, 50, 200);
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
@@ -186,11 +184,6 @@ public:
 			commentFlg = !commentFlg;
 		}
 
-		// 文字色の変更
-		if (ui->onKeyColor()) {
-			toggleStrColor();
-		}
-
 		if (debug) {
 			// カットインを入れる
 			if (ui->onKeyCutinDebug()) {
@@ -201,15 +194,6 @@ public:
 			if (ui->onKeyVisualizeDebug()) {
 				likelihoodFlg = !likelihoodFlg;
 			}
-		}
-	}
-
-	void toggleStrColor() {
-		if (strColor == Black) {
-			strColor = White;
-		}
-		else {
-			strColor = Black;
 		}
 	}
 

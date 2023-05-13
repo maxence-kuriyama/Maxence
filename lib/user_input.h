@@ -63,10 +63,6 @@ public:
 		return (key->state[KEY_INPUT_K] == 1);
 	}
 
-	bool onKeyColor() {
-		return (key->state[KEY_INPUT_I] == 1);
-	}
-
 	bool onKeyDebug() {
 		return (key->state[KEY_INPUT_G] == 1);
 	}
