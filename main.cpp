@@ -122,7 +122,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
-			tutorial.show(ui, bgm);
+			if (!bgm.drawLoadMsg()) {
+				tutorial.show(ui, bgm);
+			}
 		}
 		else if (flg == FLAG_BATTLE) {
 			//MV1DrawModel(ModelHandle);
@@ -166,10 +168,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ending.show(bgm, sync.fps);
 		}
 		else if (flg == FLAG_SCENARIO) {
-			int res = scenario.show(ui, bgm);
-			if (res == SCENE_RES_GO_BATTLE) {
-				flg = FLAG_BATTLE;
-				battle.start(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
+			if (!bgm.drawLoadMsg()) {
+				int res = scenario.show(ui, bgm);
+				if (res == SCENE_RES_GO_BATTLE) {
+					flg = FLAG_BATTLE;
+					battle.start(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
+				}
 			}
 		}
 

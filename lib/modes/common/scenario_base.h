@@ -91,8 +91,6 @@ public:
 	}
 
 	int show(UserInput& ui, Music& music) {
-		if (!music.drawLoadMsg()) return 0;
-
 		getKey(*ui.key);
 		Mouse mouse = *ui.mouse;
 
