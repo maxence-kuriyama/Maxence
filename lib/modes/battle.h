@@ -29,6 +29,7 @@ private:
 	int strColorDebug = GetColor(50, 50, 200);
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
+	int playCnt = 0;			// 1ターンに費やしたカウント
 
 public:
 	Game game;
@@ -53,7 +54,7 @@ public:
 	~Battle() {}
 
 	void tick() {
-		game.tick();
+		playCnt = (playCnt + 1) % 10000000;
 	}
 
 	void start(int player1, int player2, bool init = true) {
@@ -161,7 +162,7 @@ public:
 		// コメント描画
 		if (commentFlg) comment.draw(strColor);
 		// コメント差し替え
-		comment.update(game.playCnt);
+		comment.update(playCnt);
 	}
 
 	void updateCommentInBattle() {
@@ -181,6 +182,7 @@ public:
 				}
 				updateCommentInBattle();
 			}
+			playCnt = 0;
 		}
 	}
 
@@ -250,6 +252,7 @@ public:
 
 		int strColor = strColorDebug;
 		// Option
+		DrawFormatString(5, 185, strColor, "playCnt: %d", playCnt);
 		DrawFormatString(5, 205, strColor, "likeliFlg: %d", likelihoodFlg);
 		DrawFormatString(5, 225, strColor, "commentFlg: %d", commentFlg);
 		// Comment

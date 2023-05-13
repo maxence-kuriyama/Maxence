@@ -45,7 +45,6 @@ public:
 	string mode = "";
 	Board board;
 	int teban = TEBAN_SENKO;	// 0: senko, 1: koko
-	int playCnt = 0;			// 1ターンに費やしたカウント
 
 	Coordinate coordinate = { 0, 0, 0, 0, DUMMY_LAST_FIELD }; //キーボード操作時の座標
 
@@ -60,10 +59,6 @@ public:
 		cnt = 0;
 		drawCnt = 0;
 		board.initialize();
-	}
-
-	void tick() {
-		playCnt = (playCnt + 1) % 10000000;
 	}
 
 	void reset(Music& bgm) {
@@ -321,11 +316,7 @@ public:
 			getMouseCoord(*ui.mouse);
 		}
 
-		if (ui.check()) {
-			playCnt = 0;
-			return true;
-		}
-		return false;
+		return ui.check();
 	}
 
 	double update(int side = 0) {
@@ -399,6 +390,5 @@ public:
 		DrawFormatString(5, 125, strColor, "teban: %d", teban);
 		DrawFormatString(5, 145, strColor, "cnt: %d", cnt);
 		DrawFormatString(5, 165, strColor, "mode: %s", mode.c_str());
-		DrawFormatString(5, 185, strColor, "playCnt: %d", playCnt);
 	}
 };

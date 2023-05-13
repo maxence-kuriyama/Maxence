@@ -166,7 +166,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ending.show(bgm, sync.fps);
 		}
 		else if (flg == FLAG_SCENARIO) {
-			if (!bgm.drawLoadMsg() && scenario.show(ui, bgm)) {
+			int res = scenario.show(ui, bgm);
+			if (res == SCENE_RES_GO_BATTLE) {
 				flg = FLAG_BATTLE;
 				battle.start(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
 			}

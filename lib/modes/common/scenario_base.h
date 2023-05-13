@@ -19,7 +19,9 @@ const int SCENE_ACTION_GRAPH(6);
 const int SCENE_ACTION_BATTLE(7);
 const int SCENE_ACTION_COCK(8);
 const int SCENE_ACTION_STOP(-1);
-const int SCENE_GO_BATTLE(1);
+
+const int SCENE_RES_DEFAULT(0);
+const int SCENE_RES_GO_BATTLE(1);
 
 const int SCENE_WHO_DESC(0);
 const int SCENE_WHO_YELLOW(1);
@@ -89,6 +91,8 @@ public:
 	}
 
 	int show(UserInput& ui, Music& music) {
+		if (!music.drawLoadMsg()) return 0;
+
 		getKey(*ui.key);
 		Mouse mouse = *ui.mouse;
 
@@ -124,7 +128,7 @@ public:
 			performGraph(scene.how, mouse);
 			break;
 		case SCENE_ACTION_BATTLE:
-			return SCENE_GO_BATTLE;
+			return SCENE_RES_GO_BATTLE;
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -133,7 +137,7 @@ public:
 		msg.draw();
 		cnt = (cnt + 1) % 10000;
 
-		return 0;
+		return SCENE_RES_DEFAULT;
 	}
 
 	// キーボード入力を取得する

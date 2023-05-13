@@ -205,7 +205,7 @@ public:
 		card.draw(eqX);
 		
 		int res = ScenarioBase::show(ui, music);
-		if (res == SCENE_GO_BATTLE) return SCENE_GO_BATTLE;
+		if (res == SCENE_RES_GO_BATTLE) return SCENE_RES_GO_BATTLE;
 
 		return showAdditionalAction(ui);
 	}
@@ -232,7 +232,7 @@ private:
 			break;
 		}
 
-		return 0;
+		return SCENE_RES_DEFAULT;
 	}
 
 	void performEQ(string how, Mouse &mouse) {
