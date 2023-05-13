@@ -222,7 +222,7 @@ public:
 private:
 
 	int showAdditionalAction(UserInput& ui) {
-		Scene scene = sceneList[flg];
+		Scene scene = getCurrentScene();
 
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:

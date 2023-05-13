@@ -36,12 +36,14 @@ public:
 	}
 
 	void initialize() {
-		sprite[0].set(30, 380);
-		sprite[1].set(30, 380, "graph/sprite11.png");
-		sprite[2].set(30, 380, "graph/sprite12.png");
-		sprite[3].set(30, 380, "graph/sprite13.png");
-		sprite[4].set(30, 380, "graph/sprite14.png");
-		sprite[5].set(30, 380, "graph/sprite15.png");
+		int x = 30;
+		int y = 390;
+		sprite[0].set(x, y);
+		sprite[1].set(x, y, "graph/sprite11.png");
+		sprite[2].set(x, y, "graph/sprite12.png");
+		sprite[3].set(x, y, "graph/sprite13.png");
+		sprite[4].set(x, y, "graph/sprite14.png");
+		sprite[5].set(x, y, "graph/sprite15.png");
 	}
 
 	void set(string text0, int who0, bool next = true) {
@@ -73,8 +75,8 @@ public:
 		if (charCnt < textLen) {
 			cnt++;
 		}
-		DrawRoundBox(15, 380, 10, 609, 89, boxColor);
-		DrawMessage(charCnt, 110, 390, 600, GetFontSize(), text.c_str(), strColor, font, boxColor);
+		DrawRoundBox(15, 388, 10, 609, 81, boxColor);
+		DrawMessage(charCnt, 110, 392, 600, GetFontSize(), text.c_str(), strColor, font, boxColor);
 		if (existsNext) {
 			if (isReading()) {
 				drawIcon(true);

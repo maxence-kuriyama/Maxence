@@ -187,6 +187,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", ui.keyboard);
 			battle.debugDump();
 			bgm.debugDump();
+			tutorial.debugDump();
 			scenario.debugDump();
 			ending.debugDump();
 			com.debugDump();

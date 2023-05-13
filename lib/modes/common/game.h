@@ -155,14 +155,11 @@ public:
 	/*===========================*/
 	//    ”Õ–Ê•\Ž¦ŠÖ˜A
 	/*===========================*/
-	void drawBeforePlay() {
+	void drawForPlay() {
 		drawBase();
 		drawGlobalState();
 		drawHistLast();
 		drawNextField();
-	}
-
-	void drawAfterPlay() {
 		drawLocalState();
 		drawCurrentCoord();
 		drawPlayers();
