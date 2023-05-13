@@ -56,8 +56,6 @@ public:
 
 	// ‡î•ñ‚Ì‰Šú‰»
 	void initialize() {
-		taijin = VS_HUMAN;
-		mode = "";
 		cnt = 0;
 		drawCnt = 0;
 		board.initialize();
@@ -66,6 +64,11 @@ public:
 	void reset(Music& bgm) {
 		initialize();
 		bgm.unloadAll();
+
+		// ‚±‚¢‚Â‚ç‚Í‡î•ñ‚Å‚È‚¢‚Ì‚Åinitialize‚Å‰Šú‰»‚µ‚È‚¢
+		mode = "";
+		taijin = VS_HUMAN;
+		teban = TEBAN_SENKO;
 	}
 
 
