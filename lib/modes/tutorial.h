@@ -34,12 +34,14 @@ public:
 
 	void initialize() {
 		game.initialize();
+		game.setVsCOM();
+		game.setSenko();
 	}
 
 	int show(UserInput& ui, Music& music) {
 		int res = ScenarioBase::show(ui, music);
 		if (res == SCENE_RES_GO_BATTLE) {
-
+			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 		}
 
 		return SCENE_RES_DEFAULT;

@@ -38,13 +38,13 @@ private:
 	int player2 = 0;
 
 	int taijin = VS_HUMAN;
+	int teban = TEBAN_SENKO;	// 0: senko, 1: koko
 	int cnt = 0;			// ターン数
 	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
 
 public:
 	string mode = "";
 	Board board;
-	int teban = TEBAN_SENKO;	// 0: senko, 1: koko
 
 	Coordinate coordinate = { 0, 0, 0, 0, DUMMY_LAST_FIELD }; //キーボード操作時の座標
 
@@ -56,30 +56,29 @@ public:
 
 	// 試合情報の初期化
 	void initialize() {
+		taijin = VS_HUMAN;
+		mode = "";
 		cnt = 0;
 		drawCnt = 0;
 		board.initialize();
 	}
 
 	void reset(Music& bgm) {
-		taijin = VS_HUMAN;
-		mode = "";
+		initialize();
 		bgm.unloadAll();
-		DeleteGraph(player1);
-		DeleteGraph(player2);
 	}
 
 
 	/*===========================*/
 	//    準備処理
 	/*===========================*/
-	void goBattle(int player1, int player2, bool init = true) {
+	void prepare(int player1, int player2, bool init = true) {
 		if (init) initialize();
 		setPlayersGraph(player1, player2);
 	}
 
 	void setPlayersGraph(int pl1, int pl2) {
-		if (pl1 != BATTLE_PLAYER_NONE) DeleteGraph(player1);
+		DeleteGraph(player1);
 		switch (pl1)
 		{
 		case BATTLE_PLAYER_YELLOW:
@@ -93,7 +92,7 @@ public:
 			break;
 		}
 
-		if (pl2 != BATTLE_PLAYER_NONE) DeleteGraph(player2);
+		DeleteGraph(player2);
 		switch (pl2)
 		{
 		case BATTLE_PLAYER_YELLOW:
@@ -122,6 +121,14 @@ public:
 	void setVsCOM() {
 		mode = "ぼっちで";
 		taijin = VS_COM;
+	}
+
+	void setSenko() {
+		teban = TEBAN_SENKO;
+	}
+
+	void setKoko() {
+		teban = TEBAN_KOKO;
 	}
 
 

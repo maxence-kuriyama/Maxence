@@ -59,7 +59,7 @@ public:
 
 	void start(int player1, int player2, bool init = true) {
 		ui->reset();
-		game.goBattle(player1, player2, init);
+		game.prepare(player1, player2, init);
 		menu.set(btnSave, btnReset);
 	}
 
@@ -73,11 +73,11 @@ public:
 	}
 
 	void setSenko() {
-		game.teban = TEBAN_SENKO;
+		game.setSenko();
 	}
 
 	void setKoko() {
-		game.teban = TEBAN_KOKO;
+		game.setKoko();
 	}
 
 
