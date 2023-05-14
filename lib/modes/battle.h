@@ -7,6 +7,7 @@
 #include "lib/modes/battle/camera.h"
 #include "lib/modes/battle/anime.h"
 #include "lib/modes/battle/comment.h"
+#include "lib/modes/battle/encrypter.h"
 
 // バトルモード
 // 主にGameの操作と描画
@@ -116,16 +117,8 @@ public:
 			return_flg = FLAG_RESULT;
 		}
 
-		cancelPlay(com);
-
-		// セーブ or リセット
-		int choice = menuChoose();
-		if (choice == 0 || choice == 1) {
-			ui->reset();
-			game.reset(bgm);
-			return_flg = FLAG_TITLE;
-		}
-
+		if (cancelPlay()) com.setWait();
+		if (saveOrReset(bgm)) return_flg = FLAG_TITLE;
 		moveCamera();
 
 		// 対戦スキップ（一人用デバッグ）
@@ -210,10 +203,35 @@ public:
 		//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
 	}
 
-	void cancelPlay(COM& com) {
-		if (ui->onBack() && game.goBackHist()) {
-			com.setWait();
+	bool cancelPlay() {
+		return (ui->onBack() && game.goBackHist());
+	}
+
+	bool saveOrReset(Music& bgm) {
+		int choice = menuChoose();
+
+		// save
+		if (choice == 0) {
+			Encrypter encrypter;
+			nlohmann::json data = {
+				{"test", "TEST"},
+				{"hello", "WORLD"},
+			};
+			encrypter.write(data);
 		}
+
+		//reset
+		if (choice == 0 || choice == 1) {
+			Encrypter encrypter;
+			nlohmann::json res = encrypter.read();
+			Logger::ss << res.dump();
+			Logger::log();
+			ui->reset();
+			game.reset(bgm);
+			return true;
+		}
+
+		return false;
 	}
 
 
