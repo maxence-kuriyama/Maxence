@@ -29,7 +29,7 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-void routesTitle(int choice, int* flg, Battle& battle);
+void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
 void goTitle(int* flg, Title& title, Scenario& scenario);
 void goBackScenario(int* flg, Scenario& scenario);
@@ -118,7 +118,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			bgm.load("sound/bgm03.ogg"); // シナリオ用
 			bgm.load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show(ui);
-			routesTitle(choice, &flg, battle);
+			routesTitle(choice, &flg, battle, scenario);
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
@@ -198,22 +198,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return 0;
 }
 
-void routesTitle(int choice, int* flg, Battle& battle) {
+void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario) {
 	switch (choice) {
 	case MENU_CHOICE_VS_HUMAN:
 		*flg = FLAG_BATTLE;
 		battle.startVsHuman();
 		break;
 	case MENU_CHOICE_VS_COM:
-		battle.setVsCOM();
 		break;
 	case MENU_CHOICE_VS_COM_SENKO:
 		*flg = FLAG_SCENARIO;
-		battle.setSenko();
+		scenario.setSenko();
 		break;
 	case MENU_CHOICE_VS_COM_KOKO:
 		*flg = FLAG_SCENARIO;
-		battle.setKoko();
+		scenario.setKoko();
 		break;
 	case MENU_CHOICE_TUTORIAL:
 		*flg = FLAG_TUTORIAL;

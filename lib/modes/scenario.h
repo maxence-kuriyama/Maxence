@@ -88,7 +88,10 @@ private:
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"40" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"swap" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Ç≥Çüã≥Ç¶ÇƒÇ≠ÇÍ" },
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_GREEN,	"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_GREEN,	"start" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"victory" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_GREEN,	"end" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_GREEN,	"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_GREEN,	"sound/bgm06.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"â¥ÇÕå©Ç¶ÇΩÇÊ" },
@@ -103,7 +106,10 @@ private:
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"50" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"pop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"ãMï˚Ç™é◊ñÇÇ»ÇæÇØÇ»ÇÃÇ≈Ç∑ÇÊ" },
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_BLUE,		"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_BLUE,		"start" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"victory" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_BLUE,		"end" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_BLUE,		"sound/bgm07.ogg" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_BLUE,		"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"îné≠Ç»Åc\nÇªÇÒÇ»Åc" },
@@ -125,7 +131,10 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Ç≥ÇüÅAå„ÇÕÇ±ÇÃê¢äEÇ…Ç¢ÇÈÇÃÇÕñlÇæÇØÇæ" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"ÇæÇ©ÇÁÇ±ÇÃâ§Ç≈Ç†ÇÈñlÇéEÇµÇƒê¢äEÇã~Ç¡ÇƒÇ≠ÇÍ" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,	"pop" },
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"start" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"victory" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_YELLOW,	"end" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_YELLOW,	"stop" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"Ç†ÇËÇ™Ç∆Ç§ÅB" },
 		{ SCENE_ACTION_STOP,	SCENE_WHO_DESC,		"" },
@@ -210,6 +219,14 @@ public:
 		ScenarioBase::show(ui, music);
 
 		return showAdditionalAction(ui);
+	}
+
+	void setSenko() {
+		game.setSenko();
+	}
+
+	void setKoko() {
+		game.setKoko();
 	}
 
 	void debugDump() {

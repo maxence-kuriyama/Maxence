@@ -100,7 +100,7 @@ public:
 
 	void initializeBattle() {
 		game.initialize();
-		onBattle = false;
+		game.setVsCOM();
 		battle_trigger == "";
 
 	}
@@ -386,6 +386,7 @@ protected:
 	virtual void setBattle(string how) {
 		if (how == "start") {
 			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+			game.setVsCOM();
 			onBattle = true;
 		}
 		else if (how == "end") {
