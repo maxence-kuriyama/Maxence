@@ -3,8 +3,10 @@
 #include <regex>
 #include "lib/music.h"
 #include "lib/user_input.h"
+#include "lib/com.h"
 #include "lib/modes/common/sprite.h"
 #include "lib/modes/common/message.h"
+#include "lib/modes/common/game.h"
 
 
 const int MAX_SCENE_NUM(400);
@@ -18,6 +20,7 @@ const int SCENE_ACTION_MUSIC(5);
 const int SCENE_ACTION_GRAPH(6);
 const int SCENE_ACTION_BATTLE(7);
 const int SCENE_ACTION_COCK(8);
+const int SCENE_ACTION_PLAY(9);
 const int SCENE_ACTION_STOP(-1);
 
 const int SCENE_RES_DEFAULT(0);
@@ -53,6 +56,14 @@ protected:
 	string seName;		// SEのファイル名（デバッグ用）
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
+
+	int flg = 0; // シナリオ管理用フラグ
+	MrK mrK[4];
+	MrK deer;
+	Message msg;
+	Game game;
+	bool onBattle = false;
+	string battle_trigger = "";
 	
 	struct Scene sceneList[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"Nothing to say...\nPlease define me." },
@@ -60,10 +71,6 @@ protected:
 	};
 
 public:
-	int flg = 0; // シナリオ管理用フラグ
-	MrK mrK[4];
-	MrK deer;
-	Message msg;
 
 	ScenarioBase() {
 		mrK[0].set(180, 80, "graph/sprite11.png", 1);
@@ -88,6 +95,14 @@ public:
 		imgFront = "";
 		onOk = 0;
 		isTalking = false;
+		initializeBattle();
+	}
+
+	void initializeBattle() {
+		game.initialize();
+		onBattle = false;
+		battle_trigger == "";
+
 	}
 
 	int show(UserInput& ui, Music& music) {
@@ -99,6 +114,8 @@ public:
 		drawMrKs();
 		mrK[0].stop();
 		showGraph();
+
+		if (onBattle) showBattle();
 
 		Scene scene = sceneList[flg];
 
@@ -126,7 +143,11 @@ public:
 			performGraph(scene.how, mouse);
 			break;
 		case SCENE_ACTION_BATTLE:
-			return SCENE_RES_GO_BATTLE;
+			setBattle(scene.how);
+			break;
+		case SCENE_ACTION_PLAY:
+			doBattle(ui);
+			break;
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -325,16 +346,103 @@ protected:
 				mrK[i].setTrigger("fired");
 			}
 		}
+		else {
+			battle_trigger = trigger;
+		}
 		goNext();
 	}
 
 	virtual bool isTriggered() {
-		for (int i = 0; i < 4; ++i) {
-			if (!mrK[i].isTriggered()) {
-				return false;
+		if (battle_trigger == "") {
+			for (int i = 0; i < 4; ++i) {
+				if (!mrK[i].isTriggered()) {
+					return false;
+				}
+			}
+			return true;
+		}
+		else if (battle_trigger == "play_once") {
+			// do nothing here (see doGame)
+		}
+		else if (battle_trigger == "local_victory") {
+			for (int index = 0; index < 9; index++) {
+				if (game.board.localVictory(index)) {
+					battle_trigger = "fired";
+				}
 			}
 		}
-		return true;
+		else if (battle_trigger == "victory") {
+			if (game.victory() != 0) {
+				battle_trigger = "fired";
+			}
+		}
+		else if (battle_trigger == "fired") {
+			battle_trigger = "";
+			return true;
+		}
+		return false;
+	}
+
+	virtual void setBattle(string how) {
+		if (how == "start") {
+			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+			onBattle = true;
+		}
+		else if (how == "end") {
+			onBattle = false;
+			initializeBattle();
+		}
+		goNext();
+	}
+
+	virtual void showBattle() {
+		game.drawBeforePlay();
+		game.drawAfterPlay();
+	}
+
+	virtual void doBattle(UserInput& ui) {
+		game.drawBeforePlay();
+
+		if (playTurn(ui)) {
+			if (battle_trigger == "play_once") {
+				battle_trigger = "fired";
+			}
+		}
+
+		game.drawAfterPlay();
+
+		// 勝利判定
+		if (game.victory() != 0) {
+			ui.reset();
+		}
+
+		if (isTriggered()) goNext();
+	}
+
+	virtual bool playTurn(UserInput& ui) {
+		if (game.isPlayTurn()) {
+			return playByPlayer(ui);
+		}
+		else {
+			return playByCom();
+		}
+	}
+
+	bool playByPlayer(UserInput& ui) {
+		if (!game.playTurn(ui)) return false;
+
+		double res = game.update();
+		return game.isUpdated(res);
+	}
+
+	bool playByCom() {
+		MinMaxNode node(game.board, game.currentSide());
+		int depth = 2;
+		int index = node.search(depth);
+		Coordinate choice = Board::coordinates(index);
+
+		double res = game.update(choice);
+		return game.isUpdated(res);
 	}
 
 	void startMusic(const char* musicName) {

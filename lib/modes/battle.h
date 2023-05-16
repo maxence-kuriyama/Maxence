@@ -122,7 +122,7 @@ public:
 		moveCamera();
 
 		// 対戦スキップ（一人用デバッグ）
-		if (debug && skipBattle()) return_flg = FLAG_SCENARIO;
+		// if (debug && skipBattle()) return_flg = FLAG_SCENARIO;
 
 		return return_flg;
 	}

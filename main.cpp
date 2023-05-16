@@ -136,9 +136,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			case FLAG_TITLE:
 				goTitle(&flg, title, scenario);
 				break;
-			case FLAG_SCENARIO:
-				goBackScenario(&flg, scenario);
-				break;
 			case FLAG_RESULT:
 				goResult(&flg);
 				break;
@@ -240,12 +237,6 @@ void goTitle(int* flg, Title& title, Scenario& scenario) {
 	scenario.initialize();
 	SetBackgroundColor(0, 128, 128);
 	*flg = FLAG_TITLE;
-}
-
-void goBackScenario(int* flg, Scenario& scenario) {
-	StopMusic();
-	scenario.flg++;
-	*flg = FLAG_SCENARIO;
 }
 
 void goResult(int* flg) {

@@ -11,8 +11,6 @@ class Scenario : public ScenarioBase {
 
 public:
 	MrK card;
-	Game game;
-	bool onGame = false;
 
 	Scenario() {
 		imgRoom = LoadGraph("graph/room.bmp");
@@ -71,7 +69,10 @@ private:
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"30" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"swap" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"貴様か！？\nMr.K！！！"},
-		{ SCENE_ACTION_BATTLE,	SCENE_WHO_RED,		"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_RED,		"start" },
+		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"victory" },
+		{ SCENE_ACTION_PLAY,	SCENE_WHO_DESC,		"" },
+		{ SCENE_ACTION_BATTLE,	SCENE_WHO_RED,		"end" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"pop_once" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_RED,		"sound/bgm05.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"馬鹿な…\nそんなはずではなかったのに…" },
@@ -199,27 +200,14 @@ public:
 	void initialize() {
 		ScenarioBase::initialize();
 		card.hide();
-
-		onGame = false;
-		game.initialize();
 	}
 
 	int show(UserInput& ui, Music& music) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
-
-		if (onGame) {
-			showGame();
-			doGame(ui);
-		}
 		
-		int res = ScenarioBase::show(ui, music);
-		if (res == SCENE_RES_GO_BATTLE && !onGame) {
-			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-			//game.setTutorial();
-			onGame = true;
-		}
+		ScenarioBase::show(ui, music);
 
 		return showAdditionalAction(ui);
 	}
@@ -227,6 +215,7 @@ public:
 	void debugDump() {
 		int strColor = strColorDebug;
 
+		DrawFormatString(245, 165, strColor, "trigger: %s", battle_trigger);
 		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
 
 		ScenarioBase::debugDump();
@@ -260,50 +249,6 @@ private:
 			eqX = 0;
 			goNext();
 		}
-	}
-
-	void showGame() {
-		game.drawBeforePlay();
-		game.drawAfterPlay();
-	}
-
-	void doGame(UserInput& ui) {
-		game.drawBeforePlay();
-		playTurn(ui);
-		game.drawAfterPlay();
-
-		// 勝利判定
-		if (game.victory() != 0) {
-			ui.reset();
-			goNext();
-			onGame = false;
-		}
-	}
-
-	bool playTurn(UserInput& ui) {
-		if (game.isPlayTurn()) {
-			return playByPlayer(ui);
-		}
-		else {
-			return playByCom();
-		}
-	}
-
-	bool playByPlayer(UserInput& ui) {
-		if (!game.playTurn(ui)) return false;
-
-		double res = game.update();
-		return game.isUpdated(res);
-	}
-
-	bool playByCom() {
-		MinMaxNode node(game.board, game.currentSide());
-		int depth = 2;
-		int index = node.search(depth);
-		Coordinate choice = Board::coordinates(index);
-
-		double res = game.update(choice);
-		return game.isUpdated(res);
 	}
 
 	// override
