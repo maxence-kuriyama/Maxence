@@ -61,14 +61,18 @@ public:
 		board.initialize();
 	}
 
-	void reset(Music& bgm) {
+	void reset() {
 		initialize();
-		bgm.unloadAll();
 
 		// ‚±‚¢‚Â‚ç‚Í‡î•ñ‚Å‚È‚¢‚Ì‚Åinitialize‚Å‰Šú‰»‚µ‚È‚¢
 		mode = "";
 		taijin = VS_HUMAN;
 		teban = TEBAN_SENKO;
+	}
+
+	void reset(Music& bgm) {
+		reset();
+		bgm.unloadAll();
 	}
 
 

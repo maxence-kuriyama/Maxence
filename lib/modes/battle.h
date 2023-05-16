@@ -7,15 +7,12 @@
 #include "lib/modes/battle/camera.h"
 #include "lib/modes/battle/anime.h"
 #include "lib/modes/battle/comment.h"
-#include "lib/modes/battle/encrypter.h"
 
 // バトルモード
 // 主にGameの操作と描画
 // Gameの描画はEndingとBattleResultでも行うため、公開する必要がある
 class Battle {
 private:
-	Menu menu;
-	Button btnSave;
 	Button btnReset;
 
 	Anime cutin;
@@ -40,8 +37,7 @@ public:
 		camera.initialize();
 		comment.initialize();
 		// ボタン初期化
-		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
-		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
+		btnReset.initialize(260, 440, "タイトル");
 		// カットイン画像初期化
 		int Cutin1 = LoadGraph("graph/cutin1.png");
 		int Cutin10 = LoadGraph("graph/cutin10.png");
@@ -59,7 +55,6 @@ public:
 	void start(int player1, int player2, bool init = true) {
 		ui->reset();
 		game.prepare(player1, player2, init);
-		menu.set(btnSave, btnReset);
 	}
 
 	void startVsHuman() {
@@ -118,18 +113,10 @@ public:
 		}
 
 		if (cancelPlay()) com.setWait();
-		if (saveOrReset(bgm)) return_flg = FLAG_TITLE;
+		if (reset(bgm)) return_flg = FLAG_TITLE;
 		moveCamera();
 
-		// 対戦スキップ（一人用デバッグ）
-		// if (debug && skipBattle()) return_flg = FLAG_SCENARIO;
-
 		return return_flg;
-	}
-
-	// デバッグ用
-	bool skipBattle() {
-		return (game.isVsCOM() && ui->onKeySkipDebug());
 	}
 
 	void drawMessage() {
@@ -164,11 +151,6 @@ public:
 			}
 		}
 		return false;
-	}
-
-	int menuChoose() {
-		bool no_keyboard = true;
-		return menu.choose(*ui, strColor, no_keyboard);
 	}
 
 	void toggleByKey(bool debug) {
@@ -207,30 +189,13 @@ public:
 		return (ui->onBack() && game.goBackHist());
 	}
 
-	bool saveOrReset(Music& bgm) {
-		int choice = menuChoose();
-
-		// save
-		if (choice == 0) {
-			Encrypter encrypter;
-			nlohmann::json data = {
-				{"test", "TEST"},
-				{"hello", "WORLD"},
-			};
-			encrypter.write(data);
-		}
-
-		//reset
-		if (choice == 0 || choice == 1) {
-			Encrypter encrypter;
-			nlohmann::json res = encrypter.read();
-			Logger::ss << res.dump();
-			Logger::log();
+	bool reset(Music& bgm) {
+		btnReset.display(*ui, strColor);
+		if (btnReset.isClicked(*ui)) {
 			ui->reset();
 			game.reset(bgm);
 			return true;
 		}
-
 		return false;
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/modes/common/scenario_base.h"
+#include "lib/modes/scenario/encrypter.h"
 
 
 const int SCENE_ACTION_EQ(11);
@@ -42,6 +43,10 @@ private:
 	int eqY = 0; // eq = earthquake
 	int imgRoom;
 	int imgCard;
+	Menu menu;
+	Button btnSave;
+	Button btnReset;
+	int strColorMenu = GetColor(255, 255, 255);
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
@@ -213,6 +218,10 @@ public:
 	void initialize() {
 		ScenarioBase::initialize();
 		card.hide();
+		// ボタン初期化
+		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
+		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
+		menu.set(btnSave, btnReset);
 	}
 
 	int show(UserInput& ui, Music& music) {
@@ -270,6 +279,51 @@ private:
 			eqX = 0;
 			goNext();
 		}
+	}
+
+	// override
+	void doBattle(UserInput& ui) {
+		ScenarioBase::doBattle(ui);
+
+		// TODO: タイトル画面へ戻る
+		if (saveOrReset(ui)) return;
+		// return_flg = FLAG_TITLE;
+
+		// 対戦スキップ（一人用デバッグ）
+		// if (debug && skipBattle(ui)) return_flg = FLAG_SCENARIO;
+	}
+
+	// デバッグ用
+	bool skipBattle(UserInput& ui) {
+		return (game.isVsCOM() && ui.onKeySkipDebug());
+	}
+
+	bool saveOrReset(UserInput& ui) {
+		bool no_keyboard = true;
+		int choice = menu.choose(ui, strColorMenu, no_keyboard);
+
+		// save
+		if (choice == 0) {
+			Encrypter encrypter;
+			nlohmann::json data = {
+				{"test", "TEST"},
+				{"hello", "WORLD"},
+			};
+			encrypter.write(data);
+		}
+
+		//reset
+		if (choice == 0 || choice == 1) {
+			Encrypter encrypter;
+			nlohmann::json res = encrypter.read();
+			Logger::ss << res.dump();
+			Logger::log();
+			ui.reset();
+			game.reset();
+			return true;
+		}
+
+		return false;
 	}
 
 	// override

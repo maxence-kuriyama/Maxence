@@ -202,6 +202,7 @@
     <ClInclude Include="lib\modes\opening.h" />
     <ClInclude Include="lib\modes\result.h" />
     <ClInclude Include="lib\modes\scenario.h" />
+    <ClInclude Include="lib\modes\scenario\encrypter.h" />
     <ClInclude Include="lib\modes\scenario\message.h" />
     <ClInclude Include="lib\modes\title.h" />
     <ClInclude Include="lib\modes\title\fireflower.h" />

@@ -12,9 +12,13 @@ public:
 		for (int i = 0; i < MAX_SCENE_NUM; i++) {
 			sceneList[i] = scenes[i];
 		}
+		btnReset.initialize(260, 440, "タイトル");
 	}
 
 private:
+	Button btnReset;
+	int strColorMenu = GetColor(255, 255, 255);
+
 	int strColor = GetColor(255, 255, 255);
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
@@ -67,6 +71,7 @@ public:
 
 private:
 
+	// override
 	void setBattle(string how) {
 		if (how == "start") {
 			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
@@ -78,5 +83,24 @@ private:
 			initializeBattle();
 		}
 		goNext();
+	}
+
+	// override
+	void doBattle(UserInput& ui) {
+		ScenarioBase::doBattle(ui);
+
+		// TODO: タイトル画面へ戻る
+		if (reset(ui)) return;
+		// return_flg = FLAG_TITLE;
+	}
+
+	bool reset(UserInput& ui) {
+		btnReset.display(ui, strColorMenu);
+		if (btnReset.isClicked(ui)) {
+			ui.reset();
+			game.reset();
+			return true;
+		}
+		return false;
 	}
 };
