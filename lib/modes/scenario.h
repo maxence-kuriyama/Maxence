@@ -11,6 +11,8 @@ class Scenario : public ScenarioBase {
 
 public:
 	MrK card;
+	Game game;
+	bool onGame = false;
 
 	Scenario() {
 		imgRoom = LoadGraph("graph/room.bmp");
@@ -49,22 +51,22 @@ private:
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
-		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
-		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"10" },
-		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_CARD,		"exibit_nowait" },
-		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"exibit" },
-		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
-		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"hide_nowait" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
-		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"clear" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"なにっ！？" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
-//		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
-		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
-		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"20" },
-		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
-		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
+		//{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
+		//{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"10" },
+		//{ SCENE_ACTION_EXIBIT,	SCENE_WHO_CARD,		"exibit_nowait" },
+		//{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"exibit" },
+		//{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
+		//{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
+		//{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"hide_nowait" },
+		//{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+		//{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"clear" },
+		//{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"なにっ！？" },
+		//{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+//		//{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
+		//{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
+		//{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"20" },
+		//{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
+		//{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_red" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"30" },
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_RED,		"swap" },
@@ -197,15 +199,27 @@ public:
 	void initialize() {
 		ScenarioBase::initialize();
 		card.hide();
+
+		onGame = false;
+		game.initialize();
 	}
 
 	int show(UserInput& ui, Music& music) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
+
+		if (onGame) {
+			showGame();
+			doGame(ui);
+		}
 		
 		int res = ScenarioBase::show(ui, music);
-		if (res == SCENE_RES_GO_BATTLE) return SCENE_RES_GO_BATTLE;
+		if (res == SCENE_RES_GO_BATTLE && !onGame) {
+			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+			//game.setTutorial();
+			onGame = true;
+		}
 
 		return showAdditionalAction(ui);
 	}
@@ -246,6 +260,50 @@ private:
 			eqX = 0;
 			goNext();
 		}
+	}
+
+	void showGame() {
+		game.drawBeforePlay();
+		game.drawAfterPlay();
+	}
+
+	void doGame(UserInput& ui) {
+		game.drawBeforePlay();
+		playTurn(ui);
+		game.drawAfterPlay();
+
+		// 勝利判定
+		if (game.victory() != 0) {
+			ui.reset();
+			goNext();
+			onGame = false;
+		}
+	}
+
+	bool playTurn(UserInput& ui) {
+		if (game.isPlayTurn()) {
+			return playByPlayer(ui);
+		}
+		else {
+			return playByCom();
+		}
+	}
+
+	bool playByPlayer(UserInput& ui) {
+		if (!game.playTurn(ui)) return false;
+
+		double res = game.update();
+		return game.isUpdated(res);
+	}
+
+	bool playByCom() {
+		MinMaxNode node(game.board, game.currentSide());
+		int depth = 2;
+		int index = node.search(depth);
+		Coordinate choice = Board::coordinates(index);
+
+		double res = game.update(choice);
+		return game.isUpdated(res);
 	}
 
 	// override
