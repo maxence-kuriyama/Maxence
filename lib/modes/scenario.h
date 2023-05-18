@@ -222,6 +222,8 @@ public:
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
 		menu.set(btnSave, btnReset);
+		mrK[0].set(170, 30);
+		mrK[0].turn(MRK_KEY_DOWN);
 	}
 
 	int show(UserInput& ui, Music& music, bool debug = false) {
@@ -283,6 +285,31 @@ private:
 	}
 
 	// override
+	void setBattle(string how) {
+		if (how == "start") {
+			Scene scene = getCurrentScene();
+			if (scene.who == SCENE_WHO_RED) {
+				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+			}
+			else if (scene.who == SCENE_WHO_GREEN) {
+				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_GREEN);
+			}
+			else if (scene.who == SCENE_WHO_BLUE) {
+				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_BLUE);
+			}
+			else if (scene.who == SCENE_WHO_YELLOW) {
+				game.prepare(BATTLE_PLAYER_PLAYER, BATTLE_PLAYER_YELLOW);
+			}
+			game.setVsCOM();
+			onBattle = true;
+		}
+		else if (how == "end") {
+			initializeBattle();
+		}
+		goNext();
+	}
+
+	// override
 	int doBattle(UserInput& ui, bool debug) {
 		ScenarioBase::doBattle(ui, debug);
 
@@ -295,6 +322,26 @@ private:
 		if (debug && skipBattle(ui)) goNext();
 			
 		return FLAG_SCENARIO;
+	}
+
+	// override
+	bool playTurn(UserInput& ui) {
+		if (game.isPlayTurn()) {
+			return playByPlayer(ui);
+		}
+		else {
+			return playByCom();
+		}
+	}
+
+	bool playByCom() {
+		MinMaxNode node(game.board, game.currentSide());
+		int depth = 2;
+		int index = node.search(depth);
+		Coordinate choice = Board::coordinates(index);
+
+		double res = game.update(choice);
+		return game.isUpdated(res);
 	}
 
 	// デバッグ用

@@ -161,19 +161,19 @@ public:
 	// キーボード入力を取得する
 	void getKey(Key& keyboard) {
 		if (keyboard.onGoingDown()) {
-			key = 0;
+			key = MRK_KEY_DOWN;
 		}
 		else if (keyboard.onGoingRight()) {
-			key = 1;
+			key = MRK_KEY_RIGHT;
 		}
 		else if (keyboard.onGoingUp()) {
-			key = 2;
+			key = MRK_KEY_UP;
 		}
 		else if (keyboard.onGoingLeft()) {
-			key = 3;
+			key = MRK_KEY_LEFT;
 		}
 		else {
-			key = -1;
+			key = MRK_KEY_NONE;
 		}
 
 		if (keyboard.onReturn()) {
@@ -242,7 +242,7 @@ protected:
 			talkMrK(who, how, mouse);
 		}
 		else {
-			if (key != -1) {
+			if (key != MRK_KEY_NONE) {
 				mrK[0].turn(key);
 				mrK[0].move();
 			}
@@ -438,7 +438,7 @@ protected:
 
 	bool playByCom() {
 		MinMaxNode node(game.board, game.currentSide());
-		int depth = 2;
+		int depth = 1;
 		int index = node.search(depth);
 		Coordinate choice = Board::coordinates(index);
 

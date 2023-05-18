@@ -168,6 +168,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ending.show(bgm, sync.fps);
 		}
 		else if (flg == FLAG_SCENARIO) {
+			SetBackgroundColor(0, 0, 0);
 			if (!bgm.drawLoadMsg()) {
 				int res = scenario.show(ui, bgm, debug_flg);
 				if (res == FLAG_TITLE) {

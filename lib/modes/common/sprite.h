@@ -2,6 +2,17 @@
 
 #include <string>
 
+
+const int MRK_TRIGGER_NONE(-1);
+const int MRK_TRIGGER_FIRED(1);
+const int MRK_TRIGGER_TALK(2);
+
+const int MRK_KEY_NONE(-1);
+const int MRK_KEY_DOWN(0);
+const int MRK_KEY_RIGHT(1);
+const int MRK_KEY_UP(2);
+const int MRK_KEY_LEFT(3);
+
 struct Saying {
 	char key[4];
 	int who;
@@ -102,16 +113,16 @@ public:
 	}
 
 	void move() {
-		if (direction == 0) {
-			y += walkSpeed;
-		}
-		else if (direction == 1) {
-			x += walkSpeed;
-		}
-		else if (direction == 2) {
+		if (direction == MRK_KEY_UP) {
 			y -= walkSpeed;
 		}
-		else if (direction == 3) {
+		else if (direction == MRK_KEY_RIGHT) {
+			x += walkSpeed;
+		}
+		else if (direction == MRK_KEY_DOWN) {
+			y += walkSpeed;
+		}
+		else if (direction == MRK_KEY_LEFT) {
 			x -= walkSpeed;
 		}
 		walk();
