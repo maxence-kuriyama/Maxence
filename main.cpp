@@ -169,7 +169,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_SCENARIO) {
 			if (!bgm.drawLoadMsg()) {
-				int res = scenario.show(ui, bgm);
+				int res = scenario.show(ui, bgm, debug_flg);
 				if (res == FLAG_TITLE) {
 					bgm.unloadAll();
 					goTitle(&flg, title, scenario, tutorial);

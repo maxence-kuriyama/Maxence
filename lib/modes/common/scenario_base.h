@@ -101,7 +101,7 @@ public:
 		onBattle = false;
 		game.initialize();
 		game.setVsCOM();
-		battle_trigger == "";
+		battle_trigger = "";
 
 	}
 

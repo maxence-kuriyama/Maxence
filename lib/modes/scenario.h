@@ -224,12 +224,12 @@ public:
 		menu.set(btnSave, btnReset);
 	}
 
-	int show(UserInput& ui, Music& music) {
+	int show(UserInput& ui, Music& music, bool debug = false) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 		
-		int res = ScenarioBase::show(ui, music);
+		int res = ScenarioBase::show(ui, music, debug);
 		showAdditionalAction(ui);
 
 		return (res != SCENE_RES_DEFAULT) ? res : FLAG_SCENARIO;
@@ -292,16 +292,18 @@ private:
 		}
 
 		// 対戦スキップ（一人用デバッグ）
-		if (debug && skipBattle(ui)) {
-			initializeBattle();
-		}
+		if (debug && skipBattle(ui)) goNext();
 			
 		return FLAG_SCENARIO;
 	}
 
 	// デバッグ用
 	bool skipBattle(UserInput& ui) {
-		return (game.isVsCOM() && ui.onKeySkipDebug());
+		if (ui.onKeySkipDebug()) {
+			initializeBattle();
+			return true;
+		}
+		return false;
 	}
 
 	bool saveOrReset(UserInput& ui) {
