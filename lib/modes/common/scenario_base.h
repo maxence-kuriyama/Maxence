@@ -23,8 +23,7 @@ const int SCENE_ACTION_COCK(8);
 const int SCENE_ACTION_PLAY(9);
 const int SCENE_ACTION_STOP(-1);
 
-const int SCENE_RES_DEFAULT(0);
-const int SCENE_RES_GO_BATTLE(1);
+const int SCENE_RES_DEFAULT(-100);
 
 const int SCENE_WHO_DESC(0);
 const int SCENE_WHO_YELLOW(1);
@@ -99,13 +98,14 @@ public:
 	}
 
 	void initializeBattle() {
+		onBattle = false;
 		game.initialize();
 		game.setVsCOM();
 		battle_trigger == "";
 
 	}
 
-	int show(UserInput& ui, Music& music) {
+	int show(UserInput& ui, Music& music, bool debug = false) {
 		getKey(*ui.key);
 		Mouse mouse = *ui.mouse;
 
@@ -146,8 +146,7 @@ public:
 			setBattle(scene.how);
 			break;
 		case SCENE_ACTION_PLAY:
-			doBattle(ui);
-			break;
+			return doBattle(ui, debug);
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -390,7 +389,6 @@ protected:
 			onBattle = true;
 		}
 		else if (how == "end") {
-			onBattle = false;
 			initializeBattle();
 		}
 		goNext();
@@ -401,7 +399,7 @@ protected:
 		game.drawAfterPlay();
 	}
 
-	virtual void doBattle(UserInput& ui) {
+	virtual int doBattle(UserInput& ui, bool debug = false) {
 		game.drawBeforePlay();
 
 		if (playTurn(ui)) {
@@ -418,6 +416,8 @@ protected:
 		}
 
 		if (isTriggered()) goNext();
+
+		return FLAG_TITLE;
 	}
 
 	virtual bool playTurn(UserInput& ui) {

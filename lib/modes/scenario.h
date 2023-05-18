@@ -229,9 +229,10 @@ public:
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 		
-		ScenarioBase::show(ui, music);
+		int res = ScenarioBase::show(ui, music);
+		showAdditionalAction(ui);
 
-		return showAdditionalAction(ui);
+		return (res != SCENE_RES_DEFAULT) ? res : FLAG_SCENARIO;
 	}
 
 	void setSenko() {
@@ -282,15 +283,20 @@ private:
 	}
 
 	// override
-	void doBattle(UserInput& ui) {
-		ScenarioBase::doBattle(ui);
+	int doBattle(UserInput& ui, bool debug) {
+		ScenarioBase::doBattle(ui, debug);
 
-		// TODO: タイトル画面へ戻る
-		if (saveOrReset(ui)) return;
-		// return_flg = FLAG_TITLE;
+		if (saveOrReset(ui)) {
+			initializeBattle();
+			return FLAG_TITLE;
+		}
 
 		// 対戦スキップ（一人用デバッグ）
-		// if (debug && skipBattle(ui)) return_flg = FLAG_SCENARIO;
+		if (debug && skipBattle(ui)) {
+			initializeBattle();
+		}
+			
+		return FLAG_SCENARIO;
 	}
 
 	// デバッグ用

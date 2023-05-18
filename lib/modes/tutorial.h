@@ -56,7 +56,9 @@ private:
 public:
 
 	int show(UserInput& ui, Music& music) {
-		return ScenarioBase::show(ui, music);
+		int res = ScenarioBase::show(ui, music);
+
+		return (res != SCENE_RES_DEFAULT) ? res : FLAG_TUTORIAL;
 	}
 
 	void debugDump() {
@@ -79,19 +81,18 @@ private:
 			onBattle = true;
 		}
 		else if (how == "end") {
-			onBattle = false;
 			initializeBattle();
 		}
 		goNext();
 	}
 
 	// override
-	void doBattle(UserInput& ui) {
+	int doBattle(UserInput& ui, bool debug) {
 		ScenarioBase::doBattle(ui);
 
-		// TODO: ƒ^ƒCƒgƒ‹‰æ–Ê‚Ö–ß‚é
-		if (reset(ui)) return;
-		// return_flg = FLAG_TITLE;
+		if (reset(ui)) return FLAG_TITLE;
+
+		return FLAG_TUTORIAL;
 	}
 
 	bool reset(UserInput& ui) {

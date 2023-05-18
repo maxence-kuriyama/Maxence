@@ -31,8 +31,7 @@ using namespace std;
 
 void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
-void goTitle(int* flg, Title& title, Scenario& scenario);
-void goBackScenario(int* flg, Scenario& scenario);
+void goTitle(int* flg, Title& title, Scenario& scenario, Tutorial& tutorial);
 void goResult(int* flg);
 
 
@@ -123,7 +122,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
 			if (!bgm.drawLoadMsg()) {
-				tutorial.show(ui, bgm);
+				int res = tutorial.show(ui, bgm);
+				if (res == FLAG_TITLE) {
+					bgm.unloadAll();
+					goTitle(&flg, title, scenario, tutorial);
+				}
 			}
 		}
 		else if (flg == FLAG_BATTLE) {
@@ -134,7 +137,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			switch (res) {
 			case FLAG_TITLE:
-				goTitle(&flg, title, scenario);
+				goTitle(&flg, title, scenario, tutorial);
 				break;
 			case FLAG_RESULT:
 				goResult(&flg);
@@ -167,9 +170,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_SCENARIO) {
 			if (!bgm.drawLoadMsg()) {
 				int res = scenario.show(ui, bgm);
-				if (res == SCENE_RES_GO_BATTLE) {
-					flg = FLAG_BATTLE;
-					battle.start(BATTLE_PLAYER_YELLOW, rand() % 3 + 1);
+				if (res == FLAG_TITLE) {
+					bgm.unloadAll();
+					goTitle(&flg, title, scenario, tutorial);
 				}
 			}
 		}
@@ -231,9 +234,10 @@ void goEndingDebug(int* flg, Music& bgm, Ending& ending) {
 	}
 }
 
-void goTitle(int* flg, Title& title, Scenario& scenario) {
+void goTitle(int* flg, Title& title, Scenario& scenario, Tutorial& tutorial) {
 	title.initialize();
 	scenario.initialize();
+	tutorial.initialize();
 	SetBackgroundColor(0, 128, 128);
 	*flg = FLAG_TITLE;
 }

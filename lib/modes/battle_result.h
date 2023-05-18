@@ -55,8 +55,6 @@ public:
 		// 動作の取り消し
 		if (cancel(game)) return_flg = FLAG_RESULT_CANCEL;
 
-		// TODO: シナリオの場合の終了 + 遷移処理
-
 		return return_flg;
 	}
 
