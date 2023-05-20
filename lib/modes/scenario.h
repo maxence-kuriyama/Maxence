@@ -245,6 +245,10 @@ public:
 		game.setKoko();
 	}
 
+	bool hasSaveFile() {
+		return true;
+	}
+
 	void debugDump() {
 		int strColor = strColorDebug;
 

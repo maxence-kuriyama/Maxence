@@ -82,6 +82,14 @@ public:
 
 
 	/*===========================*/
+	//    Boolean
+	/*===========================*/
+	bool hasSaveFile() {
+		return true;
+	}
+
+
+	/*===========================*/
 	//    Battle Mode
 	/*===========================*/
 	int show(COM& com, Music& bgm, bool debug) {
@@ -206,7 +214,6 @@ public:
 
 		//reset
 		if (choice == 0 || choice == 1) {
-			game.load(save_filename);
 			ui->reset();
 			game.reset(bgm);
 			return true;

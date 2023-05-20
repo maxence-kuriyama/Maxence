@@ -29,9 +29,11 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario);
+void routesTitle(int choice, int* flg, Title& title, Battle& battle);
+void routesTitle(int choice, int* flg, Title& title, Scenario& scenario);
+void routesTitle(int choice, int* flg, Title& title, Tutorial& tutorial);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
-void goTitle(int* flg, Title& title, Scenario& scenario, Tutorial& tutorial);
+void goTitle(int* flg, Title& title);
 void goResult(int* flg);
 
 
@@ -117,7 +119,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			bgm.load("sound/bgm03.ogg"); // シナリオ用
 			bgm.load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show(ui);
-			routesTitle(choice, &flg, battle, scenario);
+			routesTitle(choice, &flg, title, battle);
+			routesTitle(choice, &flg, title, scenario);
+			routesTitle(choice, &flg, title, tutorial);
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
@@ -125,7 +129,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				int res = tutorial.show(ui, bgm);
 				if (res == FLAG_TITLE) {
 					bgm.unloadAll();
-					goTitle(&flg, title, scenario, tutorial);
+					goTitle(&flg, title);
 				}
 			}
 		}
@@ -137,7 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			switch (res) {
 			case FLAG_TITLE:
-				goTitle(&flg, title, scenario, tutorial);
+				goTitle(&flg, title);
 				break;
 			case FLAG_RESULT:
 				goResult(&flg);
@@ -173,7 +177,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				int res = scenario.show(ui, bgm, debug_flg);
 				if (res == FLAG_TITLE) {
 					bgm.unloadAll();
-					goTitle(&flg, title, scenario, tutorial);
+					goTitle(&flg, title);
 				}
 			}
 		}
@@ -202,24 +206,80 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return 0;
 }
 
-void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario) {
+void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario, Tutorial& tutorial) {
 	switch (choice) {
 	case MENU_CHOICE_VS_HUMAN:
-		*flg = FLAG_BATTLE;
-		battle.startVsHuman();
+		if (!battle.hasSaveFile()) {
+			battle.startVsHuman();
+			*flg = FLAG_BATTLE;
+		}
 		break;
 	case MENU_CHOICE_VS_COM:
-		break;
-	case MENU_CHOICE_VS_COM_SENKO:
 		*flg = FLAG_SCENARIO;
-		scenario.setSenko();
-		break;
-	case MENU_CHOICE_VS_COM_KOKO:
-		*flg = FLAG_SCENARIO;
-		scenario.setKoko();
+		scenario.initialize();
 		break;
 	case MENU_CHOICE_TUTORIAL:
 		*flg = FLAG_TUTORIAL;
+		tutorial.initialize();
+		break;
+	case MENU_CHOICE_START:
+		break;
+	case MENU_CHOICE_LOAD:
+		break;
+	}
+}
+
+void routesTitle(int choice, int* flg, Title& title, Battle& battle) {
+	switch (choice) {
+	case MENU_CHOICE_VS_HUMAN:
+		if (!battle.hasSaveFile()) {
+			battle.startVsHuman();
+			*flg = FLAG_BATTLE;
+		}
+		break;
+	case MENU_CHOICE_START:
+		if (title.isBattleMode()) {
+			battle.startVsHuman();
+			*flg = FLAG_BATTLE;
+		}
+		break;
+	case MENU_CHOICE_LOAD:
+		if (title.isBattleMode()) {
+			// battle.load();
+			// *flg = FLAG_BATTLE;
+		}
+		break;
+	}
+}
+
+void routesTitle(int choice, int* flg, Title& title, Scenario& scenario) {
+	switch (choice) {
+	case MENU_CHOICE_VS_COM:
+		if (!scenario.hasSaveFile()) {
+			scenario.initialize();
+			*flg = FLAG_SCENARIO;
+		}
+		break;
+	case MENU_CHOICE_START:
+		if (title.isScenarioMode()) {
+			scenario.initialize();
+			*flg = FLAG_SCENARIO;
+		}
+		break;
+	case MENU_CHOICE_LOAD:
+		if (title.isScenarioMode()) {
+			// scenario.load();
+			// *flg = FLAG_SCENARIO;
+		}
+		break;
+	}
+}
+
+void routesTitle(int choice, int* flg, Title& title, Tutorial& tutorial) {
+	switch (choice) {
+	case MENU_CHOICE_TUTORIAL:
+		*flg = FLAG_TUTORIAL;
+		tutorial.initialize();
 		break;
 	}
 }
@@ -235,10 +295,8 @@ void goEndingDebug(int* flg, Music& bgm, Ending& ending) {
 	}
 }
 
-void goTitle(int* flg, Title& title, Scenario& scenario, Tutorial& tutorial) {
+void goTitle(int* flg, Title& title) {
 	title.initialize();
-	scenario.initialize();
-	tutorial.initialize();
 	SetBackgroundColor(0, 128, 128);
 	*flg = FLAG_TITLE;
 }
