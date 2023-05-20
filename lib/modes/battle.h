@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include "lib/const.h"
 #include "lib/com.h"
 #include "lib/menu.h"
@@ -25,7 +26,7 @@ private:
 
 	int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(50, 50, 200);
-	const string save_filename = "savegb.dat";
+	const string save_filepath = "./data/savegb.dat";
 
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
@@ -85,7 +86,15 @@ public:
 	//    Boolean
 	/*===========================*/
 	bool hasSaveFile() {
-		return true;
+		ifstream file(save_filepath);
+		if (file) {
+			file.close();
+			return true;
+		}
+		else {
+			file.close();
+			return false;
+		}
 	}
 
 
@@ -209,7 +218,7 @@ public:
 
 		// save
 		if (choice == 0) {
-			game.save(save_filename);
+			game.save(save_filepath);
 		}
 
 		//reset

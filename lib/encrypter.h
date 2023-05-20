@@ -21,9 +21,9 @@ public:
 		generateKeys();
 	}
 
-	Encrypter(const string filename) {
+	Encrypter(const string path) {
 		generateKeys();
-		data_file = "./data/" + filename;
+		data_file = path;
 	}
 
 	void write(nlohmann::json src) {

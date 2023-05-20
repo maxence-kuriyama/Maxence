@@ -47,6 +47,8 @@ private:
 	Button btnSave;
 	Button btnReset;
 	int strColorMenu = GetColor(255, 255, 255);
+	string save_filepath = "./data/savesc";
+	string save_game_filepath = "./data/savegs";
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
@@ -246,7 +248,15 @@ public:
 	}
 
 	bool hasSaveFile() {
-		return true;
+		ifstream file(save_filepath);
+		if (file) {
+			file.close();
+			return true;
+		}
+		else {
+			file.close();
+			return false;
+		}
 	}
 
 	void debugDump() {
