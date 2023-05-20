@@ -21,6 +21,11 @@ public:
 		generateKeys();
 	}
 
+	Encrypter(const string filename) {
+		generateKeys();
+		data_file = "./data/" + filename;
+	}
+
 	void write(nlohmann::json src) {
 		ofstream ofs;
 		ofs.open(data_file, ios::out);

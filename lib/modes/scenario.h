@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lib/modes/common/scenario_base.h"
-#include "lib/modes/scenario/encrypter.h"
+#include "lib/encrypter.h"
 
 
 const int SCENE_ACTION_EQ(11);

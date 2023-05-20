@@ -13,6 +13,8 @@
 // Gameの描画はEndingとBattleResultでも行うため、公開する必要がある
 class Battle {
 private:
+	Menu menu;
+	Button btnSave;
 	Button btnReset;
 
 	Anime cutin;
@@ -23,6 +25,8 @@ private:
 
 	int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(50, 50, 200);
+	const string save_filename = "savegb.dat";
+
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
 	int playCnt = 0;			// 1ターンに費やしたカウント
@@ -37,7 +41,9 @@ public:
 		camera.initialize();
 		comment.initialize();
 		// ボタン初期化
-		btnReset.initialize(260, 440, "タイトル");
+		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
+		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
+		menu.set(btnSave, btnReset);
 		// カットイン画像初期化
 		int Cutin1 = LoadGraph("graph/cutin1.png");
 		int Cutin10 = LoadGraph("graph/cutin10.png");
@@ -113,7 +119,7 @@ public:
 		}
 
 		if (cancelPlay()) com.setWait();
-		if (reset(bgm)) return_flg = FLAG_TITLE;
+		if (saveOrReset(bgm)) return_flg = FLAG_TITLE;
 		moveCamera();
 
 		return return_flg;
@@ -189,13 +195,23 @@ public:
 		return (ui->onBack() && game.goBackHist());
 	}
 
-	bool reset(Music& bgm) {
-		btnReset.display(*ui, strColor);
-		if (btnReset.isClicked(*ui)) {
+	bool saveOrReset(Music& bgm) {
+		bool no_keyboard = true;
+		int choice = menu.choose(*ui, strColor, no_keyboard);
+
+		// save
+		if (choice == 0) {
+			game.save(save_filename);
+		}
+
+		//reset
+		if (choice == 0 || choice == 1) {
+			game.load(save_filename);
 			ui->reset();
 			game.reset(bgm);
 			return true;
 		}
+
 		return false;
 	}
 

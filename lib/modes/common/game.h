@@ -4,6 +4,8 @@
 #include "lib/const.h"
 #include "lib/user_input.h"
 #include "lib/board.h"
+#include "lib/encrypter.h"
+#include "lib/logger.h"
 
 
 const int VS_HUMAN(0);
@@ -33,14 +35,18 @@ private:
 	int stone1_t = LoadGraph("graph/stone1.png");
 	int stone2_t = LoadGraph("graph/stone2.png");
 
-	// プレイヤー画像のハンドラ
-	int player1 = 0;
-	int player2 = 0;
-
 	int taijin = VS_HUMAN;
 	int teban = TEBAN_SENKO;	// 0: senko, 1: koko
+	int player1 = 0;
+	int player2 = 0;
 	int cnt = 0;			// ターン数
-	int drawCnt = 0;		// 引き分け時の強制終了のためのカウント
+
+	// プレイヤー画像のハンドラ
+	int player1_h = 0;
+	int player2_h = 0;
+
+	// 引き分け時の強制終了のためのカウント
+	int drawCnt = 0;
 
 public:
 	string mode = "";
@@ -79,40 +85,42 @@ public:
 	/*===========================*/
 	//    準備処理
 	/*===========================*/
-	void prepare(int player1, int player2, bool init = true) {
+	void prepare(int pl1, int pl2 , bool init = true) {
 		if (init) initialize();
-		setPlayersGraph(player1, player2);
+		player1 = pl1;
+		player2 = pl2;
+		setPlayersGraph(pl1, pl2);
 	}
 
 	void setPlayersGraph(int pl1, int pl2) {
-		DeleteGraph(player1);
+		DeleteGraph(player1_h);
 		switch (pl1)
 		{
 		case BATTLE_PLAYER_YELLOW:
-			player1 = LoadGraph("graph/player_yellow.png");
+			player1_h = LoadGraph("graph/player_yellow.png");
 			break;
 		case BATTLE_PLAYER_PLAYER:
-			player1 = LoadGraph("graph/player_player.png");
+			player1_h = LoadGraph("graph/player_player.png");
 			break;
 		case BATTLE_PLAYER_NONE:
 		default:
 			break;
 		}
 
-		DeleteGraph(player2);
+		DeleteGraph(player2_h);
 		switch (pl2)
 		{
 		case BATTLE_PLAYER_YELLOW:
-			player2 = LoadGraph("graph/enemy_yellow.png");
+			player2_h = LoadGraph("graph/enemy_yellow.png");
 			break;
 		case BATTLE_PLAYER_RED:
-			player2 = LoadGraph("graph/enemy_red.png");
+			player2_h = LoadGraph("graph/enemy_red.png");
 			break;
 		case BATTLE_PLAYER_BLUE:
-			player2 = LoadGraph("graph/enemy_blue.png");
+			player2_h = LoadGraph("graph/enemy_blue.png");
 			break;
 		case BATTLE_PLAYER_GREEN:
-			player2 = LoadGraph("graph/enemy_green.png");
+			player2_h = LoadGraph("graph/enemy_green.png");
 			break;
 		case BATTLE_PLAYER_NONE:
 		default:
@@ -272,16 +280,16 @@ public:
 		}
 
 		if (side == 1) {
-			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
+			DrawExtendGraph(0, 100, 200, 340, player1_h, TRUE);
 			SetDrawBright(155, 155, 155);
-			DrawExtendGraph(440, 100, 640, 340, player2, TRUE);
+			DrawExtendGraph(440, 100, 640, 340, player2_h, TRUE);
 			SetDrawBright(255, 255, 255);
 		}
 		else if (side == -1) {
 			SetDrawBright(155, 155, 155);
-			DrawExtendGraph(0, 100, 200, 340, player1, TRUE);
+			DrawExtendGraph(0, 100, 200, 340, player1_h, TRUE);
 			SetDrawBright(255, 255, 255);
-			DrawExtendGraph(440, 100, 640, 340, player2, TRUE);
+			DrawExtendGraph(440, 100, 640, 340, player2_h, TRUE);
 		}
 	}
 
@@ -410,6 +418,33 @@ public:
 
 	int currentSide() {
 		return 1 - 2 * (cnt % 2);
+	}
+
+
+	/*===========================*/
+	//    Save and Load
+	/*===========================*/
+	void save(const string filename) {
+		Encrypter encrypter(filename);
+		nlohmann::json data = {
+			{"taijin", taijin},
+			{"teban", teban},
+			{"cnt", cnt},
+			{"player1", player1},
+			{"player2", player2},
+			{"board", nlohmann::json::array()},
+		};
+		for (int index = 0; index < 81; index++) {
+			data["board"][index] = board.localState(index);
+		}
+		encrypter.write(data);
+	}
+
+	void load(const string filename) {
+		Encrypter encrypter(filename);
+		nlohmann::json res = encrypter.read();
+		Logger::ss << res.dump();
+		Logger::log();
 	}
 
 
