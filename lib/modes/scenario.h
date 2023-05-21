@@ -47,8 +47,8 @@ private:
 	Button btnSave;
 	Button btnReset;
 	int strColorMenu = GetColor(255, 255, 255);
-	string save_filepath = "./data/savesc";
-	string save_game_filepath = "./data/savegs";
+	string save_filepath = "./data/savesc.dat";
+	string save_game_filepath = "./data/savegs.dat";
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"play" },
@@ -247,6 +247,10 @@ public:
 		game.setKoko();
 	}
 
+
+	/*===========================*/
+	//    Save and Load
+	/*===========================*/
 	bool hasSaveFile() {
 		ifstream file(save_filepath);
 		if (file) {
@@ -259,6 +263,63 @@ public:
 		}
 	}
 
+	void save() {
+		Encrypter encrypter(save_filepath);
+		nlohmann::json data = {
+			{"flg", flg},
+			{"onBattle", onBattle},
+			{"battle_trigger", battle_trigger},
+			{"mrk_trigger0", mrK[0].trigger},
+			{"mrk_trigger1", mrK[1].trigger},
+			{"mrk_trigger2", mrK[2].trigger},
+			{"mrk_trigger3", mrK[3].trigger},
+		};
+		encrypter.write(data);
+
+		if (onBattle) {
+			game.save(save_game_filepath);
+		}
+	}
+
+	void load(Music& music) {
+		Encrypter encrypter(save_filepath);
+		nlohmann::json res = encrypter.read();
+		Logger::ss << "Scenario loaded: " << res.dump();
+		Logger::log();
+		// TODO: ロードした後はファイル消す
+
+		initialize();
+
+		// TODO: 改ざん防止
+		int flg_saved = res["flg"];
+		Mouse mouse;
+		Key key;
+		UserInput dummy_ui = { &key, &mouse };
+		int new_flg = 0;
+		int old_flg = 0;
+		while (flg < flg_saved) {
+			old_flg = flg;
+			show(dummy_ui, music);
+			new_flg = flg;
+			if (new_flg == old_flg) goNext();
+		}
+
+		onBattle = res["onBattle"];
+		if (onBattle) {
+			game.load(save_game_filepath);
+		}
+
+		battle_trigger = res["battle_trigger"];
+		mrK[0].trigger = res["mrk_trigger0"];
+		mrK[1].trigger = res["mrk_trigger1"];
+		mrK[2].trigger = res["mrk_trigger2"];
+		mrK[3].trigger = res["mrk_trigger3"];
+	}
+
+
+	/*===========================*/
+	//    Battle Mode
+	/*===========================*/
 	void debugDump() {
 		int strColor = strColorDebug;
 
@@ -372,21 +433,10 @@ private:
 		int choice = menu.choose(ui, strColorMenu, no_keyboard);
 
 		// save
-		if (choice == 0) {
-			Encrypter encrypter;
-			nlohmann::json data = {
-				{"test", "TEST"},
-				{"hello", "WORLD"},
-			};
-			encrypter.write(data);
-		}
+		if (choice == 0) save();
 
 		//reset
 		if (choice == 0 || choice == 1) {
-			Encrypter encrypter;
-			nlohmann::json res = encrypter.read();
-			Logger::ss << res.dump();
-			Logger::log();
 			ui.reset();
 			game.reset();
 			return true;
