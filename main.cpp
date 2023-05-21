@@ -245,8 +245,8 @@ void routesTitle(int choice, int* flg, Title& title, Battle& battle) {
 		break;
 	case MENU_CHOICE_LOAD:
 		if (title.isBattleMode()) {
-			// battle.load();
-			// *flg = FLAG_BATTLE;
+			battle.load();
+			*flg = FLAG_BATTLE;
 		}
 		break;
 	}

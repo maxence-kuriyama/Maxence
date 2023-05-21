@@ -83,7 +83,7 @@ public:
 
 
 	/*===========================*/
-	//    Boolean
+	//    Save and Load
 	/*===========================*/
 	bool hasSaveFile() {
 		ifstream file(save_filepath);
@@ -95,6 +95,15 @@ public:
 			file.close();
 			return false;
 		}
+	}
+
+	void save() {
+		game.save(save_filepath);
+	}
+
+	void load() {
+		start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
+		game.load(save_filepath);
 	}
 
 
@@ -160,22 +169,6 @@ public:
 		comment.forceUpdate(COMMENT_CHANGE_TYPE_PLAY_TURN, 0.40);
 	}
 
-
-	/*===========================*/
-	//    操作関連
-	/*===========================*/
-	bool playByPlayer() {
-		if (game.isPlayTurn() && game.playTurn(*ui)) {
-			double res = game.update();
-			if (game.isUpdated(res)) {
-				updateCommentInBattle();
-				playCnt = 0;
-				return true;
-			}
-		}
-		return false;
-	}
-
 	void toggleByKey(bool debug) {
 		// コメントを消す
 		if (ui->onKeyComment()) {
@@ -193,6 +186,36 @@ public:
 				likelihoodFlg = !likelihoodFlg;
 			}
 		}
+	}
+
+
+	/*===========================*/
+	//    デバッグ情報
+	/*===========================*/
+	void debugDump() {
+		game.debugDump();
+
+		int strColor = strColorDebug;
+		// Option
+		DrawFormatString(5, 185, strColor, "playCnt: %d", playCnt);
+		DrawFormatString(5, 205, strColor, "likeliFlg: %d", likelihoodFlg);
+		DrawFormatString(5, 225, strColor, "commentFlg: %d", commentFlg);
+		// Comment
+		comment.debugDump(strColor);
+	}
+
+private:
+
+	bool playByPlayer() {
+		if (game.isPlayTurn() && game.playTurn(*ui)) {
+			double res = game.update();
+			if (game.isUpdated(res)) {
+				updateCommentInBattle();
+				playCnt = 0;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	void moveCamera() {
@@ -217,9 +240,7 @@ public:
 		int choice = menu.choose(*ui, strColor, no_keyboard);
 
 		// save
-		if (choice == 0) {
-			game.save(save_filepath);
-		}
+		if (choice == 0) save();
 
 		//reset
 		if (choice == 0 || choice == 1) {
@@ -229,21 +250,5 @@ public:
 		}
 
 		return false;
-	}
-
-
-	/*===========================*/
-	//    デバッグ情報
-	/*===========================*/
-	void debugDump() {
-		game.debugDump();
-
-		int strColor = strColorDebug;
-		// Option
-		DrawFormatString(5, 185, strColor, "playCnt: %d", playCnt);
-		DrawFormatString(5, 205, strColor, "likeliFlg: %d", likelihoodFlg);
-		DrawFormatString(5, 225, strColor, "commentFlg: %d", commentFlg);
-		// Comment
-		comment.debugDump(strColor);
 	}
 };

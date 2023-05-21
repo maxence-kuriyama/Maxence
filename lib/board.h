@@ -30,6 +30,14 @@ public:
 		}
 		nextField = -1;
 	}
+
+	void set(int states[81], int next) {
+		for (int index = 0; index < 81; index++) {
+			Coordinate c = coordinates(index);
+			local[c.global_x][c.global_y].state[c.x][c.y] = states[index];
+		}
+		nextField = next;
+	}
 	
 	void setStoneGraphs(int stone1, int stone2, int stone1_t, int stone2_t) {
 		for (int i = 0; i < 3; ++i) {

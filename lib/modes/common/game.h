@@ -129,17 +129,17 @@ public:
 	}
 
 	void setVsHuman() {
-		mode = "隣の人と";
+		mode = "vs_human";
 		taijin = VS_HUMAN;
 	}
 
 	void setVsCOM() {
-		mode = "ぼっちで";
+		mode = "vs_com";
 		taijin = VS_COM;
 	}
 
 	void setTutorial() {
-		mode = "チュートリアル";
+		mode = "tutorial";
 		taijin = VS_COM;
 		teban = TEBAN_SENKO;
 	}
@@ -424,15 +424,17 @@ public:
 	/*===========================*/
 	//    Save and Load
 	/*===========================*/
-	void save(const string filename) {
-		Encrypter encrypter(filename);
+	void save(const string filepath) {
+		Encrypter encrypter(filepath);
 		nlohmann::json data = {
 			{"taijin", taijin},
 			{"teban", teban},
 			{"cnt", cnt},
+			{"mode", mode},
 			{"player1", player1},
 			{"player2", player2},
 			{"board", nlohmann::json::array()},
+			{"next", board.nextField},
 		};
 		for (int index = 0; index < 81; index++) {
 			data["board"][index] = board.localState(index);
@@ -440,11 +442,27 @@ public:
 		encrypter.write(data);
 	}
 
-	void load(const string filename) {
-		Encrypter encrypter(filename);
+	void load(const string filepath) {
+		Encrypter encrypter(filepath);
 		nlohmann::json res = encrypter.read();
-		Logger::ss << res.dump();
+		Logger::ss << "Game loaded: " << res.dump();
 		Logger::log();
+
+		// TODO: load後はファイル消す
+
+		taijin = res["taijin"];
+		teban = res["teban"];
+		cnt = res["cnt"];
+		 mode = res["mode"];
+		player1 = res["player1"];
+		player2 = res["player2"];
+		setPlayersGraph(player1, player2);
+
+		int states[81];
+		for (int index = 0; index < 81; index++) {
+			states[index] = res["board"][index];
+		}
+		board.set(states, res["next"]);
 	}
 
 
@@ -452,7 +470,7 @@ public:
 	//    デバッグ情報
 	/*===========================*/
 	void debugDump() {
-		if (mode == "") return;
+		// if (mode != "vs_human") return;
 
 		int strColor = strColorDebug;
 		// Game

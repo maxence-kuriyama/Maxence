@@ -68,7 +68,7 @@ public:
 		DrawFormatString(365, 405, strColor, "tutoTrigger: %s", battle_trigger);
 		DrawFormatString(365, 425, strColor, "tutoAction: %d", scene.action);
 
-		game.debugDump();
+		// game.debugDump();
 	}
 
 private:
