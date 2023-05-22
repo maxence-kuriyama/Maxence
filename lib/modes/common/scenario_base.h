@@ -152,7 +152,7 @@ public:
 			break;
 		}
 
-		if (!onBattle || scene.action == SCENE_ACTION_TALK) msg.draw();
+		if (isTalking || scene.action == SCENE_ACTION_TALK) msg.draw();
 		cnt = (cnt + 1) % 10000;
 
 		return SCENE_RES_DEFAULT;

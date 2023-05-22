@@ -43,9 +43,11 @@ private:
 	int eqY = 0; // eq = earthquake
 	int imgRoom;
 	int imgCard;
+
 	Menu menu;
 	Button btnSave;
 	Button btnReset;
+
 	int strColorMenu = GetColor(255, 255, 255);
 	string music_name[2] = { "", "" };
 	string save_filepath = "./data/savesc.dat";
@@ -233,13 +235,23 @@ public:
 		// îwåiÅEêlï®ÇÃï`âÊ
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
+
+		bool is_reset = (!onBattle && !isTalking && saveOrReset(ui));
 		
 		int res = ScenarioBase::show(ui, music, debug);
 		showAdditionalAction(ui);
 		music_name[0] = music.musicName[0];
 		music_name[1] = music.musicName[1];
 
-		return (res != SCENE_RES_DEFAULT) ? res : FLAG_SCENARIO;
+		if (is_reset) {
+			return FLAG_TITLE;
+		}
+		else if (res != SCENE_RES_DEFAULT) {
+			return res;
+		}
+		else {
+			return FLAG_SCENARIO;
+		}
 	}
 
 	void setSenko() {

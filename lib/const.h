@@ -10,9 +10,9 @@
 #define TEXT2_Y		300
 #define TEXT3_X		290
 #define TEXT3_Y		360
-#define TEXT_SAVE_X			200
+#define TEXT_SAVE_X			220
 #define TEXT_SAVE_Y			440
-#define TEXT_RESET_X		320
+#define TEXT_RESET_X		340
 #define TEXT_RESET_Y		440
 
 #define FLAG_OPENING		-1
