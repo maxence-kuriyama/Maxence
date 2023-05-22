@@ -1,5 +1,7 @@
 #pragma once
 
+#include "lib/nlohmann/json.hpp"
+
 
 struct Coordinate {
 	int global_x;
@@ -48,6 +50,22 @@ public:
 
 	Coordinate last() {
 		return history[0];
+	}
+
+	nlohmann::json json() {
+		nlohmann::json result = {
+			history[0].global_x,
+			history[0].global_y,
+			history[0].x,
+			history[0].y,
+			history[0].last_field,
+		};
+		return result;
+	}
+
+	void restore(nlohmann::json data) {
+		initialize();
+		add(data[0], data[1], data[2], data[3], data[4]);
 	}
 
 private:

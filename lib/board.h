@@ -31,12 +31,25 @@ public:
 		nextField = -1;
 	}
 
-	void set(int states[81], int next) {
+	nlohmann::json json() {
+		nlohmann::json result = {
+			{"states", nlohmann::json::array()},
+			{"next", nextField},
+			{"history", history.json()},
+		};
+		for (int index = 0; index < 81; index++) {
+			result["states"][index] = localState(index);
+		}
+		return result;
+	}
+
+	void restore(nlohmann::json data) {
 		for (int index = 0; index < 81; index++) {
 			Coordinate c = coordinates(index);
-			local[c.global_x][c.global_y].state[c.x][c.y] = states[index];
+			local[c.global_x][c.global_y].state[c.x][c.y] = data["states"][index];
 		}
-		nextField = next;
+		nextField = data["next"];
+		history.restore(data["history"]);
 	}
 	
 	void setStoneGraphs(int stone1, int stone2, int stone1_t, int stone2_t) {

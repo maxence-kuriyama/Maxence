@@ -187,6 +187,9 @@
     <ClInclude Include="lib\com\loader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="lib\nlohmann\json.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Maxence.ico">

@@ -433,12 +433,8 @@ public:
 			{"mode", mode},
 			{"player1", player1},
 			{"player2", player2},
-			{"board", nlohmann::json::array()},
-			{"next", board.nextField},
+			{"board", board.json()},
 		};
-		for (int index = 0; index < 81; index++) {
-			data["board"][index] = board.localState(index);
-		}
 		encrypter.write(data);
 	}
 
@@ -453,16 +449,12 @@ public:
 		taijin = res["taijin"];
 		teban = res["teban"];
 		cnt = res["cnt"];
-		 mode = res["mode"];
+		mode = res["mode"];
 		player1 = res["player1"];
 		player2 = res["player2"];
 		setPlayersGraph(player1, player2);
 
-		int states[81];
-		for (int index = 0; index < 81; index++) {
-			states[index] = res["board"][index];
-		}
-		board.set(states, res["next"]);
+		board.restore(res["board"]);
 	}
 
 

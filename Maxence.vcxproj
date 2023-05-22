@@ -212,6 +212,7 @@
     <ClInclude Include="lib\modes\tutorial.h" />
     <ClInclude Include="lib\movie.h" />
     <ClInclude Include="lib\music.h" />
+    <ClInclude Include="lib\nlohmann\json.hpp" />
     <ClInclude Include="lib\OBJ_Loader.h" />
     <ClInclude Include="lib\sprite.h" />
     <ClInclude Include="lib\synchronizer.h" />
