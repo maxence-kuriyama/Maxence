@@ -319,7 +319,8 @@ public:
 		int old_flg = 0;
 		while (flg < flg_saved) {
 			old_flg = flg;
-			show(dummy_ui, music);
+			Scene scene = getCurrentScene();
+			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_ui, music);
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
