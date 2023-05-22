@@ -47,6 +47,7 @@ private:
 	Button btnSave;
 	Button btnReset;
 	int strColorMenu = GetColor(255, 255, 255);
+	string music_name[2] = { "", "" };
 	string save_filepath = "./data/savesc.dat";
 	string save_game_filepath = "./data/savegs.dat";
 
@@ -235,6 +236,8 @@ public:
 		
 		int res = ScenarioBase::show(ui, music, debug);
 		showAdditionalAction(ui);
+		music_name[0] = music.musicName[0];
+		music_name[1] = music.musicName[1];
 
 		return (res != SCENE_RES_DEFAULT) ? res : FLAG_SCENARIO;
 	}
@@ -273,6 +276,8 @@ public:
 			{"mrk_trigger1", mrK[1].trigger},
 			{"mrk_trigger2", mrK[2].trigger},
 			{"mrk_trigger3", mrK[3].trigger},
+			{"music_name0", music_name[0]},
+			{"music_name1", music_name[1]},
 		};
 		encrypter.write(data);
 
@@ -291,7 +296,22 @@ public:
 		initialize();
 
 		// TODO: ‰ü‚´‚ñ–hŽ~
-		int flg_saved = res["flg"];
+		loadScenario(res["flg"], music);
+
+		onBattle = res["onBattle"];
+		if (onBattle) {
+			game.load(save_game_filepath);
+		}
+
+		loadMusic(music, res);
+		battle_trigger = res["battle_trigger"];
+		mrK[0].trigger = res["mrk_trigger0"];
+		mrK[1].trigger = res["mrk_trigger1"];
+		mrK[2].trigger = res["mrk_trigger2"];
+		mrK[3].trigger = res["mrk_trigger3"];
+	}
+
+	void loadScenario(int flg_saved, Music& music) {
 		Mouse mouse;
 		Key key;
 		UserInput dummy_ui = { &key, &mouse };
@@ -303,17 +323,15 @@ public:
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
+	}
 
-		onBattle = res["onBattle"];
-		if (onBattle) {
-			game.load(save_game_filepath);
-		}
-
-		battle_trigger = res["battle_trigger"];
-		mrK[0].trigger = res["mrk_trigger0"];
-		mrK[1].trigger = res["mrk_trigger1"];
-		mrK[2].trigger = res["mrk_trigger2"];
-		mrK[3].trigger = res["mrk_trigger3"];
+	void loadMusic(Music& music, nlohmann::json res) {
+		music_name[0] = res["music_name0"];
+		music_name[1] = res["music_name1"];
+		music.unloadAll();
+		music.load(music_name[0].c_str(), 0);
+		music.load(music_name[1].c_str(), 0);
+		music.play();
 	}
 
 

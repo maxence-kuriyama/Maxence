@@ -15,7 +15,6 @@ const string MUSIC_LOAD_MSG_ASYNC_BASE("Loading");
 class Music {
 private:
 	int handle[2] = { -1, -1 };			// 再生する音楽と待機中の音楽のハンドル
-	string musicName[2] = { "", "" };	// それぞれのメモリに読み込まれたファイル名
 	int cnt = 0;						// ローディングメッセージ用のカウンタ
 	int loadMsgX = 540;
 	int loadMsgY = 0;
@@ -25,6 +24,7 @@ private:
 	int strColorDebug = GetColor(0, 250, 250);
 
 public:
+	string musicName[2] = { "", "" };	// それぞれのメモリに読み込まれたファイル名
 
 	~Music() {
 		unloadAll();
