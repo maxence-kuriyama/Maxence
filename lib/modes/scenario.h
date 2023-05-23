@@ -5,6 +5,8 @@
 
 
 const int SCENE_ACTION_EQ(11);
+const int SCENE_ACTION_WAIT(12);
+
 const int SCENE_WHO_CARD(11);
 
 // シナリオ管理用クラス
@@ -58,7 +60,6 @@ private:
 		{ SCENE_ACTION_MUSIC,	SCENE_WHO_DESC,		"unload" },
 		{ SCENE_ACTION_LOAD,	SCENE_WHO_DESC,		"sound/bgm04.ogg" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"――世界は１つの部屋で出来ている" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"10" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_CARD,		"exibit_nowait" },
@@ -66,10 +67,8 @@ private:
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"card" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"「Mr.Kが世界を滅ぼす」" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_DEER,		"hide_nowait" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_GRAPH,	SCENE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_YELLOW,	"なにっ！？" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
 //		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"Mr.K: あれ、Mr.Kが居ないぞ、何なんだ！" },
 		{ SCENE_ACTION_COCK,	SCENE_WHO_DESC,		"talk_all" },
 		{ SCENE_ACTION_MOVE,	SCENE_WHO_DESC,		"20" },
@@ -91,7 +90,7 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"だが、俺が死ねば世界の崩壊が止まるというのなら" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_RED,		"俺の死にも意味を持たせられるというものじゃないか……" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_RED,		"hide" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+		{ SCENE_ACTION_WAIT,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide_nowait" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
@@ -110,7 +109,7 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"残ったお前にもいつか見える時が来るだろう……" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_GREEN,	"先に逝っているよ" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_GREEN,	"hide" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+		{ SCENE_ACTION_WAIT,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"exibit_nowait" },
@@ -131,7 +130,7 @@ private:
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"生きていたこと自体が大きなチャンスだったのか……" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_BLUE,		"しまったな" },
 		{ SCENE_ACTION_EXIBIT,	SCENE_WHO_BLUE,		"hide" },
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"clear" },
+		{ SCENE_ACTION_WAIT,	SCENE_WHO_DESC,		"" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"true" },
 		{ SCENE_ACTION_EQ,		SCENE_WHO_DESC,		"false" },
 		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"" },
@@ -307,7 +306,7 @@ public:
 
 		initialize();
 
-		// TODO: 改ざん防止
+		loadMusic(music, res);
 		loadScenario(res["flg"], music);
 
 		onBattle = res["onBattle"];
@@ -315,7 +314,6 @@ public:
 			game.load(save_game_filepath);
 		}
 
-		loadMusic(music, res);
 		battle_trigger = res["battle_trigger"];
 		mrK[0].trigger = res["mrk_trigger0"];
 		mrK[1].trigger = res["mrk_trigger1"];
@@ -336,6 +334,8 @@ public:
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
+		hasMsg = false;
+		isTalking = false;
 	}
 
 	void loadMusic(Music& music, nlohmann::json res) {
@@ -344,6 +344,7 @@ public:
 		music.unloadAll();
 		music.load(music_name[0].c_str(), 0);
 		music.load(music_name[1].c_str(), 0);
+		music.enableSwap();
 		music.play();
 	}
 
@@ -370,6 +371,8 @@ private:
 		case SCENE_ACTION_EQ:
 			performEQ(scene.how, *ui.mouse);
 			break;
+		case SCENE_ACTION_WAIT:
+			waitClick(*ui.mouse);
 		default:
 			break;
 		}

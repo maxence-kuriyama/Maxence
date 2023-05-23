@@ -245,5 +245,4 @@ public:
 	void talkReset() {
 		sayCnt = 0;
 	}
-
 };

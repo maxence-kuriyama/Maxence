@@ -242,6 +242,8 @@ protected:
 			talkMrK(who, how, mouse);
 		}
 		else {
+			if (isTriggered()) goNext();
+
 			if (key != MRK_KEY_NONE) {
 				mrK[0].turn(key);
 				mrK[0].move();
@@ -249,8 +251,8 @@ protected:
 			if (onOk || mouse.click()) {
 				int who = checkMrK();
 				talkResetMrK(who);
+				talkMrK(who, how, mouse);
 			}
-			if (isTriggered()) goNext();
 		}
 	}
 
