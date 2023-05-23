@@ -302,7 +302,6 @@ public:
 		nlohmann::json res = encrypter.read();
 		Logger::ss << "Scenario loaded: " << res.dump();
 		Logger::log();
-		// TODO: ロードした後はファイル消す
 
 		initialize();
 
@@ -319,6 +318,8 @@ public:
 		mrK[1].trigger = res["mrk_trigger1"];
 		mrK[2].trigger = res["mrk_trigger2"];
 		mrK[3].trigger = res["mrk_trigger3"];
+
+		remove(save_filepath.c_str());
 	}
 
 	void loadScenario(int flg_saved, Music& music) {

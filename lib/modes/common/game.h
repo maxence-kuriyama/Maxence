@@ -444,8 +444,6 @@ public:
 		Logger::ss << "Game loaded: " << res.dump();
 		Logger::log();
 
-		// TODO: loadŒã‚Íƒtƒ@ƒCƒ‹Á‚·
-
 		taijin = res["taijin"];
 		teban = res["teban"];
 		cnt = res["cnt"];
@@ -455,6 +453,8 @@ public:
 		setPlayersGraph(player1, player2);
 
 		board.restore(res["board"]);
+
+		remove(filepath.c_str());
 	}
 
 
