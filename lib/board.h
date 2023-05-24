@@ -48,6 +48,11 @@ public:
 			Coordinate c = coordinates(index);
 			local[c.global_x][c.global_y].state[c.x][c.y] = data["states"][index];
 		}
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				global.state[i][j] = local[i][j].victory();
+			}
+		}
 		nextField = data["next"];
 		history.restore(data["history"]);
 	}
