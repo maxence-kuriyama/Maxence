@@ -54,18 +54,36 @@ public:
 
 	nlohmann::json json() {
 		nlohmann::json result = {
-			history[0].global_x,
-			history[0].global_y,
-			history[0].x,
-			history[0].y,
-			history[0].last_field,
+			{"history",
+				{
+					{
+						history[0].global_x,
+						history[0].global_y,
+						history[0].x,
+						history[0].y,
+						history[0].last_field,
+					},
+					{
+						history[1].global_x,
+						history[1].global_y,
+						history[1].x,
+						history[1].y,
+						history[1].last_field,
+					},
+				}
+			},
+			{"cancelCnt", cancelCnt},
 		};
 		return result;
 	}
 
 	void restore(nlohmann::json data) {
 		initialize();
-		add(data[0], data[1], data[2], data[3], data[4]);
+		int cnt = data["cancelCnt"];
+		for (int i = cnt - 1; i >= 0; i--) {
+			nlohmann::json hist_data = data["history"][i];
+			add(hist_data[0], hist_data[1], hist_data[2], hist_data[3], hist_data[4]);
+		}
 	}
 
 private:
