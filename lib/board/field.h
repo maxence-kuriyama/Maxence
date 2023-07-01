@@ -88,22 +88,32 @@ public:
 	// ƒŠ[ƒ`‚ÌŒÂ”
 	int waitingCount(int side) {
 		int count = 0;
-		for (int k = 0; k < 3; k++) {
-			int col[3] = { state[0][k], state[1][k], state[2][k] };
-			count += isWaiting(col, side);
+		for (int index = 0; index < 8; index++) {
+			count += isWaiting(index, side);
 		}
-		for (int k = 0; k < 3; k++) {
-			int row[3] = { state[k][0], state[k][1], state[k][2] };
-			count += isWaiting(row, side);
-		}
-
-		int slash1[3] = { state[0][0], state[1][1], state[2][2] };
-		count += isWaiting(slash1, side);
-
-		int slash2[3] = { state[2][0], state[1][1], state[0][2] };
-		count += isWaiting(slash2, side);
-
 		return count;
+	}
+
+	int isWaiting(int index, int side) {
+		if (index < 3) {
+			int k = index;
+			int col[3] = { state[0][k], state[1][k], state[2][k] };
+			return isWaiting(col, side);
+		}
+		else if (index < 6) {
+			int k = index - 3;
+			int row[3] = { state[k][0], state[k][1], state[k][2] };
+			return isWaiting(row, side);
+		}
+		else if (index == 6) {
+			int slash1[3] = { state[0][0], state[1][1], state[2][2] };
+			return isWaiting(slash1, side);
+		}
+		else if (index == 7) {
+			int slash2[3] = { state[2][0], state[1][1], state[0][2] };
+			return isWaiting(slash2, side);
+		}
+		return 0;
 	}
 
 	int isWaiting(int src[3], int side) {

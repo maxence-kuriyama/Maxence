@@ -97,12 +97,20 @@ public:
 		return global.state[x][y];
 	}
 
+	int globalState(int g_index) {
+		return globalState(g_index / 3, g_index % 3);
+	}
+
 	int victory() {
 		return global.victory();
 	}
 
 	int globalWaiting(int side) {
 		return global.waitingCount(side);
+	}
+
+	int isWaitingGlobal(int gw_index, int side) {
+		return global.isWaiting(gw_index, side);
 	}
 
 	int localState(int global_x, int global_y, int x, int y) {
@@ -130,6 +138,12 @@ public:
 
 	int localWaiting(int x, int y, int side) {
 		return local[x][y].waitingCount(side);
+	}
+
+	int isWaitingLocal(int g_index, int lw_index, int side) {
+		int x = g_index / 3;
+		int y = g_index % 3;
+		return local[x][y].isWaiting(lw_index, side);
 	}
 
 	int emptyCount() {

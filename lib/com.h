@@ -3,14 +3,15 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "lib/vect.h"
+#include "lib/const.h"
 #include "lib/com/minmax.h"
 #include "lib/com/loader.h"
 
 using namespace Eigen;
 
-const float SOFTMAX_ALPHA(2.1); // softmaxの係数
-								// TODO: 完全ランダムやめろ
+const float SOFTMAX_ALPHA(5.0);  // softmaxの係数
 const float ANNEALING_RATE(1.0); // epsilon-greedyの割合
+const int LAYER_DEPTH(4);
 
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
 // 単体での使用を想定（Gameオブジェクトから呼び出すべきか？）
@@ -18,7 +19,6 @@ class COM {
 private:
 	int cnt = 0;
 	int wait = 20;						//COMが手を打つまでのウェイト
-	double eps = 0.002;					//学習定数
 	double mom = 0.9;
 	double varc = 0.999;				// adamのパラメータ
 	double annealRate = 1.0;				
@@ -26,8 +26,10 @@ private:
 	::Affine Q1;
 	::Affine Q2;
 	::Affine Q3;
+	::Affine Q4;
 	ActLayer R1;
 	ActLayer R2;
+	ActLayer R3;
 	VectorXd output;
 	Machine critic;
 	Loader loader;
@@ -41,8 +43,7 @@ public:
 	double max_val = 0.0;
 
 	//学習機械関連
-	int lay_len = 3;
-	int lay_size[4] = { 162, 800, 400, 81 };
+	int lay_size[LAYER_DEPTH + 1] = { MACHINE_INPUT_SIZE, 1200, 400, 160, MACHINE_OUTPUT_SIZE };
 	double reward2 = 0.0;
 	double rwd_tmp = 0.0;
 
@@ -54,30 +55,37 @@ public:
 		MatrixXd P2 = MatrixXd::Random(lay_size[1], lay_size[2]) * sqrt(0.1 / lay_size[1]);
 		VectorXd B2 = VectorXd::Random(lay_size[2]) * 0.1;
 		MatrixXd P3 = MatrixXd::Random(lay_size[2], lay_size[3]) * sqrt(0.1 / lay_size[2]);
-		VectorXd B3 = VectorXd::Random(lay_size[3]) * 0.05;
+		VectorXd B3 = VectorXd::Random(lay_size[3]) * 0.1;
+		MatrixXd P4 = MatrixXd::Random(lay_size[3], lay_size[4]) * sqrt(0.1 / lay_size[3]);
+		VectorXd B4 = VectorXd::Random(lay_size[4]) * 0.05;
 		Q1.setParam(P1, B1);
 		Q1.setCoef(mom, varc);
 		Q2.setParam(P2, B2);
 		Q2.setCoef(mom, varc);
 		Q3.setParam(P3, B3);
 		Q3.setCoef(mom, varc);
+		Q4.setParam(P4, B4);
+		Q4.setCoef(mom, varc);
 		R1.setMode("relu");
 		R2.setMode("relu");
-		critic.set(5, IdentityV, eps, "adam");
+		R3.setMode("relu");
+		critic.set(7, IdentityV, 0.0, "adam");
 		critic.setLayer(Q1, 0);
 		critic.setLayer(R1, 1);
 		critic.setLayer(Q2, 2);
 		critic.setLayer(R2, 3);
 		critic.setLayer(Q3, 4);
-		output = VectorXd::Zero(lay_size[3]);
+		critic.setLayer(R3, 5);
+		critic.setLayer(Q4, 6);
+		output = VectorXd::Zero(MACHINE_OUTPUT_SIZE);
 		load();
 	}
 
 	~COM() {}
 
 	void load() {
-		::Affine* layers[3] = { &Q1, &Q2, &Q3 };
-		loader.read(lay_len, lay_size, layers);
+		::Affine* layers[LAYER_DEPTH] = { &Q1, &Q2, &Q3, &Q4 };
+		loader.read(LAYER_DEPTH, lay_size, layers);
 	}
 
 	void setWait() {

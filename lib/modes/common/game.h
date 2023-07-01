@@ -392,19 +392,43 @@ public:
 	/*===========================*/
 	//    盤面情報
 	/*===========================*/
-	Eigen::VectorXd stateToInput(int side = 0, int dim = 162) {
+	Eigen::VectorXd stateToInput(int side = 0) {
 		if (side == 0) side = currentSide();
+		int shift = 0;
 
-		Eigen::VectorXd trg(dim);
+		Eigen::VectorXd trg(MACHINE_INPUT_SIZE);
+
+		// 盤面情報を入力とする
 		for (int index = 0; index < 81; index++) {
 			trg(index) = board.localState(index) * side;
-			if (board.canPut(index)) {
-				trg(index + 81) = 1.0;
-			}
-			else {
-				trg(index + 81) = -1.0;
+		}
+
+		// 配置可能な場所のデータも入力に入れる
+		shift = 81;
+		for (int index = 0; index < 81; index++) {
+			trg(index + shift) = (board.canPut(index) ? 1.0 : -1.0);
+		}
+
+		// 大域状況を入れる
+		shift = 81 + 81;
+		for (int g_index = 0; g_index < 9; g_index++) {
+			trg(g_index + shift) = board.globalState(g_index);
+		}
+		shift = 81 + 81 + 9;
+		for (int gw_index = 0; gw_index < 8; gw_index++) {
+			trg(gw_index + shift) = board.isWaitingGlobal(gw_index, side);
+			trg(gw_index + shift + 8) = board.isWaitingGlobal(gw_index, -side);
+		}
+
+		// 局所のリーチ状況も入れる
+		for (int g_index = 0; g_index < 9; g_index++) {
+			shift = 81 + 81 + 9 + 8 + 8 + g_index * 8;
+			for (int lw_index = 0; lw_index < 8; lw_index++) {
+				trg(lw_index + shift) = board.isWaitingLocal(g_index, lw_index, side);
+				trg(lw_index + shift + 9 * 8) = board.isWaitingLocal(g_index, lw_index, -side);
 			}
 		}
+
 		return trg;
 	}
 
