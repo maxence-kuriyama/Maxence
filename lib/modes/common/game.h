@@ -412,9 +412,11 @@ public:
 		// ‘åˆæó‹µ‚ğ“ü‚ê‚é
 		shift = 81 + 81;
 		for (int g_index = 0; g_index < 9; g_index++) {
-			trg(g_index + shift) = board.globalState(g_index);
+			int g_state = board.globalState(g_index);
+			trg(g_index + shift) = (g_state != VICTORY_DRAW ? g_state * side : 0.0);
+			trg(g_index + shift + 9) = (g_state != VICTORY_NONE ? 1.0 : -1.0);
 		}
-		shift = 81 + 81 + 9;
+		shift = 81 + 81 + 9 + 9;
 		for (int gw_index = 0; gw_index < 8; gw_index++) {
 			trg(gw_index + shift) = board.isWaitingGlobal(gw_index, side);
 			trg(gw_index + shift + 8) = board.isWaitingGlobal(gw_index, -side);
@@ -422,7 +424,7 @@ public:
 
 		// ‹ÇŠ‚ÌƒŠ[ƒ`ó‹µ‚à“ü‚ê‚é
 		for (int g_index = 0; g_index < 9; g_index++) {
-			shift = 81 + 81 + 9 + 8 + 8 + g_index * 8;
+			shift = 81 + 81 + 9 + 9 + 8 + 8 + g_index * 8;
 			for (int lw_index = 0; lw_index < 8; lw_index++) {
 				trg(lw_index + shift) = board.isWaitingLocal(g_index, lw_index, side);
 				trg(lw_index + shift + 9 * 8) = board.isWaitingLocal(g_index, lw_index, -side);
