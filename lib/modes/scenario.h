@@ -230,14 +230,14 @@ public:
 		mrK[0].turn(MRK_KEY_DOWN);
 	}
 
-	int show(UserInput& ui, Music& music, bool debug = false) {
+	int show(UserInput& ui, COM& com, Music& music, bool debug = false) {
 		// îwåiÅEêlï®ÇÃï`âÊ
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
 		bool is_reset = (!onBattle && !isTalking && saveOrReset(ui));
 		
-		int res = ScenarioBase::show(ui, music, debug);
+		int res = ScenarioBase::show(ui, com, music, debug);
 		showAdditionalAction(ui);
 		music_name[0] = music.musicName[0];
 		music_name[1] = music.musicName[1];
@@ -326,12 +326,13 @@ public:
 		Mouse mouse;
 		Key key;
 		UserInput dummy_ui = { &key, &mouse };
+		COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
 		while (flg < flg_saved) {
 			old_flg = flg;
 			Scene scene = getCurrentScene();
-			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_ui, music);
+			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_ui, dummy_com, music);
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
@@ -420,8 +421,8 @@ private:
 	}
 
 	// override
-	int doBattle(UserInput& ui, bool debug) {
-		ScenarioBase::doBattle(ui, debug);
+	int doBattle(UserInput& ui, COM& com, bool debug) {
+		ScenarioBase::doBattle(ui, com, debug);
 
 		if (saveOrReset(ui)) {
 			initializeBattle();
@@ -434,21 +435,17 @@ private:
 		return FLAG_SCENARIO;
 	}
 
-	// override
-	bool playTurn(UserInput& ui) {
-		if (game.isPlayTurn()) {
-			return playByPlayer(ui);
-		}
-		else {
-			return playByCom();
-		}
-	}
+	// TODO: getCurrentScene()Ç…âûÇ∂ÇƒégÇ§COMÇïœÇ¶ÇÈÇ±Ç∆
+	// com.playÇÃíÜÇ≈ïœÇ¶ÇÈÇ◊Ç´Ç©ÅH
+	bool playByCom(COM& com) {
+		// MinMaxNode node(game.board, game.currentSide());
+		// int depth = 2;
+		// int index = node.search(depth);
+		// Coordinate choice = Board::coordinates(index);
 
-	bool playByCom() {
-		MinMaxNode node(game.board, game.currentSide());
-		int depth = 2;
-		int index = node.search(depth);
-		Coordinate choice = Board::coordinates(index);
+		VectorXd input = game.stateToInput();
+		com.play(input, game.board, game.currentSide());
+		Coordinate choice = com.choice;
 
 		double res = game.update(choice);
 		return game.isUpdated(res);

@@ -42,7 +42,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetOutApplicationLogValidFlag(FALSE);
 	ChangeWindowMode(TRUE);
 	SetAlwaysRunFlag(TRUE);
-	SetMainWindowText("Maxence 0.5.1");
+	SetMainWindowText("Maxence 0.5.2");
 	SetWindowIconID(101);
 	if (DxLib_Init() == -1) {
 		return -1;
@@ -165,7 +165,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			flg = res;
 		}
 		else if (flg == FLAG_ENDING) {
-			bgm.load("sound/bgm09.mp3");
+			bgm.load("sound/bgm09.ogg");
 			SetBackgroundColor(0, 0, 0);
 			ending.drawGameBoard(battle.game);
 			logo.draw();
@@ -174,7 +174,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_SCENARIO) {
 			SetBackgroundColor(0, 0, 0);
 			if (!bgm.drawLoadMsg()) {
-				int res = scenario.show(ui, bgm, debug_flg);
+				int res = scenario.show(ui, com, bgm, debug_flg);
 				if (res == FLAG_TITLE) {
 					bgm.unloadAll();
 					goTitle(&flg, title);

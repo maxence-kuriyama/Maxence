@@ -106,6 +106,11 @@ public:
 	}
 
 	int show(UserInput& ui, Music& music, bool debug = false) {
+		COM dummy_com(false);
+		return show(ui, dummy_com, music, debug);
+	}
+
+	int show(UserInput& ui, COM& com, Music& music, bool debug = false) {
 		getKey(*ui.key);
 		Mouse mouse = *ui.mouse;
 
@@ -146,7 +151,7 @@ public:
 			setBattle(scene.how);
 			break;
 		case SCENE_ACTION_PLAY:
-			return doBattle(ui, debug);
+			return doBattle(ui, com, debug);
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -401,10 +406,10 @@ protected:
 		game.drawAfterPlay();
 	}
 
-	virtual int doBattle(UserInput& ui, bool debug = false) {
+	virtual int doBattle(UserInput& ui, COM& com, bool debug = false) {
 		game.drawBeforePlay();
 
-		if (playTurn(ui)) {
+		if (playTurn(ui, com)) {
 			if (battle_trigger == "play_once") {
 				battle_trigger = "fired";
 			}
@@ -422,12 +427,12 @@ protected:
 		return FLAG_TITLE;
 	}
 
-	virtual bool playTurn(UserInput& ui) {
+	virtual bool playTurn(UserInput& ui, COM& com) {
 		if (game.isPlayTurn()) {
 			return playByPlayer(ui);
 		}
 		else {
-			return playByCom();
+			return playByCom(com);
 		}
 	}
 
@@ -438,7 +443,7 @@ protected:
 		return game.isUpdated(res);
 	}
 
-	bool playByCom() {
+	bool playByCom(COM& com) {
 		MinMaxNode node(game.board, game.currentSide());
 		int depth = 1;
 		int index = node.search(depth);

@@ -47,8 +47,13 @@ public:
 	double reward2 = 0.0;
 	double rwd_tmp = 0.0;
 
+	COM(bool init = true) {
+		if (init) initialize();
+	}
 
-	COM() {
+	~COM() {}
+
+	void initialize() {
 		// MLP‚Ì‰Šú‰»
 		MatrixXd P1 = MatrixXd::Random(lay_size[0], lay_size[1]) * sqrt(0.1 / lay_size[0]);
 		VectorXd B1 = VectorXd::Random(lay_size[1]) * 0.1;
@@ -80,8 +85,6 @@ public:
 		output = VectorXd::Zero(MACHINE_OUTPUT_SIZE);
 		load();
 	}
-
-	~COM() {}
 
 	void load() {
 		::Affine* layers[LAYER_DEPTH] = { &Q1, &Q2, &Q3, &Q4 };
@@ -129,18 +132,26 @@ public:
 		max_val = output.maxCoeff(&max_id);
 	}
 
-	void play(VectorXd input) {
-		predict(input);
-		// wait‚ğÁ‰»‚µ‚½‚çè‚ğ‘I‘ğ‚·‚é
-		if (cnt <= 0) {
-			if (unif(mt) < annealRate) {
-				chooseRandom();
-			}
-			else {
-				chooseMax();
-			}
-		}
+	void play(VectorXd input, const Board board, int side) {
 		cnt--;
+		if (cnt > 0) return;
+
+		MinMaxNode node(board, side);
+		int depth = 3;
+		int index = node.search(depth);
+		if (node.value > 0.75) {
+			choice = Board::coordinates(index);
+			annealed = 0;
+			return;
+		}
+
+		predict(input);
+		if (unif(mt) < annealRate) {
+			chooseRandom();
+		}
+		else {
+			chooseMax();
+		}
 	}
 
 	void playMinMax(const Board board, int side) {

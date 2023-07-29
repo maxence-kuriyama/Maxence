@@ -128,7 +128,7 @@ public:
 
 		// COM‚ÌŽè”Ô
 		if (!game.isPlayTurn()) {
-			com.play(input);
+			com.play(input, game.board, game.currentSide());
 			//com.playMinMax(game.board, game.currentSide());
 			game.update(com.choice);
 		}

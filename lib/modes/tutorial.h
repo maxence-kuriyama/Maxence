@@ -87,8 +87,8 @@ private:
 	}
 
 	// override
-	int doBattle(UserInput& ui, bool debug) {
-		ScenarioBase::doBattle(ui);
+	int doBattle(UserInput& ui, COM& com, bool debug) {
+		ScenarioBase::doBattle(ui, com);
 
 		if (reset(ui)) return FLAG_TITLE;
 
