@@ -134,7 +134,7 @@ public:
 		}
 
 		game.drawAfterPlay();
-		drawMessage();
+		// drawMessage();
 		drawComment();
 		cutin.update();
 

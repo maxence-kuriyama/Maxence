@@ -97,7 +97,7 @@ public:
 		switch (pl1)
 		{
 		case BATTLE_PLAYER_YELLOW:
-			player1_h = LoadGraph("graph/player_yellow.png");
+			player1_h = LoadGraph("graph/pose4.png");
 			break;
 		case BATTLE_PLAYER_PLAYER:
 			player1_h = LoadGraph("graph/player_player.png");
@@ -111,7 +111,7 @@ public:
 		switch (pl2)
 		{
 		case BATTLE_PLAYER_YELLOW:
-			player2_h = LoadGraph("graph/enemy_yellow.png");
+			player2_h = LoadGraph("graph/pose2.png");
 			break;
 		case BATTLE_PLAYER_RED:
 			player2_h = LoadGraph("graph/enemy_red.png");
@@ -283,6 +283,9 @@ public:
 			DrawExtendGraph(0, 100, 200, 340, player1_h, TRUE);
 			SetDrawBright(155, 155, 155);
 			DrawExtendGraph(440, 100, 640, 340, player2_h, TRUE);
+			DrawExtendGraph(400, 90, 600, 330, player2_h, TRUE);
+			DrawExtendGraph(480, 110, 680, 350, player2_h, TRUE);
+			DrawExtendGraph(430, 150, 630, 390, player2_h, TRUE);
 			SetDrawBright(255, 255, 255);
 		}
 		else if (side == -1) {

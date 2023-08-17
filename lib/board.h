@@ -28,6 +28,14 @@ public:
 				local[i][j].initialize();
 			}
 		}
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				local[i][j].state[i][j] = 1;
+				local[i][j].state[1][1] = 1;
+				local[1][1].state[i][j] = 1;
+			}
+		}
+		global.state[1][1] = 1;
 		nextField = -1;
 	}
 

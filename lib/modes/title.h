@@ -47,7 +47,6 @@ public:
 	int show(UserInput& ui) {
 		showFireFlower();
 		showTitleLogo();
-		return MENU_CHOICE_NONE;
 		return choose(ui);
 	}
 
