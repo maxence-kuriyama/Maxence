@@ -2,7 +2,7 @@
 
 #define FPS			60
 #define DEBUG		1
-#define FIRE_FLOWER_NUM		3
+#define FIRE_FLOWER_NUM		5
 
 #define TEXT1_X		220
 #define TEXT1_Y		300
