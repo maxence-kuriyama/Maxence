@@ -226,7 +226,7 @@ public:
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "’†’f");
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "ƒ^ƒCƒgƒ‹");
 		menu.set(btnSave, btnReset);
-		mrK[0].set(170, 30);
+		mrK[0].set(130, 30);
 		mrK[0].turn(MRK_KEY_DOWN);
 	}
 
