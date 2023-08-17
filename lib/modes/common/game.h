@@ -44,6 +44,9 @@ private:
 	// プレイヤー画像のハンドラ
 	int player1_h = 0;
 	int player2_h = 0;
+	int player3_h = 0;
+	int player4_h = 0;
+	int player5_h = 0;
 
 	// 引き分け時の強制終了のためのカウント
 	int drawCnt = 0;
@@ -97,7 +100,10 @@ public:
 		switch (pl1)
 		{
 		case BATTLE_PLAYER_YELLOW:
-			player1_h = LoadGraph("graph/pose4.png");
+			player1_h = LoadGraph("graph/player_yellow.png");
+			player3_h = LoadGraph("graph/player_red.png");
+			player4_h = LoadGraph("graph/player_blue.png");
+			player5_h = LoadGraph("graph/player_green.png");
 			break;
 		case BATTLE_PLAYER_PLAYER:
 			player1_h = LoadGraph("graph/player_player.png");
@@ -111,7 +117,7 @@ public:
 		switch (pl2)
 		{
 		case BATTLE_PLAYER_YELLOW:
-			player2_h = LoadGraph("graph/pose2.png");
+			player2_h = LoadGraph("graph/enemy_deer.png");
 			break;
 		case BATTLE_PLAYER_RED:
 			player2_h = LoadGraph("graph/enemy_red.png");
@@ -280,12 +286,12 @@ public:
 		}
 
 		if (side == 1) {
-			DrawExtendGraph(0, 100, 200, 340, player1_h, TRUE);
-			SetDrawBright(155, 155, 155);
-			DrawExtendGraph(440, 100, 640, 340, player2_h, TRUE);
-			DrawExtendGraph(400, 90, 600, 330, player2_h, TRUE);
-			DrawExtendGraph(480, 110, 680, 350, player2_h, TRUE);
-			DrawExtendGraph(430, 150, 630, 390, player2_h, TRUE);
+			DrawExtendGraph(20, 60, 260, 300, player4_h, TRUE);
+			DrawExtendGraph(-40, 70, 140, 310, player5_h, TRUE);
+			DrawExtendGraph(50, 140, 250, 380, player3_h, TRUE);
+			DrawExtendGraph(-40, 170, 160, 410, player1_h, TRUE);
+			// SetDrawBright(155, 155, 155);
+			DrawExtendGraph(380, 180, 700, 360, player2_h, TRUE);
 			SetDrawBright(255, 255, 255);
 		}
 		else if (side == -1) {

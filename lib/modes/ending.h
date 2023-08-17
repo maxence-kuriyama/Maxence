@@ -297,7 +297,7 @@ void init_ending_text(string* job, string* who) {
 	who[13] = "Densuke Shiraishi";
 	job[14] = "スペシャル\n サンクス";
 	who[14] = "Maxence";
-	job[15] = "And YOU";
-	who[15] = "Thank you\n for playing!!";
+	job[15] = "And You";
+	who[15] = "";
 
 }
