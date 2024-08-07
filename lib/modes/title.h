@@ -110,6 +110,8 @@ private:
 			return MENU_CHOICE_VS_HUMAN;
 		case 2:
 			return MENU_CHOICE_TUTORIAL;
+		case 3:
+			return MENU_CHOICE_MUSIC_ROOM;
 		default:
 			return MENU_CHOICE_NONE;
 		}

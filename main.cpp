@@ -29,9 +29,10 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-void routesTitle(int choice, int* flg, Title& title, Battle& battle);
-void routesTitle(int choice, int* flg, Title& title, Scenario& scenario, Music& music);
-void routesTitle(int choice, int* flg, Title& title, Tutorial& tutorial);
+void routesBattle(int choice, int* flg, Title& title, Battle& battle);
+void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Music& music);
+void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial);
+void routesMusicRoom(int choice, int* flg, Title& title);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
 void goTitle(int* flg, Title& title);
 void goResult(int* flg);
@@ -119,9 +120,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			bgm.load("sound/bgm03.ogg"); // シナリオ用
 			bgm.load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show(ui);
-			routesTitle(choice, &flg, title, battle);
-			routesTitle(choice, &flg, title, scenario, bgm);
-			routesTitle(choice, &flg, title, tutorial);
+			routesBattle(choice, &flg, title, battle);
+			routesScenario(choice, &flg, title, scenario, bgm);
+			routesTutorial(choice, &flg, title, tutorial);
+			routesMusicRoom(choice, &flg, title);
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
@@ -206,7 +208,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return 0;
 }
 
-void routesTitle(int choice, int* flg, Title& title, Battle& battle) {
+void routesBattle(int choice, int* flg, Title& title, Battle& battle) {
 	switch (choice) {
 	case MENU_CHOICE_VS_HUMAN:
 		if (!battle.hasSaveFile()) {
@@ -229,7 +231,7 @@ void routesTitle(int choice, int* flg, Title& title, Battle& battle) {
 	}
 }
 
-void routesTitle(int choice, int* flg, Title& title, Scenario& scenario, Music& music) {
+void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Music& music) {
 	switch (choice) {
 	case MENU_CHOICE_VS_COM:
 		if (!scenario.hasSaveFile()) {
@@ -252,11 +254,20 @@ void routesTitle(int choice, int* flg, Title& title, Scenario& scenario, Music& 
 	}
 }
 
-void routesTitle(int choice, int* flg, Title& title, Tutorial& tutorial) {
+void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial) {
 	switch (choice) {
 	case MENU_CHOICE_TUTORIAL:
 		*flg = FLAG_TUTORIAL;
 		tutorial.initialize();
+		break;
+	}
+}
+
+void routesMusicRoom(int choice, int* flg, Title& title) {
+	switch (choice) {
+	case MENU_CHOICE_MUSIC_ROOM:
+		*flg = FLAG_MUSIC_ROOM;
+		//tutorial.initialize();
 		break;
 	}
 }

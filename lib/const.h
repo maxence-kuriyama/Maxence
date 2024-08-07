@@ -25,6 +25,7 @@
 #define FLAG_SCENARIO		-6
 #define FLAG_ENDING			-4
 #define FLAG_TUTORIAL		-2
+#define FLAG_MUSIC_ROOM		-8
 
 #define RWD_VICTORY			1.0
 #define RWD_DOMINANT		1.0
@@ -57,6 +58,7 @@
 #define MENU_CHOICE_VS_HUMAN		10
 #define MENU_CHOICE_VS_COM			11
 #define MENU_CHOICE_TUTORIAL		12
+#define MENU_CHOICE_MUSIC_ROOM		13
 #define MENU_CHOICE_START			20
 #define MENU_CHOICE_LOAD			21
 #define MENU_CHOICE_NONE			-1
