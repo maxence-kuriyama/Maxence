@@ -80,20 +80,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	COM com;
 
-	// 3Dモデル関係
-	/*
-	int ModelHandle = MV1LoadModel("movie/max0.mv1");
-	float totalTime, playTime = 0.0;
-	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
-	MV1SetScale(ModelHandle, VGet(0.1, 0.1, 0.1));
-	//MV1SetRotationXYZ(ModelHandle, VGet(0.0, -0.5 * DX_PI_F, 0.0));
-	MV1SetRotationXYZ(ModelHandle, VGet(0.0, DX_PI_F, 0.0));
-	//int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
-	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
-	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
-	*/
-
-
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		// 入力情報を取得
@@ -136,7 +122,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 		else if (flg == FLAG_BATTLE) {
-			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);
 			int res = battle.show(com, bgm, debug_flg);
 			logo.draw(ui);
@@ -202,7 +187,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	InitGraph();
-	//MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
 	return 0;
