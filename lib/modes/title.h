@@ -17,6 +17,7 @@ private:
 	Button btnLonely;
 	Button btnVsHuman;
 	Button btnTutorial;
+	Button btnMusicRoom;
 	Button btnStart;
 	Button btnLoad;
 	int White = GetColor(255, 255, 255);
@@ -38,9 +39,10 @@ public:
 		btnLonely.initialize(TEXT1_X, TEXT1_Y, "‚Ú‚Á‚¿‚Å");
 		btnVsHuman.initialize(TEXT2_X, TEXT2_Y, "—×‚Ìl‚Æ");
 		btnTutorial.initialize(TEXT3_X, TEXT3_Y, "‹³‚¦‚ğŒî‚¤");
+		btnMusicRoom.initialize(TEXT4_X, TEXT4_Y, "‰¹Šyº");
 		btnStart.initialize(TEXT1_X, TEXT1_Y, "‚Í‚¶‚ß‚©‚ç");
 		btnLoad.initialize(TEXT2_X, TEXT2_Y, "‚Â‚Ã‚«‚©‚ç");
-		menu.set(btnLonely, btnVsHuman, btnTutorial);
+		menu.set(btnLonely, btnVsHuman, btnTutorial, btnMusicRoom);
 		flg = TITLE_GAME_MODE;
 	}
 

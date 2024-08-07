@@ -108,12 +108,13 @@ public:
 		size = 2;
 	}
 
-	void set(Button& button0, Button& button1, Button& button2) {
+	void set(Button& button0, Button& button1, Button& button2, Button& button3) {
 		button[0] = button0;
 		button[1] = button1;
 		button[2] = button2;
+		button[3] = button3;
 		id = 0;
-		size = 3;
+		size = 4;
 	}
 
 	void display(int strColor) {
