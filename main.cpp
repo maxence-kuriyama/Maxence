@@ -206,29 +206,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return 0;
 }
 
-void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario, Tutorial& tutorial) {
-	switch (choice) {
-	case MENU_CHOICE_VS_HUMAN:
-		if (!battle.hasSaveFile()) {
-			battle.startVsHuman();
-			*flg = FLAG_BATTLE;
-		}
-		break;
-	case MENU_CHOICE_VS_COM:
-		*flg = FLAG_SCENARIO;
-		scenario.initialize();
-		break;
-	case MENU_CHOICE_TUTORIAL:
-		*flg = FLAG_TUTORIAL;
-		tutorial.initialize();
-		break;
-	case MENU_CHOICE_START:
-		break;
-	case MENU_CHOICE_LOAD:
-		break;
-	}
-}
-
 void routesTitle(int choice, int* flg, Title& title, Battle& battle) {
 	switch (choice) {
 	case MENU_CHOICE_VS_HUMAN:
