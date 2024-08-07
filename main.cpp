@@ -25,6 +25,7 @@ using namespace std;
 #include "lib/modes/battle_result.h"
 #include "lib/modes/opening.h"
 #include "lib/modes/ending.h"
+#include "lib/modes/music_room.h"
 #include "lib/com.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -68,6 +69,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Title title;
 	Tutorial tutorial;
+	MusicRoom musicRoom;
 	Scenario scenario;
 	Opening opening;
 	Ending ending;
@@ -180,6 +182,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			battle.debugDump();
 			bgm.debugDump();
 			tutorial.debugDump();
+			musicRoom.debugDump();
 			scenario.debugDump();
 			ending.debugDump();
 			com.debugDump();

@@ -210,6 +210,7 @@
     <ClInclude Include="lib\modes\title.h" />
     <ClInclude Include="lib\modes\title\fireflower.h" />
     <ClInclude Include="lib\modes\tutorial.h" />
+    <ClInclude Include="lib\modes\music_room.h" />
     <ClInclude Include="lib\movie.h" />
     <ClInclude Include="lib\music.h" />
     <ClInclude Include="lib\nlohmann\json.hpp" />
