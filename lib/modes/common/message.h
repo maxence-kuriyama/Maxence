@@ -6,6 +6,14 @@
 
 const double NEXT_ICON_BLINK_SPEED(0.6);
 
+const int MESSAGE_WHO_DESC(0);
+const int MESSAGE_WHO_YELLOW(1);
+const int MESSAGE_WHO_BLUE(2);
+const int MESSAGE_WHO_RED(3);
+const int MESSAGE_WHO_GREEN(4);
+const int MESSAGE_WHO_DEER(5);
+const int MESSAGE_WHO_PLAYER(-1);
+
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 int MultiByteLength(const char* String);
 

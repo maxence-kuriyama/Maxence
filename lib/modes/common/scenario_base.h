@@ -25,14 +25,6 @@ const int SCENE_ACTION_STOP(-1);
 
 const int SCENE_RES_DEFAULT(-100);
 
-const int SCENE_WHO_DESC(0);
-const int SCENE_WHO_YELLOW(1);
-const int SCENE_WHO_BLUE(2);
-const int SCENE_WHO_RED(3);
-const int SCENE_WHO_GREEN(4);
-const int SCENE_WHO_DEER(5);
-const int SCENE_WHO_PLAYER(-1);
-
 
 // シナリオ抽象クラス
 class ScenarioBase {
@@ -65,7 +57,7 @@ protected:
 	string battle_trigger = "";
 	
 	struct Scene sceneList[MAX_SCENE_NUM] = {
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"Nothing to say...\nPlease define me." },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"Nothing to say...\nPlease define me." },
 		{ -1,					-1,					"" },
 	};
 
@@ -333,19 +325,19 @@ protected:
 			for (int i = 0; i < 4; ++i) {
 				mrK[i].setTrigger("fired");
 			}
-			mrK[SCENE_WHO_RED - 1].setTrigger("talk");
+			mrK[MESSAGE_WHO_RED - 1].setTrigger("talk");
 		}
 		else if (trigger == "talk_green") {
 			for (int i = 0; i < 4; ++i) {
 				mrK[i].setTrigger("fired");
 			}
-			mrK[SCENE_WHO_GREEN - 1].setTrigger("talk");
+			mrK[MESSAGE_WHO_GREEN - 1].setTrigger("talk");
 		}
 		else if (trigger == "talk_blue") {
 			for (int i = 0; i < 4; ++i) {
 				mrK[i].setTrigger("fired");
 			}
-			mrK[SCENE_WHO_BLUE - 1].setTrigger("talk");
+			mrK[MESSAGE_WHO_BLUE - 1].setTrigger("talk");
 		}
 		else if (trigger == "none") {
 			for (int i = 0; i < 4; ++i) {
@@ -467,7 +459,7 @@ protected:
 		Saying saying = obj->talk(key);
 		if (strcmp(saying.say, "") == 0 || saying.who == -1) {
 			isTalking = false;
-			msg.set("", SCENE_WHO_DESC, false);
+			msg.set("", MESSAGE_WHO_DESC, false);
 			return;
 		}
 		else {
@@ -531,7 +523,7 @@ protected:
 	}
 
 	virtual MrK* getObject(int who) {
-		if (who == SCENE_WHO_DEER) return &deer;
+		if (who == MESSAGE_WHO_DEER) return &deer;
 		if (isMrK(who)) return &mrK[who - 1];
 		return NULL;
 	}
