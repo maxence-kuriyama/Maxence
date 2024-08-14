@@ -39,8 +39,13 @@ public:
 		text = label;
 	}
 
-	void initialize(int tx, int ty, string label = "") {
-		initialize(tx, ty, tx - 16, ty - 16, tx + 80, ty + 24, label);
+	void initialize(int tx, int ty, string label = "", bool useStrLength = false) {
+		if (useStrLength) {
+			initialize(tx, ty, tx - 16, ty - 16, tx + 8 * label.length() + 32, ty + 24, label);
+		}
+		else {
+			initialize(tx, ty, tx - 16, ty - 16, tx + 80, ty + 24, label);
+		}
 	}
 
 	void display(Mouse& mouse, int strColor) {
