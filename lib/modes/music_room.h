@@ -5,10 +5,11 @@
 #include "lib/modes/common/message.h"
 
 const int MUSIC_NUM(15);
-const int MUSIC_LEFT_X(20);
+
+const int MUSIC_LEFT_X(30);
 const int MUSIC_LEFT_X2(300);
 const int MUSIC_DIV_X(10);
-const int MUSIC_TOP_Y(50);
+const int MUSIC_TOP_Y(40);
 const int MUSIC_DIV_Y(40);
 
 // 音楽室モード
@@ -44,10 +45,31 @@ private:
 
 	Menu menu;
 	Button buttons[MUSIC_NUM];
+	Message msg;
 
 public:
 
 	MusicRoom() {
+		initialize();
+		msg.initialize();
+		msg.set("これはテストだよ。\nテストテストテスト", MESSAGE_WHO_YELLOW, false);
+	}
+
+	int show(UserInput& ui) {
+		msg.draw();
+		return choose(ui);
+	}
+
+	void debugDump() {
+		int strColor = strColorDebug;
+
+		//DrawFormatString(365, 405, strColor, "tutoTrigger: %s", battle_trigger);
+		//DrawFormatString(365, 425, strColor, "tutoAction: %d", scene.action);
+	}
+
+private:
+
+	void initialize() {
 		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
 			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
 			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
@@ -60,19 +82,6 @@ public:
 		}
 		menu.set(buttons, MUSIC_NUM);
 	}
-
-	int show(UserInput& ui) {
-		return choose(ui);
-	}
-
-	void debugDump() {
-		int strColor = strColorDebug;
-
-		//DrawFormatString(365, 405, strColor, "tutoTrigger: %s", battle_trigger);
-		//DrawFormatString(365, 425, strColor, "tutoAction: %d", scene.action);
-	}
-
-private:
 
 	int choose(UserInput& ui) {
 		return menu.choose(ui, strColorMenu);
