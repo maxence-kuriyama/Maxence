@@ -73,12 +73,12 @@ private:
 		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
 			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
 			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initialize(x, y, info[i].name, true);
+			buttons[i].initializeUsingLabelLen(x, y, info[i].name);
 		}
 		for (int i = (MUSIC_NUM + 1) / 2; i < MUSIC_NUM; ++i) {
 			int x = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_X + MUSIC_LEFT_X2;
 			int y = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initialize(x, y, info[i].name, true);
+			buttons[i].initializeUsingLabelLen(x, y, info[i].name);
 		}
 		menu.set(buttons, MUSIC_NUM);
 	}
