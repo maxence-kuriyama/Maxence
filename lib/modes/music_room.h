@@ -52,7 +52,7 @@ public:
 	MusicRoom() {
 		initialize();
 		msg.initialize();
-		msg.set("これはテストだよ。\nテストテストテスト", MESSAGE_WHO_YELLOW, false);
+		msg.setWithoutNext("これはテストだよ。\nテストテストテスト", MESSAGE_WHO_YELLOW);
 	}
 
 	int show(UserInput& ui) {

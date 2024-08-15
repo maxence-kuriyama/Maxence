@@ -219,7 +219,7 @@ protected:
 	void readMsg(string str, int who, Mouse& mouse) {
 		if (!hasMsg) {
 			if (str == "clear") {
-				msg.set("", who, false);
+				msg.setWithoutNext("", who);
 				flg++;
 			}
 			else {
@@ -459,7 +459,7 @@ protected:
 		Saying saying = obj->talk(key);
 		if (strcmp(saying.say, "") == 0 || saying.who == -1) {
 			isTalking = false;
-			msg.set("", MESSAGE_WHO_DESC, false);
+			msg.setWithoutNext("", MESSAGE_WHO_DESC);
 			return;
 		}
 		else {

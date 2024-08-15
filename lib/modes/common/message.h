@@ -62,6 +62,10 @@ public:
 		existsNext = next;
 	}
 
+	void setWithoutNext(string text0, int who0) {
+		return set(text0, who0, false);
+	}
+
 	int skip() {
 		if (isReading()) {
 			cnt = ceil(textLen / cntPerFrame);
@@ -87,7 +91,7 @@ public:
 		DrawMessage(charCnt, 110, 392, 600, GetFontSize(), text.c_str(), strColor, font, boxColor);
 		if (existsNext) {
 			if (isReading()) {
-				drawIcon(true);
+				drawBlinkIcon();
 			}
 			else {
 				drawIcon();
@@ -112,6 +116,10 @@ public:
 		if (noBlink || iconVisible) {
 			DrawExtendGraph(590, 448, 602, 460, nextIcon, TRUE);
 		}
+	}
+
+	void drawBlinkIcon() {
+		return drawIcon(true);
 	}
 };
 
