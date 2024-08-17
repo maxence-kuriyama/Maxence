@@ -66,6 +66,10 @@ public:
 		return set(text0, who0, false);
 	}
 
+	void setEmpty(int who0 = MESSAGE_WHO_DESC) {
+		return setWithoutNext("", who0);
+	}
+
 	int skip() {
 		if (isReading()) {
 			cnt = ceil(textLen / cntPerFrame);
@@ -106,6 +110,8 @@ public:
 
 		return 0;
 	}
+
+private:
 
 	void drawIcon(bool noBlink = false) {
 		iconCnt++;
