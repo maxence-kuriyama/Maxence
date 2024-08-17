@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "lib/music.h"
 #include "lib/user_input.h"
 #include "lib/modes/common/message.h"
@@ -57,7 +58,16 @@ public:
 
 	int show(UserInput& ui) {
 		msg.draw();
-		return choose(ui);
+		int choice = choose(ui);
+		if (choice == -1) return choice;
+
+		MusicInfo music = info[choice];
+		stringstream ss;
+		ss << music.id << ".";
+		ss << music.name << endl;
+		ss << music.desc;
+		msg.setWithoutNext(ss.str(), MESSAGE_WHO_YELLOW);
+		return choice;
 	}
 
 	void debugDump() {
