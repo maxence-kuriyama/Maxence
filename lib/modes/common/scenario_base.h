@@ -439,12 +439,6 @@ protected:
 		return game.isUpdated(res);
 	}
 
-	void startMusic(const char* musicName) {
-		if (CheckMusic() != 1) {
-			PlayMusic(musicName, DX_PLAYTYPE_BACK);
-		}
-	}
-
 	void talkMrK(int who, const char key[], Mouse& mouse) {
 		MrK* obj = getObject(who);
 		if (!obj) return;
