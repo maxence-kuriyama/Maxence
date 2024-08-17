@@ -336,7 +336,6 @@ public:
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
-		hasMsg = false;
 		isTalking = false;
 	}
 

@@ -39,7 +39,6 @@ protected:
 
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
-	bool hasMsg = false;	// メッセージがセットされているか
 	bool isTalking = false;	// NPCと会話中か否か
 	string imgFront;	// フロントサイドに表示する画像
 	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
@@ -77,7 +76,6 @@ public:
 	void initialize() {
 		flg = 0;
 		cnt = 0;
-		hasMsg = false;
 		mrK[0].exhibit();
 		mrK[1].exhibit();
 		mrK[2].exhibit();
@@ -197,7 +195,7 @@ public:
 		DrawFormatString(245, 405, strColor, "deer.vis: %d", deer.visible);
 		DrawFormatString(245, 425, strColor, "key: %d", key);
 		DrawFormatString(245, 445, strColor, "isTalking: %s", isTalking ? "true" : "false");
-		DrawFormatString(245, 465, strColor, "hasMsg: %s", hasMsg ? "true" : "false");
+		DrawFormatString(245, 465, strColor, "hasMsg: %s", msg.isShown ? "true" : "false");
 	}
 
 
@@ -217,20 +215,16 @@ protected:
 
 	// メッセージを読む
 	void readMsg(string str, int who, Mouse& mouse) {
-		if (!hasMsg) {
+		if (!msg.isShown) {
 			if (str == "clear") {
 				msg.setEmpty(who);
 				flg++;
 			}
 			else {
 				msg.set(str, who);
-				hasMsg = true;
 			}
 		}
-		if ((onOk || mouse.click()) && msg.skip()) {
-			flg++;
-			hasMsg = false;
-		}
+		if ((onOk || mouse.click()) && msg.skip()) flg++;
 	}
 
 	void doMove(const char how[], Mouse& mouse) {
@@ -468,20 +462,16 @@ protected:
 				seName = m[1].str(); // デバッグ用
 				obj->playSE(seName);
 				obj->talkNext();
-				hasMsg = false;
+				msg.isShown = false;
 				return;
 			}
 		}
 
 		// メッセージ表示処理
-		if (!hasMsg) {
+		if (!msg.isShown) {
 			msg.set(saying.say, saying.who);
-			hasMsg = true;
 		}
-		if ((onOk || mouse.click()) && msg.skip()) {
-			obj->talkNext();
-			hasMsg = false;
-		}
+		if ((onOk || mouse.click()) && msg.skip()) obj->talkNext();
 	}
 
 	bool isMrK(int who) {

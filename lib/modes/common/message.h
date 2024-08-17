@@ -38,6 +38,7 @@ public:
 	int cnt = 0;					// 文字描画カウンタ (cnt * cntMlt <= textLen)
 	float cntPerFrame = 15.0 / FPS;	// FPSに依存しないようにする倍率
 	int textLen = 0;				// テキスト長
+	bool isShown = false;
 
 	~Message() {
 		DeleteGraph(nextIcon);
@@ -52,6 +53,7 @@ public:
 		sprite[3].set(x, y, "graph/sprite13.png");
 		sprite[4].set(x, y, "graph/sprite14.png");
 		sprite[5].set(x, y, "graph/sprite15.png");
+		isShown = false;
 	}
 
 	void set(string text0, int who0, bool next = true) {
@@ -60,14 +62,17 @@ public:
 		cnt = 0;
 		textLen = MultiByteLength(text0.c_str());
 		existsNext = next;
+		isShown = true;
 	}
 
 	void setWithoutNext(string text0, int who0) {
-		return set(text0, who0, false);
+		set(text0, who0, false);
+		isShown = true;
 	}
 
 	void setEmpty(int who0 = MESSAGE_WHO_DESC) {
-		return setWithoutNext("", who0);
+		setWithoutNext("", who0);
+		isShown = false;
 	}
 
 	int skip() {
@@ -75,6 +80,7 @@ public:
 			cnt = ceil(textLen / cntPerFrame);
 			return 0;
 		}
+		isShown = false;
 		return 1;
 	}
 
