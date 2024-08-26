@@ -23,26 +23,27 @@ private:
 
 	struct MusicInfo {
 		int id;
+		string ext;
 		string name;
 		string desc;
 	};
 
 	struct MusicInfo infoList[MUSIC_NUM] = {
-		{ 1,	"It's Maxence!!!",					"---まだメッセージがないよ---" },
-		{ 2,	"Mr.K is talking to you",			"チュートリアルの曲です。" },
-		{ 3,	"海と樹海と私",						"部屋のテーマです。" },
-		{ 4,	"Mr.K is shouting at you",			"Mr.K（赤）のテーマです。" },
-		{ 5,	"Mr.K is smiling on you",			"Mr.K（緑）のテーマです。" },
-		{ 6,	"Mr.K is lying to you",				"Mr.K（青）のテーマです。" },
-		{ 7,	"運命の平衡点",						"なにかに到達した時の曲です。" },
-		{ 8,	"Mr.K is playing with you",			"Mr.K（黄）のテーマです。" },
-		{ 9,	"鹿は静かに森に帰る",				"表エンディング曲です。" },
-		{ 10,	"Waterly blue mountain",			"---まだメッセージがないよ---" },
-		{ 11,	"Dear The Deer",					"---まだメッセージがないよ---" },
-		{ 12,	"The biggest deer",					"鹿のテーマです。" },
-		{ 13,	"行き場を失った博士たちのブルース",	"裏エンディング曲です。" },
-		{ 14,	"Fading memories",					"---まだメッセージがないよ---" },
-		{ 15,	"釣り船",							"ゲームオーバーの曲です。" },
+		{ 1,	"m4a",	"It's Maxence!!!",					"---まだメッセージがないよ---" },
+		{ 2,	"ogg",	"Mr.K is talking to you",			"チュートリアルの曲です。" },
+		{ 3,	"ogg",	"海と樹海と私",						"部屋のテーマです。" },
+		{ 4,	"ogg",	"Mr.K is shouting at you",			"Mr.K（赤）のテーマです。" },
+		{ 5,	"ogg",	"Mr.K is smiling on you",			"Mr.K（緑）のテーマです。" },
+		{ 6,	"ogg",	"Mr.K is lying to you",				"Mr.K（青）のテーマです。" },
+		{ 7,	"ogg",	"運命の平衡点",						"なにかに到達した時の曲です。" },
+		{ 8,	"ogg",	"Mr.K is playing with you",			"Mr.K（黄）のテーマです。" },
+		{ 9,	"ogg",	"鹿は静かに森に帰る",				"表エンディング曲です。" },
+		{ 10,	"ogg",	"Waterly blue mountain",			"---まだメッセージがないよ---" },
+		{ 11,	"ogg",	"Dear The Deer",					"---まだメッセージがないよ---" },
+		{ 12,	"ogg",	"The biggest deer",					"鹿のテーマです。" },
+		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	"裏エンディング曲です。" },
+		{ 14,	"ogg",	"Fading memories",					"---まだメッセージがないよ---" },
+		{ 15,	"ogg",	"釣り船",							"ゲームオーバーの曲です。" },
 	};
 
 	Menu menu;
@@ -138,7 +139,7 @@ private:
 		ostringstream ss;
 		ss << "./sound/bgm";
 		ss << setfill('0') << setw(2) << info.id;
-		ss << ".ogg";
+		ss << "." << info.ext;
 		return ss.str();
 	}
 };
