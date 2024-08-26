@@ -1,6 +1,7 @@
 #pragma once
 
-#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include "lib/music.h"
 #include "lib/user_input.h"
 #include "lib/modes/common/message.h"
@@ -26,7 +27,7 @@ private:
 		string desc;
 	};
 
-	struct MusicInfo info[MUSIC_NUM] = {
+	struct MusicInfo infoList[MUSIC_NUM] = {
 		{ 1,	"It's Maxence!!!",					"---まだメッセージがないよ---" },
 		{ 2,	"Mr.K is talking to you",			"チュートリアルの曲です。" },
 		{ 3,	"海と樹海と私",						"部屋のテーマです。" },
@@ -47,6 +48,8 @@ private:
 	Menu menu;
 	Button buttons[MUSIC_NUM];
 	Message msg;
+	int choice = -1;
+	bool isLoading = false;
 
 public:
 
@@ -56,18 +59,30 @@ public:
 		msg.setWithoutNext("これはテストだよ。\nテストテストテスト", MESSAGE_WHO_YELLOW);
 	}
 
-	int show(UserInput& ui) {
+	void show(UserInput& ui, Music& music) {
 		msg.draw();
-		int choice = choose(ui);
-		if (choice == -1) return choice;
+	
+		int currentChoice = choose(ui);
+		if (currentChoice != -1) {
+			choice = currentChoice;
 
-		MusicInfo music = info[choice];
-		stringstream ss;
-		ss << music.id << ".";
-		ss << music.name << endl;
-		ss << music.desc;
-		msg.setWithoutNext(ss.str(), MESSAGE_WHO_YELLOW);
-		return choice;
+			MusicInfo info = infoList[choice];
+			stringstream ss;
+			ss << info.id << ".";
+			ss << info.name << endl;
+			ss << info.desc;
+			msg.setWithoutNext(ss.str(), MESSAGE_WHO_YELLOW);
+		}
+
+		if (currentChoice != -1 || isLoading) {
+			if (play(music)) {
+				isLoading = false;
+			}
+			else {
+				isLoading = true;
+				music.drawLoadMsg();
+			}
+		}
 	}
 
 	void debugDump() {
@@ -83,14 +98,16 @@ private:
 		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
 			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
 			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initializeUsingLabelLen(x, y, info[i].name);
+			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
 		}
 		for (int i = (MUSIC_NUM + 1) / 2; i < MUSIC_NUM; ++i) {
 			int x = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_X + MUSIC_LEFT_X2;
 			int y = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initializeUsingLabelLen(x, y, info[i].name);
+			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
 		}
 		menu.set(buttons, MUSIC_NUM);
+		choice = -1;
+		isLoading = false;
 	}
 
 	int choose(UserInput& ui) {
@@ -98,4 +115,30 @@ private:
 	}
 
 	bool reset(UserInput& ui) {}
+
+	int play(Music& music) {
+		if (choice == -1) return 1;
+
+		MusicInfo info = infoList[choice];
+		string filename = getMusicFileName(info);
+		if (music.musicName[0] == filename) {
+			return (music.stop() && music.play(MUSIC_START_FROM_TOP));
+		}
+		else if (music.musicName[1] == filename) {
+			return (music.swapWithoutPlay() && music.play(MUSIC_START_FROM_TOP));
+		}
+		else {
+			music.unload(1); // 必要?
+			music.load(filename.c_str());
+			return 0;
+		}
+	}
+
+	string getMusicFileName(MusicInfo& info) {
+		ostringstream ss;
+		ss << "./sound/bgm";
+		ss << setfill('0') << setw(2) << info.id;
+		ss << ".ogg";
+		return ss.str();
+	}
 };

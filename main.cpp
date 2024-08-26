@@ -172,7 +172,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_MUSIC_ROOM) {
 			SetBackgroundColor(0, 0, 0);
-			int choice = musicRoom.show(ui);
+			musicRoom.show(ui, bgm);
 			//routesBattle(choice, &flg, title, battle);
 		}
 
