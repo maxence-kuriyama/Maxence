@@ -32,21 +32,22 @@ private:
 
 	struct MusicInfo infoList[MUSIC_NUM] = {
 		{ 1,	"m4a",	"It's Maxence!!!",					"---まだメッセージがないよ---" },
-		{ 2,	"ogg",	"Mr.K is talking to you",			"チュートリアルの曲です。" },
-		{ 3,	"ogg",	"海と樹海と私",						"部屋のテーマです。" },
-		{ 4,	"ogg",	"Mr.K is shouting at you",			"Mr.K（赤）のテーマです。" },
-		{ 5,	"ogg",	"Mr.K is smiling on you",			"Mr.K（緑）のテーマです。" },
-		{ 6,	"ogg",	"Mr.K is lying to you",				"Mr.K（青）のテーマです。" },
-		{ 7,	"ogg",	"運命の平衡点",						"なにかに到達した時の曲です。" },
-		{ 8,	"ogg",	"Mr.K is playing with you",			"Mr.K（黄）のテーマです。" },
-		{ 9,	"ogg",	"鹿は静かに森に帰る",				"表エンディング曲です。" },
+		{ 2,	"ogg",	"Mr.K is talking to you",			"チュートリアルの曲です\nここになにか説明を入れられるよ" },
+		{ 3,	"ogg",	"海と樹海と私",						"部屋のテーマです" },
+		{ 4,	"ogg",	"Mr.K is shouting at you",			"Mr.K（赤）のテーマです" },
+		{ 5,	"ogg",	"Mr.K is smiling on you",			"Mr.K（緑）のテーマです" },
+		{ 6,	"ogg",	"Mr.K is lying to you",				"Mr.K（青）のテーマです" },
+		{ 7,	"ogg",	"運命の平衡点",						"なにかに到達した時の曲です" },
+		{ 8,	"ogg",	"Mr.K is playing with you",			"Mr.K（黄）のテーマです" },
+		{ 9,	"ogg",	"鹿は静かに森に帰る",				"表エンディング曲です" },
 		{ 10,	"ogg",	"Waterly blue mountain",			"---まだメッセージがないよ---" },
 		{ 11,	"ogg",	"Dear The Deer",					"---まだメッセージがないよ---" },
-		{ 12,	"ogg",	"The biggest deer",					"鹿のテーマです。" },
-		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	"裏エンディング曲です。" },
+		{ 12,	"ogg",	"The biggest deer",					"鹿のテーマです" },
+		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	"裏エンディング曲です" },
 		{ 14,	"ogg",	"Fading memories",					"---まだメッセージがないよ---" },
-		{ 15,	"ogg",	"釣り船",							"ゲームオーバーの曲です。" },
+		{ 15,	"ogg",	"釣り船",							"ゲームオーバーの曲です" },
 	};
+	string defaultMsgStr = "ここは音楽室だよ\nお気に入りは見つかったかな";
 
 	Menu menu;
 	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
@@ -63,7 +64,7 @@ public:
 
 	void initialize() {
 		msg.initialize();
-		msg.setWithoutNext("ここは音楽室だよ\nお気に入りは見つかったかな", MESSAGE_WHO_YELLOW);
+		msg.setWithoutNext(defaultMsgStr, MESSAGE_WHO_YELLOW);
 		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
 			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
 			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
