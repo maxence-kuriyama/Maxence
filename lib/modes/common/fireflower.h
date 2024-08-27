@@ -33,6 +33,11 @@ public:
 		}
 	}
 
+	void initialize(double srcMinX, double srcMaxX, double srcMinY, double srcMaxY) {
+		setRange(srcMinX, srcMaxX, srcMinY, srcMaxY);
+		initialize();
+	}
+
 	void setRange(double srcMinX, double srcMaxX, double srcMinY, double srcMaxY) {
 		minX = srcMinX;
 		maxX = srcMaxX;
@@ -45,7 +50,7 @@ public:
 		if (cnt <= 80) {
 			for (int i = 0; i < 12; ++i) {
 				particle[i][0] += velocity[i][0] * 0.1 * ((double)rand() / RAND_MAX - 0.5);
-				particle[i][1] += -0.015 * particle[i][1] * (1.0 + 0.2 * ((double)rand() / RAND_MAX - 0.5));
+				particle[i][1] += -0.015 * min(480.0, particle[i][1]) * (1.0 + 0.2 * ((double)rand() / RAND_MAX - 0.5));
 			}
 		}
 		else if (cnt <= 200) {

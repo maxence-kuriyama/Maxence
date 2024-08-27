@@ -52,7 +52,7 @@ private:
 	Menu menu;
 	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
 	Message msg;
-	fireflower tama[FIRE_FLOWER_NUM];
+	fireflower tama;
 	int choice = -1;
 	bool isLoading = false;
 
@@ -77,10 +77,7 @@ public:
 		}
 		buttons[MUSIC_MAX_INDEX].initializeUsingLabelLen(520, 340, "タイトルへ");
 		menu.set(buttons, MUSIC_NUM + 1);
-		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
-			tama[i].setRange(100.0, 540.0, 650.0, 700.0);
-			tama[i].initialize();
-		}
+		tama.initialize(160.0, 480.0, 650.0, 700.0);
 		choice = -1;
 		isLoading = false;
 	}
@@ -160,9 +157,7 @@ private:
 	}
 
 	void showFireFlower() {
-		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
-			tama[i].draw();
-			tama[i].tick();
-		}
+		tama.draw();
+		tama.tick();
 	}
 };
