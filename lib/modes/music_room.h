@@ -20,7 +20,7 @@ class MusicRoom {
 private:
 	int strColorMenu = GetColor(255, 255, 255);
 	//int strColor = GetColor(255, 255, 255);
-	int strColorDebug = GetColor(255, 255, 255);
+	int strColorDebug = GetColor(255, 215, 0);
 
 	struct MusicInfo {
 		int id;
@@ -111,8 +111,7 @@ public:
 	void debugDump() {
 		int strColor = strColorDebug;
 
-		//DrawFormatString(365, 405, strColor, "tutoTrigger: %s", battle_trigger);
-		//DrawFormatString(365, 425, strColor, "tutoAction: %d", scene.action);
+		DrawFormatString(365, 65, strColor, "musicChoice: %d", choice);
 	}
 
 private:
