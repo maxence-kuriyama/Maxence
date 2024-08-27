@@ -95,13 +95,7 @@ public:
 
 		if (currentChoice != -1) {
 			choice = currentChoice;
-
-			MusicInfo info = infoList[choice];
-			stringstream ss;
-			ss << info.id << ".";
-			ss << info.name << endl;
-			ss << info.desc;
-			msg.setWithoutNext(ss.str(), MESSAGE_WHO_YELLOW);
+			updateMusicDesc();
 		}
 
 		if (currentChoice != -1 || isLoading) {
@@ -129,6 +123,15 @@ private:
 	}
 
 	bool reset(UserInput& ui) {}
+
+	void updateMusicDesc() {
+		MusicInfo info = infoList[choice];
+		stringstream ss;
+		ss << info.id << ".";
+		ss << info.name << endl;
+		ss << info.desc;
+		msg.setWithoutNext(ss.str(), MESSAGE_WHO_YELLOW);
+	}
 
 	int play(Music& music) {
 		if (choice == -1) return 1;
