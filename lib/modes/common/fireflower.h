@@ -8,6 +8,10 @@ private:
 	double particle[12][2];
 	double velocity[12][2];
 	double diffuse;
+	double minX = 100.0;
+	double maxX = 540.0;
+	double minY = 280.0;
+	double maxY = 480.0;
 
 public:
 	int sound = 0;		// SEÇèoÇ∑Ç©î€Ç©
@@ -18,15 +22,22 @@ public:
 
 	void initialize() {
 		cnt = rand() % 40;
-		diffuse = (2.5 * rand()) / RAND_MAX + 0.5;
-		double inix = (440.0 * rand()) / RAND_MAX + 100.0;
-		double iniy = (200.0 * rand()) / RAND_MAX + 280.0;
+		diffuse = 2.5 * rand() / RAND_MAX + 0.5;
+		double inix = (maxX - minX) * rand() / RAND_MAX + minX;
+		double iniy = (maxY - minY) * rand() / RAND_MAX + minY;
 		for (int i = 0; i < 12; ++i) {
 			particle[i][0] = inix;
 			particle[i][1] = iniy;
 			velocity[i][0] = diffuse * cos(2 * M_PI * i / 12);
 			velocity[i][1] = diffuse * sin(2 * M_PI * i / 12);
 		}
+	}
+
+	void setRange(double srcMinX, double srcMaxX, double srcMinY, double srcMaxY) {
+		minX = srcMinX;
+		maxX = srcMaxX;
+		minY = srcMinY;
+		maxY = srcMaxY;
 	}
 
 	void tick() {

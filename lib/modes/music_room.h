@@ -5,6 +5,7 @@
 #include "lib/music.h"
 #include "lib/user_input.h"
 #include "lib/modes/common/message.h"
+#include "lib/modes/common/fireflower.h"
 
 const int MUSIC_NUM(15);
 const int MUSIC_MAX_INDEX(MUSIC_NUM);
@@ -50,6 +51,7 @@ private:
 	Menu menu;
 	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
 	Message msg;
+	fireflower tama[FIRE_FLOWER_NUM];
 	int choice = -1;
 	bool isLoading = false;
 
@@ -74,11 +76,16 @@ public:
 		}
 		buttons[MUSIC_MAX_INDEX].initializeUsingLabelLen(520, 340, "タイトルへ");
 		menu.set(buttons, MUSIC_NUM + 1);
+		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
+			tama[i].setRange(100.0, 540.0, 650.0, 700.0);
+			tama[i].initialize();
+		}
 		choice = -1;
 		isLoading = false;
 	}
 
 	int show(UserInput& ui, Music& music) {
+		showFireFlower();
 		msg.draw();
 	
 		int currentChoice = choose(ui);
@@ -146,5 +153,12 @@ private:
 		ss << setfill('0') << setw(2) << info.id;
 		ss << "." << info.ext;
 		return ss.str();
+	}
+
+	void showFireFlower() {
+		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
+			tama[i].draw();
+			tama[i].tick();
+		}
 	}
 };
