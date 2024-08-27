@@ -33,7 +33,7 @@ using namespace std;
 void routesBattle(int choice, int* flg, Title& title, Battle& battle);
 void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Music& music);
 void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial);
-void routesMusicRoom(int choice, int* flg, Title& title);
+void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
 void goTitle(int* flg, Title& title);
 void goResult(int* flg);
@@ -111,7 +111,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			routesBattle(choice, &flg, title, battle);
 			routesScenario(choice, &flg, title, scenario, bgm);
 			routesTutorial(choice, &flg, title, tutorial);
-			routesMusicRoom(choice, &flg, title);
+			routesMusicRoom(choice, &flg, title, musicRoom);
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
@@ -172,8 +172,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_MUSIC_ROOM) {
 			SetBackgroundColor(0, 0, 0);
-			musicRoom.show(ui, bgm);
-			//routesBattle(choice, &flg, title, battle);
+			int res = musicRoom.show(ui, bgm);
+			if (res == FLAG_TITLE) {
+				bgm.unloadAll();
+				goTitle(&flg, title);
+			}
 		}
 
 		battle.tick();
@@ -255,11 +258,11 @@ void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial) {
 	}
 }
 
-void routesMusicRoom(int choice, int* flg, Title& title) {
+void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom) {
 	switch (choice) {
 	case MENU_CHOICE_MUSIC_ROOM:
 		*flg = FLAG_MUSIC_ROOM;
-		//tutorial.initialize();
+		musicRoom.initialize();
 		break;
 	}
 }

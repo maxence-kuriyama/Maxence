@@ -7,6 +7,7 @@
 #include "lib/modes/common/message.h"
 
 const int MUSIC_NUM(15);
+const int MUSIC_MAX_INDEX(MUSIC_NUM);
 
 const int MUSIC_LEFT_X(30);
 const int MUSIC_LEFT_X2(300);
@@ -47,7 +48,7 @@ private:
 	};
 
 	Menu menu;
-	Button buttons[MUSIC_NUM];
+	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
 	Message msg;
 	int choice = -1;
 	bool isLoading = false;
@@ -56,14 +57,34 @@ public:
 
 	MusicRoom() {
 		initialize();
-		msg.initialize();
-		msg.setWithoutNext("これはテストだよ。\nテストテストテスト", MESSAGE_WHO_YELLOW);
 	}
 
-	void show(UserInput& ui, Music& music) {
+	void initialize() {
+		msg.initialize();
+		msg.setWithoutNext("ここは音楽室だよ\nお気に入りは見つかったかな", MESSAGE_WHO_YELLOW);
+		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
+			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
+			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
+			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
+		}
+		for (int i = (MUSIC_NUM + 1) / 2; i < MUSIC_NUM; ++i) {
+			int x = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_X + MUSIC_LEFT_X2;
+			int y = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y;
+			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
+		}
+		buttons[MUSIC_MAX_INDEX].initializeUsingLabelLen(520, 340, "タイトルへ");
+		menu.set(buttons, MUSIC_NUM + 1);
+		choice = -1;
+		isLoading = false;
+	}
+
+	int show(UserInput& ui, Music& music) {
 		msg.draw();
 	
 		int currentChoice = choose(ui);
+
+		if (currentChoice == MUSIC_MAX_INDEX) return FLAG_TITLE;
+
 		if (currentChoice != -1) {
 			choice = currentChoice;
 
@@ -84,6 +105,7 @@ public:
 				music.drawLoadMsg();
 			}
 		}
+		return FLAG_MUSIC_ROOM;
 	}
 
 	void debugDump() {
@@ -94,22 +116,6 @@ public:
 	}
 
 private:
-
-	void initialize() {
-		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
-			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
-			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
-		}
-		for (int i = (MUSIC_NUM + 1) / 2; i < MUSIC_NUM; ++i) {
-			int x = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_X + MUSIC_LEFT_X2;
-			int y = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
-		}
-		menu.set(buttons, MUSIC_NUM);
-		choice = -1;
-		isLoading = false;
-	}
 
 	int choose(UserInput& ui) {
 		return menu.choose(ui, strColorMenu);
