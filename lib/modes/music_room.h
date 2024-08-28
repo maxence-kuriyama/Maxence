@@ -28,27 +28,28 @@ private:
 		int id;
 		string ext;
 		string name;
+		int who;
 		string desc;
 	};
 
 	struct MusicInfo infoList[MUSIC_NUM] = {
-		{ 1,	"m4a",	"It's Maxence!!!",					"---まだメッセージがないよ---" },
-		{ 2,	"ogg",	"Mr.K is talking to you",			"チュートリアルの曲です\nここになにか説明を入れられるよ" },
-		{ 3,	"ogg",	"海と樹海と私",						"部屋のテーマです" },
-		{ 4,	"ogg",	"Mr.K is shouting at you",			"Mr.K（赤）のテーマです" },
-		{ 5,	"ogg",	"Mr.K is smiling on you",			"Mr.K（緑）のテーマです" },
-		{ 6,	"ogg",	"Mr.K is lying to you",				"Mr.K（青）のテーマです" },
-		{ 7,	"ogg",	"運命の平衡点",						"なにかに到達した時の曲です" },
-		{ 8,	"ogg",	"Mr.K is playing with you",			"Mr.K（黄）のテーマです" },
-		{ 9,	"ogg",	"鹿は静かに森に帰る",				"表エンディング曲です" },
-		{ 10,	"ogg",	"Waterly blue mountain",			"---まだメッセージがないよ---" },
-		{ 11,	"ogg",	"Dear The Deer",					"---まだメッセージがないよ---" },
-		{ 12,	"ogg",	"The biggest deer",					"鹿のテーマです" },
-		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	"裏エンディング曲です" },
-		{ 14,	"ogg",	"Fading memories",					"---まだメッセージがないよ---" },
-		{ 15,	"ogg",	"釣り船",							"ゲームオーバーの曲です" },
+		{ 1,	"m4a",	"It's Maxence!!!",					MESSAGE_WHO_YELLOW,	"---まだメッセージがないよ---" },
+		{ 2,	"ogg",	"Mr.K is talking to you",			MESSAGE_WHO_YELLOW,	"チュートリアルの曲だよ\nここになにか説明を入れられるよ" },
+		{ 3,	"ogg",	"海と樹海と私",						MESSAGE_WHO_YELLOW,	"部屋のテーマだよ" },
+		{ 4,	"ogg",	"Mr.K is shouting at you",			MESSAGE_WHO_RED,	"Mr.K（赤）のテーマだ" },
+		{ 5,	"ogg",	"Mr.K is smiling on you",			MESSAGE_WHO_GREEN,	"Mr.K（緑）のテーマですね" },
+		{ 6,	"ogg",	"Mr.K is lying to you",				MESSAGE_WHO_BLUE,	"Mr.K（青）のテーマです" },
+		{ 7,	"ogg",	"運命の平衡点",						MESSAGE_WHO_YELLOW,	"なにかに到達した時の曲だよ" },
+		{ 8,	"ogg",	"Mr.K is playing with you",			MESSAGE_WHO_YELLOW,	"Mr.K（黄）のテーマだよ" },
+		{ 9,	"ogg",	"鹿は静かに森に帰る",				MESSAGE_WHO_YELLOW,	"表エンディング曲だよ" },
+		{ 10,	"ogg",	"Waterly blue mountain",			MESSAGE_WHO_YELLOW,	"---まだメッセージがないよ---" },
+		{ 11,	"ogg",	"Dear The Deer",					MESSAGE_WHO_YELLOW,	"---まだメッセージがないよ---" },
+		{ 12,	"ogg",	"The biggest deer",					MESSAGE_WHO_DEER,	"鹿のテーマだよ" },
+		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	MESSAGE_WHO_DESC,	"裏エンディング曲だよ" },
+		{ 14,	"ogg",	"Fading memories",					MESSAGE_WHO_YELLOW,	"---まだメッセージがないよ---" },
+		{ 15,	"ogg",	"釣り船",							MESSAGE_WHO_YELLOW,	"ゲームオーバーの曲だよ" },
 	};
-	string defaultMsgStr = "ここは音楽室だよ\nお気に入りは見つかったかな";
+	string defaultMsgStr = "ここは音楽室\nいつもの部屋じゃないどこかだよ";
 
 	Menu menu;
 	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
@@ -130,7 +131,7 @@ private:
 		ss << info.id << ".";
 		ss << info.name << endl;
 		ss << info.desc;
-		msg.setWithoutNext(ss.str(), MESSAGE_WHO_YELLOW);
+		msg.setWithoutNext(ss.str(), info.who);
 	}
 
 	int play(Music& music) {
