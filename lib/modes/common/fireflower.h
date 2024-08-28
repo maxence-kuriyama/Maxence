@@ -22,9 +22,9 @@ public:
 
 	void initialize() {
 		cnt = rand() % 40;
-		diffuse = 2.5 * rand() / RAND_MAX + 0.5;
-		double inix = (maxX - minX) * rand() / RAND_MAX + minX;
-		double iniy = (maxY - minY) * rand() / RAND_MAX + minY;
+		diffuse = 2.5 * ((double)rand() / RAND_MAX) + 0.5;
+		double inix = (maxX - minX) * ((double) rand() / RAND_MAX) + minX;
+		double iniy = (maxY - minY) * ((double)rand() / RAND_MAX) + minY;
 		for (int i = 0; i < 12; ++i) {
 			particle[i][0] = inix;
 			particle[i][1] = iniy;
@@ -50,7 +50,7 @@ public:
 		if (cnt <= 80) {
 			for (int i = 0; i < 12; ++i) {
 				particle[i][0] += velocity[i][0] * 0.1 * ((double)rand() / RAND_MAX - 0.5);
-				particle[i][1] += -0.015 * min(480.0, particle[i][1]) * (1.0 + 0.2 * ((double)rand() / RAND_MAX - 0.5));
+				particle[i][1] += -0.015 * (particle[i][1] - minY + 300.0) * (1.0 + 0.2 * ((double)rand() / RAND_MAX - 0.5));
 			}
 		}
 		else if (cnt <= 200) {
