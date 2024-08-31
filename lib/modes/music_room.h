@@ -45,7 +45,7 @@ private:
 		{ 10,	"ogg",	"Waterly blue mountain",			MESSAGE_WHO_YELLOW,	"---まだメッセージがないよ---" },
 		{ 11,	"ogg",	"Dear The Deer",					MESSAGE_WHO_YELLOW,	"---まだメッセージがないよ---" },
 		{ 12,	"ogg",	"The biggest deer",					MESSAGE_WHO_DEER,	"鹿のテーマだよ" },
-		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	MESSAGE_WHO_DESC,	"裏エンディング曲だよ" },
+		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	MESSAGE_WHO_PLAYER,	"裏エンディング曲だよ" },
 		{ 14,	"ogg",	"Fading memories",					MESSAGE_WHO_YELLOW,	"---まだメッセージがないよ---" },
 		{ 15,	"ogg",	"釣り船",							MESSAGE_WHO_YELLOW,	"ゲームオーバーの曲だよ" },
 	};
@@ -96,6 +96,7 @@ public:
 
 		if (currentChoice != -1) {
 			choice = currentChoice;
+			music.stop();
 			updateMusicDesc();
 		}
 
