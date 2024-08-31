@@ -6,6 +6,14 @@
 
 const double NEXT_ICON_BLINK_SPEED(0.6);
 
+const int MESSAGE_WHO_DESC(0);
+const int MESSAGE_WHO_YELLOW(1);
+const int MESSAGE_WHO_BLUE(2);
+const int MESSAGE_WHO_RED(3);
+const int MESSAGE_WHO_GREEN(4);
+const int MESSAGE_WHO_DEER(5);
+const int MESSAGE_WHO_PLAYER(-1);
+
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 int MultiByteLength(const char* String);
 
@@ -30,6 +38,7 @@ public:
 	int cnt = 0;					// 文字描画カウンタ (cnt * cntMlt <= textLen)
 	float cntPerFrame = 15.0 / FPS;	// FPSに依存しないようにする倍率
 	int textLen = 0;				// テキスト長
+	bool isShown = false;
 
 	~Message() {
 		DeleteGraph(nextIcon);
@@ -44,6 +53,7 @@ public:
 		sprite[3].set(x, y, "graph/sprite13.png");
 		sprite[4].set(x, y, "graph/sprite14.png");
 		sprite[5].set(x, y, "graph/sprite15.png");
+		isShown = false;
 	}
 
 	void set(string text0, int who0, bool next = true) {
@@ -52,6 +62,17 @@ public:
 		cnt = 0;
 		textLen = MultiByteLength(text0.c_str());
 		existsNext = next;
+		isShown = true;
+	}
+
+	void setWithoutNext(string text0, int who0) {
+		set(text0, who0, false);
+		isShown = true;
+	}
+
+	void setEmpty(int who0 = MESSAGE_WHO_DESC) {
+		setWithoutNext("", who0);
+		isShown = false;
 	}
 
 	int skip() {
@@ -59,6 +80,7 @@ public:
 			cnt = ceil(textLen / cntPerFrame);
 			return 0;
 		}
+		isShown = false;
 		return 1;
 	}
 
@@ -79,7 +101,7 @@ public:
 		DrawMessage(charCnt, 110, 392, 600, GetFontSize(), text.c_str(), strColor, font, boxColor);
 		if (existsNext) {
 			if (isReading()) {
-				drawIcon(true);
+				drawBlinkIcon();
 			}
 			else {
 				drawIcon();
@@ -95,6 +117,8 @@ public:
 		return 0;
 	}
 
+private:
+
 	void drawIcon(bool noBlink = false) {
 		iconCnt++;
 		if (iconCnt > NEXT_ICON_BLINK_SPEED * FPS) {
@@ -104,6 +128,10 @@ public:
 		if (noBlink || iconVisible) {
 			DrawExtendGraph(590, 448, 602, 460, nextIcon, TRUE);
 		}
+	}
+
+	void drawBlinkIcon() {
+		return drawIcon(true);
 	}
 };
 

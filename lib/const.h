@@ -5,11 +5,13 @@
 #define FIRE_FLOWER_NUM		3
 
 #define TEXT1_X		220
-#define TEXT1_Y		300
-#define TEXT2_X		370
-#define TEXT2_Y		300
-#define TEXT3_X		290
-#define TEXT3_Y		360
+#define TEXT1_Y		310
+#define TEXT2_X		270
+#define TEXT2_Y		340
+#define TEXT3_X		320
+#define TEXT3_Y		370
+#define TEXT4_X		370
+#define TEXT4_Y		400
 #define TEXT_SAVE_X			220
 #define TEXT_SAVE_Y			440
 #define TEXT_RESET_X		340
@@ -23,6 +25,7 @@
 #define FLAG_SCENARIO		-6
 #define FLAG_ENDING			-4
 #define FLAG_TUTORIAL		-2
+#define FLAG_MUSIC_ROOM		-8
 
 #define RWD_VICTORY			1.0
 #define RWD_DOMINANT		1.0
@@ -55,6 +58,7 @@
 #define MENU_CHOICE_VS_HUMAN		10
 #define MENU_CHOICE_VS_COM			11
 #define MENU_CHOICE_TUTORIAL		12
+#define MENU_CHOICE_MUSIC_ROOM		13
 #define MENU_CHOICE_START			20
 #define MENU_CHOICE_LOAD			21
 #define MENU_CHOICE_NONE			-1

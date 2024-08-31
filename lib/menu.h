@@ -43,6 +43,10 @@ public:
 		initialize(tx, ty, tx - 16, ty - 16, tx + 80, ty + 24, label);
 	}
 
+	void initializeUsingLabelLen(int tx, int ty, string label) {
+		initialize(tx, ty, tx - 16, ty - 16, tx + 8 * label.length() + 32, ty + 24, label);
+	}
+
 	void display(Mouse& mouse, int strColor) {
 		DrawFormatString(textX, textY, strColor, text.c_str());
 		if (isOn(mouse)) {
@@ -86,9 +90,11 @@ public:
 };
 
 
+const int MENU_BUTTON_MAX_SIZE(30);
+
 class Menu {
 public:
-	Button button[4];
+	Button button[MENU_BUTTON_MAX_SIZE];
 	int size = 0;	// ボタンの個数 (<= 4)
 	int id = 0;		// どのボタンを指定しているか
 
@@ -108,12 +114,12 @@ public:
 		size = 2;
 	}
 
-	void set(Button& button0, Button& button1, Button& button2) {
-		button[0] = button0;
-		button[1] = button1;
-		button[2] = button2;
+	void set(Button* buttons, int menuSize) {
+		for (int i = 0; i < menuSize; ++i) {
+			button[i] = buttons[i];
+		}
 		id = 0;
-		size = 3;
+		size = menuSize;
 	}
 
 	void display(int strColor) {

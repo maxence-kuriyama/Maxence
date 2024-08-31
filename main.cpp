@@ -25,13 +25,15 @@ using namespace std;
 #include "lib/modes/battle_result.h"
 #include "lib/modes/opening.h"
 #include "lib/modes/ending.h"
+#include "lib/modes/music_room.h"
 #include "lib/com.h"
 
 #pragma comment(lib, "winmm.lib")
 
-void routesTitle(int choice, int* flg, Title& title, Battle& battle);
-void routesTitle(int choice, int* flg, Title& title, Scenario& scenario, Music& music);
-void routesTitle(int choice, int* flg, Title& title, Tutorial& tutorial);
+void routesBattle(int choice, int* flg, Title& title, Battle& battle);
+void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Music& music);
+void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial);
+void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
 void goTitle(int* flg, Title& title);
 void goResult(int* flg);
@@ -67,6 +69,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Title title;
 	Tutorial tutorial;
+	MusicRoom musicRoom;
 	Scenario scenario;
 	Opening opening;
 	Ending ending;
@@ -78,20 +81,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int strColorDebug = GetColor(0, 0, 0);
 
 	COM com;
-
-	// 3Dモデル関係
-	/*
-	int ModelHandle = MV1LoadModel("movie/max0.mv1");
-	float totalTime, playTime = 0.0;
-	MV1SetPosition(ModelHandle, VGet(80.0, 150.0, 100.0));
-	MV1SetScale(ModelHandle, VGet(0.1, 0.1, 0.1));
-	//MV1SetRotationXYZ(ModelHandle, VGet(0.0, -0.5 * DX_PI_F, 0.0));
-	MV1SetRotationXYZ(ModelHandle, VGet(0.0, DX_PI_F, 0.0));
-	//int AttachIndex = MV1AttachAnim(ModelHandle, 1, -1, FALSE);
-	//totalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
-	//int GrHandle = MV1GetTextureGraphHandle(ModelHandle, 0);
-	*/
-
 
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
@@ -119,9 +108,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			bgm.load("sound/bgm03.ogg"); // シナリオ用
 			bgm.load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show(ui);
-			routesTitle(choice, &flg, title, battle);
-			routesTitle(choice, &flg, title, scenario, bgm);
-			routesTitle(choice, &flg, title, tutorial);
+			routesBattle(choice, &flg, title, battle);
+			routesScenario(choice, &flg, title, scenario, bgm);
+			routesTutorial(choice, &flg, title, tutorial);
+			routesMusicRoom(choice, &flg, title, musicRoom);
 		}
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
@@ -134,7 +124,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 		else if (flg == FLAG_BATTLE) {
-			//MV1DrawModel(ModelHandle);
 			SetBackgroundColor(0, 0, 0);
 			int res = battle.show(com, bgm, debug_flg);
 			logo.draw(ui);
@@ -181,6 +170,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				}
 			}
 		}
+		else if (flg == FLAG_MUSIC_ROOM) {
+			SetBackgroundColor(0, 0, 0);
+			int res = musicRoom.show(ui, bgm);
+			if (res == FLAG_TITLE) {
+				bgm.unloadAll();
+				goTitle(&flg, title);
+			}
+		}
 
 		battle.tick();
 		sync.execute();
@@ -193,6 +190,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			battle.debugDump();
 			bgm.debugDump();
 			tutorial.debugDump();
+			musicRoom.debugDump();
 			scenario.debugDump();
 			ending.debugDump();
 			com.debugDump();
@@ -200,36 +198,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	InitGraph();
-	//MV1DeleteModel(ModelHandle);
 	DxLib_End();
 
 	return 0;
 }
 
-void routesTitle(int choice, int* flg, Battle& battle, Scenario& scenario, Tutorial& tutorial) {
-	switch (choice) {
-	case MENU_CHOICE_VS_HUMAN:
-		if (!battle.hasSaveFile()) {
-			battle.startVsHuman();
-			*flg = FLAG_BATTLE;
-		}
-		break;
-	case MENU_CHOICE_VS_COM:
-		*flg = FLAG_SCENARIO;
-		scenario.initialize();
-		break;
-	case MENU_CHOICE_TUTORIAL:
-		*flg = FLAG_TUTORIAL;
-		tutorial.initialize();
-		break;
-	case MENU_CHOICE_START:
-		break;
-	case MENU_CHOICE_LOAD:
-		break;
-	}
-}
-
-void routesTitle(int choice, int* flg, Title& title, Battle& battle) {
+void routesBattle(int choice, int* flg, Title& title, Battle& battle) {
 	switch (choice) {
 	case MENU_CHOICE_VS_HUMAN:
 		if (!battle.hasSaveFile()) {
@@ -252,7 +226,7 @@ void routesTitle(int choice, int* flg, Title& title, Battle& battle) {
 	}
 }
 
-void routesTitle(int choice, int* flg, Title& title, Scenario& scenario, Music& music) {
+void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Music& music) {
 	switch (choice) {
 	case MENU_CHOICE_VS_COM:
 		if (!scenario.hasSaveFile()) {
@@ -275,11 +249,20 @@ void routesTitle(int choice, int* flg, Title& title, Scenario& scenario, Music& 
 	}
 }
 
-void routesTitle(int choice, int* flg, Title& title, Tutorial& tutorial) {
+void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial) {
 	switch (choice) {
 	case MENU_CHOICE_TUTORIAL:
 		*flg = FLAG_TUTORIAL;
 		tutorial.initialize();
+		break;
+	}
+}
+
+void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom) {
+	switch (choice) {
+	case MENU_CHOICE_MUSIC_ROOM:
+		*flg = FLAG_MUSIC_ROOM;
+		musicRoom.initialize();
 		break;
 	}
 }

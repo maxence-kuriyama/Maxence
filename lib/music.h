@@ -8,6 +8,7 @@
 
 const string MUSIC_LOAD_MSG_SYNC("Loading...");
 const string MUSIC_LOAD_MSG_ASYNC_BASE("Loading");
+const int MUSIC_START_FROM_TOP(1);
 
 // 音楽のロード・再生をするクラス
 // 特に非同期読み込みのwrapper
@@ -102,7 +103,7 @@ public:
 	}
 
 	// 再生中と待機中の音楽を切り替える
-	int swap(int strColor = 0) {
+	int swap(int strColor = 0, int noPlay = 0) {
 		if (isPrepared(1)) {
 			stop();
 			int tmp = handle[0];
@@ -111,12 +112,16 @@ public:
 			string tmpStr = musicName[0];
 			musicName[0] = musicName[1];
 			musicName[1] = tmpStr;
-			play();
+			if (!noPlay) play();
 			isSwapped = 1;
 			return 1;
 		}
 		drawLoadMsg(strColor, 1);
 		return 0;
+	}
+
+	int swapWithoutPlay(int strColor = 0) {
+		return swap(strColor, 1);
 	}
 
 	// ループ中に一度だけpopする

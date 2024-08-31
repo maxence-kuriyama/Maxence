@@ -25,14 +25,6 @@ const int SCENE_ACTION_STOP(-1);
 
 const int SCENE_RES_DEFAULT(-100);
 
-const int SCENE_WHO_DESC(0);
-const int SCENE_WHO_YELLOW(1);
-const int SCENE_WHO_BLUE(2);
-const int SCENE_WHO_RED(3);
-const int SCENE_WHO_GREEN(4);
-const int SCENE_WHO_DEER(5);
-const int SCENE_WHO_PLAYER(-1);
-
 
 // シナリオ抽象クラス
 class ScenarioBase {
@@ -47,7 +39,6 @@ protected:
 
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
-	bool hasMsg = false;	// メッセージがセットされているか
 	bool isTalking = false;	// NPCと会話中か否か
 	string imgFront;	// フロントサイドに表示する画像
 	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
@@ -65,7 +56,7 @@ protected:
 	string battle_trigger = "";
 	
 	struct Scene sceneList[MAX_SCENE_NUM] = {
-		{ SCENE_ACTION_TALK,	SCENE_WHO_DESC,		"Nothing to say...\nPlease define me." },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"Nothing to say...\nPlease define me." },
 		{ -1,					-1,					"" },
 	};
 
@@ -85,7 +76,6 @@ public:
 	void initialize() {
 		flg = 0;
 		cnt = 0;
-		hasMsg = false;
 		mrK[0].exhibit();
 		mrK[1].exhibit();
 		mrK[2].exhibit();
@@ -205,7 +195,7 @@ public:
 		DrawFormatString(245, 405, strColor, "deer.vis: %d", deer.visible);
 		DrawFormatString(245, 425, strColor, "key: %d", key);
 		DrawFormatString(245, 445, strColor, "isTalking: %s", isTalking ? "true" : "false");
-		DrawFormatString(245, 465, strColor, "hasMsg: %s", hasMsg ? "true" : "false");
+		DrawFormatString(245, 465, strColor, "hasMsg: %s", msg.isShown ? "true" : "false");
 	}
 
 
@@ -225,20 +215,16 @@ protected:
 
 	// メッセージを読む
 	void readMsg(string str, int who, Mouse& mouse) {
-		if (!hasMsg) {
+		if (!msg.isShown) {
 			if (str == "clear") {
-				msg.set("", who, false);
+				msg.setEmpty(who);
 				flg++;
 			}
 			else {
 				msg.set(str, who);
-				hasMsg = true;
 			}
 		}
-		if ((onOk || mouse.click()) && msg.skip()) {
-			flg++;
-			hasMsg = false;
-		}
+		if ((onOk || mouse.click()) && msg.skip()) flg++;
 	}
 
 	void doMove(const char how[], Mouse& mouse) {
@@ -333,19 +319,19 @@ protected:
 			for (int i = 0; i < 4; ++i) {
 				mrK[i].setTrigger("fired");
 			}
-			mrK[SCENE_WHO_RED - 1].setTrigger("talk");
+			mrK[MESSAGE_WHO_RED - 1].setTrigger("talk");
 		}
 		else if (trigger == "talk_green") {
 			for (int i = 0; i < 4; ++i) {
 				mrK[i].setTrigger("fired");
 			}
-			mrK[SCENE_WHO_GREEN - 1].setTrigger("talk");
+			mrK[MESSAGE_WHO_GREEN - 1].setTrigger("talk");
 		}
 		else if (trigger == "talk_blue") {
 			for (int i = 0; i < 4; ++i) {
 				mrK[i].setTrigger("fired");
 			}
-			mrK[SCENE_WHO_BLUE - 1].setTrigger("talk");
+			mrK[MESSAGE_WHO_BLUE - 1].setTrigger("talk");
 		}
 		else if (trigger == "none") {
 			for (int i = 0; i < 4; ++i) {
@@ -453,12 +439,6 @@ protected:
 		return game.isUpdated(res);
 	}
 
-	void startMusic(const char* musicName) {
-		if (CheckMusic() != 1) {
-			PlayMusic(musicName, DX_PLAYTYPE_BACK);
-		}
-	}
-
 	void talkMrK(int who, const char key[], Mouse& mouse) {
 		MrK* obj = getObject(who);
 		if (!obj) return;
@@ -467,7 +447,7 @@ protected:
 		Saying saying = obj->talk(key);
 		if (strcmp(saying.say, "") == 0 || saying.who == -1) {
 			isTalking = false;
-			msg.set("", SCENE_WHO_DESC, false);
+			msg.setEmpty();
 			return;
 		}
 		else {
@@ -476,20 +456,16 @@ protected:
 				seName = m[1].str(); // デバッグ用
 				obj->playSE(seName);
 				obj->talkNext();
-				hasMsg = false;
+				msg.isShown = false;
 				return;
 			}
 		}
 
 		// メッセージ表示処理
-		if (!hasMsg) {
+		if (!msg.isShown) {
 			msg.set(saying.say, saying.who);
-			hasMsg = true;
 		}
-		if ((onOk || mouse.click()) && msg.skip()) {
-			obj->talkNext();
-			hasMsg = false;
-		}
+		if ((onOk || mouse.click()) && msg.skip()) obj->talkNext();
 	}
 
 	bool isMrK(int who) {
@@ -531,7 +507,7 @@ protected:
 	}
 
 	virtual MrK* getObject(int who) {
-		if (who == SCENE_WHO_DEER) return &deer;
+		if (who == MESSAGE_WHO_DEER) return &deer;
 		if (isMrK(who)) return &mrK[who - 1];
 		return NULL;
 	}

@@ -2,7 +2,7 @@
 
 #include "lib/const.h"
 #include "lib/menu.h"
-#include "lib/modes/title/fireflower.h"
+#include "lib/modes/common/fireflower.h"
 
 
 const int TITLE_GAME_MODE(1);
@@ -17,6 +17,7 @@ private:
 	Button btnLonely;
 	Button btnVsHuman;
 	Button btnTutorial;
+	Button btnMusicRoom;
 	Button btnStart;
 	Button btnLoad;
 	int White = GetColor(255, 255, 255);
@@ -35,12 +36,16 @@ public:
 		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {
 			tama[i].initialize();
 		}
+
 		btnLonely.initialize(TEXT1_X, TEXT1_Y, "‚Ú‚Á‚¿‚Å");
 		btnVsHuman.initialize(TEXT2_X, TEXT2_Y, "—×‚Ìl‚Æ");
 		btnTutorial.initialize(TEXT3_X, TEXT3_Y, "‹³‚¦‚ðŒî‚¤");
+		btnMusicRoom.initialize(TEXT4_X, TEXT4_Y, "‰¹ŠyŽº");
+		Button btnsForTitle[4] = { btnLonely, btnVsHuman, btnTutorial, btnMusicRoom };
+		menu.set(btnsForTitle, 4);
+
 		btnStart.initialize(TEXT1_X, TEXT1_Y, "‚Í‚¶‚ß‚©‚ç");
 		btnLoad.initialize(TEXT2_X, TEXT2_Y, "‚Â‚Ã‚«‚©‚ç");
-		menu.set(btnLonely, btnVsHuman, btnTutorial);
 		flg = TITLE_GAME_MODE;
 	}
 
@@ -108,6 +113,8 @@ private:
 			return MENU_CHOICE_VS_HUMAN;
 		case 2:
 			return MENU_CHOICE_TUTORIAL;
+		case 3:
+			return MENU_CHOICE_MUSIC_ROOM;
 		default:
 			return MENU_CHOICE_NONE;
 		}
