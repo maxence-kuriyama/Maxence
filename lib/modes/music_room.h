@@ -16,6 +16,8 @@ const int MUSIC_LEFT_X2(300);
 const int MUSIC_DIV_X(10);
 const int MUSIC_TOP_Y(40);
 const int MUSIC_DIV_Y(40);
+const int MUSIC_MESSAGE_INT_X(30);
+const int MUSIC_MESSAGE_END_X(610);
 
 // 音楽室モード
 class MusicRoom {
@@ -28,26 +30,25 @@ private:
 		int id;
 		string ext;
 		string name;
-		int who;
 		string desc;
 	};
 
 	struct MusicInfo infoList[MUSIC_NUM] = {
-		{ 1,	"m4a",	"It's Maxence!!!",					MESSAGE_WHO_YELLOW,	"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
-		{ 2,	"ogg",	"Mr.K is talking to you",			MESSAGE_WHO_YELLOW,	"Mr.Kのテーマ。チュートリアルで流れます。\n突然語りかけてくるアイツの怪しさを表現しました♪\nちなみに彼は全裸サングラスです。イカしてますね！" },
-		{ 3,	"ogg",	"海と樹海と私",						MESSAGE_WHO_YELLOW,	"世界（部屋）を包み込む不穏な曲...樹海！樹海！\n樹海！樹海！樹海！樹海！樹海！樹海！樹海！樹海！\nさて問題！いま何回「樹海」っていったでしょうか？" },
-		{ 4,	"ogg",	"Mr.K is shouting at you",			MESSAGE_WHO_RED,	"激昂して襲いかかってくる赤いアイツのテーマ。\n赤いアイツはモデルとなる人がいるとかいないとか。\nおっと誰か来たようだ..." },
-		{ 5,	"ogg",	"Mr.K is smiling on you",			MESSAGE_WHO_GREEN,	"仲間の死を悼む緑のアイツのテーマ。\n緑のアイツは割といいやつなイメージがあります。\n彼は最後にいったい何を悟ったのでしょうか？？" },
-		{ 6,	"ogg",	"Mr.K is lying to you",				MESSAGE_WHO_BLUE,	"謀略に長けた青いアイツのテーマ。\n野心から仲間を切り捨て王を目指す悲しいアイツ。\n狡猾さと悲しさが表現できていれば幸いです♪" },
-		{ 7,	"ogg",	"運命の平衡点",						MESSAGE_WHO_YELLOW,	"真実を悟る時の曲。曲名は脚本のA氏による命名。\n冬に寒い寒いって思いながら作った記憶があります。\n運命にも平衡点はあるんだよなぁ..." },
-		{ 8,	"ogg",	"Mr.K is playing with you",			MESSAGE_WHO_YELLOW,	"操作キャラだった黄色いアイツと戦う時のテーマ。\nチュートリアル曲のアレンジになっています。\nMr.Kらしい曲を目指しました♪" },
-		{ 9,	"ogg",	"鹿は静かに森に帰る",				MESSAGE_WHO_YELLOW,	"表エンディング曲。曲名は脚本のA氏による命名。\nなぜ鹿なのか？本当に鹿なのか？なぜ森に帰るのか？\nそれは鹿のみが知っているのである。" },
-		{ 10,	"ogg",	"Waterly blue mountain",			MESSAGE_WHO_YELLOW,	"プログラム担当のT氏との合作。ボーナストラック。\n曲名の由来は製作者の一人の名前という噂が...\nこれ以上書くと怒られちゃいそうなのでこの辺で。" },
-		{ 11,	"ogg",	"Dear The Deer",					MESSAGE_WHO_YELLOW,	"裏ルート突入！！謎の鹿のテーマ曲。\n戦い前の静かだけどバチバチとした雰囲気を\n感じられる曲になっていれば嬉しいです♪" },
-		{ 12,	"ogg",	"The biggest deer",					MESSAGE_WHO_DEER,	"裏ラスボス戦の曲。直訳すると最も大きな鹿。\n空間を操る能力があるとか。\n得体の知れない感じが表現できていれば嬉しいです♪" },
-		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	MESSAGE_WHO_PLAYER,	"真エンディング。ここまで遊んでくれてありがとう。\nあなたこそが本当のMr.Kなのかもしれない。\nブルースって多分こんな感じだよね、たぶん..." },
-		{ 14,	"ogg",	"Fading memories",					MESSAGE_WHO_YELLOW,	"けっこう壮大な雰囲気の曲になりました。\n作ったはいいけど使う場面がなくて...\n...いわゆるボーナストラックというやつですね！" },
-		{ 15,	"ogg",	"釣り船",							MESSAGE_WHO_YELLOW,	"ゲームオーバー時に流れます。\n一回も聞かずにクリアできたあなたはスゴイ！！\n侘び寂びを表現することを目指して作りました。" },
+		{ 1,	"m4a",	"It's Maxence!!!",					"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
+		{ 2,	"ogg",	"Mr.K is talking to you",			"Mr.Kのテーマ。チュートリアルで流れます。\n突然語りかけてくるアイツの怪しさを表現しました♪\nちなみに彼は全裸サングラスです。イカしてますね！" },
+		{ 3,	"ogg",	"海と樹海と私",						"世界（部屋）を包み込む不穏な曲...樹海！樹海！\n樹海！樹海！樹海！樹海！樹海！樹海！樹海！樹海！\nさて問題！いま何回「樹海」っていったでしょうか？" },
+		{ 4,	"ogg",	"Mr.K is shouting at you",			"激昂して襲いかかってくる赤いアイツのテーマ。\n赤いアイツはモデルとなる人がいるとかいないとか。\nおっと誰か来たようだ..." },
+		{ 5,	"ogg",	"Mr.K is smiling on you",			"仲間の死を悼む緑のアイツのテーマ。\n緑のアイツは割といいやつなイメージがあります。\n彼は最後にいったい何を悟ったのでしょうか？？" },
+		{ 6,	"ogg",	"Mr.K is lying to you",				"謀略に長けた青いアイツのテーマ。\n野心から仲間を切り捨て王を目指す悲しいアイツ。\n狡猾さと悲しさが表現できていれば幸いです♪" },
+		{ 7,	"ogg",	"運命の平衡点",						"真実を悟る時の曲。曲名は脚本のA氏による命名。\n冬に寒い寒いって思いながら作った記憶があります。\n運命にも平衡点はあるんだよなぁ..." },
+		{ 8,	"ogg",	"Mr.K is playing with you",			"操作キャラだった黄色いアイツと戦う時のテーマ。\nチュートリアル曲のアレンジになっています。\nMr.Kらしい曲を目指しました♪" },
+		{ 9,	"ogg",	"鹿は静かに森に帰る",				"表エンディング曲。曲名は脚本のA氏による命名。\nなぜ鹿なのか？本当に鹿なのか？なぜ森に帰るのか？\nそれは鹿のみが知っているのである。" },
+		{ 10,	"ogg",	"Waterly blue mountain",			"プログラム担当のT氏との合作。ボーナストラック。\n曲名の由来は製作者の一人の名前という噂が...\nこれ以上書くと怒られちゃいそうなのでこの辺で。" },
+		{ 11,	"ogg",	"Dear The Deer",					"裏ルート突入！！謎の鹿のテーマ曲。\n戦い前の静かだけどバチバチとした雰囲気を\n感じられる曲になっていれば嬉しいです♪" },
+		{ 12,	"ogg",	"The biggest deer",					"裏ラスボス戦の曲。直訳すると最も大きな鹿。\n空間を操る能力があるとか。\n得体の知れない感じが表現できていれば嬉しいです♪" },
+		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	"真エンディング。ここまで遊んでくれてありがとう。\nあなたこそが本当のMr.Kなのかもしれない。\nブルースって多分こんな感じだよね、たぶん..." },
+		{ 14,	"ogg",	"Fading memories",					"けっこう壮大な雰囲気の曲になりました。\n作ったはいいけど使う場面がなくて...\n...いわゆるボーナストラックというやつですね！" },
+		{ 15,	"ogg",	"釣り船",							"ゲームオーバー時に流れます。\n一回も聞かずにクリアできたあなたはスゴイ！！\n侘び寂びを表現することを目指して作りました。" },
 	};
 	string defaultMsgStr = "ここは音楽室\nいつもの部屋じゃないどこかだよ";
 
@@ -65,8 +66,8 @@ public:
 	}
 
 	void initialize() {
-		msg.initialize();
-		msg.setWithoutNext(defaultMsgStr, MESSAGE_WHO_YELLOW);
+		msg.initialize(MUSIC_MESSAGE_INT_X, MUSIC_MESSAGE_END_X);
+		msg.setWithoutNext(defaultMsgStr, MESSAGE_WHO_DESC);
 		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
 			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
 			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
@@ -128,7 +129,7 @@ private:
 
 	void updateMusicDesc() {
 		MusicInfo info = infoList[choice];
-		msg.setWithoutNext(info.desc, info.who);
+		msg.setWithoutNext(info.desc, MESSAGE_WHO_DESC);
 	}
 
 	int play(Music& music) {
