@@ -2,8 +2,8 @@
 
 #include <sstream>
 #include <iomanip>
-#include "lib/nlohmann/json.hpp"
 #include "lib/music.h"
+#include "lib/music_unlocker.h"
 #include "lib/user_input.h"
 #include "lib/modes/common/message.h"
 #include "lib/modes/common/fireflower.h"
@@ -26,7 +26,6 @@ private:
 	int strColorMenu = GetColor(255, 255, 255);
 	//int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(255, 215, 0);
-	string saveFilePath = SAVE_FILE_MUSIC_ROOM;
 
 	struct MusicInfo {
 		int id;
@@ -35,7 +34,7 @@ private:
 		string desc;
 	};
 
-	nlohmann::json unlockedIds = nlohmann::json::array();
+	MusicUnlocker unlocker;
 	struct MusicInfo infoList[MUSIC_NUM] = {};
 	const struct MusicInfo infoMaster[MUSIC_NUM] = {
 		{ 1,	"m4a",	"It's Maxence!!!",					"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
@@ -71,7 +70,6 @@ public:
 	}
 
 	void initialize() {
-		load();
 		initializeMusicInfo();
 		initializeMessage();
 		initializeButtons();
@@ -146,19 +144,8 @@ private:
 		return ss.str();
 	}
 
-	bool isUnlocked(MusicInfo& info) {
-		return isUnlocked(info.id);
-	}
-
-	bool isUnlocked(int id) {
-		for (nlohmann::json::iterator it = unlockedIds.begin(); it != unlockedIds.end(); ++it) {
-			if (*it == id) return true;
-		}
-		return false;
-	}
-
 	/*===========================*/
-	//    描画系関数
+	//    描画系private関数
 	/*===========================*/
 	void showMusicDesc() {
 		MusicInfo info = infoList[choice];
@@ -178,7 +165,7 @@ private:
 	void initializeMusicInfo() {
 		for (int i = 0; i < MUSIC_NUM; ++i) {
 			struct MusicInfo info = infoMaster[i];
-			if (isUnlocked(info)) {
+			if (unlocker.isUnlocked(info.id)) {
 				infoList[i] = info;
 			}
 			else {
@@ -211,26 +198,5 @@ private:
 		for (int i = 0; i < MUSIC_ROOM_FIRE_FLOWER_NUM; ++i) {
 			tama[i].initialize(60.0, 600.0, 520.0, 600.0);
 		}
-	}
-
-	/*===========================*/
-	//    Save and Load
-	/*===========================*/
-private:
-	void save() {
-		Encrypter encrypter(saveFilePath);
-		nlohmann::json data = {
-			{"unlockedIds", unlockedIds},
-		};
-		encrypter.write(data);
-	}
-
-	void load() {
-		Encrypter encrypter(saveFilePath);
-		nlohmann::json res = encrypter.read();
-		Logger::ss << "MusicRoom loaded: " << res.dump();
-		Logger::log();
-
-		unlockedIds = res["unlockedIds"];
 	}
 };

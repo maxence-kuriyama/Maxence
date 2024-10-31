@@ -213,6 +213,7 @@
     <ClInclude Include="lib\modes\music_room.h" />
     <ClInclude Include="lib\movie.h" />
     <ClInclude Include="lib\music.h" />
+    <ClInclude Include="lib\music_unlocker.h" />
     <ClInclude Include="lib\nlohmann\json.hpp" />
     <ClInclude Include="lib\OBJ_Loader.h" />
     <ClInclude Include="lib\sprite.h" />
