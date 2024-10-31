@@ -36,7 +36,8 @@ private:
 	};
 
 	nlohmann::json unlockedIds = nlohmann::json::array({ 1,2 });
-	struct MusicInfo infoList[MUSIC_NUM] = {
+	struct MusicInfo infoList[MUSIC_NUM] = {};
+	const struct MusicInfo infoMaster[MUSIC_NUM] = {
 		{ 1,	"m4a",	"It's Maxence!!!",					"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
 		{ 2,	"ogg",	"Mr.K is talking to you",			"Mr.Kのテーマ。チュートリアルで流れます。\n突然語りかけてくるアイツの怪しさを表現しました♪\nちなみに彼は全裸サングラスです。イカしてますね！" },
 		{ 3,	"ogg",	"海と樹海と私",						"世界（部屋）を包み込む不穏な曲...樹海！樹海！\n樹海！樹海！樹海！樹海！樹海！樹海！樹海！樹海！\nさて問題！いま何回「樹海」っていったでしょうか？" },
@@ -53,6 +54,7 @@ private:
 		{ 14,	"ogg",	"Fading memories",					"けっこう壮大な雰囲気の曲になりました。\n作ったはいいけど使う場面がなくて...\n...いわゆるボーナストラックというやつですね！" },
 		{ 15,	"ogg",	"釣り船",							"ゲームオーバー時に流れます。\n一回も聞かずにクリアできたあなたはスゴイ！！\n侘び寂びを表現することを目指して作りました。" },
 	};
+	const struct MusicInfo lockedMusicInfo = { 0, "wav", "??????????", "この曲はまだ聞いたことがないよ" };
 	string defaultMsgStr = "ここは音楽室\nいつもの部屋じゃないどこかだよ";
 
 	Menu menu;
@@ -69,8 +71,8 @@ public:
 	}
 
 	void initialize() {
-		save();
 		load();
+		initializeMusicInfo();
 		initializeMessage();
 		initializeButtons();
 		initializeFireFlower();
@@ -118,11 +120,6 @@ private:
 
 	bool reset(UserInput& ui) {}
 
-	void showMusicDesc() {
-		MusicInfo info = infoList[choice];
-		msg.setWithoutNext(info.desc, MESSAGE_WHO_DESC);
-	}
-
 	int play(Music& music) {
 		if (choice == -1) return 1;
 
@@ -149,6 +146,21 @@ private:
 		return ss.str();
 	}
 
+	bool isUnlocked(MusicInfo& info) {
+		for (nlohmann::json::iterator it = unlockedIds.begin(); it != unlockedIds.end(); ++it) {
+			if (*it == info.id) return true;
+		}
+		return false;
+	}
+
+	/*===========================*/
+	//    描画系関数
+	/*===========================*/
+	void showMusicDesc() {
+		MusicInfo info = infoList[choice];
+		msg.setWithoutNext(info.desc, MESSAGE_WHO_DESC);
+	}
+
 	void showFireFlower() {
 		for (int i = 0; i < MUSIC_ROOM_FIRE_FLOWER_NUM; ++i) {
 			tama[i].draw();
@@ -159,6 +171,18 @@ private:
 	/*===========================*/
 	//    Initialization
 	/*===========================*/
+	void initializeMusicInfo() {
+		for (int i = 0; i < MUSIC_NUM; ++i) {
+			struct MusicInfo info = infoMaster[i];
+			if (isUnlocked(info)) {
+				infoList[i] = info;
+			}
+			else {
+				infoList[i] = lockedMusicInfo;
+			}
+		}
+	}
+
 	void initializeMessage() {
 		msg.initialize(MUSIC_MESSAGE_INT_X, MUSIC_MESSAGE_END_X);
 		msg.setWithoutNext(defaultMsgStr, MESSAGE_WHO_DESC);
@@ -188,6 +212,7 @@ private:
 	/*===========================*/
 	//    Save and Load
 	/*===========================*/
+public:
 	void save() {
 		Encrypter encrypter(save_filepath);
 		nlohmann::json data = {
@@ -196,6 +221,7 @@ private:
 		encrypter.write(data);
 	}
 
+private:
 	void load() {
 		Encrypter encrypter(save_filepath);
 		nlohmann::json res = encrypter.read();
