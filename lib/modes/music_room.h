@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include "lib/nlohmann/json.hpp"
 #include "lib/music.h"
 #include "lib/user_input.h"
 #include "lib/modes/common/message.h"
@@ -25,6 +26,7 @@ private:
 	int strColorMenu = GetColor(255, 255, 255);
 	//int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(255, 215, 0);
+	string save_filepath = "./data/savemr.dat";
 
 	struct MusicInfo {
 		int id;
@@ -33,6 +35,7 @@ private:
 		string desc;
 	};
 
+	nlohmann::json unlockedIds = nlohmann::json::array({ 1,2 });
 	struct MusicInfo infoList[MUSIC_NUM] = {
 		{ 1,	"m4a",	"It's Maxence!!!",					"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
 		{ 2,	"ogg",	"Mr.K is talking to you",			"Mr.Kのテーマ。チュートリアルで流れます。\n突然語りかけてくるアイツの怪しさを表現しました♪\nちなみに彼は全裸サングラスです。イカしてますね！" },
@@ -66,23 +69,11 @@ public:
 	}
 
 	void initialize() {
-		msg.initialize(MUSIC_MESSAGE_INT_X, MUSIC_MESSAGE_END_X);
-		msg.setWithoutNext(defaultMsgStr, MESSAGE_WHO_DESC);
-		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
-			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
-			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
-		}
-		for (int i = (MUSIC_NUM + 1) / 2; i < MUSIC_NUM; ++i) {
-			int x = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_X + MUSIC_LEFT_X2;
-			int y = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y;
-			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
-		}
-		buttons[MUSIC_MAX_INDEX].initializeUsingLabelLen(520, 340, "タイトルへ");
-		menu.set(buttons, MUSIC_NUM + 1);
-		for (int i = 0; i < MUSIC_ROOM_FIRE_FLOWER_NUM; ++i) {
-			tama[i].initialize(60.0, 600.0, 520.0, 600.0);
-		}
+		save();
+		load();
+		initializeMessage();
+		initializeButtons();
+		initializeFireFlower();
 		choice = -1;
 		isLoading = false;
 	}
@@ -98,7 +89,7 @@ public:
 		if (currentChoice != -1) {
 			choice = currentChoice;
 			music.stop();
-			updateMusicDesc();
+			showMusicDesc();
 		}
 
 		if (currentChoice != -1 || isLoading) {
@@ -127,7 +118,7 @@ private:
 
 	bool reset(UserInput& ui) {}
 
-	void updateMusicDesc() {
+	void showMusicDesc() {
 		MusicInfo info = infoList[choice];
 		msg.setWithoutNext(info.desc, MESSAGE_WHO_DESC);
 	}
@@ -163,5 +154,54 @@ private:
 			tama[i].draw();
 			tama[i].tick();
 		}
+	}
+
+	/*===========================*/
+	//    Initialization
+	/*===========================*/
+	void initializeMessage() {
+		msg.initialize(MUSIC_MESSAGE_INT_X, MUSIC_MESSAGE_END_X);
+		msg.setWithoutNext(defaultMsgStr, MESSAGE_WHO_DESC);
+	}
+
+	void initializeButtons() {
+		for (int i = 0; i < (MUSIC_NUM + 1) / 2; ++i) {
+			int x = i * MUSIC_DIV_X + MUSIC_LEFT_X;
+			int y = i * MUSIC_DIV_Y + MUSIC_TOP_Y;
+			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
+		}
+		for (int i = (MUSIC_NUM + 1) / 2; i < MUSIC_NUM; ++i) {
+			int x = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_X + MUSIC_LEFT_X2;
+			int y = (i - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y;
+			buttons[i].initializeUsingLabelLen(x, y, infoList[i].name);
+		}
+		buttons[MUSIC_MAX_INDEX].initializeUsingLabelLen(520, 340, "タイトルへ");
+		menu.set(buttons, MUSIC_NUM + 1);
+	}
+
+	void initializeFireFlower() {
+		for (int i = 0; i < MUSIC_ROOM_FIRE_FLOWER_NUM; ++i) {
+			tama[i].initialize(60.0, 600.0, 520.0, 600.0);
+		}
+	}
+
+	/*===========================*/
+	//    Save and Load
+	/*===========================*/
+	void save() {
+		Encrypter encrypter(save_filepath);
+		nlohmann::json data = {
+			{"unlockedIds", unlockedIds},
+		};
+		encrypter.write(data);
+	}
+
+	void load() {
+		Encrypter encrypter(save_filepath);
+		nlohmann::json res = encrypter.read();
+		Logger::ss << "MusicRoom loaded: " << res.dump();
+		Logger::log();
+
+		unlockedIds = res["unlockedIds"];
 	}
 };
