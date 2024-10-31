@@ -26,7 +26,7 @@ private:
 	int strColorMenu = GetColor(255, 255, 255);
 	//int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(255, 215, 0);
-	string save_filepath = "./data/savemr.dat";
+	string saveFilePath = SAVE_FILE_MUSIC_ROOM;
 
 	struct MusicInfo {
 		int id;
@@ -35,7 +35,7 @@ private:
 		string desc;
 	};
 
-	nlohmann::json unlockedIds = nlohmann::json::array({ 1,2 });
+	nlohmann::json unlockedIds = nlohmann::json::array();
 	struct MusicInfo infoList[MUSIC_NUM] = {};
 	const struct MusicInfo infoMaster[MUSIC_NUM] = {
 		{ 1,	"m4a",	"It's Maxence!!!",					"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
@@ -147,8 +147,12 @@ private:
 	}
 
 	bool isUnlocked(MusicInfo& info) {
+		return isUnlocked(info.id);
+	}
+
+	bool isUnlocked(int id) {
 		for (nlohmann::json::iterator it = unlockedIds.begin(); it != unlockedIds.end(); ++it) {
-			if (*it == info.id) return true;
+			if (*it == id) return true;
 		}
 		return false;
 	}
@@ -212,18 +216,17 @@ private:
 	/*===========================*/
 	//    Save and Load
 	/*===========================*/
-public:
+private:
 	void save() {
-		Encrypter encrypter(save_filepath);
+		Encrypter encrypter(saveFilePath);
 		nlohmann::json data = {
 			{"unlockedIds", unlockedIds},
 		};
 		encrypter.write(data);
 	}
 
-private:
 	void load() {
-		Encrypter encrypter(save_filepath);
+		Encrypter encrypter(saveFilePath);
 		nlohmann::json res = encrypter.read();
 		Logger::ss << "MusicRoom loaded: " << res.dump();
 		Logger::log();

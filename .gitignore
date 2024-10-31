@@ -276,3 +276,4 @@ sayings_*
 data/a*.txt
 data/parameter*
 data/save*.dat
+data/save*.dat.*
