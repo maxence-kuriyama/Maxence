@@ -1,11 +1,14 @@
 #pragma once
 
 #include <iostream>
+#include <regex>
 #include "lib/nlohmann/json.hpp"
 #include "lib/const.h"
 #include "lib/encrypter.h"
 
 using namespace std;
+
+const int MUSIC_ID_NOT_FOUND(-1);
 
 class MusicUnlocker {
 private:
@@ -44,14 +47,22 @@ private:
 
 	void _unlock(const string fileName) {
 		int id = getIdFromFileName(fileName);
+		if (id == MUSIC_ID_NOT_FOUND) return;
 		if (isUnlocked(id)) return;
 
 		unlockedIds.push_back(id);
 		save();
+		Logger::ss << "MusicUnlocker unlocked " << fileName;
+		Logger::log();
 	}
 
 	int getIdFromFileName(const string fileName) {
-		return 1;
+		cmatch m;
+		if (regex_search(fileName.c_str(), m, regex(R"(bgm0?([0-9]{1,2})\.)"))) {
+			int id = stoi(m[1].str());
+			if (id > 0) return id;
+		}
+		return MUSIC_ID_NOT_FOUND;
 	}
 
 	bool _isUnlocked(int id) {
