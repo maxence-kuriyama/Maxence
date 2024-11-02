@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include "lib/const.h"
 #include "lib/music.h"
 #include "lib/music_unlocker.h"
 #include "lib/user_input.h"
@@ -34,7 +35,6 @@ private:
 		string desc;
 	};
 
-	MusicUnlocker unlocker;
 	struct MusicInfo infoList[MUSIC_NUM] = {};
 	const struct MusicInfo infoMaster[MUSIC_NUM] = {
 		{ 1,	"m4a",	"It's Maxence!!!",					"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
@@ -165,7 +165,7 @@ private:
 	void initializeMusicInfo() {
 		for (int i = 0; i < MUSIC_NUM; ++i) {
 			struct MusicInfo info = infoMaster[i];
-			if (unlocker.isUnlocked(info.id)) {
+			if (MusicUnlocker::isUnlocked(info.id)) {
 				infoList[i] = info;
 			}
 			else {
