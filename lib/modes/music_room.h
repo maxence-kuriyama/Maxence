@@ -13,11 +13,12 @@ const int MUSIC_NUM(15);
 const int MUSIC_MAX_INDEX(MUSIC_NUM);
 const int MUSIC_ROOM_FIRE_FLOWER_NUM(2);
 
-const int MUSIC_LEFT_X(30);
-const int MUSIC_LEFT_X2(300);
+const int MUSIC_LEFT_X(50);
+const int MUSIC_LEFT_X2(320);
 const int MUSIC_DIV_X(10);
 const int MUSIC_TOP_Y(40);
 const int MUSIC_DIV_Y(40);
+const int MUSIC_SPEAKER_ICON_SIZE(36);
 const int MUSIC_MESSAGE_INT_X(30);
 const int MUSIC_MESSAGE_END_X(610);
 
@@ -27,6 +28,7 @@ private:
 	int strColorMenu = GetColor(255, 255, 255);
 	//int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(255, 215, 0);
+	int speakerIcon = LoadGraph("graph/speaker.png");
 
 	struct MusicInfo {
 		int id;
@@ -81,6 +83,7 @@ public:
 	int show(UserInput& ui, Music& music) {
 		showFireFlower();
 		msg.draw();
+		drawSpeakerIcon();
 	
 		int currentChoice = choose(ui);
 
@@ -157,6 +160,21 @@ private:
 			tama[i].draw();
 			tama[i].tick();
 		}
+	}
+
+	void drawSpeakerIcon() {
+		if (choice == -1) return;
+
+		int x, y;
+		if (choice < (MUSIC_NUM + 1) / 2) {
+			x = choice * MUSIC_DIV_X + MUSIC_LEFT_X - MUSIC_SPEAKER_ICON_SIZE - 5;
+			y = choice * MUSIC_DIV_Y + MUSIC_TOP_Y - MUSIC_SPEAKER_ICON_SIZE / 3;
+		}
+		else if (choice < MUSIC_NUM) {
+			x = (choice - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_X + MUSIC_LEFT_X2 - MUSIC_SPEAKER_ICON_SIZE - 5;
+			y = (choice - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y - MUSIC_SPEAKER_ICON_SIZE / 3;
+		}
+		DrawExtendGraph(x, y, x + MUSIC_SPEAKER_ICON_SIZE, y + MUSIC_SPEAKER_ICON_SIZE, speakerIcon, TRUE);
 	}
 
 	/*===========================*/
