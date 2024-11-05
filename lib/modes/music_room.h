@@ -210,6 +210,7 @@ private:
 		}
 		buttons[MUSIC_MAX_INDEX].initializeUsingLabelLen(520, 340, "ƒ^ƒCƒgƒ‹‚Ö");
 		menu.set(buttons, MUSIC_NUM + 1);
+		menu.setStep((MUSIC_NUM + 1) / 2);
 	}
 
 	void initializeFireFlower() {

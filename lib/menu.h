@@ -93,10 +93,13 @@ public:
 const int MENU_BUTTON_MAX_SIZE(30);
 
 class Menu {
-public:
+private:
 	Button button[MENU_BUTTON_MAX_SIZE];
 	int size = 0;	// ボタンの個数 (<= 4)
 	int id = 0;		// どのボタンを指定しているか
+	int step = 1;	// 左右ボタンのidステップ値
+
+public:
 
 	Menu() {
 		size = 0;
@@ -106,7 +109,7 @@ public:
 	Menu(Button& button0, Button& button1) {
 		set(button0, button1);
 	}
-
+	
 	void set(Button& button0, Button& button1) {
 		button[0] = button0;
 		button[1] = button1;
@@ -122,6 +125,10 @@ public:
 		size = menuSize;
 	}
 
+	void setStep(int srcStep) {
+		step = srcStep;
+	}
+
 	void display(int strColor) {
 		for (int i = 0; i < size; ++i) {
 			button[i].display(0, strColor);
@@ -131,9 +138,15 @@ public:
 
 	void toggle(Key& key) {
 		if (key.onLeft()) {
-			id = (id - 1 + size) % size;
+			id = (id - step + size) % size;
 		}
 		if (key.onRight()) {
+			id = (id + step) % size;
+		}
+		if (key.onUp()) {
+			id = (id - 1 + size) % size;
+		}
+		if (key.onDown()) {
 			id = (id + 1) % size;
 		}
 	}
