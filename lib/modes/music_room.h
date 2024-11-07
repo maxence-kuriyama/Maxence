@@ -5,10 +5,10 @@
 #include "lib/const.h"
 #include "lib/music.h"
 #include "lib/music_unlocker.h"
-#include "lib/bg_character.h"
 #include "lib/user_input.h"
 #include "lib/modes/common/message.h"
 #include "lib/modes/common/fireflower.h"
+#include "lib/modes/music_room/bg_character.h"
 
 const int MUSIC_NUM(15);
 const int MUSIC_MAX_INDEX(MUSIC_NUM);

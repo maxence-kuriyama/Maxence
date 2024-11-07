@@ -173,7 +173,7 @@
     <ClInclude Include="lib\battle\comment.h" />
     <ClInclude Include="lib\battle\game.h" />
     <ClInclude Include="lib\battle\game\comment.h" />
-    <ClInclude Include="lib\bg_character.h" />
+    <ClInclude Include="lib\modes\music_room\bg_character.h" />
     <ClInclude Include="lib\board.h" />
     <ClInclude Include="lib\board\field.h" />
     <ClInclude Include="lib\board\hist.h" />
