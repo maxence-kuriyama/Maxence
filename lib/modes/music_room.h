@@ -5,6 +5,7 @@
 #include "lib/const.h"
 #include "lib/music.h"
 #include "lib/music_unlocker.h"
+#include "lib/bg_character.h"
 #include "lib/user_input.h"
 #include "lib/modes/common/message.h"
 #include "lib/modes/common/fireflower.h"
@@ -12,13 +13,6 @@
 const int MUSIC_NUM(15);
 const int MUSIC_MAX_INDEX(MUSIC_NUM);
 const int MUSIC_ROOM_FIRE_FLOWER_NUM(2);
-const int MUSIC_BG_NUM(5);
-const int MUSIC_BG_SIZE_SCALE(10);
-const double MUSIC_BG_ALPHA_SCALE(0.04);
-const int MUSIC_BG_MIN_X(-100);
-const int MUSIC_BG_MAX_X(300);
-const int MUSIC_BG_MIN_Y(0);
-const int MUSIC_BG_MAX_Y(100);
 
 const int MUSIC_LEFT_X(50);
 const int MUSIC_LEFT_X2(320);
@@ -28,14 +22,6 @@ const int MUSIC_DIV_Y(40);
 const int MUSIC_SPEAKER_ICON_SIZE(36);
 const int MUSIC_MESSAGE_INT_X(30);
 const int MUSIC_MESSAGE_END_X(610);
-
-const int MUSIC_WHO_NONE(0);
-const int MUSIC_WHO_YELLOW(1);
-const int MUSIC_WHO_RED(2);
-const int MUSIC_WHO_GREEN(3);
-const int MUSIC_WHO_BLUE(4);
-const int MUSIC_WHO_DEER(5);
-const int MUSIC_WHO_PL_YELLOW(6);
 
 // 音楽室モード
 class MusicRoom {
@@ -55,45 +41,30 @@ private:
 
 	struct MusicInfo infoList[MUSIC_NUM] = {};
 	const struct MusicInfo infoMaster[MUSIC_NUM] = {
-		{ 1,	"m4a",	"It's Maxence!!!",					MUSIC_WHO_NONE,			"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
-		{ 2,	"ogg",	"Mr.K is talking to you",			MUSIC_WHO_PL_YELLOW,	"Mr.Kのテーマ。チュートリアルで流れます。\n突然語りかけてくるアイツの怪しさを表現しました♪\nちなみに彼は全裸サングラスです。イカしてますね！" },
-		{ 3,	"ogg",	"海と樹海と私",						MUSIC_WHO_NONE,			"世界（部屋）を包み込む不穏な曲...樹海！樹海！\n樹海！樹海！樹海！樹海！樹海！樹海！樹海！樹海！\nさて問題！いま何回「樹海」っていったでしょうか？" },
-		{ 4,	"ogg",	"Mr.K is shouting at you",			MUSIC_WHO_RED,			"激昂して襲いかかってくる赤いアイツのテーマ。\n赤いアイツはモデルとなる人がいるとかいないとか。\nおっと誰か来たようだ..." },
-		{ 5,	"ogg",	"Mr.K is smiling on you",			MUSIC_WHO_GREEN,		"仲間の死を悼む緑のアイツのテーマ。\n緑のアイツは割といいやつなイメージがあります。\n彼は最後にいったい何を悟ったのでしょうか？？" },
-		{ 6,	"ogg",	"Mr.K is lying to you",				MUSIC_WHO_BLUE,			"謀略に長けた青いアイツのテーマ。\n野心から仲間を切り捨て王を目指す悲しいアイツ。\n狡猾さと悲しさが表現できていれば幸いです♪" },
-		{ 7,	"ogg",	"運命の平衡点",						MUSIC_WHO_NONE,			"真実を悟る時の曲。曲名は脚本のA氏による命名。\n冬に寒い寒いって思いながら作った記憶があります。\n運命にも平衡点はあるんだよなぁ..." },
-		{ 8,	"ogg",	"Mr.K is playing with you",			MUSIC_WHO_YELLOW,		"操作キャラだった黄色いアイツと戦う時のテーマ。\nチュートリアル曲のアレンジになっています。\nMr.Kらしい曲を目指しました♪" },
-		{ 9,	"ogg",	"鹿は静かに森に帰る",				MUSIC_WHO_NONE,			"表エンディング曲。曲名は脚本のA氏による命名。\nなぜ鹿なのか？本当に鹿なのか？なぜ森に帰るのか？\nそれは鹿のみが知っているのである。" },
-		{ 10,	"ogg",	"Waterly blue mountain",			MUSIC_WHO_NONE,			"プログラム担当のT氏との合作。ボーナストラック。\n曲名の由来は製作者の一人の名前という噂が...\nこれ以上書くと怒られちゃいそうなのでこの辺で。" },
-		{ 11,	"ogg",	"Dear The Deer",					MUSIC_WHO_DEER,			"裏ルート突入！！謎の鹿のテーマ曲。\n戦い前の静かだけどバチバチとした雰囲気を\n感じられる曲になっていれば嬉しいです♪" },
-		{ 12,	"ogg",	"The biggest deer",					MUSIC_WHO_DEER,			"裏ラスボス戦の曲。直訳すると最も大きな鹿。\n空間を操る能力があるとか。\n得体の知れない感じが表現できていれば嬉しいです♪" },
-		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	MUSIC_WHO_NONE,			"真エンディング。ここまで遊んでくれてありがとう。\nあなたこそが本当のMr.Kなのかもしれない。\nブルースって多分こんな感じだよね、たぶん..." },
-		{ 14,	"ogg",	"Fading memories",					MUSIC_WHO_NONE,			"けっこう壮大な雰囲気の曲になりました。\n作ったはいいけど使う場面がなくて...\n...いわゆるボーナストラックというやつですね！" },
-		{ 15,	"ogg",	"釣り船",							MUSIC_WHO_NONE,			"ゲームオーバー時に流れます。\n一回も聞かずにクリアできたあなたはスゴイ！！\n侘び寂びを表現することを目指して作りました。" },
+		{ 1,	"m4a",	"It's Maxence!!!",					BG_WHO_NONE,			"オープニング曲。一番最初に作りました。\n冒険に胸躍らせるわくわく感が伝われば嬉しいです♪\nえ、本編で冒険してないって？ 気のせいでしょ。" },
+		{ 2,	"ogg",	"Mr.K is talking to you",			BG_WHO_PL_YELLOW,	"Mr.Kのテーマ。チュートリアルで流れます。\n突然語りかけてくるアイツの怪しさを表現しました♪\nちなみに彼は全裸サングラスです。イカしてますね！" },
+		{ 3,	"ogg",	"海と樹海と私",						BG_WHO_NONE,			"世界（部屋）を包み込む不穏な曲...樹海！樹海！\n樹海！樹海！樹海！樹海！樹海！樹海！樹海！樹海！\nさて問題！いま何回「樹海」っていったでしょうか？" },
+		{ 4,	"ogg",	"Mr.K is shouting at you",			BG_WHO_RED,			"激昂して襲いかかってくる赤いアイツのテーマ。\n赤いアイツはモデルとなる人がいるとかいないとか。\nおっと誰か来たようだ..." },
+		{ 5,	"ogg",	"Mr.K is smiling on you",			BG_WHO_GREEN,		"仲間の死を悼む緑のアイツのテーマ。\n緑のアイツは割といいやつなイメージがあります。\n彼は最後にいったい何を悟ったのでしょうか？？" },
+		{ 6,	"ogg",	"Mr.K is lying to you",				BG_WHO_BLUE,			"謀略に長けた青いアイツのテーマ。\n野心から仲間を切り捨て王を目指す悲しいアイツ。\n狡猾さと悲しさが表現できていれば幸いです♪" },
+		{ 7,	"ogg",	"運命の平衡点",						BG_WHO_NONE,			"真実を悟る時の曲。曲名は脚本のA氏による命名。\n冬に寒い寒いって思いながら作った記憶があります。\n運命にも平衡点はあるんだよなぁ..." },
+		{ 8,	"ogg",	"Mr.K is playing with you",			BG_WHO_YELLOW,		"操作キャラだった黄色いアイツと戦う時のテーマ。\nチュートリアル曲のアレンジになっています。\nMr.Kらしい曲を目指しました♪" },
+		{ 9,	"ogg",	"鹿は静かに森に帰る",				BG_WHO_NONE,			"表エンディング曲。曲名は脚本のA氏による命名。\nなぜ鹿なのか？本当に鹿なのか？なぜ森に帰るのか？\nそれは鹿のみが知っているのである。" },
+		{ 10,	"ogg",	"Waterly blue mountain",			BG_WHO_NONE,			"プログラム担当のT氏との合作。ボーナストラック。\n曲名の由来は製作者の一人の名前という噂が...\nこれ以上書くと怒られちゃいそうなのでこの辺で。" },
+		{ 11,	"ogg",	"Dear The Deer",					BG_WHO_DEER,			"裏ルート突入！！謎の鹿のテーマ曲。\n戦い前の静かだけどバチバチとした雰囲気を\n感じられる曲になっていれば嬉しいです♪" },
+		{ 12,	"ogg",	"The biggest deer",					BG_WHO_DEER,			"裏ラスボス戦の曲。直訳すると最も大きな鹿。\n空間を操る能力があるとか。\n得体の知れない感じが表現できていれば嬉しいです♪" },
+		{ 13,	"ogg",	"行き場を失った博士たちのブルース",	BG_WHO_NONE,			"真エンディング。ここまで遊んでくれてありがとう。\nあなたこそが本当のMr.Kなのかもしれない。\nブルースって多分こんな感じだよね、たぶん..." },
+		{ 14,	"ogg",	"Fading memories",					BG_WHO_NONE,			"けっこう壮大な雰囲気の曲になりました。\n作ったはいいけど使う場面がなくて...\n...いわゆるボーナストラックというやつですね！" },
+		{ 15,	"ogg",	"釣り船",							BG_WHO_NONE,			"ゲームオーバー時に流れます。\n一回も聞かずにクリアできたあなたはスゴイ！！\n侘び寂びを表現することを目指して作りました。" },
 	};
-	const struct MusicInfo lockedMusicInfo = { 0, "wav", "??????????", MUSIC_WHO_NONE, "この曲はまだ聞いたことがないよ" };
+	const struct MusicInfo lockedMusicInfo = { 0, "wav", "??????????", BG_WHO_NONE, "この曲はまだ聞いたことがないよ" };
 	string defaultMsgStr = "ここは音楽室\nいつもの部屋じゃないどこかだよ";
-
-	struct BgCharacter {
-		int x;
-		int y;
-		int who;
-	};
-	int imgYellow = LoadGraph("graph/enemy_yellow.png");
-	int imgRed    = LoadGraph("graph/enemy_red.png");
-	int imgGreen  = LoadGraph("graph/enemy_green.png");
-	int imgBlue   = LoadGraph("graph/enemy_blue.png");
-	// int imgDeer   = LoadGraph("graph/enemy_deer.png");
-	int imgPlYellow = LoadGraph("graph/player_yellow.png");
-
-	struct BgCharacter bg[MUSIC_BG_NUM] = {
-		{0, 0, MUSIC_WHO_NONE}
-	};
 
 	Menu menu;
 	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
 	Message msg;
 	fireflower tama[MUSIC_ROOM_FIRE_FLOWER_NUM];
+	BgCharacter bg;
 	int choice = -1;
 	bool isLoading = false;
 
@@ -113,7 +84,7 @@ public:
 	}
 
 	int show(UserInput& ui, Music& music) {
-		drawBgCharacter();
+		bg.draw();
 		showFireFlower();
 		msg.draw();
 		drawSpeakerIcon();
@@ -187,15 +158,7 @@ private:
 		if (choice == -1) return;
 
 		MusicInfo info = infoList[choice];
-		if (info.who == MUSIC_WHO_NONE) return;
-		if (info.who == bg[0].who) return;
-
-		for (int i = MUSIC_BG_NUM - 1; i > 0; --i) {
-			bg[i] = bg[i - 1];
-		}
-		bg[0].who = info.who;
-		bg[0].x = (MUSIC_BG_MAX_X - MUSIC_BG_MIN_X) * (rand() % 10) / 10.0 + MUSIC_BG_MIN_X;
-		bg[0].y = (MUSIC_BG_MAX_Y - MUSIC_BG_MIN_Y) * (rand() % 10) / 10.0 + MUSIC_BG_MIN_Y;
+		bg.set(info.who);
 	}
 
 	/*===========================*/
@@ -226,45 +189,6 @@ private:
 			y = (choice - (MUSIC_NUM + 1) / 2) * MUSIC_DIV_Y + MUSIC_TOP_Y - MUSIC_SPEAKER_ICON_SIZE / 3;
 		}
 		DrawExtendGraph(x, y, x + MUSIC_SPEAKER_ICON_SIZE, y + MUSIC_SPEAKER_ICON_SIZE, iconSpeaker, TRUE);
-	}
-
-	void drawBgCharacter() {
-		for (int i = MUSIC_BG_NUM - 1; i >= 0; --i) {
-			int imgHandle = 0;
-			int w = 0;
-			int h = 0;
-			switch (bg[i].who) {
-			case MUSIC_WHO_YELLOW:
-				imgHandle = imgYellow;
-				w = 35; h = 52;
-				break;
-			case MUSIC_WHO_RED:
-				imgHandle = imgRed;
-				w = 38; h = 50;
-				break;
-			case MUSIC_WHO_GREEN:
-				imgHandle = imgGreen;
-				w = 36; h = 51;
-				break;
-			case MUSIC_WHO_BLUE:
-				imgHandle = imgBlue;
-				w = 53; h = 51;
-				break;
-			case MUSIC_WHO_DEER:
-				// imgHandle = imgDeer;
-				break;
-			case MUSIC_WHO_PL_YELLOW:
-				imgHandle = imgPlYellow;
-				w = 47; h = 50;
-				break;
-			}
-
-			if (imgHandle != 0) {
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, pow(MUSIC_BG_NUM - i, 5.0) * MUSIC_BG_ALPHA_SCALE);
-				DrawExtendGraph(bg[i].x, bg[i].y, bg[i].x + w * MUSIC_BG_SIZE_SCALE, bg[i].y + h * MUSIC_BG_SIZE_SCALE, imgHandle, TRUE);
-				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			}
-		}
 	}
 
 	/*===========================*/
