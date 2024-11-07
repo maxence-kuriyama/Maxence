@@ -1,8 +1,9 @@
 #pragma once
 
-const int BG_NUM(5);
+const int BG_NUM(3);
 const int BG_SIZE_SCALE(10);
-const double BG_ALPHA_SCALE(0.04);
+const double BG_ALPHA_FRONT(210);
+const double BG_ALPHA_LAST(240);
 const int BG_MIN_X(-100);
 const int BG_MAX_X(300);
 const int BG_MIN_Y(0);
@@ -38,7 +39,6 @@ private:
 public:
 
 	void set(int who) {
-		if (who == BG_WHO_NONE) return;
 		if (who == bg[0].who) return;
 
 		for (int i = BG_NUM - 1; i > 0; --i) {
@@ -50,6 +50,8 @@ public:
 	}
 
 	void draw() {
+		int screenHandle = MakeScreen(640, 480, TRUE);
+
 		for (int i = BG_NUM - 1; i >= 0; --i) {
 			int imgHandle = 0;
 			int w = 0;
@@ -81,10 +83,23 @@ public:
 			}
 
 			if (imgHandle != 0) {
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, pow(BG_NUM - i, 5.0) * BG_ALPHA_SCALE);
-				DrawExtendGraph(bg[i].x, bg[i].y, bg[i].x + w * BG_SIZE_SCALE, bg[i].y + h * BG_SIZE_SCALE, imgHandle, TRUE);
+				SetDrawScreen(screenHandle);
 				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+				DrawExtendGraph(bg[i].x, bg[i].y, bg[i].x + w * BG_SIZE_SCALE, bg[i].y + h * BG_SIZE_SCALE, imgHandle, TRUE);
 			}
+
+			int screenHandleSub = MakeScreen(640, 480, TRUE);
+			SetDrawScreen(screenHandleSub);
+			int alpha = BG_ALPHA_FRONT + (BG_ALPHA_LAST - BG_ALPHA_FRONT) * i / (BG_NUM - 1);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+			DrawGraph(0, 0, screenHandle, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+			DeleteGraph(screenHandle);
+			screenHandle = screenHandleSub;
 		}
+		SetDrawScreen(DX_SCREEN_BACK);
+		DrawGraph(0, 0, screenHandle, TRUE);
+		DeleteGraph(screenHandle);
 	}
 };
