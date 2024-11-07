@@ -14,6 +14,8 @@ const int MESSAGE_WHO_GREEN(4);
 const int MESSAGE_WHO_DEER(5);
 const int MESSAGE_WHO_PLAYER(-1);
 
+const int MESSAGE_INT_Y(390); // 全体の始点y座標
+
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor);
 int MultiByteLength(const char* String);
 
@@ -32,6 +34,8 @@ private:
 	int iconCnt = 0;
 	bool iconVisible = false;
 	bool existsNext = false;
+	int iniX = 110; // メッセージ始点x座標
+	int endX = 600; // メッセージ終端x座標
 
 public:
 	int who;
@@ -46,7 +50,7 @@ public:
 
 	void initialize() {
 		int x = 30;
-		int y = 390;
+		int y = MESSAGE_INT_Y;
 		sprite[0].set(x, y);
 		sprite[1].set(x, y, "graph/sprite11.png");
 		sprite[2].set(x, y, "graph/sprite12.png");
@@ -54,6 +58,12 @@ public:
 		sprite[4].set(x, y, "graph/sprite14.png");
 		sprite[5].set(x, y, "graph/sprite15.png");
 		isShown = false;
+	}
+
+	void initialize(int srcIniX, int srcEndX) {
+		iniX = srcIniX;
+		endX = srcEndX;
+		initialize();
 	}
 
 	void set(string text0, int who0, bool next = true) {
@@ -97,8 +107,8 @@ public:
 		if (charCnt < textLen) {
 			cnt++;
 		}
-		DrawRoundBox(15, 388, 10, 609, 81, boxColor);
-		DrawMessage(charCnt, 110, 392, 600, GetFontSize(), text.c_str(), strColor, font, boxColor);
+		DrawRoundBox(15, MESSAGE_INT_Y - 2, 10, 609, 81, boxColor);
+		DrawMessage(charCnt, iniX, MESSAGE_INT_Y + 2, endX, GetFontSize(), text.c_str(), strColor, font, boxColor);
 		if (existsNext) {
 			if (isReading()) {
 				drawBlinkIcon();

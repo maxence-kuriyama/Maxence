@@ -26,7 +26,7 @@ private:
 
 	int strColor = GetColor(255, 255, 255);
 	int strColorDebug = GetColor(50, 50, 200);
-	const string save_filepath = "./data/savegb.dat";
+	const string saveFilePath = SAVE_FILE_BATTLE_GAME;
 
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
@@ -86,7 +86,7 @@ public:
 	//    Save and Load
 	/*===========================*/
 	bool hasSaveFile() {
-		ifstream file(save_filepath);
+		ifstream file(saveFilePath);
 		if (file) {
 			file.close();
 			return true;
@@ -98,12 +98,12 @@ public:
 	}
 
 	void save() {
-		game.save(save_filepath);
+		game.save(saveFilePath);
 	}
 
 	void load() {
 		start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
-		game.load(save_filepath);
+		game.load(saveFilePath);
 	}
 
 

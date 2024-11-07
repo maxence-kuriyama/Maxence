@@ -52,8 +52,8 @@ private:
 
 	int strColorMenu = GetColor(255, 255, 255);
 	string music_name[2] = { "", "" };
-	string save_filepath = "./data/savesc.dat";
-	string save_game_filepath = "./data/savegs.dat";
+	string saveFilePath = SAVE_FILE_SCENARIO;
+	string saveGameFilePath = SAVE_FILE_SCENARIO_GAME;
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_DESC,		"play" },
@@ -266,7 +266,7 @@ public:
 	//    Save and Load
 	/*===========================*/
 	bool hasSaveFile() {
-		ifstream file(save_filepath);
+		ifstream file(saveFilePath);
 		if (file) {
 			file.close();
 			return true;
@@ -278,7 +278,7 @@ public:
 	}
 
 	void save() {
-		Encrypter encrypter(save_filepath);
+		Encrypter encrypter(saveFilePath);
 		nlohmann::json data = {
 			{"flg", flg},
 			{"onBattle", onBattle},
@@ -293,12 +293,12 @@ public:
 		encrypter.write(data);
 
 		if (onBattle) {
-			game.save(save_game_filepath);
+			game.save(saveGameFilePath);
 		}
 	}
 
 	void load(Music& music) {
-		Encrypter encrypter(save_filepath);
+		Encrypter encrypter(saveFilePath);
 		nlohmann::json res = encrypter.read();
 		Logger::ss << "Scenario loaded: " << res.dump();
 		Logger::log();
@@ -310,7 +310,7 @@ public:
 
 		onBattle = res["onBattle"];
 		if (onBattle) {
-			game.load(save_game_filepath);
+			game.load(saveGameFilePath);
 		}
 
 		battle_trigger = res["battle_trigger"];
@@ -319,7 +319,7 @@ public:
 		mrK[2].trigger = res["mrk_trigger2"];
 		mrK[3].trigger = res["mrk_trigger3"];
 
-		remove(save_filepath.c_str());
+		remove(saveFilePath.c_str());
 	}
 
 	void loadScenario(int flg_saved, Music& music) {
