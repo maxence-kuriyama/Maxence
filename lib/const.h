@@ -66,3 +66,8 @@
 
 #define MACHINE_INPUT_SIZE		180
 #define MACHINE_OUTPUT_SIZE		81
+
+#define SAVE_FILE_MUSIC_ROOM	"./data/savemr.dat"
+#define SAVE_FILE_BATTLE_GAME	"./data/savegb.dat"
+#define SAVE_FILE_SCENARIO		"./data/savesc.dat"
+#define SAVE_FILE_SCENARIO_GAME	"./data/savegs.dat"

@@ -4,7 +4,7 @@
 #include <string>
 #include "lib/const.h"
 #include "lib/logger.h"
-
+#include "lib/music_unlocker.h"
 
 const string MUSIC_LOAD_MSG_SYNC("Loading...");
 const string MUSIC_LOAD_MSG_ASYNC_BASE("Loading");
@@ -148,6 +148,7 @@ public:
 		if (isPrepared()) {
 			ChangeVolumeSoundMem(vol, handle[0]);
 			PlaySoundMem(handle[0], DX_PLAYTYPE_BACK, fromTop);
+			MusicUnlocker::unlock(musicName[0]);
 			return 1;
 		}
 		return 0;
