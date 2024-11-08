@@ -76,10 +76,10 @@
     <ClInclude Include="lib\message.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\movie.h">
+    <ClInclude Include="lib\utils\movie.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\music.h">
+    <ClInclude Include="lib\utils\music.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\OBJ_Loader.h">
@@ -193,7 +193,7 @@
     <ClInclude Include="lib\modes\music_room.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\music_unlocker.h">
+    <ClInclude Include="lib\utils\music_unlocker.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\music_room\bg_character.h">

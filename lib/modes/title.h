@@ -2,7 +2,8 @@
 
 #include "lib/const.h"
 #include "lib/menu.h"
-#include "lib/modes/common/fireflower.h"
+#include "lib/utils/music.h"
+#include "./common/fireflower.h"
 
 
 const int TITLE_GAME_MODE(1);

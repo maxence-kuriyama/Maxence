@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./common/scenario_base.h"
+#include "lib/utils/music.h"
 #include "lib/utils/encrypter.h"
 
 

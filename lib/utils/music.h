@@ -4,7 +4,7 @@
 #include <string>
 #include "lib/const.h"
 #include "lib/utils/logger.h"
-#include "lib/music_unlocker.h"
+#include "lib/utils/music_unlocker.h"
 
 const string MUSIC_LOAD_MSG_SYNC("Loading...");
 const string MUSIC_LOAD_MSG_ASYNC_BASE("Loading");

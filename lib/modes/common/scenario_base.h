@@ -1,9 +1,9 @@
 #pragma once
 
 #include <regex>
-#include "lib/music.h"
-#include "lib/utils/user_input.h"
 #include "lib/com.h"
+#include "lib/utils/music.h"
+#include "lib/utils/user_input.h"
 #include "./common/sprite.h"
 #include "./common/message.h"
 #include "./common/game.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/music.h"
+#include "lib/utils/music.h"
 #include "./common/sprite.h"
 #include "./common/game.h"
 

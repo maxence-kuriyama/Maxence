@@ -3,8 +3,8 @@
 #include <sstream>
 #include <iomanip>
 #include "lib/const.h"
-#include "lib/music.h"
-#include "lib/music_unlocker.h"
+#include "lib/utils/music.h"
+#include "lib/utils/music_unlocker.h"
 #include "./common/message.h"
 #include "./common/fireflower.h"
 #include "./music_room/bg_character.h"
