@@ -2,7 +2,7 @@
 
 #include "lib/utils/music.h"
 #include "lib/components/sprite.h"
-#include "./common/game.h"
+#include "lib/components/game.h"
 
 void init_ending_text(string* job, string* who);
 

@@ -6,7 +6,7 @@
 #include "lib/utils/user_input.h"
 #include "lib/components/sprite.h"
 #include "lib/components/message.h"
-#include "./common/game.h"
+#include "lib/components/game.h"
 
 const int MAX_SCENE_NUM(400);
 const double SPRITE_EXPAND_RATE(0.0006);

@@ -5,7 +5,7 @@
 #include "lib/com.h"
 #include "lib/utils/user_input.h"
 #include "lib/components/menu.h"
-#include "./common/game.h"
+#include "lib/components/game.h"
 #include "./battle/camera.h"
 #include "./battle/anime.h"
 #include "./battle/comment.h"

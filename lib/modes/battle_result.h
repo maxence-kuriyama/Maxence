@@ -2,7 +2,7 @@
 
 #include "lib/utils/user_input.h"
 #include "lib/components/menu.h"
-#include "./common/game.h"
+#include "lib/components/game.h"
 
 const int TEXT_PLAYER_X(260);
 const int TEXT_PLAYER_Y(200);
