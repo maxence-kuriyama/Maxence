@@ -25,9 +25,6 @@ private:
 
 public:
 
-	BattleResult() {}
-	~BattleResult() {}
-
 	BattleResult() {
 		int padding = 8;
 		int ulx = TEXT_AGAIN_X - padding;

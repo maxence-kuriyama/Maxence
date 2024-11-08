@@ -17,8 +17,16 @@ private:
 		return _instance;
 	}
 
-	UserInput() {}
-	~UserInput() { delete _instance; }
+	UserInput() {
+		key = new Key();
+		mouse = new Mouse();
+	}
+
+	~UserInput() {
+		delete key;
+		delete mouse;
+		delete _instance;
+	}
 
 	void toggleMouseOrKeyboard() {
 		if (mouse->isUsed()) keyboard = false;

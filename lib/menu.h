@@ -62,7 +62,7 @@ public:
 	}
 
 	bool isMouseOn() {
-		return UserInput::onButton(upLeftX, lowRightX, upLeftY, lowRightY);
+		return UserInput::onButton(upLeftX, upLeftY, lowRightX, lowRightY);
 	}
 
 	bool isClicked() {
