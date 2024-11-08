@@ -4,10 +4,38 @@
 #include "lib/user_input/keyboard.h"
 
 class UserInput {
-public:
+private:
+	static UserInput* _instance; // singleton
+	bool keyboard = false;
 	Key* key;
 	Mouse* mouse;
-	bool keyboard = false;
+
+	static UserInput* getInstance() {
+		if (!_instance) {
+			_instance = new UserInput();
+		}
+		return _instance;
+	}
+
+	UserInput() {}
+	~UserInput() { delete _instance; }
+
+public:
+
+	static Key* getKey() {
+		UserInput* ui = getInstance();
+		return ui->key;
+	}
+
+	static Mouse* getMouse() {
+		UserInput* ui = getInstance();
+		return ui->mouse;
+	}
+
+	static bool usingKeyboard() {
+		UserInput* ui = getInstance();
+		return ui->keyboard;
+	}
 
 	void update() {
 		key->update();
@@ -83,3 +111,5 @@ public:
 		return (key->state[KEY_INPUT_V] == 1);
 	}
 };
+
+UserInput* UserInput::_instance = NULL;

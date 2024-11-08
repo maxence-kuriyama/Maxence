@@ -126,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_BATTLE) {
 			SetBackgroundColor(0, 0, 0);
 			int res = battle.show(com, bgm, debug_flg);
-			logo.draw(ui);
+			logo.draw(true);
 
 			switch (res) {
 			case FLAG_TITLE:

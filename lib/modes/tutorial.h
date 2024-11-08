@@ -96,8 +96,8 @@ private:
 	}
 
 	bool reset(UserInput& ui) {
-		btnReset.display(ui, strColorMenu);
-		if (btnReset.isClicked(ui)) {
+		btnReset.display(strColorMenu);
+		if (btnReset.isClicked()) {
 			ui.reset();
 			game.reset();
 			return true;

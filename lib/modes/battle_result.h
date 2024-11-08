@@ -44,8 +44,8 @@ public:
 		drawGameBoard(game);
 
 		// メッセージの描画
-		btnAgain.display(*ui, btnColor);
-		if (btnAgain.isClicked(*ui) || ui->onReturn()) {
+		btnAgain.display(btnColor);
+		if (btnAgain.isClicked() || ui->onReturn()) {
 			return_flg = FLAG_BATTLE;
 		}
 
