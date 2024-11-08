@@ -151,7 +151,7 @@
     <ClInclude Include="lib\modes\game.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\common.h">
+    <ClInclude Include="lib\components\draw_round_box.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\scenario\message.h">

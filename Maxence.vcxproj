@@ -179,7 +179,7 @@
     <ClInclude Include="lib\components\board\hist.h" />
     <ClInclude Include="lib\com.h" />
     <ClInclude Include="lib\comment.h" />
-    <ClInclude Include="lib\common.h" />
+    <ClInclude Include="lib\components\draw_round_box.h" />
     <ClInclude Include="lib\com\loader.h" />
     <ClInclude Include="lib\com\minmax.h" />
     <ClInclude Include="lib\const.h" />
