@@ -95,12 +95,12 @@ public:
 
 	}
 
-	int show(Music& music, bool debug = false) {
+	int show(bool debug = false) {
 		COM dummy_com(false);
-		return show(dummy_com, music, debug);
+		return show(dummy_com, debug);
 	}
 
-	int show(COM& com, Music& music, bool debug = false) {
+	int show(COM& com, bool debug = false) {
 		getKey();
 
 		// êlï®ÇÃï`âÊ
@@ -127,11 +127,11 @@ public:
 			doExibit(scene.how, scene.who);
 			break;
 		case SCENE_ACTION_LOAD:
-			music.load(scene.how);
+			Music::load(scene.how);
 			goNext();
 			break;
 		case SCENE_ACTION_MUSIC:
-			performMusic(scene.how, music);
+			performMusic(scene.how);
 			break;
 		case SCENE_ACTION_GRAPH:
 			performGraph(scene.how);
@@ -274,30 +274,30 @@ protected:
 		}
 	}
 
-	void performMusic(string how, Music& music) {
+	void performMusic(string how) {
 		if (how == "play") {
-			music.play();
+			Music::play();
 		}
 		else if (how == "stop") {
-			music.stop();
-			music.enableSwap();
+			Music::stop();
+			Music::enableSwap();
 		}
 		else if (how == "pop_once") {
-			music.popOnce();
+			Music::popOnce();
 		}
 		else if (how == "swap") {
-			if (music.swap(strColorLoad)) {
-				music.enableSwap();
+			if (Music::swap(strColorLoad)) {
+				Music::enableSwap();
 			}
 			else {
 				return;
 			}
 		}
 		else if (how == "pop") {
-			music.pop(strColorLoad);
+			Music::pop(strColorLoad);
 		}
 		else if (how == "unload") {
-			music.unload(1);
+			Music::unload(1);
 		}
 		goNext();
 	}

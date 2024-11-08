@@ -31,7 +31,7 @@ using namespace std;
 #pragma comment(lib, "winmm.lib")
 
 void routesBattle(int choice, int* flg, Title& title, Battle& battle);
-void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Music& music);
+void routesScenario(int choice, int* flg, Title& title, Scenario& scenario);
 void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial);
 void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom);
 void goEndingDebug(int* flg, Music& bgm, Ending& ending);
@@ -60,7 +60,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	srand((unsigned)time(NULL));
 
 	
-	Music bgm;
 	Synchronizer sync;
 	Logo logo;
 
@@ -102,11 +101,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (opening.isOver()) flg = FLAG_TITLE;
 		}
 		else if (flg == FLAG_TITLE) {
-			bgm.load("sound/bgm03.ogg"); // シナリオ用
-			bgm.load("sound/bgm02.ogg"); // チュートリアル用
+			Music::load("sound/bgm03.ogg"); // シナリオ用
+			Music::load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show();
 			routesBattle(choice, &flg, title, battle);
-			routesScenario(choice, &flg, title, scenario, bgm);
+			routesScenario(choice, &flg, title, scenario);
 			routesTutorial(choice, &flg, title, tutorial);
 			routesMusicRoom(choice, &flg, title, musicRoom);
 		}
@@ -223,7 +222,7 @@ void routesBattle(int choice, int* flg, Title& title, Battle& battle) {
 	}
 }
 
-void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Music& music) {
+void routesScenario(int choice, int* flg, Title& title, Scenario& scenario) {
 	switch (choice) {
 	case MENU_CHOICE_VS_COM:
 		if (!scenario.hasSaveFile()) {
@@ -239,7 +238,7 @@ void routesScenario(int choice, int* flg, Title& title, Scenario& scenario, Musi
 		break;
 	case MENU_CHOICE_LOAD:
 		if (title.isScenarioMode()) {
-			scenario.load(music);
+			scenario.load();
 			*flg = FLAG_SCENARIO;
 		}
 		break;

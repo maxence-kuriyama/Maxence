@@ -230,17 +230,17 @@ public:
 		mrK[0].turn(MRK_KEY_DOWN);
 	}
 
-	int show(COM& com, Music& music, bool debug = false) {
+	int show(COM& com, bool debug = false) {
 		// îwåiÅEêlï®ÇÃï`âÊ
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
 		bool is_reset = (!onBattle && !isTalking && saveOrReset());
 		
-		int res = ScenarioBase::show(com, music, debug);
+		int res = ScenarioBase::show(com, debug);
 		showAdditionalAction();
-		music_name[0] = music.musicName[0];
-		music_name[1] = music.musicName[1];
+		music_name[0] = Music::getMusicName(0);
+		music_name[1] = Music::getMusicName(1);
 
 		if (is_reset) {
 			return FLAG_TITLE;
@@ -297,7 +297,7 @@ public:
 		}
 	}
 
-	void load(Music& music) {
+	void load() {
 		Encrypter encrypter(saveFilePath);
 		nlohmann::json res = encrypter.read();
 		Logger::ss << "Scenario loaded: " << res.dump();
@@ -305,8 +305,8 @@ public:
 
 		initialize();
 
-		loadMusic(music, res);
-		loadScenario(res["flg"], music);
+		loadMusic(res);
+		loadScenario(res["flg"]);
 
 		onBattle = res["onBattle"];
 		if (onBattle) {
@@ -322,28 +322,28 @@ public:
 		remove(saveFilePath.c_str());
 	}
 
-	void loadScenario(int flg_saved, Music& music) {
+	void loadScenario(int flg_saved) {
 		COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
 		while (flg < flg_saved) {
 			old_flg = flg;
 			Scene scene = getCurrentScene();
-			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com, music);
+			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
 		isTalking = false;
 	}
 
-	void loadMusic(Music& music, nlohmann::json res) {
+	void loadMusic(nlohmann::json res) {
 		music_name[0] = res["music_name0"];
 		music_name[1] = res["music_name1"];
-		music.unloadAll();
-		music.load(music_name[0].c_str(), 0);
-		music.load(music_name[1].c_str(), 0);
-		music.enableSwap();
-		music.play();
+		Music::unloadAll();
+		Music::load(music_name[0].c_str(), 0);
+		Music::load(music_name[1].c_str(), 0);
+		Music::enableSwap();
+		Music::play();
 	}
 
 
