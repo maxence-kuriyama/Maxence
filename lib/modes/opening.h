@@ -2,7 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "lib/user_input.h"
+#include "lib/utils/user_input.h"
 
 const int DEMO_FIRST(1);
 const int DEMO_SECOND(2);

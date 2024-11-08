@@ -188,7 +188,7 @@
     <ClInclude Include="lib\game\anime.h" />
     <ClInclude Include="lib\game\comment.h" />
     <ClInclude Include="lib\load_obj.h" />
-    <ClInclude Include="lib\logger.h" />
+    <ClInclude Include="lib\utils\logger.h" />
     <ClInclude Include="lib\logo.h" />
     <ClInclude Include="lib\menu.h" />
     <ClInclude Include="lib\message.h" />
@@ -206,7 +206,7 @@
     <ClInclude Include="lib\modes\opening.h" />
     <ClInclude Include="lib\modes\result.h" />
     <ClInclude Include="lib\modes\scenario.h" />
-    <ClInclude Include="lib\encrypter.h" />
+    <ClInclude Include="lib\utils\encrypter.h" />
     <ClInclude Include="lib\modes\scenario\message.h" />
     <ClInclude Include="lib\modes\title.h" />
     <ClInclude Include="lib\modes\common\fireflower.h" />
@@ -220,9 +220,9 @@
     <ClInclude Include="lib\sprite.h" />
     <ClInclude Include="lib\synchronizer.h" />
     <ClInclude Include="lib\title\fireflower.h" />
-    <ClInclude Include="lib\user_input.h" />
-    <ClInclude Include="lib\user_input\keyboard.h" />
-    <ClInclude Include="lib\user_input\mouse.h" />
+    <ClInclude Include="lib\utils\user_input.h" />
+    <ClInclude Include="lib\utils\user_input\keyboard.h" />
+    <ClInclude Include="lib\utils\user_input\mouse.h" />
     <ClInclude Include="lib\vect.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="vect.h" />

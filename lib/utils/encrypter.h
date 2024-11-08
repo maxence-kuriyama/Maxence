@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "lib/nlohmann/json.hpp"
-#include "lib/logger.h"
+#include "lib/utils/logger.h"
 
 
 const int ENCRYPTER_MAX_STR_LENGTH(2000);

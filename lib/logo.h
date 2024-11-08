@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/user_input.h"
+#include "lib/utils/user_input.h"
 
 // ロゴマークオブジェクト
 // リセットボタンとしての機能など

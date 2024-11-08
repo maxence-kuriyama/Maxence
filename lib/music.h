@@ -3,7 +3,7 @@
 #include "DxLib.h"
 #include <string>
 #include "lib/const.h"
-#include "lib/logger.h"
+#include "lib/utils/logger.h"
 #include "lib/music_unlocker.h"
 
 const string MUSIC_LOAD_MSG_SYNC("Loading...");

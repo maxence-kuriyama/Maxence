@@ -34,7 +34,7 @@
     <ClInclude Include="lib\board.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\logger.h">
+    <ClInclude Include="lib\utils\logger.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\com\minmax.h">
@@ -115,13 +115,13 @@
     <ClInclude Include="lib\battle\comment.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\user_input\keyboard.h">
+    <ClInclude Include="lib\utils\user_input\keyboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\user_input\mouse.h">
+    <ClInclude Include="lib\utils\user_input\mouse.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\user_input.h">
+    <ClInclude Include="lib\utils\user_input.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\battle.h">
@@ -175,7 +175,7 @@
     <ClInclude Include="lib\modes\tutorial.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\encrypter.h">
+    <ClInclude Include="lib\utils\encrypter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\common\message.h">

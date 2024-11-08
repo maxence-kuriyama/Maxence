@@ -4,7 +4,7 @@
 #include <fstream>
 #include <time.h>
 #include "lib/vect.h"
-#include "lib/logger.h"
+#include "lib/utils/logger.h"
 
 using namespace Eigen;
 

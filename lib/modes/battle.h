@@ -4,11 +4,11 @@
 #include "lib/const.h"
 #include "lib/com.h"
 #include "lib/menu.h"
-#include "lib/user_input.h"
-#include "lib/modes/common/game.h"
-#include "lib/modes/battle/camera.h"
-#include "lib/modes/battle/anime.h"
-#include "lib/modes/battle/comment.h"
+#include "lib/utils/user_input.h"
+#include "./common/game.h"
+#include "./battle/camera.h"
+#include "./battle/anime.h"
+#include "./battle/comment.h"
 
 // バトルモード
 // 主にGameの操作と描画

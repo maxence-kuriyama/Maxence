@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lib/user_input/mouse.h"
-#include "lib/user_input/keyboard.h"
+#include "./user_input/mouse.h"
+#include "./user_input/keyboard.h"
 
 class UserInput {
 private:

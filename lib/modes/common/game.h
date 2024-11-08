@@ -2,10 +2,10 @@
 
 #include <Eigen/Core>
 #include "lib/const.h"
-#include "lib/user_input.h"
 #include "lib/board.h"
-#include "lib/encrypter.h"
-#include "lib/logger.h"
+#include "lib/utils/user_input.h"
+#include "lib/utils/encrypter.h"
+#include "lib/utils/logger.h"
 
 
 const int VS_HUMAN(0);

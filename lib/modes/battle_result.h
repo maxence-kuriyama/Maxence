@@ -1,8 +1,8 @@
 #pragma once
 
 #include "lib/menu.h"
-#include "lib/user_input.h"
-#include "lib/modes/common/game.h"
+#include "lib/utils/user_input.h"
+#include "./common/game.h"
 
 
 const int TEXT_PLAYER_X(260);

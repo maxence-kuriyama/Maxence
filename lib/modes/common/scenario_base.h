@@ -2,11 +2,11 @@
 
 #include <regex>
 #include "lib/music.h"
-#include "lib/user_input.h"
+#include "lib/utils/user_input.h"
 #include "lib/com.h"
-#include "lib/modes/common/sprite.h"
-#include "lib/modes/common/message.h"
-#include "lib/modes/common/game.h"
+#include "./common/sprite.h"
+#include "./common/message.h"
+#include "./common/game.h"
 
 
 const int MAX_SCENE_NUM(400);
