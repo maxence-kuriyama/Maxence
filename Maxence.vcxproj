@@ -177,11 +177,11 @@
     <ClInclude Include="lib\components\board.h" />
     <ClInclude Include="lib\components\board\field.h" />
     <ClInclude Include="lib\components\board\hist.h" />
-    <ClInclude Include="lib\com.h" />
+    <ClInclude Include="lib\utils\com.h" />
     <ClInclude Include="lib\comment.h" />
     <ClInclude Include="lib\components\draw_round_box.h" />
-    <ClInclude Include="lib\com\loader.h" />
-    <ClInclude Include="lib\com\minmax.h" />
+    <ClInclude Include="lib\utils\com\loader.h" />
+    <ClInclude Include="lib\utils\com\minmax.h" />
     <ClInclude Include="lib\const.h" />
     <ClInclude Include="lib\fireflower.h" />
     <ClInclude Include="lib\game.h" />
@@ -223,7 +223,7 @@
     <ClInclude Include="lib\utils\user_input.h" />
     <ClInclude Include="lib\utils\user_input\keyboard.h" />
     <ClInclude Include="lib\utils\user_input\mouse.h" />
-    <ClInclude Include="lib\vect.h" />
+    <ClInclude Include="lib\utils\com\vect.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="vect.h" />
   </ItemGroup>

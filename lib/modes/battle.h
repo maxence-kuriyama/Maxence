@@ -2,8 +2,8 @@
 
 #include <fstream>
 #include "lib/const.h"
-#include "lib/com.h"
 #include "lib/utils/user_input.h"
+#include "lib/utils/com.h"
 #include "lib/components/menu.h"
 #include "lib/components/game.h"
 #include "./battle/camera.h"

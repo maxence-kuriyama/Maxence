@@ -37,7 +37,7 @@
     <ClInclude Include="lib\utils\logger.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\com\minmax.h">
+    <ClInclude Include="lib\utils\com\minmax.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\components\board\field.h">
@@ -49,7 +49,7 @@
     <ClInclude Include="lib\anime.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\com.h">
+    <ClInclude Include="lib\utils\com.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\comment.h">
@@ -88,7 +88,7 @@
     <ClInclude Include="lib\sprite.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\vect.h">
+    <ClInclude Include="lib\utils\com\vect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\game\anime.h">
@@ -184,7 +184,7 @@
     <ClInclude Include="lib\components\sprite.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\com\loader.h">
+    <ClInclude Include="lib\utils\com\loader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\nlohmann\json.hpp">

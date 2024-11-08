@@ -16,9 +16,9 @@ using namespace DxLib;
 using namespace std;
 
 #include "lib/const.h"
-#include "lib/com.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
+#include "lib/utils/com.h"
 #include "lib/components/logo.h"
 #include "lib/modes/title.h"
 #include "lib/modes/tutorial.h"
