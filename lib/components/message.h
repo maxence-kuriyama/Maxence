@@ -1,8 +1,7 @@
 #pragma once
 
 #include "lib/common.h"
-#include "lib/modes/common/sprite.h"
-
+#include "lib/components/sprite.h"
 
 const double NEXT_ICON_BLINK_SPEED(0.6);
 

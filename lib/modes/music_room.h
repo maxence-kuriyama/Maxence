@@ -7,7 +7,7 @@
 #include "lib/utils/music_unlocker.h"
 #include "lib/components/menu.h"
 #include "lib/components/fireflower.h"
-#include "./common/message.h"
+#include "lib/components/message.h"
 #include "./music_room/bg_character.h"
 
 const int MUSIC_NUM(15);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lib/utils/music.h"
-#include "./common/sprite.h"
+#include "lib/components/sprite.h"
 #include "./common/game.h"
 
 void init_ending_text(string* job, string* who);

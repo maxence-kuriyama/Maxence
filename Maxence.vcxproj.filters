@@ -178,10 +178,10 @@
     <ClInclude Include="lib\utils\encrypter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\common\message.h">
+    <ClInclude Include="lib\components\message.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\common\sprite.h">
+    <ClInclude Include="lib\components\sprite.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\com\loader.h">

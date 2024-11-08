@@ -4,10 +4,9 @@
 #include "lib/com.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
-#include "./common/sprite.h"
-#include "./common/message.h"
+#include "lib/components/sprite.h"
+#include "lib/components/message.h"
 #include "./common/game.h"
-
 
 const int MAX_SCENE_NUM(400);
 const double SPRITE_EXPAND_RATE(0.0006);
@@ -24,7 +23,6 @@ const int SCENE_ACTION_PLAY(9);
 const int SCENE_ACTION_STOP(-1);
 
 const int SCENE_RES_DEFAULT(-100);
-
 
 // シナリオ抽象クラス
 class ScenarioBase {
