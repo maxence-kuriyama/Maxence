@@ -15,9 +15,11 @@
 using namespace DxLib;
 using namespace std;
 
-#include "lib/logo.h"
+#include "lib/const.h"
+#include "lib/com.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
+#include "lib/components/logo.h"
 #include "lib/modes/title.h"
 #include "lib/modes/tutorial.h"
 #include "lib/modes/scenario.h"
@@ -26,7 +28,6 @@ using namespace std;
 #include "lib/modes/opening.h"
 #include "lib/modes/ending.h"
 #include "lib/modes/music_room.h"
-#include "lib/com.h"
 
 #pragma comment(lib, "winmm.lib")
 

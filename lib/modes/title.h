@@ -1,10 +1,9 @@
 #pragma once
 
 #include "lib/const.h"
-#include "lib/menu.h"
 #include "lib/utils/music.h"
+#include "lib/components/menu.h"
 #include "./common/fireflower.h"
-
 
 const int TITLE_GAME_MODE(1);
 const int TITLE_LOAD_BATTLE(11);

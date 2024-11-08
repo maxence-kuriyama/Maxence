@@ -1,9 +1,9 @@
 #pragma once
 
-#include "./common/scenario_base.h"
 #include "lib/utils/music.h"
 #include "lib/utils/encrypter.h"
-
+#include "lib/components/menu.h"
+#include "./common/scenario_base.h"
 
 const int SCENE_ACTION_EQ(11);
 const int SCENE_ACTION_WAIT(12);

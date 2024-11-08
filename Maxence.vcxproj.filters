@@ -67,10 +67,10 @@
     <ClInclude Include="lib\load_obj.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\logo.h">
+    <ClInclude Include="lib\components\logo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\menu.h">
+    <ClInclude Include="lib\components\menu.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\message.h">

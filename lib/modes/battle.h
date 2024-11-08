@@ -3,8 +3,8 @@
 #include <fstream>
 #include "lib/const.h"
 #include "lib/com.h"
-#include "lib/menu.h"
 #include "lib/utils/user_input.h"
+#include "lib/components/menu.h"
 #include "./common/game.h"
 #include "./battle/camera.h"
 #include "./battle/anime.h"

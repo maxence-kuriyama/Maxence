@@ -5,6 +5,7 @@
 #include "lib/const.h"
 #include "lib/utils/music.h"
 #include "lib/utils/music_unlocker.h"
+#include "lib/components/menu.h"
 #include "./common/message.h"
 #include "./common/fireflower.h"
 #include "./music_room/bg_character.h"
