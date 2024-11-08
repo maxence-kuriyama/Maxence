@@ -59,10 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int LightHandle = CreateDirLightHandle(VGet(0.0, 0.0, -1.0));
 	srand((unsigned)time(NULL));
 
-
-	Mouse mouse;
-	Key key;
-	UserInput ui = { &key, &mouse };
+	
 	Music bgm;
 	Synchronizer sync;
 	Logo logo;
@@ -85,19 +82,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//メインループ
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		// 入力情報を取得
-		ui.update();
+		UserInput::update();
 
 		// 設定を切り替える
 		battle.toggleByKey(debug_flg);
 
 		//デバッグモード
-		if (ui.onKeyDebug()) debug_flg = !debug_flg;
+		if (UserInput::onKeyDebug()) debug_flg = !debug_flg;
 
 		//音楽, SEの有無
-		if (ui.onKeySound()) title.toggleSound();
+		if (UserInput::onKeySound()) title.toggleSound();
 
 		// エンディングモードのデバッグ
-		if (ui.onKeyEndingDebug()) goEndingDebug(&flg, bgm, ending);
+		if (UserInput::onKeyEndingDebug()) goEndingDebug(&flg, bgm, ending);
 
 
 		if (flg == FLAG_OPENING) {
@@ -186,7 +183,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (debug_flg) {
 			DrawFormatString(5, 45, strColorDebug, "fps: %d", sync.fps);
 			DrawFormatString(5, 65, strColorDebug, "gameFlg: %d", flg);
-			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", ui.keyboard);
+			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", UserInput::usingKeyboard);
 			battle.debugDump();
 			bgm.debugDump();
 			tutorial.debugDump();

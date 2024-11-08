@@ -42,10 +42,11 @@ public:
 		return ui->keyboard;
 	}
 
-	void update() {
-		key->update();
-		mouse->update();
-		toggleMouseOrKeyboard();
+	static void update() {
+		UserInput* ui = getInstance();
+		ui->key->update();
+		ui->mouse->update();
+		ui->toggleMouseOrKeyboard();
 	}
 
 	static void reset() {
@@ -90,8 +91,9 @@ public:
 		return (ui->key->onReturn() || ui->mouse->click());
 	}
 
-	bool onKeySound() {
-		return (key->state[KEY_INPUT_P] == 1);
+	static bool onKeySound() {
+		UserInput* ui = getInstance();
+		return (ui->key->state[KEY_INPUT_P] == 1);
 	}
 
 	static bool onKeyComment() {
@@ -102,12 +104,14 @@ public:
 	/*===========================*/
 	//    Debug—p
 	/*===========================*/
-	bool onKeyDebug() {
-		return (key->state[KEY_INPUT_G] == 1);
+	static bool onKeyDebug() {
+		UserInput* ui = getInstance();
+		return (ui->key->state[KEY_INPUT_G] == 1);
 	}
 
-	bool onKeyEndingDebug() {
-		return (key->state[KEY_INPUT_MINUS] == 1);
+	static bool onKeyEndingDebug() {
+		UserInput* ui = getInstance();
+		return (ui->key->state[KEY_INPUT_MINUS] == 1);
 	}
 
 	static bool onKeySkipDebug() {
