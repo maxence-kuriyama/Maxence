@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/board.h"
+#include "lib/components/board.h"
 #include "lib/utils/logger.h"
 
 const float EVALUATION_WIN(1.0);

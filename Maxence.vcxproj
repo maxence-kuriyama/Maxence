@@ -174,9 +174,9 @@
     <ClInclude Include="lib\battle\game.h" />
     <ClInclude Include="lib\battle\game\comment.h" />
     <ClInclude Include="lib\modes\music_room\bg_character.h" />
-    <ClInclude Include="lib\board.h" />
-    <ClInclude Include="lib\board\field.h" />
-    <ClInclude Include="lib\board\hist.h" />
+    <ClInclude Include="lib\components\board.h" />
+    <ClInclude Include="lib\components\board\field.h" />
+    <ClInclude Include="lib\components\board\hist.h" />
     <ClInclude Include="lib\com.h" />
     <ClInclude Include="lib\comment.h" />
     <ClInclude Include="lib\common.h" />

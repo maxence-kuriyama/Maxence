@@ -31,7 +31,7 @@
     <ClInclude Include="vect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\board.h">
+    <ClInclude Include="lib\components\board.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\utils\logger.h">
@@ -40,10 +40,10 @@
     <ClInclude Include="lib\com\minmax.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\board\field.h">
+    <ClInclude Include="lib\components\board\field.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\board\hist.h">
+    <ClInclude Include="lib\components\board\hist.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\anime.h">
