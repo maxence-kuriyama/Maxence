@@ -3,6 +3,7 @@
 #include <Eigen/Core>
 #include "lib/const.h"
 #include "lib/board.h"
+#include "lib/music.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
 #include "lib/utils/logger.h"
@@ -67,20 +68,16 @@ public:
 		board.initialize();
 	}
 
-	void reset() {
+	void reset(bool resetMusic = false) {
 		initialize();
 
 		// ‚±‚¢‚Â‚ç‚Í‡î•ñ‚Å‚È‚¢‚Ì‚Åinitialize‚Å‰Šú‰»‚µ‚È‚¢
 		mode = "";
 		taijin = VS_HUMAN;
 		teban = TEBAN_SENKO;
-	}
 
-	void reset(Music& bgm) {
-		reset();
-		bgm.unloadAll();
+		if (resetMusic) Music::unloadAll();
 	}
-
 
 	/*===========================*/
 	//    €”õˆ—

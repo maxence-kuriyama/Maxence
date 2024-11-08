@@ -34,7 +34,7 @@ void routesBattle(int choice, int* flg, Title& title, Battle& battle);
 void routesScenario(int choice, int* flg, Title& title, Scenario& scenario);
 void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial);
 void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom);
-void goEndingDebug(int* flg, Music& bgm, Ending& ending);
+void goEndingDebug(int* flg, Ending& ending);
 void goTitle(int* flg, Title& title);
 void goResult(int* flg);
 
@@ -93,7 +93,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (UserInput::onKeySound()) title.toggleSound();
 
 		// エンディングモードのデバッグ
-		if (UserInput::onKeyEndingDebug()) goEndingDebug(&flg, bgm, ending);
+		if (UserInput::onKeyEndingDebug()) goEndingDebug(&flg, ending);
 
 
 		if (flg == FLAG_OPENING) {
@@ -121,7 +121,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_BATTLE) {
 			SetBackgroundColor(0, 0, 0);
-			int res = battle.show(com, bgm, debug_flg);
+			int res = battle.show(com, debug_flg);
 			logo.draw(true);
 
 			switch (res) {
@@ -263,8 +263,8 @@ void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom) {
 	}
 }
 
-void goEndingDebug(int* flg, Music& bgm, Ending& ending) {
-	bgm.unloadAll();
+void goEndingDebug(int* flg, Ending& ending) {
+	Music::unloadAll();
 	if (*flg != FLAG_ENDING) {
 		ending.initialize();
 		*flg = FLAG_ENDING;

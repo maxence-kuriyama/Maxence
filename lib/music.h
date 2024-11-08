@@ -49,61 +49,61 @@ public:
 	// ロードが成功したか否かを返す
 	static int load(const char* fileName, int async = 1, int strColor = 0) {
 		Music* music = Music::getInstance();
-		return music->load(fileName, async, strColor);
+		return music->_load(fileName, async, strColor);
 	}
 
 	// 指定したメモリを解放する
 	static void unload(int hNum = 0) {
 		Music* music = Music::getInstance();
-		music->unload(hNum);
+		music->_unload(hNum);
 	}
 
 	// 全てのメモリを解放する
 	static void unloadAll() {
 		Music* music = Music::getInstance();
-		music->unload(0);
-		music->unload(1);
+		music->_unload(0);
+		music->_unload(1);
 	}
 
 	// fromTop = 1で頭出し再生
 	static int play(int fromTop = 0) {
 		Music* music = Music::getInstance();
-		return music->play(fromTop);
+		return music->_play(fromTop);
 	}
 
 	// 一時停止
 	static int stop() {
 		Music* music = Music::getInstance();
-		return music->stop();
+		return music->_stop();
 	}
 
 	// 再生中の音楽を解放し、待機中の音楽を再生する
-	int pop(int strColor = 0) {
+	static int pop(int strColor = 0) {
 		Music* music = Music::getInstance();
-		music->pop(strColor);
+		return music->_pop(strColor);
 	}
 
 	// ループ中に一度だけpopする
-	void popOnce() {
+	static void popOnce() {
 		Music* music = Music::getInstance();
-		music->popOnce();
+		music->_popOnce();
 	}
 
 	// 再生中と待機中の音楽を切り替える
-	int swap(int strColor = 0, int noPlay = 0) {
+	static int swap(int strColor = 0, int noPlay = 0) {
 		Music* music = Music::getInstance();
-		music->swap(strColor, noPlay);
+		return music->_swap(strColor, noPlay);
 	}
 
 	static int swapWithoutPlay(int strColor = 0) {
 		Music* music = Music::getInstance();
-		return music->swap(strColor, 1);
+		return music->_swap(strColor, 1);
 	}
 
 	// ループ中に一度だけswapする
 	void swapOnce() {
 		if (!isSwapped) {
-			swap();
+			_swap();
 		}
 	}
 
@@ -121,7 +121,7 @@ public:
 	// 非同期ロード時のローディングメッセージ描画
 	static bool drawLoadMsg(int strColor = 0, int hNum = 0) {
 		Music* music = Music::getInstance();
-		music->drawLoadMsg(strColor, hNum);
+		return music->_drawLoadMsg(strColor, hNum);
 	}
 
 	// 指定したハンドルが空かどうか
@@ -148,12 +148,12 @@ public:
 
 	static void debugDump() {
 		Music* music = Music::getInstance();
-		music->debugDump();
+		music->_debugDump();
 	}
 
 private:
 
-	int load(const char* fileName, int async = 1, int strColor = 0) {
+	int _load(const char* fileName, int async = 1, int strColor = 0) {
 		if (strColor == 0) {
 			strColor = GetColor(255, 255, 255);
 		}
@@ -197,7 +197,7 @@ private:
 		return 0;
 	}
 
-	void unload(int hNum = 0) {
+	void _unload(int hNum = 0) {
 		if (hNum == 0 || hNum == 1) {
 			DeleteSoundMem(handle[hNum]);
 			handle[hNum] = -1;	// unloadされた状態
@@ -206,7 +206,7 @@ private:
 		}
 	}
 
-	int play(int fromTop = 0) {
+	int _play(int fromTop = 0) {
 		if (isPrepared()) {
 			ChangeVolumeSoundMem(vol, handle[0]);
 			PlaySoundMem(handle[0], DX_PLAYTYPE_BACK, fromTop);
@@ -216,7 +216,7 @@ private:
 		return 0;
 	}
 
-	int stop() {
+	int _stop() {
 		if (isPrepared()) {
 			StopSoundMem(handle[0]);
 			return 1;
@@ -224,39 +224,39 @@ private:
 		return 0;
 	}
 
-	int pop(int strColor = 0) {
-		if (swap(strColor)) {
-			unload(1);
+	int _pop(int strColor = 0) {
+		if (_swap(strColor)) {
+			_unload(1);
 			return 1;
 		}
 		return 0;
 	}
 
-	void popOnce() {
+	void _popOnce() {
 		if (!isSwapped) {
-			swap();
-			unload(1);
+			_swap();
+			_unload(1);
 		}
 	}
 
-	int swap(int strColor = 0, int noPlay = 0) {
+	int _swap(int strColor = 0, int noPlay = 0) {
 		if (isPrepared(1)) {
-			stop();
+			_stop();
 			int tmp = handle[0];
 			handle[0] = handle[1];
 			handle[1] = tmp;
 			string tmpStr = musicName[0];
 			musicName[0] = musicName[1];
 			musicName[1] = tmpStr;
-			if (!noPlay) play();
+			if (!noPlay) _play();
 			isSwapped = 1;
 			return 1;
 		}
-		drawLoadMsg(strColor, 1);
+		_drawLoadMsg(strColor, 1);
 		return 0;
 	}
 
-	bool drawLoadMsg(int strColor = 0, int hNum = 0) {
+	bool _drawLoadMsg(int strColor = 0, int hNum = 0) {
 		if (isLoading(hNum)) {
 			if (strColor == 0) {
 				strColor = GetColor(255, 255, 255);
@@ -283,7 +283,7 @@ private:
 		Logger::log();
 	}
 
-	void debugDump() {
+	void _debugDump() {
 		int strColor = strColorDebug;
 
 		DrawFormatString(5, 265, strColor, "animeCntS: %d", cnt);

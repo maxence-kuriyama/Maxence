@@ -112,7 +112,7 @@ public:
 	/*===========================*/
 	//    Battle Mode
 	/*===========================*/
-	int show(COM& com, Music& bgm, bool debug) {
+	int show(COM& com, bool debug) {
 		int return_flg = FLAG_BATTLE;
 
 		game.drawBeforePlay();
@@ -147,7 +147,7 @@ public:
 		}
 
 		if (cancelPlay()) com.setWait();
-		if (saveOrReset(bgm)) return_flg = FLAG_TITLE;
+		if (saveOrReset()) return_flg = FLAG_TITLE;
 
 		return return_flg;
 	}
@@ -223,7 +223,7 @@ private:
 		return (UserInput::onBack() && game.goBackHist());
 	}
 
-	bool saveOrReset(Music& bgm) {
+	bool saveOrReset() {
 		bool no_keyboard = true;
 		int choice = menu.choose(strColor, no_keyboard);
 
@@ -233,7 +233,7 @@ private:
 		//reset
 		if (choice == 0 || choice == 1) {
 			UserInput::reset();
-			game.reset(bgm);
+			game.reset(true);
 			return true;
 		}
 
