@@ -100,13 +100,6 @@ public:
 		return music->_swap(strColor, 1);
 	}
 
-	// ループ中に一度だけswapする
-	void swapOnce() {
-		if (!isSwapped) {
-			_swap();
-		}
-	}
-
 	static void enableSwap() {
 		Music* music = Music::getInstance();
 		music->isSwapped = 0;
@@ -122,28 +115,6 @@ public:
 	static bool drawLoadMsg(int strColor = 0, int hNum = 0) {
 		Music* music = Music::getInstance();
 		return music->_drawLoadMsg(strColor, hNum);
-	}
-
-	// 指定したハンドルが空かどうか
-	bool isEmpty(int hNum = 0) {
-		if (hNum == 0 || hNum == 1) {
-			return handle[hNum] == -1;
-		}
-		return true; // 不正な指定に対しては空であるとする
-	}
-
-	// 指定したハンドルがロード中かどうか
-	bool isLoading(int hNum = 0) {
-		if (isEmpty(hNum)) return false;
-		// ロード中か否かの判定
-		return CheckHandleASyncLoad(handle[hNum]);
-	}
-
-	// 指定したハンドルが再生可能かどうか
-	bool isPrepared(int hNum = 0) {
-		if (isEmpty(hNum)) return false;
-		// ロードが終わっているか否かの判定
-		return !CheckHandleASyncLoad(handle[hNum]);
 	}
 
 	static void debugDump() {
@@ -271,6 +242,28 @@ private:
 			return true;
 		}
 		return false;
+	}
+
+	// 指定したハンドルが空かどうか
+	bool isEmpty(int hNum = 0) {
+		if (hNum == 0 || hNum == 1) {
+			return handle[hNum] == -1;
+		}
+		return true; // 不正な指定に対しては空であるとする
+	}
+
+	// 指定したハンドルがロード中かどうか
+	bool isLoading(int hNum = 0) {
+		if (isEmpty(hNum)) return false;
+		// ロード中か否かの判定
+		return CheckHandleASyncLoad(handle[hNum]);
+	}
+
+	// 指定したハンドルが再生可能かどうか
+	bool isPrepared(int hNum = 0) {
+		if (isEmpty(hNum)) return false;
+		// ロードが終わっているか否かの判定
+		return !CheckHandleASyncLoad(handle[hNum]);
 	}
 
 	void loggingLoaded(const char* file_name) {
