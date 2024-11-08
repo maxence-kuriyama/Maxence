@@ -199,7 +199,7 @@
     <ClInclude Include="lib\modes\battle_result.h" />
     <ClInclude Include="lib\components\game.h" />
     <ClInclude Include="lib\components\message.h" />
-    <ClInclude Include="lib\modes\common\scenario_base.h" />
+    <ClInclude Include="lib\modes\scenario_base.h" />
     <ClInclude Include="lib\components\sprite.h" />
     <ClInclude Include="lib\modes\game.h" />
     <ClInclude Include="lib\modes\ending.h" />

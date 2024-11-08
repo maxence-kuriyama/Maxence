@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lib/components/menu.h"
-#include "./common/scenario_base.h"
+#include "./scenario_base.h"
 
 // チュートリアルのシナリオクラス
 class Tutorial : public ScenarioBase {
