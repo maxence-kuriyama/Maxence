@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/menu.h"
+#include "lib/user_input.h"
 #include "lib/modes/common/game.h"
 
 
@@ -17,7 +18,6 @@ class BattleResult {
 private:
 	Menu menu;
 	Button btnAgain;
-	UserInput* ui;
 	int Green = GetColor(0, 255, 0);
 	int Red = GetColor(255, 0, 0);
 	int Black = GetColor(0, 0, 0);
@@ -28,8 +28,7 @@ public:
 	BattleResult() {}
 	~BattleResult() {}
 
-	BattleResult(UserInput* src_ui) {
-		ui = src_ui;
+	BattleResult() {
 		int padding = 8;
 		int ulx = TEXT_AGAIN_X - padding;
 		int uly = TEXT_AGAIN_Y - padding;
@@ -45,7 +44,7 @@ public:
 
 		// メッセージの描画
 		btnAgain.display(btnColor);
-		if (btnAgain.isClicked() || ui->onReturn()) {
+		if (btnAgain.isClicked() || UserInput::onReturn()) {
 			return_flg = FLAG_BATTLE;
 		}
 
@@ -59,7 +58,7 @@ public:
 	}
 
 	bool cancel(Game& game) {
-		return (ui->onBack() && game.goBackHist());
+		return (UserInput::onBack() && game.goBackHist());
 	}
 
 	void drawGameBoard(Game& game) {

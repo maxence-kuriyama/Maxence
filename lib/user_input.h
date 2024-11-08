@@ -20,6 +20,11 @@ private:
 	UserInput() {}
 	~UserInput() { delete _instance; }
 
+	void toggleMouseOrKeyboard() {
+		if (mouse->isUsed()) keyboard = false;
+		if (key->isUsed()) keyboard = true;
+	}
+
 public:
 
 	static Key* getKey() {
@@ -49,21 +54,18 @@ public:
 		ui->key->initWait();
 	}
 
-	void toggleMouseOrKeyboard() {
-		if (mouse->isUsed()) keyboard = false;
-		if (key->isUsed()) keyboard = true;
-	}
-
 	bool onButton(int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
 		return mouse->onButton(LeftUpx, LeftUpy, RightDownx, RightDowny);
 	}
 
-	bool onBack() {
-		return key->onBack();
+	static bool onBack() {
+		UserInput* ui = getInstance();
+		return ui->key->onBack();
 	}
 
-	bool onReturn() {
-		return key->onReturn();
+	static bool onReturn() {
+		UserInput* ui = getInstance();
+		return ui->key->onReturn();
 	}
 
 	static bool check() {
@@ -86,8 +88,9 @@ public:
 		return (key->state[KEY_INPUT_P] == 1);
 	}
 
-	bool onKeyComment() {
-		return (key->state[KEY_INPUT_K] == 1);
+	static bool onKeyComment() {
+		UserInput* ui = getInstance();
+		return (ui->key->state[KEY_INPUT_K] == 1);
 	}
 
 	/*===========================*/
@@ -102,15 +105,18 @@ public:
 	}
 
 	static bool onKeySkipDebug() {
-		return (key->state[KEY_INPUT_B] == 1);
+		UserInput* ui = getInstance();
+		return (ui->key->state[KEY_INPUT_B] == 1);
 	}
 
-	bool onKeyCutinDebug() {
-		return (key->state[KEY_INPUT_C] == 1);
+	static bool onKeyCutinDebug() {
+		UserInput* ui = getInstance();
+		return (ui->key->state[KEY_INPUT_C] == 1);
 	}
 
-	bool onKeyVisualizeDebug() {
-		return (key->state[KEY_INPUT_V] == 1);
+	static bool onKeyVisualizeDebug() {
+		UserInput* ui = getInstance();
+		return (ui->key->state[KEY_INPUT_V] == 1);
 	}
 };
 

@@ -4,6 +4,7 @@
 #include "lib/const.h"
 #include "lib/com.h"
 #include "lib/menu.h"
+#include "lib/user_input.h"
 #include "lib/modes/common/game.h"
 #include "lib/modes/battle/camera.h"
 #include "lib/modes/battle/anime.h"
@@ -21,7 +22,6 @@ private:
 	Anime cutin;
 	Camera camera;
 	Comment comment;
-	UserInput* ui;
 	double theta = 0.3;
 
 	int strColor = GetColor(255, 255, 255);
@@ -35,16 +35,18 @@ private:
 public:
 	Game game;
 
-	Battle(UserInput* src_ui) {
-		ui = src_ui;
-		ui->reset();
+	Battle() {
+		UserInput::reset();
+
 		game.initialize();
 		camera.initialize();
 		comment.initialize();
+
 		// ボタン初期化
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
 		menu.set(btnSave, btnReset);
+
 		// カットイン画像初期化
 		int Cutin1 = LoadGraph("graph/cutin1.png");
 		int Cutin10 = LoadGraph("graph/cutin10.png");
@@ -60,7 +62,7 @@ public:
 	}
 
 	void start(int player1, int player2, bool init = true) {
-		ui->reset();
+		UserInput::reset();
 		game.prepare(player1, player2, init);
 	}
 
@@ -140,13 +142,12 @@ public:
 
 		// 勝利判定
 		if (game.victory() != 0) {
-			ui->reset();
+			UserInput::reset();
 			return_flg = FLAG_RESULT;
 		}
 
 		if (cancelPlay()) com.setWait();
 		if (saveOrReset(bgm)) return_flg = FLAG_TITLE;
-		moveCamera();
 
 		return return_flg;
 	}
@@ -171,18 +172,18 @@ public:
 
 	void toggleByKey(bool debug) {
 		// コメントを消す
-		if (ui->onKeyComment()) {
+		if (UserInput::onKeyComment()) {
 			commentFlg = !commentFlg;
 		}
 
 		if (debug) {
 			// カットインを入れる
-			if (ui->onKeyCutinDebug()) {
+			if (UserInput::onKeyCutinDebug()) {
 				cutin.flg = 1;
 			}
 
 			// 学習機械の出力を見る
-			if (ui->onKeyVisualizeDebug()) {
+			if (UserInput::onKeyVisualizeDebug()) {
 				likelihoodFlg = !likelihoodFlg;
 			}
 		}
@@ -218,33 +219,20 @@ private:
 		return false;
 	}
 
-	void moveCamera() {
-		Mouse* mouse = ui->mouse;
-		camera.set();
-		if (mouse->click()) {
-			mouse->set();
-		}
-		if (mouse->onClick()) {
-			theta -= (mouse->distDragX()) * 0.05;
-			mouse->set();
-		}
-		//MV1SetRotationXYZ(ModelHandle, VGet(0.0, theta + DX_PI_F, 0.0));
-	}
-
 	bool cancelPlay() {
-		return (ui->onBack() && game.goBackHist());
+		return (UserInput::onBack() && game.goBackHist());
 	}
 
 	bool saveOrReset(Music& bgm) {
 		bool no_keyboard = true;
-		int choice = menu.choose(*ui, strColor, no_keyboard);
+		int choice = menu.choose(strColor, no_keyboard);
 
 		// save
 		if (choice == 0) save();
 
 		//reset
 		if (choice == 0 || choice == 1) {
-			ui->reset();
+			UserInput::reset();
 			game.reset(bgm);
 			return true;
 		}

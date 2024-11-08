@@ -73,8 +73,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Scenario scenario;
 	Opening opening;
 	Ending ending;
-	Battle battle(&ui);
-	BattleResult result(&ui);
+	Battle battle;
+	BattleResult result;
 	int flg = FLAG_OPENING;
 
 	bool debug_flg = false;
