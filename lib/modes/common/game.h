@@ -349,15 +349,15 @@ public:
 		coordinate = { globalX, globalY, localX, localY, DUMMY_LAST_FIELD };
 	}
 
-	bool playTurn(UserInput& ui) {
-		if (ui.keyboard) {
-			moveCoordByKey(*ui.key);
+	bool playTurn() {
+		if (UserInput::usingKeyboard()) {
+			moveCoordByKey(*UserInput::getKey());
 		}
 		else {
-			getMouseCoord(*ui.mouse);
+			getMouseCoord(*UserInput::getMouse());
 		}
 
-		return ui.check();
+		return UserInput::check();
 	}
 
 	double update(int side = 0) {

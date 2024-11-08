@@ -101,7 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		if (flg == FLAG_OPENING) {
-			opening.showDemo(ui);
+			opening.showDemo();
 			if (opening.isOver()) flg = FLAG_TITLE;
 		}
 		else if (flg == FLAG_TITLE) {

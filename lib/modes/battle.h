@@ -207,7 +207,7 @@ public:
 private:
 
 	bool playByPlayer() {
-		if (game.isPlayTurn() && game.playTurn(*ui)) {
+		if (game.isPlayTurn() && game.playTurn()) {
 			double res = game.update();
 			if (game.isUpdated(res)) {
 				updateCommentInBattle();

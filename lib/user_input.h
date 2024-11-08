@@ -65,22 +65,20 @@ public:
 		return key->onReturn();
 	}
 
-	bool check() {
-		if (keyboard) {
-			if (key->onCheck()) {
-				return true;
-			}
+	static bool check() {
+		UserInput* ui = getInstance();
+		if (ui->keyboard) {
+			return ui->key->onCheck();
 		}
 		else {
-			if (mouse->clickRight()) {
-				return true;
-			}
+			return ui->mouse->clickRight();
 		}
 		return false;
 	}
 
-	bool clickOrReturn() {
-		return (key->onReturn() || mouse->click());
+	static bool clickOrReturn() {
+		UserInput* ui = getInstance();
+		return (ui->key->onReturn() || ui->mouse->click());
 	}
 
 	bool onKeySound() {

@@ -395,7 +395,7 @@ protected:
 	virtual int doBattle(UserInput& ui, COM& com, bool debug = false) {
 		game.drawBeforePlay();
 
-		if (playTurn(ui, com)) {
+		if (playTurn(com)) {
 			if (battle_trigger == "play_once") {
 				battle_trigger = "fired";
 			}
@@ -413,17 +413,17 @@ protected:
 		return FLAG_TITLE;
 	}
 
-	virtual bool playTurn(UserInput& ui, COM& com) {
+	virtual bool playTurn(COM& com) {
 		if (game.isPlayTurn()) {
-			return playByPlayer(ui);
+			return playByPlayer();
 		}
 		else {
 			return playByCom(com);
 		}
 	}
 
-	bool playByPlayer(UserInput& ui) {
-		if (!game.playTurn(ui)) return false;
+	bool playByPlayer() {
+		if (!game.playTurn()) return false;
 
 		double res = game.update();
 		return game.isUpdated(res);
