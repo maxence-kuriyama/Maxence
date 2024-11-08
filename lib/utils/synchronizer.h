@@ -1,8 +1,6 @@
 #pragma once
 
 #include <time.h>
-#include "lib/const.h"
-
 
 class Synchronizer {
 private:
@@ -12,6 +10,11 @@ private:
 
 public:
 	int fps = 0;			// ÀŒøFPS
+	int targetFps = 0;
+
+	Synchronizer(int trgFps) {
+		targetFps = trgFps;
+	}
 
 	// “¯Šúˆ—
 	void execute() {
@@ -23,7 +26,7 @@ public:
 			fpsStart = clock();
 		}
 		// “¯Šúˆ—
-		while (clock() - start < 1000.0 / FPS) {
+		while (clock() - start < 1000.0 / targetFps) {
 			WaitTimer(1);
 		}
 		start = clock();

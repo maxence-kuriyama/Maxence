@@ -218,7 +218,7 @@
     <ClInclude Include="lib\nlohmann\json.hpp" />
     <ClInclude Include="lib\OBJ_Loader.h" />
     <ClInclude Include="lib\sprite.h" />
-    <ClInclude Include="lib\synchronizer.h" />
+    <ClInclude Include="lib\utils\synchronizer.h" />
     <ClInclude Include="lib\title\fireflower.h" />
     <ClInclude Include="lib\utils\user_input.h" />
     <ClInclude Include="lib\utils\user_input\keyboard.h" />

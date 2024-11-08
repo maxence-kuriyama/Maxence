@@ -15,9 +15,9 @@
 using namespace DxLib;
 using namespace std;
 
-#include "lib/synchronizer.h"
 #include "lib/logo.h"
 #include "lib/utils/music.h"
+#include "lib/utils/synchronizer.h"
 #include "lib/modes/title.h"
 #include "lib/modes/tutorial.h"
 #include "lib/modes/scenario.h"
@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	srand((unsigned)time(NULL));
 
 	
-	Synchronizer sync;
+	Synchronizer sync(FPS);
 	Logo logo;
 
 	Title title;
