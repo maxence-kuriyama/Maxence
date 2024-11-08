@@ -55,8 +55,8 @@ private:
 
 public:
 
-	int show(Music& music, bool debug = false) {
-		int res = ScenarioBase::show(music, debug);
+	int show(bool debug = false) {
+		int res = ScenarioBase::show(debug);
 
 		return (res != SCENE_RES_DEFAULT) ? res : FLAG_TUTORIAL;
 	}

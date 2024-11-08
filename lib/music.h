@@ -112,26 +112,15 @@ public:
 	}
 
 	// 音量変更
-	void changeVolume(int newVol) {
-		vol = newVol;
+	static void changeVolume(int newVol) {
+		Music* music = Music::getInstance();
+		music->vol = newVol;
 	}
 
 	// 非同期ロード時のローディングメッセージ描画
-	int drawLoadMsg(int strColor = 0, int hNum = 0) {
-		if (isLoading(hNum)) {
-			if (strColor == 0) {
-				strColor = GetColor(255, 255, 255);
-			}
-
-			string loading = MUSIC_LOAD_MSG_ASYNC_BASE;
-			for (int i = 0; i < (cnt % FPS) / 15; ++i) {
-				loading += ".";
-			}
-			DrawFormatString(loadMsgX, loadMsgY, strColor, loading.c_str());
-			cnt++;
-			return 1;
-		}
-		return 0;
+	static bool drawLoadMsg(int strColor = 0, int hNum = 0) {
+		Music* music = Music::getInstance();
+		music->drawLoadMsg(strColor, hNum);
 	}
 
 	// 指定したハンドルが空かどうか
@@ -156,17 +145,9 @@ public:
 		return !CheckHandleASyncLoad(handle[hNum]);
 	}
 
-	void debugDump() {
-		int strColor = strColorDebug;
-
-		DrawFormatString(5, 265, strColor, "animeCntS: %d", cnt);
-		DrawFormatString(5, 285, strColor, "volume: %d", vol);
-		DrawFormatString(5, 305, strColor, "isEmptyS0: %d", isEmpty(0));
-		DrawFormatString(5, 325, strColor, "isLoadingS0: %d", isLoading(0));
-		DrawFormatString(5, 345, strColor, "isLoadedS0: %s", musicName[0].c_str());
-		DrawFormatString(5, 365, strColor, "isEmptyS1: %d", isEmpty(1));
-		DrawFormatString(5, 385, strColor, "isLoadingS1: %d", isLoading(1));
-		DrawFormatString(5, 405, strColor, "isLoadedS1: %s", musicName[1].c_str());
+	static void debugDump() {
+		Music* music = Music::getInstance();
+		music->debugDump();
 	}
 
 private:
@@ -274,6 +255,23 @@ private:
 		return 0;
 	}
 
+	bool drawLoadMsg(int strColor = 0, int hNum = 0) {
+		if (isLoading(hNum)) {
+			if (strColor == 0) {
+				strColor = GetColor(255, 255, 255);
+			}
+
+			string loading = MUSIC_LOAD_MSG_ASYNC_BASE;
+			for (int i = 0; i < (cnt % FPS) / 15; ++i) {
+				loading += ".";
+			}
+			DrawFormatString(loadMsgX, loadMsgY, strColor, loading.c_str());
+			cnt++;
+			return true;
+		}
+		return false;
+	}
+
 	void loggingLoaded(const char* file_name) {
 		Logger::ss << "Load " << file_name;
 		Logger::log();
@@ -282,6 +280,19 @@ private:
 	void loggingUnloaded(string music_name) {
 		Logger::ss << "Unload " << music_name;
 		Logger::log();
+	}
+
+	void debugDump() {
+		int strColor = strColorDebug;
+
+		DrawFormatString(5, 265, strColor, "animeCntS: %d", cnt);
+		DrawFormatString(5, 285, strColor, "volume: %d", vol);
+		DrawFormatString(5, 305, strColor, "isEmptyS0: %d", isEmpty(0));
+		DrawFormatString(5, 325, strColor, "isLoadingS0: %d", isLoading(0));
+		DrawFormatString(5, 345, strColor, "isLoadedS0: %s", musicName[0].c_str());
+		DrawFormatString(5, 365, strColor, "isEmptyS1: %d", isEmpty(1));
+		DrawFormatString(5, 385, strColor, "isLoadingS1: %d", isLoading(1));
+		DrawFormatString(5, 405, strColor, "isLoadedS1: %s", musicName[1].c_str());
 	}
 };
 

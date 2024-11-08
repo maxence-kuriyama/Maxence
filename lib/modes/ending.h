@@ -1,10 +1,10 @@
 #pragma once
 
-#include "lib/modes/common/sprite.h"
-#include "lib/modes/common/game.h"
+#include "lib/music.h"
+#include "./common/sprite.h"
+#include "./common/game.h"
 
 void init_ending_text(string* job, string* who);
-
 
 //エンディング管理用クラス
 // 単体での使用を想定
@@ -54,12 +54,12 @@ public:
 		init_ending_text(job, who);
 	}
 
-	int show(Music& music, int fps) {
+	int show(int fps) {
 		// 実効FPSを元にアニメーション速度を調整
 		cntInc = 30.2 / fps;
 
 		// フェードイン
-		fadeinMusic(music);
+		fadeinMusic();
 		fadeinTitle();
 
 		// スナップショット
@@ -170,22 +170,22 @@ public:
 
 		//Fin
 		drawFin();
-		fadeoutMusic(music);
+		fadeoutMusic();
 
 		return 0;
 	}
 
-	void fadeinMusic(Music& music) {
+	void fadeinMusic() {
 		if (cnt > 280.0 && cnt <= 900.0) {
-			music.changeVolume(22.0 * pow(cnt - 250.0, 0.3));
-			music.play();
+			Music::changeVolume(22.0 * pow(cnt - 250.0, 0.3));
+			Music::play();
 		}
 	}
 
-	void fadeoutMusic(Music& music) {
+	void fadeoutMusic() {
 		if (cnt > 6100.0 && cnt <= 6200.0) {
-			music.changeVolume(7.57 * pow(6250.0 - cnt, 0.6));
-			music.play();
+			Music::changeVolume(7.57 * pow(6250.0 - cnt, 0.6));
+			Music::play();
 		}
 	}
 
