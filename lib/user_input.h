@@ -54,8 +54,14 @@ public:
 		ui->key->initWait();
 	}
 
-	bool onButton(int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
-		return mouse->onButton(LeftUpx, LeftUpy, RightDownx, RightDowny);
+	static bool onButton(int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
+		UserInput* ui = getInstance();
+		return ui->mouse->onButton(LeftUpx, LeftUpy, RightDownx, RightDowny);
+	}
+
+	static bool isClicked() {
+		UserInput* ui = getInstance();
+		return ui->mouse->click();
 	}
 
 	static bool onBack() {

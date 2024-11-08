@@ -52,7 +52,7 @@ public:
 
 	//矩形の上にマウスカーソルがいるか判定
 	bool onButton(int LeftUpx, int LeftUpy, int RightDownx, int RightDowny) {
-		return (x > LeftUpx && x < RightDownx&& y > LeftUpy && y < RightDowny);
+		return (x > LeftUpx && x < RightDownx && y > LeftUpy && y < RightDowny);
 	}
 
 	bool isUsed() {

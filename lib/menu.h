@@ -48,27 +48,25 @@ public:
 	}
 
 	void display(int strColor) {
-		Mouse* mouse = UserInput::getMouse();
 		DrawFormatString(textX, textY, strColor, text.c_str());
-		if (isOn(*mouse)) {
+		if (isMouseOn()) {
 			DrawFormatString(textX, textY, Red, text.c_str());
 		}
 	}
 
 	void display(bool active, int strColor) {
 		DrawFormatString(textX, textY, strColor, text.c_str());
-		if (active == 1) {
+		if (active) {
 			DrawFormatString(textX, textY, Red, text.c_str());
 		}
 	}
 
-	bool isOn(Mouse& mouse) {
-		return (mouse.x > upLeftX && mouse.x < lowRightX&& mouse.y > upLeftY && mouse.y < lowRightY);
+	bool isMouseOn() {
+		return UserInput::onButton(upLeftX, lowRightX, upLeftY, lowRightY);
 	}
 
 	bool isClicked() {
-		Mouse* mouse = UserInput::getMouse();
-		return (isOn(*mouse) && mouse->click());
+		return (isMouseOn() && UserInput::isClicked());
 	}
 
 	Button operator = (Button& src) {
