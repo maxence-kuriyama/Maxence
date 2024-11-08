@@ -5,9 +5,9 @@
 #include "lib/const.h"
 #include "lib/music.h"
 #include "lib/music_unlocker.h"
-#include "lib/modes/common/message.h"
-#include "lib/modes/common/fireflower.h"
-#include "lib/modes/music_room/bg_character.h"
+#include "./common/message.h"
+#include "./common/fireflower.h"
+#include "./music_room/bg_character.h"
 
 const int MUSIC_NUM(15);
 const int MUSIC_MAX_INDEX(MUSIC_NUM);
@@ -82,7 +82,7 @@ public:
 		isLoading = false;
 	}
 
-	int show(Music& music) {
+	int show() {
 		bg.draw();
 		showFireFlower();
 		msg.draw();
@@ -96,18 +96,18 @@ public:
 		// 別の曲を選択
 		if (currentChoice != -1) {
 			choice = currentChoice;
-			music.stop();
+			Music::stop();
 			setBgCharacter();
 			showMusicDesc();
 		}
 
 		if (currentChoice != -1 || isLoading) {
-			if (play(music)) {
+			if (play()) {
 				isLoading = false;
 			}
 			else {
 				isLoading = true;
-				music.drawLoadMsg();
+				Music::drawLoadMsg();
 			}
 		}
 		return FLAG_MUSIC_ROOM;
@@ -121,20 +121,20 @@ public:
 
 private:
 
-	int play(Music& music) {
+	int play() {
 		if (choice == -1) return 1;
 
 		MusicInfo info = infoList[choice];
 		string filename = getMusicFileName(info);
-		if (music.musicName[0] == filename) {
-			return (music.stop() && music.play(MUSIC_START_FROM_TOP));
+		if (Music::getMusicName(0) == filename) {
+			return (Music::stop() && Music::play(MUSIC_START_FROM_TOP));
 		}
-		else if (music.musicName[1] == filename) {
-			return (music.swapWithoutPlay() && music.play(MUSIC_START_FROM_TOP));
+		else if (Music::getMusicName(1) == filename) {
+			return (Music::swapWithoutPlay() && Music::play(MUSIC_START_FROM_TOP));
 		}
 		else {
-			music.unload(1); // 必要?
-			music.load(filename.c_str());
+			Music::unload(1); // 必要?
+			Music::load(filename.c_str());
 			return 0;
 		}
 	}

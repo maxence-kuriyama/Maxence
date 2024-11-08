@@ -95,8 +95,9 @@ public:
 		music->swap(strColor, noPlay);
 	}
 
-	int swapWithoutPlay(int strColor = 0) {
-		return swap(strColor, 1);
+	static int swapWithoutPlay(int strColor = 0) {
+		Music* music = Music::getInstance();
+		return music->swap(strColor, 1);
 	}
 
 	// ƒ‹[ƒv’†‚Éˆê“x‚¾‚¯swap‚·‚é

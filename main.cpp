@@ -168,9 +168,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_MUSIC_ROOM) {
 			SetBackgroundColor(0, 0, 0);
-			int res = musicRoom.show(bgm);
+			int res = musicRoom.show();
 			if (res == FLAG_TITLE) {
-				bgm.unloadAll();
+				Music::unloadAll();
 				goTitle(&flg, title);
 			}
 		}
