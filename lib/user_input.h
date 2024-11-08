@@ -43,9 +43,10 @@ public:
 		toggleMouseOrKeyboard();
 	}
 
-	void reset() {
-		mouse->set();
-		key->initWait();
+	static void reset() {
+		UserInput* ui = getInstance();
+		ui->mouse->set();
+		ui->key->initWait();
 	}
 
 	void toggleMouseOrKeyboard() {

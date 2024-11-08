@@ -107,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_TITLE) {
 			bgm.load("sound/bgm03.ogg"); // シナリオ用
 			bgm.load("sound/bgm02.ogg"); // チュートリアル用
-			int choice = title.show(ui);
+			int choice = title.show();
 			routesBattle(choice, &flg, title, battle);
 			routesScenario(choice, &flg, title, scenario, bgm);
 			routesTutorial(choice, &flg, title, tutorial);
@@ -172,7 +172,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_MUSIC_ROOM) {
 			SetBackgroundColor(0, 0, 0);
-			int res = musicRoom.show(ui, bgm);
+			int res = musicRoom.show(bgm);
 			if (res == FLAG_TITLE) {
 				bgm.unloadAll();
 				goTitle(&flg, title);

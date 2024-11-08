@@ -90,15 +90,15 @@ private:
 	int doBattle(UserInput& ui, COM& com, bool debug) {
 		ScenarioBase::doBattle(ui, com);
 
-		if (reset(ui)) return FLAG_TITLE;
+		if (reset()) return FLAG_TITLE;
 
 		return FLAG_TUTORIAL;
 	}
 
-	bool reset(UserInput& ui) {
+	bool reset() {
 		btnReset.display(strColorMenu);
 		if (btnReset.isClicked()) {
-			ui.reset();
+			UserInput::reset();
 			game.reset();
 			return true;
 		}

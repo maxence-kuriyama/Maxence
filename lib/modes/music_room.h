@@ -5,7 +5,6 @@
 #include "lib/const.h"
 #include "lib/music.h"
 #include "lib/music_unlocker.h"
-#include "lib/user_input.h"
 #include "lib/modes/common/message.h"
 #include "lib/modes/common/fireflower.h"
 #include "lib/modes/music_room/bg_character.h"
@@ -83,13 +82,13 @@ public:
 		isLoading = false;
 	}
 
-	int show(UserInput& ui, Music& music) {
+	int show(Music& music) {
 		bg.draw();
 		showFireFlower();
 		msg.draw();
 		drawSpeakerIcon();
 	
-		int currentChoice = choose(ui);
+		int currentChoice = menu.choose(strColorMenu);
 
 		// ƒ^ƒCƒgƒ‹‚Ö–ß‚é
 		if (currentChoice == MUSIC_MAX_INDEX) return FLAG_TITLE;
@@ -121,12 +120,6 @@ public:
 	}
 
 private:
-
-	int choose(UserInput& ui) {
-		return menu.choose(ui, strColorMenu);
-	}
-
-	bool reset(UserInput& ui) {}
 
 	int play(Music& music) {
 		if (choice == -1) return 1;

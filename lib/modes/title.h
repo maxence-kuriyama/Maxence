@@ -49,10 +49,10 @@ public:
 		flg = TITLE_GAME_MODE;
 	}
 
-	int show(UserInput& ui) {
+	int show() {
 		showFireFlower();
 		showTitleLogo();
-		return choose(ui);
+		return choose();
 	}
 
 	void showTitleLogo() {
@@ -90,18 +90,18 @@ private:
 		}
 	}
 
-	int choose(UserInput& ui) {
+	int choose() {
 		if (flg == TITLE_GAME_MODE) {
-			return chooseMode(ui);
+			return chooseMode();
 		}
 		else {
-			return chooseLoad(ui);
+			return chooseLoad();
 		}
 	}
 
 	//タイトル画面その１
-	int chooseMode(UserInput& ui) {
-		int choice = menuChoose(ui);
+	int chooseMode() {
+		int choice = menuChoose();
 		switch (choice) {
 		case 0:
 			setLoadMenu();
@@ -121,8 +121,8 @@ private:
 	}
 
 	//タイトル画面その２（セーブロード）
-	int chooseLoad(UserInput& ui) {
-		int choice = menuChoose(ui);
+	int chooseLoad() {
+		int choice = menuChoose();
 		switch (choice) {
 		case 0:
 			return MENU_CHOICE_START;
@@ -137,7 +137,7 @@ private:
 		menu.set(btnStart, btnLoad);
 	}
 
-	int menuChoose(UserInput& ui) {
-		return menu.choose(ui, White);
+	int menuChoose() {
+		return menu.choose(White);
 	}
 };
