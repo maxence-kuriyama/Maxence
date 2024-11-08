@@ -6,8 +6,8 @@
 #include "lib/utils/music.h"
 #include "lib/utils/music_unlocker.h"
 #include "lib/components/menu.h"
+#include "lib/components/fireflower.h"
 #include "./common/message.h"
-#include "./common/fireflower.h"
 #include "./music_room/bg_character.h"
 
 const int MUSIC_NUM(15);
@@ -63,7 +63,7 @@ private:
 	Menu menu;
 	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
 	Message msg;
-	fireflower tama[MUSIC_ROOM_FIRE_FLOWER_NUM];
+	FireFlower tama[MUSIC_ROOM_FIRE_FLOWER_NUM];
 	BgCharacter bg;
 	int choice = -1;
 	bool isLoading = false;

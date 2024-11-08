@@ -209,7 +209,7 @@
     <ClInclude Include="lib\utils\encrypter.h" />
     <ClInclude Include="lib\modes\scenario\message.h" />
     <ClInclude Include="lib\modes\title.h" />
-    <ClInclude Include="lib\modes\common\fireflower.h" />
+    <ClInclude Include="lib\components\fireflower.h" />
     <ClInclude Include="lib\modes\tutorial.h" />
     <ClInclude Include="lib\modes\music_room.h" />
     <ClInclude Include="lib\utils\movie.h" />

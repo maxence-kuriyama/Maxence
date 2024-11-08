@@ -1,8 +1,7 @@
 #pragma once
 
-
 // 花火オブジェクト
-class fireflower {
+class FireFlower {
 private:
 	int cnt;			// 花火の寿命カウンタ
 	double particle[12][2];
@@ -16,7 +15,7 @@ private:
 public:
 	int sound = 0;		// SEを出すか否か
 
-	fireflower() {
+	FireFlower() {
 		initialize();
 	}
 

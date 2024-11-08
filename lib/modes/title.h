@@ -3,7 +3,7 @@
 #include "lib/const.h"
 #include "lib/utils/music.h"
 #include "lib/components/menu.h"
-#include "./common/fireflower.h"
+#include "lib/components/fireflower.h"
 
 const int TITLE_GAME_MODE(1);
 const int TITLE_LOAD_BATTLE(11);
@@ -11,7 +11,7 @@ const int TITLE_LOAD_SCENARIO(12);
 
 class Title {
 private:
-	fireflower tama[FIRE_FLOWER_NUM];
+	FireFlower tama[FIRE_FLOWER_NUM];
 	int title_logo = LoadGraph("graph/Maxence_after4.png");
 	Menu menu;
 	Button btnLonely;
