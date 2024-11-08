@@ -116,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_TUTORIAL) {
 			SetBackgroundColor(0, 0, 0);
 			if (!bgm.drawLoadMsg()) {
-				int res = tutorial.show(ui, bgm);
+				int res = tutorial.show(bgm);
 				if (res == FLAG_TITLE) {
 					bgm.unloadAll();
 					goTitle(&flg, title);
@@ -163,7 +163,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_SCENARIO) {
 			SetBackgroundColor(0, 0, 0);
 			if (!bgm.drawLoadMsg()) {
-				int res = scenario.show(ui, com, bgm, debug_flg);
+				int res = scenario.show(com, bgm, debug_flg);
 				if (res == FLAG_TITLE) {
 					bgm.unloadAll();
 					goTitle(&flg, title);

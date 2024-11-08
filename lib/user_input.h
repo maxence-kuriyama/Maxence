@@ -90,6 +90,9 @@ public:
 		return (key->state[KEY_INPUT_K] == 1);
 	}
 
+	/*===========================*/
+	//    Debug—p
+	/*===========================*/
 	bool onKeyDebug() {
 		return (key->state[KEY_INPUT_G] == 1);
 	}
@@ -98,7 +101,7 @@ public:
 		return (key->state[KEY_INPUT_MINUS] == 1);
 	}
 
-	bool onKeySkipDebug() {
+	static bool onKeySkipDebug() {
 		return (key->state[KEY_INPUT_B] == 1);
 	}
 

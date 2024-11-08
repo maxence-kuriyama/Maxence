@@ -230,15 +230,15 @@ public:
 		mrK[0].turn(MRK_KEY_DOWN);
 	}
 
-	int show(UserInput& ui, COM& com, Music& music, bool debug = false) {
+	int show(COM& com, Music& music, bool debug = false) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
-		bool is_reset = (!onBattle && !isTalking && saveOrReset(ui));
+		bool is_reset = (!onBattle && !isTalking && saveOrReset());
 		
-		int res = ScenarioBase::show(ui, com, music, debug);
-		showAdditionalAction(ui);
+		int res = ScenarioBase::show(com, music, debug);
+		showAdditionalAction();
 		music_name[0] = music.musicName[0];
 		music_name[1] = music.musicName[1];
 
@@ -323,16 +323,13 @@ public:
 	}
 
 	void loadScenario(int flg_saved, Music& music) {
-		Mouse mouse;
-		Key key;
-		UserInput dummy_ui = { &key, &mouse };
 		COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
 		while (flg < flg_saved) {
 			old_flg = flg;
 			Scene scene = getCurrentScene();
-			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_ui, dummy_com, music);
+			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com, music);
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
@@ -365,15 +362,15 @@ public:
 
 private:
 
-	int showAdditionalAction(UserInput& ui) {
+	int showAdditionalAction() {
 		Scene scene = getCurrentScene();
 
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
-			performEQ(scene.how, *ui.mouse);
+			performEQ(scene.how);
 			break;
 		case SCENE_ACTION_WAIT:
-			waitClick(*ui.mouse);
+			waitClick();
 		default:
 			break;
 		}
@@ -381,11 +378,11 @@ private:
 		return SCENE_RES_DEFAULT;
 	}
 
-	void performEQ(string how, Mouse &mouse) {
+	void performEQ(string how) {
 		if (how == "true") {
 			// happenEQ
 			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
-			waitClick(mouse);
+			waitClick();
 		}
 		else {
 			// stopEQ
@@ -420,16 +417,16 @@ private:
 	}
 
 	// override
-	int doBattle(UserInput& ui, COM& com, bool debug) {
-		ScenarioBase::doBattle(ui, com, debug);
+	int doBattle(COM& com, bool debug) {
+		ScenarioBase::doBattle(com, debug);
 
-		if (saveOrReset(ui)) {
+		if (saveOrReset()) {
 			initializeBattle();
 			return FLAG_TITLE;
 		}
 
 		// 対戦スキップ（一人用デバッグ）
-		if (debug && skipBattle(ui)) goNext();
+		if (debug && skipBattle()) goNext();
 			
 		return FLAG_SCENARIO;
 	}
@@ -451,24 +448,24 @@ private:
 	}
 
 	// デバッグ用
-	bool skipBattle(UserInput& ui) {
-		if (ui.onKeySkipDebug()) {
+	bool skipBattle() {
+		if (UserInput::onKeySkipDebug()) {
 			initializeBattle();
 			return true;
 		}
 		return false;
 	}
 
-	bool saveOrReset(UserInput& ui) {
+	bool saveOrReset() {
 		bool no_keyboard = true;
-		int choice = menu.choose(ui, strColorMenu, no_keyboard);
+		int choice = menu.choose(strColorMenu, no_keyboard);
 
 		// save
 		if (choice == 0) save();
 
 		//reset
 		if (choice == 0 || choice == 1) {
-			ui.reset();
+			UserInput::reset();
 			game.reset();
 			return true;
 		}

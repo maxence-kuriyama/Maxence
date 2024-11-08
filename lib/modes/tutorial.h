@@ -55,8 +55,8 @@ private:
 
 public:
 
-	int show(UserInput& ui, Music& music, bool debug = false) {
-		int res = ScenarioBase::show(ui, music, debug);
+	int show(Music& music, bool debug = false) {
+		int res = ScenarioBase::show(music, debug);
 
 		return (res != SCENE_RES_DEFAULT) ? res : FLAG_TUTORIAL;
 	}
@@ -87,8 +87,8 @@ private:
 	}
 
 	// override
-	int doBattle(UserInput& ui, COM& com, bool debug) {
-		ScenarioBase::doBattle(ui, com);
+	int doBattle(COM& com, bool debug) {
+		ScenarioBase::doBattle(com);
 
 		if (reset()) return FLAG_TITLE;
 
