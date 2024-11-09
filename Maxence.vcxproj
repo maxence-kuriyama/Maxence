@@ -188,6 +188,7 @@
     <ClInclude Include="lib\game\anime.h" />
     <ClInclude Include="lib\game\comment.h" />
     <ClInclude Include="lib\load_obj.h" />
+    <ClInclude Include="lib\utils\flag_store.h" />
     <ClInclude Include="lib\utils\logger.h" />
     <ClInclude Include="lib\components\logo.h" />
     <ClInclude Include="lib\components\menu.h" />

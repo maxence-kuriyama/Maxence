@@ -1,7 +1,17 @@
 #pragma once
 
+#include "lib/const.h"
 #include "./user_input/mouse.h"
 #include "./user_input/keyboard.h"
+
+const int UI_KEY_SOUND(KEY_INPUT_P);
+const int UI_KEY_COMMENT(KEY_INPUT_K);
+
+const int UI_KEY_DEBUG_MODE(KEY_INPUT_G);
+const int UI_KEY_ENDING_DEBUG(KEY_INPUT_MINUS);
+const int UI_KEY_SKIP_DEBUG(KEY_INPUT_B);
+const int UI_KEY_CUTIN_DEBUG(KEY_INPUT_C);
+const int UI_KEY_VISUALIZE_DEBUG(KEY_INPUT_V);
 
 class UserInput {
 private:
@@ -101,40 +111,50 @@ public:
 
 	static bool onKeySound() {
 		UserInput* ui = getInstance();
-		return (ui->key->state[KEY_INPUT_P] == 1);
+		return (ui->key->state[UI_KEY_SOUND] == 1);
 	}
 
 	static bool onKeyComment() {
 		UserInput* ui = getInstance();
-		return (ui->key->state[KEY_INPUT_K] == 1);
+		return (ui->key->state[UI_KEY_COMMENT] == 1);
 	}
 
 	/*===========================*/
 	//    Debug—p
 	/*===========================*/
 	static bool onKeyDebug() {
+		if (!DEBUG) return false;
+
 		UserInput* ui = getInstance();
-		return (ui->key->state[KEY_INPUT_G] == 1);
+		return (ui->key->state[UI_KEY_DEBUG_MODE] == 1);
 	}
 
 	static bool onKeyEndingDebug() {
+		if (!DEBUG) return false;
+
 		UserInput* ui = getInstance();
-		return (ui->key->state[KEY_INPUT_MINUS] == 1);
+		return (ui->key->state[UI_KEY_ENDING_DEBUG] == 1);
 	}
 
 	static bool onKeySkipDebug() {
+		if (!DEBUG) return false;
+
 		UserInput* ui = getInstance();
-		return (ui->key->state[KEY_INPUT_B] == 1);
+		return (ui->key->state[UI_KEY_SKIP_DEBUG] == 1);
 	}
 
 	static bool onKeyCutinDebug() {
+		if (!DEBUG) return false;
+
 		UserInput* ui = getInstance();
-		return (ui->key->state[KEY_INPUT_C] == 1);
+		return (ui->key->state[UI_KEY_CUTIN_DEBUG] == 1);
 	}
 
 	static bool onKeyVisualizeDebug() {
+		if (!DEBUG) return false;
+
 		UserInput* ui = getInstance();
-		return (ui->key->state[KEY_INPUT_V] == 1);
+		return (ui->key->state[UI_KEY_VISUALIZE_DEBUG] == 1);
 	}
 };
 

@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include "lib/const.h"
+#include "lib/utils/flag_store.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/com.h"
 #include "lib/components/menu.h"
@@ -112,7 +113,7 @@ public:
 	/*===========================*/
 	//    Battle Mode
 	/*===========================*/
-	int show(COM& com, bool debug) {
+	int show(COM& com) {
 		int return_flg = FLAG_BATTLE;
 
 		game.drawBeforePlay();
@@ -170,13 +171,13 @@ public:
 		comment.forceUpdate(COMMENT_CHANGE_TYPE_PLAY_TURN, 0.40);
 	}
 
-	void toggleByKey(bool debug) {
+	void toggleByKey() {
 		// コメントを消す
 		if (UserInput::onKeyComment()) {
 			commentFlg = !commentFlg;
 		}
 
-		if (debug) {
+		if (FlagStore::isDebug()) {
 			// カットインを入れる
 			if (UserInput::onKeyCutinDebug()) {
 				cutin.flg = 1;

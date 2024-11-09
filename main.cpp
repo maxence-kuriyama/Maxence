@@ -16,6 +16,7 @@ using namespace DxLib;
 using namespace std;
 
 #include "lib/const.h"
+#include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
 #include "lib/utils/com.h"
@@ -74,7 +75,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	BattleResult result;
 	int flg = FLAG_OPENING;
 
-	bool debug_flg = false;
 	int strColorDebug = GetColor(0, 0, 0);
 
 	COM com;
@@ -85,10 +85,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		UserInput::update();
 
 		// 設定を切り替える
-		battle.toggleByKey(debug_flg);
+		battle.toggleByKey();
 
 		//デバッグモード
-		if (UserInput::onKeyDebug()) debug_flg = !debug_flg;
+		FlagStore::toggleDebug();
 
 		//音楽, SEの有無
 		if (UserInput::onKeySound()) title.toggleSound();
