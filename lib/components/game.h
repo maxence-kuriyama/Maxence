@@ -83,6 +83,8 @@ public:
 	/*===========================*/
 	void prepare(int pl1, int pl2 , bool init = true) {
 		if (init) initialize();
+		if (pl1 == BATTLE_PLAYER_NONE && pl2 == BATTLE_PLAYER_NONE) return;
+	
 		player1 = pl1;
 		player2 = pl2;
 		setPlayersGraph(pl1, pl2);
