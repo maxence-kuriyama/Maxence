@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 #include "lib/const.h"
+#include "lib/mode.h"
 #include "lib/utils/music.h"
 #include "lib/utils/music_unlocker.h"
 #include "lib/components/menu.h"
@@ -92,7 +93,7 @@ public:
 		int currentChoice = menu.choose(strColorMenu);
 
 		// タイトルへ戻る
-		if (currentChoice == MUSIC_MAX_INDEX) return FLAG_TITLE;
+		if (currentChoice == MUSIC_MAX_INDEX) return MODE_TITLE;
 
 		// 別の曲を選択
 		if (currentChoice != -1) {
@@ -111,7 +112,7 @@ public:
 				Music::drawLoadMsg();
 			}
 		}
-		return FLAG_MUSIC_ROOM;
+		return MODE_MUSIC_ROOM;
 	}
 
 	void debugDump() {

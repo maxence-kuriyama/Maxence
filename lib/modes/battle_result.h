@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/mode.h"
 #include "lib/utils/user_input.h"
 #include "lib/components/menu.h"
 #include "lib/components/game.h"
@@ -34,21 +35,21 @@ public:
 	}
 
 	int show(Game& game) {
-		int return_flg = FLAG_RESULT;
+		int return_flg = MODE_RESULT;
 
 		drawGameBoard(game);
 
 		// メッセージの描画
 		btnAgain.display(btnColor);
 		if (btnAgain.isClicked() || UserInput::onReturn()) {
-			return_flg = FLAG_BATTLE;
+			return_flg = MODE_BATTLE;
 		}
 
 		// コメントの描画
 		// drawComment();
 
 		// 動作の取り消し
-		if (cancel(game)) return_flg = FLAG_RESULT_CANCEL;
+		if (cancel(game)) return_flg = MODE_RESULT_CANCEL;
 
 		return return_flg;
 	}

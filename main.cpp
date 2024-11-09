@@ -33,13 +33,13 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-void routesBattle(int choice, int* flg, Title& title, Battle& battle);
-void routesScenario(int choice, int* flg, Title& title, Scenario& scenario);
-void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial);
-void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom);
-void goEndingDebug(int* flg, Ending& ending);
-void goTitle(int* flg, Title& title);
-void goResult(int* flg);
+void routesBattle(int choice, Mode& mode, Title& title, Battle& battle);
+void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario);
+void routesTutorial(int choice, Mode& mode, Title& title, Tutorial& tutorial);
+void routesMusicRoom(int choice, Mode& mode, Title& title, MusicRoom& musicRoom);
+void goEndingDebug(Mode& mode, Ending& ending);
+void goTitle(Mode& mode, Title& title);
+void goResult(Mode& mode);
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -89,8 +89,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		FlagStore::toggleDebug();
 
 		// エンディングモードのデバッグ
-		if (UserInput::onKeyEndingDebug()) goEndingDebug(&flg, ending);
+		if (UserInput::onKeyEndingDebug()) goEndingDebug(mode, ending);
 
+		int res, choice;
 		switch (mode.current()) {
 		case MODE_OPENING:
 			opening.showDemo();
@@ -99,51 +100,51 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		case MODE_TITLE:
 			Music::load("sound/bgm03.ogg"); // シナリオ用
 			Music::load("sound/bgm02.ogg"); // チュートリアル用
-			int choice = title.show();
-			routesBattle(choice, &flg, title, battle);
-			routesScenario(choice, &flg, title, scenario);
-			routesTutorial(choice, &flg, title, tutorial);
-			routesMusicRoom(choice, &flg, title, musicRoom);
+			choice = title.show();
+			routesBattle(choice, mode, title, battle);
+			routesScenario(choice, mode, title, scenario);
+			routesTutorial(choice, mode, title, tutorial);
+			routesMusicRoom(choice, mode, title, musicRoom);
 			break;
 		case MODE_TUTORIAL:
 			SetBackgroundColor(0, 0, 0);
 			if (!Music::drawLoadMsg()) {
-				int res = tutorial.show();
+				res = tutorial.show();
 				if (res == MODE_TITLE) {
 					Music::unloadAll();
-					goTitle(&flg, title);
+					goTitle(mode, title);
 				}
 			}
 			break;
 		case MODE_BATTLE:
 			SetBackgroundColor(0, 0, 0);
-			int res = battle.show(com);
+			res = battle.show(com);
 			logo.draw(true);
 
 			switch (res) {
 			case MODE_TITLE:
-				goTitle(&flg, title);
+				goTitle(mode, title);
 				break;
 			case MODE_RESULT:
-				goResult(&flg);
+				goResult(mode);
 				break;
 			}
 			break;
 		case MODE_RESULT:
 			SetBackgroundColor(0, 0, 0);
-			int res = result.show(battle.game);
+			res = result.show(battle.game);
 			logo.draw();
 
 			switch (res) {
 			case MODE_BATTLE:
 				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+				mode.goBattle();
 				break;
 			case MODE_RESULT_CANCEL:
 				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE, false);
-				res = MODE_BATTLE;
+				mode.goBattle();
 				break;
 			}
-			flg = res;
 			break;
 		case MODE_ENDING:
 			Music::load("sound/bgm09.ogg");
@@ -155,19 +156,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		case MODE_SCENARIO:
 			SetBackgroundColor(0, 0, 0);
 			if (!Music::drawLoadMsg()) {
-				int res = scenario.show(com);
+				res = scenario.show(com);
 				if (res == MODE_TITLE) {
 					Music::unloadAll();
-					goTitle(&flg, title);
+					goTitle(mode, title);
 				}
 			}
 			break;
 		case MODE_MUSIC_ROOM:
 			SetBackgroundColor(0, 0, 0);
-			int res = musicRoom.show();
+			res = musicRoom.show();
 			if (res == MODE_TITLE) {
 				Music::unloadAll();
-				goTitle(&flg, title);
+				goTitle(mode, title);
 			}
 			break;
 		}
@@ -178,7 +179,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// デバッグ情報出力
 		if (FlagStore::isDebug()) {
 			DrawFormatString(5, 45, strColorDebug, "fps: %d", sync.fps);
-			DrawFormatString(5, 65, strColorDebug, "gameFlg: %d", flg);
+			DrawFormatString(5, 65, strColorDebug, "gameFlg: %d", mode.current());
 			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", UserInput::usingKeyboard());
 			battle.debugDump();
 			Music::debugDump();
@@ -196,87 +197,87 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return 0;
 }
 
-void routesBattle(int choice, int* flg, Title& title, Battle& battle) {
+void routesBattle(int choice, Mode& mode, Title& title, Battle& battle) {
 	switch (choice) {
 	case MENU_CHOICE_VS_HUMAN:
 		if (!battle.hasSaveFile()) {
 			battle.startVsHuman();
-			*flg = MODE_BATTLE;
+			mode.goBattle();
 		}
 		break;
 	case MENU_CHOICE_START:
 		if (title.isBattleMode()) {
 			battle.startVsHuman();
-			*flg = MODE_BATTLE;
+			mode.goBattle();
 		}
 		break;
 	case MENU_CHOICE_LOAD:
 		if (title.isBattleMode()) {
 			battle.load();
-			*flg = MODE_BATTLE;
+			mode.goBattle();
 		}
 		break;
 	}
 }
 
-void routesScenario(int choice, int* flg, Title& title, Scenario& scenario) {
+void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario) {
 	switch (choice) {
 	case MENU_CHOICE_VS_COM:
 		if (!scenario.hasSaveFile()) {
 			scenario.initialize();
-			*flg = MODE_SCENARIO;
+			mode.goScenario();
 		}
 		break;
 	case MENU_CHOICE_START:
 		if (title.isScenarioMode()) {
 			scenario.initialize();
-			*flg = MODE_SCENARIO;
+			mode.goScenario();
 		}
 		break;
 	case MENU_CHOICE_LOAD:
 		if (title.isScenarioMode()) {
 			scenario.load();
-			*flg = MODE_SCENARIO;
+			mode.goScenario();
 		}
 		break;
 	}
 }
 
-void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial) {
+void routesTutorial(int choice, Mode& mode, Title& title, Tutorial& tutorial) {
 	switch (choice) {
 	case MENU_CHOICE_TUTORIAL:
-		*flg = MODE_TUTORIAL;
 		tutorial.initialize();
+		mode.goTutorial();
 		break;
 	}
 }
 
-void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom) {
+void routesMusicRoom(int choice, Mode& mode, Title& title, MusicRoom& musicRoom) {
 	switch (choice) {
 	case MENU_CHOICE_MUSIC_ROOM:
-		*flg = MODE_MUSIC_ROOM;
 		musicRoom.initialize();
+		mode.goMusicRoom();
 		break;
 	}
 }
 
-void goEndingDebug(int* flg, Ending& ending) {
+void goEndingDebug(Mode& mode, Ending& ending) {
 	Music::unloadAll();
-	if (*flg != MODE_ENDING) {
+	if (mode.current() != MODE_ENDING) {
 		ending.initialize();
-		*flg = MODE_ENDING;
+		mode.goEnding();
 	}
 	else {
-		*flg = MODE_TITLE;
+		mode.goTitle();
 	}
 }
 
-void goTitle(int* flg, Title& title) {
+void goTitle(Mode& mode, Title& title) {
 	title.initialize();
 	SetBackgroundColor(0, 128, 128);
-	*flg = MODE_TITLE;
+	mode.goTitle();
 }
 
-void goResult(int* flg) {
-	*flg = MODE_RESULT;
+void goResult(Mode& mode) {
+	mode.goResult();
 }

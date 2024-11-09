@@ -22,4 +22,28 @@ public:
 	void goTitle() {
 		flg = MODE_TITLE;
 	}
+
+	void goBattle() {
+		flg = MODE_BATTLE;
+	}
+
+	void goResult() {
+		flg = MODE_RESULT;
+	}
+
+	void goScenario() {
+		flg = MODE_SCENARIO;
+	}
+
+	void goEnding() {
+		flg = MODE_ENDING;
+	}
+
+	void goTutorial() {
+		flg = MODE_TUTORIAL;
+	}
+
+	void goMusicRoom() {
+		flg = MODE_MUSIC_ROOM;
+	}
 };

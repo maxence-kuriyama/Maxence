@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include "lib/const.h"
+#include "lib/mode.h"
 #include "lib/utils/flag_store.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/com.h"
@@ -114,7 +115,7 @@ public:
 	//    Battle Mode
 	/*===========================*/
 	int show(COM& com) {
-		int return_flg = FLAG_BATTLE;
+		int return_flg = MODE_BATTLE;
 
 		toggleByKey();
 		game.drawBeforePlay();
@@ -145,11 +146,11 @@ public:
 		// èüóòîªíË
 		if (game.victory() != 0) {
 			UserInput::reset();
-			return_flg = FLAG_RESULT;
+			return_flg = MODE_RESULT;
 		}
 
 		if (cancelPlay()) com.setWait();
-		if (saveOrReset()) return_flg = FLAG_TITLE;
+		if (saveOrReset()) return_flg = MODE_TITLE;
 
 		return return_flg;
 	}

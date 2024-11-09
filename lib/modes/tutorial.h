@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/mode.h"
 #include "lib/components/menu.h"
 #include "./scenario_base.h"
 
@@ -58,7 +59,7 @@ public:
 	int show() {
 		int res = ScenarioBase::show();
 
-		return (res != SCENE_RES_DEFAULT) ? res : FLAG_TUTORIAL;
+		return (res != SCENE_RES_DEFAULT) ? res : MODE_TUTORIAL;
 	}
 
 	void debugDump() {
@@ -90,9 +91,9 @@ private:
 	int doBattle(COM& com) {
 		ScenarioBase::doBattle(com);
 
-		if (reset()) return FLAG_TITLE;
+		if (reset()) return MODE_TITLE;
 
-		return FLAG_TUTORIAL;
+		return MODE_TUTORIAL;
 	}
 
 	bool reset() {

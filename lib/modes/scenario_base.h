@@ -1,6 +1,7 @@
 #pragma once
 
 #include <regex>
+#include "lib/mode.h"
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
@@ -414,7 +415,7 @@ protected:
 
 		if (isTriggered()) goNext();
 
-		return FLAG_TITLE;
+		return MODE_TITLE;
 	}
 
 	virtual bool playTurn(COM& com) {

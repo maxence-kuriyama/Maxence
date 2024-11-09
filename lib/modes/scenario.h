@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/mode.h"
 #include "lib/utils/music.h"
 #include "lib/utils/encrypter.h"
 #include "lib/components/menu.h"
@@ -244,13 +245,13 @@ public:
 		music_name[1] = Music::getMusicName(1);
 
 		if (is_reset) {
-			return FLAG_TITLE;
+			return MODE_TITLE;
 		}
 		else if (res != SCENE_RES_DEFAULT) {
 			return res;
 		}
 		else {
-			return FLAG_SCENARIO;
+			return MODE_SCENARIO;
 		}
 	}
 
@@ -423,7 +424,7 @@ private:
 
 		if (saveOrReset()) {
 			initializeBattle();
-			return FLAG_TITLE;
+			return MODE_TITLE;
 		}
 
 		// 対戦スキップ（一人用デバッグ）
@@ -431,7 +432,7 @@ private:
 			if (skipBattle()) goNext();
 		}
 			
-		return FLAG_SCENARIO;
+		return MODE_SCENARIO;
 	}
 
 	// TODO: getCurrentScene()に応じて使うCOMを変えること
