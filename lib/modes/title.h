@@ -2,6 +2,7 @@
 
 #include "lib/const.h"
 #include "lib/utils/music.h"
+#include "lib/utils/user_input.h"
 #include "lib/components/menu.h"
 #include "lib/components/fireflower.h"
 
@@ -21,7 +22,6 @@ private:
 	Button btnStart;
 	Button btnLoad;
 	int White = GetColor(255, 255, 255);
-	bool soundFlg = false;
 	int flg = TITLE_GAME_MODE;
 
 public:
@@ -50,6 +50,7 @@ public:
 	}
 
 	int show() {
+		toggleSound();
 		showFireFlower();
 		showTitleLogo();
 		return choose();
@@ -63,16 +64,6 @@ public:
 		DrawExtendGraph(upLeftx, upLefty, downRightx, downRighty, title_logo, TRUE);
 	}
 
-	void toggleSound() {
-		soundFlg = !soundFlg;
-		if (soundFlg) {
-			tama[0].sound = 1;
-		}
-		else {
-			tama[0].sound = 0;
-		}
-	}
-
 	bool isBattleMode() {
 		return flg == TITLE_LOAD_BATTLE;
 	}
@@ -82,6 +73,12 @@ public:
 	}
 
 private:
+
+	void toggleSound() {
+		if (UserInput::onKeySound()) {
+			tama[0].sound = !tama[0].sound;
+		}
+	}
 
 	void showFireFlower() {
 		for (int i = 0; i < FIRE_FLOWER_NUM; ++i) {

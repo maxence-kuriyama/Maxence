@@ -13,7 +13,7 @@ private:
 	double maxY = 480.0;
 
 public:
-	int sound = 0;		// SEÇèoÇ∑Ç©î€Ç©
+	bool sound = false;
 
 	FireFlower() {
 		initialize();
@@ -63,7 +63,7 @@ public:
 		else {
 			initialize();
 		}
-		if (sound == 1 && cnt == 80) PlaySound("sound/owin31.wav", NULL, SND_ASYNC);
+		if (sound && cnt == 80) PlaySound("sound/owin31.wav", NULL, SND_ASYNC);
 	}
 
 	void draw() {

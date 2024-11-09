@@ -84,11 +84,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 入力情報を取得
 		UserInput::update();
 
-		//デバッグモード
+		// デバッグモード
 		FlagStore::toggleDebug();
-
-		//音楽, SEの有無
-		if (UserInput::onKeySound()) title.toggleSound();
 
 		// エンディングモードのデバッグ
 		if (UserInput::onKeyEndingDebug()) goEndingDebug(&flg, ending);
