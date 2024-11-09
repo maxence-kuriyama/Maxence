@@ -16,6 +16,7 @@ using namespace DxLib;
 using namespace std;
 
 #include "lib/const.h"
+#include "lib/mode.h"
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
@@ -62,6 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	srand((unsigned)time(NULL));
 
 	
+	Mode mode;
 	Synchronizer sync(FPS);
 	Logo logo;
 
@@ -89,12 +91,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// エンディングモードのデバッグ
 		if (UserInput::onKeyEndingDebug()) goEndingDebug(&flg, ending);
 
-		switch (FlagStore::getMode()) {
-		case FLAG_MODE_OPENING:
+		switch (mode.current()) {
+		case MODE_OPENING:
 			opening.showDemo();
-			if (opening.isOver()) FlagStore::goTitle();
+			if (opening.isOver()) mode.goTitle();
 			break;
-		case FLAG_MODE_TITLE:
+		case MODE_TITLE:
 			Music::load("sound/bgm03.ogg"); // シナリオ用
 			Music::load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show();
@@ -103,67 +105,67 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			routesTutorial(choice, &flg, title, tutorial);
 			routesMusicRoom(choice, &flg, title, musicRoom);
 			break;
-		case FLAG_MODE_TUTORIAL:
+		case MODE_TUTORIAL:
 			SetBackgroundColor(0, 0, 0);
 			if (!Music::drawLoadMsg()) {
 				int res = tutorial.show();
-				if (res == FLAG_TITLE) {
+				if (res == MODE_TITLE) {
 					Music::unloadAll();
 					goTitle(&flg, title);
 				}
 			}
 			break;
-		case FLAG_MODE_BATTLE:
+		case MODE_BATTLE:
 			SetBackgroundColor(0, 0, 0);
 			int res = battle.show(com);
 			logo.draw(true);
 
 			switch (res) {
-			case FLAG_TITLE:
+			case MODE_TITLE:
 				goTitle(&flg, title);
 				break;
-			case FLAG_RESULT:
+			case MODE_RESULT:
 				goResult(&flg);
 				break;
 			}
 			break;
-		case FLAG_MODE_RESULT:
+		case MODE_RESULT:
 			SetBackgroundColor(0, 0, 0);
 			int res = result.show(battle.game);
 			logo.draw();
 
 			switch (res) {
-			case FLAG_BATTLE:
+			case MODE_BATTLE:
 				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 				break;
-			case FLAG_RESULT_CANCEL:
+			case MODE_RESULT_CANCEL:
 				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE, false);
-				res = FLAG_BATTLE;
+				res = MODE_BATTLE;
 				break;
 			}
 			flg = res;
 			break;
-		case FLAG_MODE_ENDING:
+		case MODE_ENDING:
 			Music::load("sound/bgm09.ogg");
 			SetBackgroundColor(0, 0, 0);
 			ending.drawGameBoard(battle.game);
 			logo.draw();
 			ending.show(sync.fps);
 			break;
-		case FLAG_MODE_SCENARIO:
+		case MODE_SCENARIO:
 			SetBackgroundColor(0, 0, 0);
 			if (!Music::drawLoadMsg()) {
 				int res = scenario.show(com);
-				if (res == FLAG_TITLE) {
+				if (res == MODE_TITLE) {
 					Music::unloadAll();
 					goTitle(&flg, title);
 				}
 			}
 			break;
-		case FLAG_MODE_MUSIC_ROOM:
+		case MODE_MUSIC_ROOM:
 			SetBackgroundColor(0, 0, 0);
 			int res = musicRoom.show();
-			if (res == FLAG_TITLE) {
+			if (res == MODE_TITLE) {
 				Music::unloadAll();
 				goTitle(&flg, title);
 			}
@@ -199,19 +201,19 @@ void routesBattle(int choice, int* flg, Title& title, Battle& battle) {
 	case MENU_CHOICE_VS_HUMAN:
 		if (!battle.hasSaveFile()) {
 			battle.startVsHuman();
-			*flg = FLAG_BATTLE;
+			*flg = MODE_BATTLE;
 		}
 		break;
 	case MENU_CHOICE_START:
 		if (title.isBattleMode()) {
 			battle.startVsHuman();
-			*flg = FLAG_BATTLE;
+			*flg = MODE_BATTLE;
 		}
 		break;
 	case MENU_CHOICE_LOAD:
 		if (title.isBattleMode()) {
 			battle.load();
-			*flg = FLAG_BATTLE;
+			*flg = MODE_BATTLE;
 		}
 		break;
 	}
@@ -222,19 +224,19 @@ void routesScenario(int choice, int* flg, Title& title, Scenario& scenario) {
 	case MENU_CHOICE_VS_COM:
 		if (!scenario.hasSaveFile()) {
 			scenario.initialize();
-			*flg = FLAG_SCENARIO;
+			*flg = MODE_SCENARIO;
 		}
 		break;
 	case MENU_CHOICE_START:
 		if (title.isScenarioMode()) {
 			scenario.initialize();
-			*flg = FLAG_SCENARIO;
+			*flg = MODE_SCENARIO;
 		}
 		break;
 	case MENU_CHOICE_LOAD:
 		if (title.isScenarioMode()) {
 			scenario.load();
-			*flg = FLAG_SCENARIO;
+			*flg = MODE_SCENARIO;
 		}
 		break;
 	}
@@ -243,7 +245,7 @@ void routesScenario(int choice, int* flg, Title& title, Scenario& scenario) {
 void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial) {
 	switch (choice) {
 	case MENU_CHOICE_TUTORIAL:
-		*flg = FLAG_TUTORIAL;
+		*flg = MODE_TUTORIAL;
 		tutorial.initialize();
 		break;
 	}
@@ -252,7 +254,7 @@ void routesTutorial(int choice, int* flg, Title& title, Tutorial& tutorial) {
 void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom) {
 	switch (choice) {
 	case MENU_CHOICE_MUSIC_ROOM:
-		*flg = FLAG_MUSIC_ROOM;
+		*flg = MODE_MUSIC_ROOM;
 		musicRoom.initialize();
 		break;
 	}
@@ -260,21 +262,21 @@ void routesMusicRoom(int choice, int* flg, Title& title, MusicRoom& musicRoom) {
 
 void goEndingDebug(int* flg, Ending& ending) {
 	Music::unloadAll();
-	if (*flg != FLAG_ENDING) {
+	if (*flg != MODE_ENDING) {
 		ending.initialize();
-		*flg = FLAG_ENDING;
+		*flg = MODE_ENDING;
 	}
 	else {
-		*flg = FLAG_TITLE;
+		*flg = MODE_TITLE;
 	}
 }
 
 void goTitle(int* flg, Title& title) {
 	title.initialize();
 	SetBackgroundColor(0, 128, 128);
-	*flg = FLAG_TITLE;
+	*flg = MODE_TITLE;
 }
 
 void goResult(int* flg) {
-	*flg = FLAG_RESULT;
+	*flg = MODE_RESULT;
 }
