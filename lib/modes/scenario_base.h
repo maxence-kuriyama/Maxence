@@ -1,6 +1,7 @@
 #pragma once
 
 #include <regex>
+#include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/com.h"
@@ -93,12 +94,12 @@ public:
 
 	}
 
-	int show(bool debug = false) {
+	int show() {
 		COM dummy_com(false);
-		return show(dummy_com, debug);
+		return show(dummy_com);
 	}
 
-	int show(COM& com, bool debug = false) {
+	int show(COM& com) {
 		getKey();
 
 		// êlï®ÇÃï`âÊ
@@ -138,7 +139,7 @@ public:
 			setBattle(scene.how);
 			break;
 		case SCENE_ACTION_PLAY:
-			return doBattle(com, debug);
+			return doBattle(com);
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -395,7 +396,7 @@ protected:
 		game.drawAfterPlay();
 	}
 
-	virtual int doBattle(COM& com, bool debug = false) {
+	virtual int doBattle(COM& com) {
 		game.drawBeforePlay();
 
 		if (playTurn(com)) {

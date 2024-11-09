@@ -231,14 +231,14 @@ public:
 		mrK[0].turn(MRK_KEY_DOWN);
 	}
 
-	int show(COM& com, bool debug = false) {
+	int show(COM& com) {
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
 		bool is_reset = (!onBattle && !isTalking && saveOrReset());
 		
-		int res = ScenarioBase::show(com, debug);
+		int res = ScenarioBase::show(com);
 		showAdditionalAction();
 		music_name[0] = Music::getMusicName(0);
 		music_name[1] = Music::getMusicName(1);
@@ -418,8 +418,8 @@ private:
 	}
 
 	// override
-	int doBattle(COM& com, bool debug) {
-		ScenarioBase::doBattle(com, debug);
+	int doBattle(COM& com) {
+		ScenarioBase::doBattle(com);
 
 		if (saveOrReset()) {
 			initializeBattle();
@@ -427,7 +427,9 @@ private:
 		}
 
 		// 対戦スキップ（一人用デバッグ）
-		if (debug && skipBattle()) goNext();
+		if (FlagStore::isDebug()) {
+			if (skipBattle()) goNext();
+		}
 			
 		return FLAG_SCENARIO;
 	}

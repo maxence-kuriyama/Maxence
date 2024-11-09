@@ -55,8 +55,8 @@ private:
 
 public:
 
-	int show(bool debug = false) {
-		int res = ScenarioBase::show(debug);
+	int show() {
+		int res = ScenarioBase::show();
 
 		return (res != SCENE_RES_DEFAULT) ? res : FLAG_TUTORIAL;
 	}
@@ -87,7 +87,7 @@ private:
 	}
 
 	// override
-	int doBattle(COM& com, bool debug) {
+	int doBattle(COM& com) {
 		ScenarioBase::doBattle(com);
 
 		if (reset()) return FLAG_TITLE;

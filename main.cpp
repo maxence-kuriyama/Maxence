@@ -122,7 +122,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (flg == FLAG_BATTLE) {
 			SetBackgroundColor(0, 0, 0);
-			int res = battle.show(com, debug_flg);
+			int res = battle.show(com);
 			logo.draw(true);
 
 			switch (res) {
@@ -160,7 +160,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (flg == FLAG_SCENARIO) {
 			SetBackgroundColor(0, 0, 0);
 			if (!Music::drawLoadMsg()) {
-				int res = scenario.show(com, debug_flg);
+				int res = scenario.show(com);
 				if (res == FLAG_TITLE) {
 					Music::unloadAll();
 					goTitle(&flg, title);
@@ -180,10 +180,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		sync.execute();
 
 		// デバッグ情報出力
-		if (debug_flg) {
+		if (FlagStore::isDebug()) {
 			DrawFormatString(5, 45, strColorDebug, "fps: %d", sync.fps);
 			DrawFormatString(5, 65, strColorDebug, "gameFlg: %d", flg);
-			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", UserInput::usingKeyboard);
+			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", UserInput::usingKeyboard());
 			battle.debugDump();
 			Music::debugDump();
 			tutorial.debugDump();
