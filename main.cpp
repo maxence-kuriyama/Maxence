@@ -73,7 +73,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Ending ending;
 	Battle battle;
 	BattleResult result;
-	int flg = FLAG_OPENING;
 
 	int strColorDebug = GetColor(0, 0, 0);
 
@@ -90,12 +89,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// エンディングモードのデバッグ
 		if (UserInput::onKeyEndingDebug()) goEndingDebug(&flg, ending);
 
-
-		if (flg == FLAG_OPENING) {
+		switch (FlagStore::getMode()) {
+		case FLAG_MODE_OPENING:
 			opening.showDemo();
-			if (opening.isOver()) flg = FLAG_TITLE;
-		}
-		else if (flg == FLAG_TITLE) {
+			if (opening.isOver()) FlagStore::goTitle();
+			break;
+		case FLAG_MODE_TITLE:
 			Music::load("sound/bgm03.ogg"); // シナリオ用
 			Music::load("sound/bgm02.ogg"); // チュートリアル用
 			int choice = title.show();
@@ -103,8 +102,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			routesScenario(choice, &flg, title, scenario);
 			routesTutorial(choice, &flg, title, tutorial);
 			routesMusicRoom(choice, &flg, title, musicRoom);
-		}
-		else if (flg == FLAG_TUTORIAL) {
+			break;
+		case FLAG_MODE_TUTORIAL:
 			SetBackgroundColor(0, 0, 0);
 			if (!Music::drawLoadMsg()) {
 				int res = tutorial.show();
@@ -113,8 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					goTitle(&flg, title);
 				}
 			}
-		}
-		else if (flg == FLAG_BATTLE) {
+			break;
+		case FLAG_MODE_BATTLE:
 			SetBackgroundColor(0, 0, 0);
 			int res = battle.show(com);
 			logo.draw(true);
@@ -127,8 +126,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				goResult(&flg);
 				break;
 			}
-		}
-		else if (flg == FLAG_RESULT) {
+			break;
+		case FLAG_MODE_RESULT:
 			SetBackgroundColor(0, 0, 0);
 			int res = result.show(battle.game);
 			logo.draw();
@@ -143,15 +142,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				break;
 			}
 			flg = res;
-		}
-		else if (flg == FLAG_ENDING) {
+			break;
+		case FLAG_MODE_ENDING:
 			Music::load("sound/bgm09.ogg");
 			SetBackgroundColor(0, 0, 0);
 			ending.drawGameBoard(battle.game);
 			logo.draw();
 			ending.show(sync.fps);
-		}
-		else if (flg == FLAG_SCENARIO) {
+			break;
+		case FLAG_MODE_SCENARIO:
 			SetBackgroundColor(0, 0, 0);
 			if (!Music::drawLoadMsg()) {
 				int res = scenario.show(com);
@@ -160,14 +159,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					goTitle(&flg, title);
 				}
 			}
-		}
-		else if (flg == FLAG_MUSIC_ROOM) {
+			break;
+		case FLAG_MODE_MUSIC_ROOM:
 			SetBackgroundColor(0, 0, 0);
 			int res = musicRoom.show();
 			if (res == FLAG_TITLE) {
 				Music::unloadAll();
 				goTitle(&flg, title);
 			}
+			break;
 		}
 
 		battle.tick();
