@@ -116,6 +116,7 @@ public:
 	int show(COM& com) {
 		int return_flg = FLAG_BATTLE;
 
+		toggleByKey();
 		game.drawBeforePlay();
 
 		if (playByPlayer()) {
@@ -152,44 +153,6 @@ public:
 
 		return return_flg;
 	}
-
-	void drawMessage() {
-		DrawFormatString(470, 80, strColor, "右クリック:");
-		DrawFormatString(540, 100, strColor, "石を置く");
-		DrawFormatString(470, 124, strColor, "zキー（BkSpキー）:");
-		DrawFormatString(540, 144, strColor, "一手戻る");
-	}
-
-	void drawComment() {
-		// コメント描画
-		if (commentFlg) comment.draw(strColor);
-		// コメント差し替え
-		comment.update(playCnt);
-	}
-
-	void updateCommentInBattle() {
-		comment.forceUpdate(COMMENT_CHANGE_TYPE_PLAY_TURN, 0.40);
-	}
-
-	void toggleByKey() {
-		// コメントを消す
-		if (UserInput::onKeyComment()) {
-			commentFlg = !commentFlg;
-		}
-
-		if (FlagStore::isDebug()) {
-			// カットインを入れる
-			if (UserInput::onKeyCutinDebug()) {
-				cutin.flg = 1;
-			}
-
-			// 学習機械の出力を見る
-			if (UserInput::onKeyVisualizeDebug()) {
-				likelihoodFlg = !likelihoodFlg;
-			}
-		}
-	}
-
 
 	/*===========================*/
 	//    デバッグ情報
@@ -239,5 +202,45 @@ private:
 		}
 
 		return false;
+	}
+
+	void toggleByKey() {
+		// コメントを消す
+		if (UserInput::onKeyComment()) {
+			commentFlg = !commentFlg;
+		}
+
+		if (FlagStore::isDebug()) {
+			// カットインを入れる
+			if (UserInput::onKeyCutinDebug()) {
+				cutin.flg = 1;
+			}
+
+			// 学習機械の出力を見る
+			if (UserInput::onKeyVisualizeDebug()) {
+				likelihoodFlg = !likelihoodFlg;
+			}
+		}
+	}
+
+	/*===========================*/
+	//    描画系
+	/*===========================*/
+	void drawMessage() {
+		DrawFormatString(470, 80, strColor, "右クリック:");
+		DrawFormatString(540, 100, strColor, "石を置く");
+		DrawFormatString(470, 124, strColor, "zキー（BkSpキー）:");
+		DrawFormatString(540, 144, strColor, "一手戻る");
+	}
+
+	void drawComment() {
+		// コメント描画
+		if (commentFlg) comment.draw(strColor);
+		// コメント差し替え
+		comment.update(playCnt);
+	}
+
+	void updateCommentInBattle() {
+		comment.forceUpdate(COMMENT_CHANGE_TYPE_PLAY_TURN, 0.40);
 	}
 };

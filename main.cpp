@@ -84,9 +84,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 入力情報を取得
 		UserInput::update();
 
-		// 設定を切り替える
-		battle.toggleByKey();
-
 		//デバッグモード
 		FlagStore::toggleDebug();
 
