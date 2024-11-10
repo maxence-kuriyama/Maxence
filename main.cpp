@@ -35,7 +35,6 @@ using namespace std;
 
 void routesBattle(int choice, Mode& mode, Title& title, Battle& battle);
 void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario);
-void routesMusicRoom(int choice, Mode& mode, Title& title, MusicRoom& musicRoom);
 void goEndingDebug(Mode& mode, Ending& ending);
 void goTitle(Mode& mode, Title& title);
 void goResult(Mode& mode);
@@ -103,7 +102,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			choice = title.show();
 			routesBattle(choice, mode, title, battle);
 			routesScenario(choice, mode, title, scenario);
-			routesMusicRoom(choice, mode, title, musicRoom);
 			title.route(mode, choice);
 			break;
 		case MODE_TUTORIAL:
@@ -165,9 +163,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			SetBackgroundColor(0, 0, 0);
 			res = musicRoom.show();
 			if (res == MODE_TITLE) {
-				Music::unloadAll();
-				goTitle(mode, title);
+				title.initialize();
 			}
+			musicRoom.route(mode, res);
 			break;
 		}
 
@@ -237,15 +235,6 @@ void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario) {
 			scenario.load();
 			mode.goScenario();
 		}
-		break;
-	}
-}
-
-void routesMusicRoom(int choice, Mode& mode, Title& title, MusicRoom& musicRoom) {
-	switch (choice) {
-	case MENU_CHOICE_MUSIC_ROOM:
-		musicRoom.initialize();
-		mode.goMusicRoom();
 		break;
 	}
 }

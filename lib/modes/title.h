@@ -67,6 +67,9 @@ public:
 		case MENU_CHOICE_TUTORIAL:
 			mode.goTutorial();
 			break;
+		case MENU_CHOICE_MUSIC_ROOM:
+			mode.goMusicRoom();
+			break;
 		}
 	}
 

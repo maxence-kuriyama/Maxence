@@ -115,6 +115,14 @@ public:
 		return MODE_MUSIC_ROOM;
 	}
 
+	void route(Mode& mode, int res) {
+		if (res == MODE_TITLE) {
+			initialize();
+			Music::unloadAll();
+			mode.goTitle();
+		}
+	}
+
 	void debugDump() {
 		int strColor = strColorDebug;
 
