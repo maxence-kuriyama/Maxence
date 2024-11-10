@@ -38,6 +38,16 @@ private:
 
 public:
 
+	BgCharacter() {
+		initialize();
+	}
+
+	void initialize() {
+		for (int i = 0; i < BG_NUM; ++i) {
+			bg[i] = { 0, 0, BG_WHO_NONE };
+		}
+	}
+
 	void set(int who) {
 		if (who == bg[0].who) return;
 

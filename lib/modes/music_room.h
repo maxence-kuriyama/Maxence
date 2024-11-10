@@ -80,6 +80,7 @@ public:
 		initializeMessage();
 		initializeButtons();
 		initializeFireFlower();
+		initializeBg();
 		choice = -1;
 		isLoading = false;
 	}
@@ -234,5 +235,9 @@ private:
 		for (int i = 0; i < MUSIC_ROOM_FIRE_FLOWER_NUM; ++i) {
 			tama[i].initialize(60.0, 600.0, 520.0, 600.0);
 		}
+	}
+
+	void initializeBg() {
+		bg.initialize();
 	}
 };
