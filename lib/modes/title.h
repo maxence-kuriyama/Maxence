@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/const.h"
+#include "lib/mode.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
 #include "lib/components/menu.h"
@@ -53,7 +54,20 @@ public:
 		toggleSound();
 		showFireFlower();
 		showTitleLogo();
-		return choose();
+
+		int choice = choose();
+		if (choice != MENU_CHOICE_NONE) {
+			// initialize();
+		}
+		return choice;
+	}
+
+	void route(Mode& mode, int res) {
+		switch (res) {
+		case MENU_CHOICE_TUTORIAL:
+			mode.goTutorial();
+			break;
+		}
 	}
 
 	void showTitleLogo() {

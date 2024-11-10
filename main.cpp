@@ -35,7 +35,6 @@ using namespace std;
 
 void routesBattle(int choice, Mode& mode, Title& title, Battle& battle);
 void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario);
-void routesTutorial(int choice, Mode& mode, Title& title, Tutorial& tutorial);
 void routesMusicRoom(int choice, Mode& mode, Title& title, MusicRoom& musicRoom);
 void goEndingDebug(Mode& mode, Ending& ending);
 void goTitle(Mode& mode, Title& title);
@@ -98,23 +97,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			opening.route(mode, res);
 			break;
 		case MODE_TITLE:
+			SetBackgroundColor(0, 128, 128);
 			Music::load("sound/bgm03.ogg"); // シナリオ用
 			Music::load("sound/bgm02.ogg"); // チュートリアル用
 			choice = title.show();
 			routesBattle(choice, mode, title, battle);
 			routesScenario(choice, mode, title, scenario);
-			routesTutorial(choice, mode, title, tutorial);
 			routesMusicRoom(choice, mode, title, musicRoom);
+			title.route(mode, choice);
 			break;
 		case MODE_TUTORIAL:
 			SetBackgroundColor(0, 0, 0);
-			if (!Music::drawLoadMsg()) {
-				res = tutorial.show();
-				if (res == MODE_TITLE) {
-					Music::unloadAll();
-					goTitle(mode, title);
-				}
+			res = tutorial.show();
+			if (res == MODE_TITLE) {
+				title.initialize();
 			}
+			tutorial.route(mode, res);
 			break;
 		case MODE_BATTLE:
 			SetBackgroundColor(0, 0, 0);
@@ -243,15 +241,6 @@ void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario) {
 	}
 }
 
-void routesTutorial(int choice, Mode& mode, Title& title, Tutorial& tutorial) {
-	switch (choice) {
-	case MENU_CHOICE_TUTORIAL:
-		tutorial.initialize();
-		mode.goTutorial();
-		break;
-	}
-}
-
 void routesMusicRoom(int choice, Mode& mode, Title& title, MusicRoom& musicRoom) {
 	switch (choice) {
 	case MENU_CHOICE_MUSIC_ROOM:
@@ -274,7 +263,6 @@ void goEndingDebug(Mode& mode, Ending& ending) {
 
 void goTitle(Mode& mode, Title& title) {
 	title.initialize();
-	SetBackgroundColor(0, 128, 128);
 	mode.goTitle();
 }
 

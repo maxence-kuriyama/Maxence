@@ -57,9 +57,19 @@ private:
 public:
 
 	int show() {
+		if (Music::drawLoadMsg()) return MODE_TUTORIAL;
+
 		int res = ScenarioBase::show();
 
 		return (res != SCENE_RES_DEFAULT) ? res : MODE_TUTORIAL;
+	}
+
+	void route(Mode& mode, int res) {
+		if (res == MODE_TITLE) {
+			initialize();
+			Music::unloadAll();
+			mode.goTitle();
+		}
 	}
 
 	void debugDump() {
