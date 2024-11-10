@@ -2,6 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "lib/mode.h"
 #include "lib/utils/user_input.h"
 
 const int DEMO_FIRST(1);
@@ -28,6 +29,20 @@ private:
 	unsigned int Black = GetColor(0, 0, 0);
 
 public:
+
+	int show() {
+		showDemo();
+		return 0;
+	}
+
+	void route(Mode& mode, int _res) {
+		if (isOver()) {
+			// initialize();
+			mode.goTitle();
+		}
+	}
+
+private:
 
 	bool isOver() {
 		return (flg == DEMO_OVER);

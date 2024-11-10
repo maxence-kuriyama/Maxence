@@ -94,8 +94,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		int res, choice;
 		switch (mode.current()) {
 		case MODE_OPENING:
-			opening.showDemo();
-			if (opening.isOver()) mode.goTitle();
+			res = opening.show();
+			opening.route(mode, res);
 			break;
 		case MODE_TITLE:
 			Music::load("sound/bgm03.ogg"); // シナリオ用
