@@ -73,43 +73,15 @@ public:
 		start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
 	}
 
-	void setVsCOM() {
-		game.setVsCOM();
+	void startNewVsHuman() {
+		if (hasSaveFile()) return;
+
+		startVsHuman();
 	}
 
-	void setSenko() {
-		game.setSenko();
+	void resume(int player1, int player2) {
+		start(player1, player2, false);
 	}
-
-	void setKoko() {
-		game.setKoko();
-	}
-
-
-	/*===========================*/
-	//    Save and Load
-	/*===========================*/
-	bool hasSaveFile() {
-		ifstream file(saveFilePath);
-		if (file) {
-			file.close();
-			return true;
-		}
-		else {
-			file.close();
-			return false;
-		}
-	}
-
-	void save() {
-		game.save(saveFilePath);
-	}
-
-	void load() {
-		start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
-		game.load(saveFilePath);
-	}
-
 
 	/*===========================*/
 	//    Battle Mode
@@ -153,6 +125,42 @@ public:
 		if (saveOrReset()) return_flg = MODE_TITLE;
 
 		return return_flg;
+	}
+
+	void route(Mode& mode, int res) {
+		switch (res) {
+		case MODE_TITLE:
+			// initialize();
+			mode.goTitle();
+			break;
+		case MODE_RESULT:
+			mode.goResult();
+			break;
+		}
+	}
+
+	/*===========================*/
+	//    Save and Load
+	/*===========================*/
+	bool hasSaveFile() {
+		ifstream file(saveFilePath);
+		if (file) {
+			file.close();
+			return true;
+		}
+		else {
+			file.close();
+			return false;
+		}
+	}
+
+	void save() {
+		game.save(saveFilePath);
+	}
+
+	void load() {
+		start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_YELLOW);
+		game.load(saveFilePath);
 	}
 
 	/*===========================*/

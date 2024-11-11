@@ -70,6 +70,19 @@ public:
 		case MENU_CHOICE_MUSIC_ROOM:
 			mode.goMusicRoom();
 			break;
+		case MENU_CHOICE_VS_HUMAN:
+			mode.goBattle();
+			break;
+		case MENU_CHOICE_START:
+			if (isBattleMode()) {
+				mode.goBattle();
+			}
+			break;
+		case MENU_CHOICE_LOAD:
+			if (isBattleMode()) {
+				mode.goBattle();
+			}
+			break;
 		}
 	}
 

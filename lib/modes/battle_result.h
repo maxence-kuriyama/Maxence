@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/const.h"
 #include "lib/mode.h"
 #include "lib/utils/user_input.h"
 #include "lib/components/menu.h"
@@ -53,6 +54,21 @@ public:
 
 		return return_flg;
 	}
+
+	void route(Mode& mode, int res) {
+		switch (res) {
+		case MODE_BATTLE:
+			// initialize();
+			mode.goBattle();
+			break;
+		case MODE_RESULT_CANCEL:
+			// initialize();
+			mode.goBattle();
+			break;
+		}
+	}
+
+private:
 
 	bool cancel(Game& game) {
 		return (UserInput::onBack() && game.goBackHist());

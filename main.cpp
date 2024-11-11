@@ -33,11 +33,9 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-void routesBattle(int choice, Mode& mode, Title& title, Battle& battle);
 void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario);
 void goEndingDebug(Mode& mode, Ending& ending);
 void goTitle(Mode& mode, Title& title);
-void goResult(Mode& mode);
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -100,7 +98,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			Music::load("sound/bgm03.ogg"); // シナリオ用
 			Music::load("sound/bgm02.ogg"); // チュートリアル用
 			choice = title.show();
-			routesBattle(choice, mode, title, battle);
+			switch (choice) {
+			case MENU_CHOICE_VS_HUMAN:
+				if (battle.hasSaveFile()) {
+					choice = MENU_CHOICE_NONE;
+				}
+				battle.startNewVsHuman();
+				break;
+			case MENU_CHOICE_START:
+				if (title.isBattleMode()) {
+					battle.startVsHuman();
+				}
+				break;
+			case MENU_CHOICE_LOAD:
+				if (title.isBattleMode()) {
+					battle.load();
+				}
+				break;
+			}
 			routesScenario(choice, mode, title, scenario);
 			title.route(mode, choice);
 			break;
@@ -116,13 +131,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			SetBackgroundColor(0, 0, 0);
 			res = battle.show(com);
 			logo.draw(true);
+			battle.route(mode, res);
 
 			switch (res) {
 			case MODE_TITLE:
-				goTitle(mode, title);
-				break;
-			case MODE_RESULT:
-				goResult(mode);
+				title.initialize();
 				break;
 			}
 			break;
@@ -130,15 +143,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			SetBackgroundColor(0, 0, 0);
 			res = result.show(battle.game);
 			logo.draw();
+			result.route(mode, res);
 
 			switch (res) {
 			case MODE_BATTLE:
 				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
-				mode.goBattle();
 				break;
 			case MODE_RESULT_CANCEL:
-				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE, false);
-				mode.goBattle();
+				battle.resume(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 				break;
 			}
 			break;
@@ -193,29 +205,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return 0;
 }
 
-void routesBattle(int choice, Mode& mode, Title& title, Battle& battle) {
-	switch (choice) {
-	case MENU_CHOICE_VS_HUMAN:
-		if (!battle.hasSaveFile()) {
-			battle.startVsHuman();
-			mode.goBattle();
-		}
-		break;
-	case MENU_CHOICE_START:
-		if (title.isBattleMode()) {
-			battle.startVsHuman();
-			mode.goBattle();
-		}
-		break;
-	case MENU_CHOICE_LOAD:
-		if (title.isBattleMode()) {
-			battle.load();
-			mode.goBattle();
-		}
-		break;
-	}
-}
-
 void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario) {
 	switch (choice) {
 	case MENU_CHOICE_VS_COM:
@@ -253,8 +242,4 @@ void goEndingDebug(Mode& mode, Ending& ending) {
 void goTitle(Mode& mode, Title& title) {
 	title.initialize();
 	mode.goTitle();
-}
-
-void goResult(Mode& mode) {
-	mode.goResult();
 }
