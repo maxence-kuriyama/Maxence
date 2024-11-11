@@ -34,7 +34,6 @@ using namespace std;
 #pragma comment(lib, "winmm.lib")
 
 void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario);
-void goEndingDebug(Mode& mode, Ending& ending);
 void goTitle(Mode& mode, Title& title);
 
 
@@ -83,9 +82,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// デバッグモード
 		FlagStore::toggleDebug();
-
-		// エンディングモードのデバッグ
-		if (UserInput::onKeyEndingDebug()) goEndingDebug(mode, ending);
 
 		int res, choice;
 		switch (mode.current()) {
@@ -159,7 +155,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			SetBackgroundColor(0, 0, 0);
 			ending.drawGameBoard(battle.game);
 			logo.draw();
-			ending.show(sync.fps);
+			res = ending.show(sync.fps);
+			ending.route(mode, res);
 			break;
 		case MODE_SCENARIO:
 			SetBackgroundColor(0, 0, 0);
@@ -183,6 +180,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		battle.tick();
 		sync.execute();
+
+		// エンディングモードのデバッグ
+		if (FlagStore::isDebug() && UserInput::onKeyEndingDebug()) {
+			if (mode.current() != MODE_ENDING) {
+				Music::unloadAll();
+				mode.goEnding();
+			}
+		}
 
 		// デバッグ情報出力
 		if (FlagStore::isDebug()) {
@@ -225,17 +230,6 @@ void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario) {
 			mode.goScenario();
 		}
 		break;
-	}
-}
-
-void goEndingDebug(Mode& mode, Ending& ending) {
-	Music::unloadAll();
-	if (mode.current() != MODE_ENDING) {
-		ending.initialize();
-		mode.goEnding();
-	}
-	else {
-		mode.goTitle();
 	}
 }
 

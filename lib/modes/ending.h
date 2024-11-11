@@ -1,5 +1,8 @@
 #pragma once
 
+#include "lib/const.h"
+#include "lib/mode.h"
+#include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/components/sprite.h"
 #include "lib/components/game.h"
@@ -47,11 +50,6 @@ public:
 		mrK[3].setLoopSpeed(5 * FPS / 30);
 		deer.setLoopSpeed(15 * FPS / 30);
 		initialize();
-	}
-
-	void initialize() {
-		cnt = 0.0;
-		init_ending_text(job, who);
 	}
 
 	int show(int fps) {
@@ -175,6 +173,42 @@ public:
 		return 0;
 	}
 
+	void route(Mode& mode, int res) {
+		if (UserInput::onKeyEndingDebug()) {
+			Music::unloadAll();
+			initialize();
+			mode.goTitle();
+		}
+	}
+
+	void drawGameBoard(Game& game) {
+		game.drawBase();
+		game.drawGlobalState();
+		game.drawHistLast();
+		game.drawNextField();
+		game.drawLocalState();
+		game.drawCurrentCoord();
+	}
+
+	void debugDump() {
+		int strColor = strColorDebug;
+
+		DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
+		DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
+		DrawFormatString(365, 305, strColor, "mrK0.walkCnt: %d", mrK[0].walkCnt);
+		DrawFormatString(365, 325, strColor, "mrK1.walkCnt: %d", mrK[1].walkCnt);
+		DrawFormatString(365, 345, strColor, "mrK2.walkCnt: %d", mrK[2].walkCnt);
+		DrawFormatString(365, 365, strColor, "mrK3.walkCnt: %d", mrK[3].walkCnt);
+		DrawFormatString(365, 385, strColor, "deer.walkCnt: %d", deer.walkCnt);
+	}
+
+private:
+
+	void initialize() {
+		cnt = 0.0;
+		init_ending_text(job, who);
+	}
+
 	void fadeinMusic() {
 		if (cnt > 280.0 && cnt <= 900.0) {
 			Music::changeVolume(22.0 * pow(cnt - 250.0, 0.3));
@@ -203,15 +237,6 @@ public:
 			DrawExtendGraph(170, 170 - 1.2 * (cnt - 300.0), 255, 260 - 1.2 * (cnt - 300.0), MLogo, TRUE);
 			DrawExtendGraph(250, 170 - 1.2 * (cnt - 300.0), 490, 260 - 1.2 * (cnt - 300.0), axence, TRUE);
 		}
-	}
-
-	void drawGameBoard(Game& game) {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-		game.drawLocalState();
-		game.drawCurrentCoord();
 	}
 
 	void drawEndroll() {
@@ -250,19 +275,6 @@ public:
 			}
 		}
 	}
-
-	void debugDump() {
-		int strColor = strColorDebug;
-
-		DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
-		DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
-		DrawFormatString(365, 305, strColor, "mrK0.walkCnt: %d", mrK[0].walkCnt);
-		DrawFormatString(365, 325, strColor, "mrK1.walkCnt: %d", mrK[1].walkCnt);
-		DrawFormatString(365, 345, strColor, "mrK2.walkCnt: %d", mrK[2].walkCnt);
-		DrawFormatString(365, 365, strColor, "mrK3.walkCnt: %d", mrK[3].walkCnt);
-		DrawFormatString(365, 385, strColor, "deer.walkCnt: %d", deer.walkCnt);
-	}
-
 };
 
 void init_ending_text(string* job, string* who) {
