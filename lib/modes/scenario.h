@@ -233,6 +233,8 @@ public:
 	}
 
 	int show(COM& com) {
+		if (Music::drawLoadMsg()) return MODE_SCENARIO;
+
 		// îwåiÅEêlï®ÇÃï`âÊ
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
@@ -255,14 +257,13 @@ public:
 		}
 	}
 
-	void setSenko() {
-		game.setSenko();
+	void route(Mode& mode, int res) {
+		if (res == MODE_TITLE) {
+			Music::unloadAll();
+			initialize();
+			mode.goTitle();
+		}
 	}
-
-	void setKoko() {
-		game.setKoko();
-	}
-
 
 	/*===========================*/
 	//    Save and Load
@@ -348,7 +349,6 @@ public:
 		Music::play();
 	}
 
-
 	/*===========================*/
 	//    Battle Mode
 	/*===========================*/
@@ -360,7 +360,6 @@ public:
 
 		ScenarioBase::debugDump();
 	}
-
 
 private:
 

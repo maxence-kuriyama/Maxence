@@ -33,10 +33,6 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
-void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario);
-void goTitle(Mode& mode, Title& title);
-
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	SetOutApplicationLogValidFlag(FALSE);
@@ -101,6 +97,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				}
 				battle.startNewVsHuman();
 				break;
+			case MENU_CHOICE_VS_COM:
+				if (scenario.hasSaveFile()) {
+					choice = MENU_CHOICE_NONE;
+				}
+				break;
 			case MENU_CHOICE_START:
 				if (title.isBattleMode()) {
 					battle.startVsHuman();
@@ -110,9 +111,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (title.isBattleMode()) {
 					battle.load();
 				}
+				else if (title.isScenarioMode()) {
+					scenario.load();
+				}
 				break;
 			}
-			routesScenario(choice, mode, title, scenario);
 			title.route(mode, choice);
 			break;
 		case MODE_TUTORIAL:
@@ -160,13 +163,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		case MODE_SCENARIO:
 			SetBackgroundColor(0, 0, 0);
-			if (!Music::drawLoadMsg()) {
-				res = scenario.show(com);
-				if (res == MODE_TITLE) {
-					Music::unloadAll();
-					goTitle(mode, title);
-				}
+			res = scenario.show(com);
+			if (res == MODE_TITLE) {
+				title.initialize();
 			}
+			scenario.route(mode, res);
 			break;
 		case MODE_MUSIC_ROOM:
 			SetBackgroundColor(0, 0, 0);
@@ -208,32 +209,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DxLib_End();
 
 	return 0;
-}
-
-void routesScenario(int choice, Mode& mode, Title& title, Scenario& scenario) {
-	switch (choice) {
-	case MENU_CHOICE_VS_COM:
-		if (!scenario.hasSaveFile()) {
-			scenario.initialize();
-			mode.goScenario();
-		}
-		break;
-	case MENU_CHOICE_START:
-		if (title.isScenarioMode()) {
-			scenario.initialize();
-			mode.goScenario();
-		}
-		break;
-	case MENU_CHOICE_LOAD:
-		if (title.isScenarioMode()) {
-			scenario.load();
-			mode.goScenario();
-		}
-		break;
-	}
-}
-
-void goTitle(Mode& mode, Title& title) {
-	title.initialize();
-	mode.goTitle();
 }

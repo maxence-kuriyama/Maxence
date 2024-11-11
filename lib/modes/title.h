@@ -73,14 +73,23 @@ public:
 		case MENU_CHOICE_VS_HUMAN:
 			mode.goBattle();
 			break;
+		case MENU_CHOICE_VS_COM:
+			mode.goScenario();
+			break;
 		case MENU_CHOICE_START:
 			if (isBattleMode()) {
 				mode.goBattle();
+			}
+			else if (isScenarioMode()) {
+				mode.goScenario();
 			}
 			break;
 		case MENU_CHOICE_LOAD:
 			if (isBattleMode()) {
 				mode.goBattle();
+			}
+			else if (isScenarioMode()) {
+				mode.goScenario();
 			}
 			break;
 		}
