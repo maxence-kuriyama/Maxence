@@ -121,9 +121,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		case MODE_TUTORIAL:
 			SetBackgroundColor(0, 0, 0);
 			res = tutorial.show();
-			if (res == MODE_TITLE) {
-				title.initialize();
-			}
 			tutorial.route(mode, res);
 			break;
 		case MODE_BATTLE:
@@ -131,12 +128,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			res = battle.show(com);
 			logo.draw(true);
 			battle.route(mode, res);
-
-			switch (res) {
-			case MODE_TITLE:
-				title.initialize();
-				break;
-			}
 			break;
 		case MODE_RESULT:
 			SetBackgroundColor(0, 0, 0);
@@ -164,17 +155,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		case MODE_SCENARIO:
 			SetBackgroundColor(0, 0, 0);
 			res = scenario.show(com);
-			if (res == MODE_TITLE) {
-				title.initialize();
-			}
 			scenario.route(mode, res);
 			break;
 		case MODE_MUSIC_ROOM:
 			SetBackgroundColor(0, 0, 0);
 			res = musicRoom.show();
-			if (res == MODE_TITLE) {
-				title.initialize();
-			}
 			musicRoom.route(mode, res);
 			break;
 		}

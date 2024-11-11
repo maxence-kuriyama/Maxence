@@ -260,8 +260,8 @@ public:
 	void route(Mode& mode, int res) {
 		if (res == MODE_TITLE) {
 			Music::unloadAll();
-			initialize();
 			mode.goTitle();
+			initialize();
 		}
 	}
 

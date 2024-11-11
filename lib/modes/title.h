@@ -66,15 +66,19 @@ public:
 		switch (res) {
 		case MENU_CHOICE_TUTORIAL:
 			mode.goTutorial();
+			initialize();
 			break;
 		case MENU_CHOICE_MUSIC_ROOM:
 			mode.goMusicRoom();
+			initialize();
 			break;
 		case MENU_CHOICE_VS_HUMAN:
 			mode.goBattle();
+			initialize();
 			break;
 		case MENU_CHOICE_VS_COM:
 			mode.goScenario();
+			initialize();
 			break;
 		case MENU_CHOICE_START:
 			if (isBattleMode()) {
@@ -83,6 +87,7 @@ public:
 			else if (isScenarioMode()) {
 				mode.goScenario();
 			}
+			initialize();
 			break;
 		case MENU_CHOICE_LOAD:
 			if (isBattleMode()) {
@@ -91,6 +96,7 @@ public:
 			else if (isScenarioMode()) {
 				mode.goScenario();
 			}
+			initialize();
 			break;
 		}
 	}
