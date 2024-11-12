@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		}
 
-		battle.tick();
+		// 同期
 		Synchronizer::execute();
 
 		// エンディングモードのデバッグ

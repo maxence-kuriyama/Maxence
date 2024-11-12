@@ -67,10 +67,6 @@ public:
 
 	~Battle() {}
 
-	void tick() {
-		playCnt = (playCnt + 1) % 10000000;
-	}
-
 	void start(int player1, int player2, bool init = true) {
 		UserInput::reset();
 		game.prepare(player1, player2, init);
@@ -100,6 +96,7 @@ public:
 		if (innerMode == BATTLE_MODE_RESULT) return showResult();
 
 		toggleByKey();
+		tick();
 		game.drawBeforePlay();
 
 		if (playByPlayer()) {
@@ -202,6 +199,10 @@ private:
 		}
 
 		return MODE_BATTLE;
+	}
+
+	void tick() {
+		playCnt = (playCnt + 1) % 10000000;
 	}
 
 	bool playByPlayer() {
