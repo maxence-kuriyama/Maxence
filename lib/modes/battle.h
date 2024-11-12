@@ -8,6 +8,7 @@
 #include "lib/utils/com.h"
 #include "lib/components/menu.h"
 #include "lib/components/game.h"
+#include "lib/components/logo.h"
 #include "./battle/camera.h"
 #include "./battle/anime.h"
 #include "./battle/comment.h"
@@ -28,6 +29,7 @@ private:
 	Anime cutin;
 	Camera camera;
 	Comment comment;
+	Logo logo;
 	Result result;
 	double theta = 0.3;
 
@@ -122,6 +124,7 @@ public:
 		drawMessage();
 		drawComment();
 		cutin.update();
+		logo.draw(true);
 
 		// Ÿ—˜”»’è
 		if (game.victory() != 0) {

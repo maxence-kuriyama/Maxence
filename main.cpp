@@ -21,7 +21,6 @@ using namespace std;
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
 #include "lib/utils/com.h"
-#include "lib/components/logo.h"
 #include "lib/modes/title.h"
 #include "lib/modes/tutorial.h"
 #include "lib/modes/scenario.h"
@@ -55,7 +54,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	Mode mode;
 	Synchronizer sync(FPS);
-	Logo logo;
 
 	Title title;
 	Tutorial tutorial;
@@ -121,14 +119,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		case MODE_BATTLE:
 			res = battle.show(com);
-			logo.draw(true);
 			battle.route(mode, res);
 			break;
 		case MODE_ENDING:
 			Music::load("sound/bgm09.ogg");
 			SetBackgroundColor(0, 0, 0);
 			ending.drawGameBoard(battle.game);
-			logo.draw();
 			res = ending.show(sync.fps);
 			ending.route(mode, res);
 			break;

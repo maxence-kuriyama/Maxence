@@ -6,6 +6,7 @@
 #include "lib/utils/music.h"
 #include "lib/components/sprite.h"
 #include "lib/components/game.h"
+#include "lib/components/logo.h"
 
 void init_ending_text(string* job, string* who);
 
@@ -26,6 +27,7 @@ private:
 	unsigned int strColorDebug = GetColor(180, 180, 180);
 	int end_pict[20];
 	int sprite[15];
+	Logo logo;
 
 public:
 	MrK mrK[4];
@@ -55,6 +57,8 @@ public:
 	int show(int fps) {
 		// 実効FPSを元にアニメーション速度を調整
 		cntInc = 30.2 / fps;
+
+		logo.draw();
 
 		// フェードイン
 		fadeinMusic();
