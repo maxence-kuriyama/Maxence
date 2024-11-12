@@ -1,7 +1,6 @@
 #pragma once
 
-#include "lib/user_input.h"
-
+#include "lib/utils/user_input.h"
 
 // ロゴマークオブジェクト
 // リセットボタンとしての機能など
@@ -30,13 +29,9 @@ public:
 		image = LoadGraph("graph/Maxence_after4.png");
 	}
 
-	void draw(UserInput& ui) {
-		draw();
-		update(*ui.key);
-	}
-
-	void draw() {
+	void draw(bool getKey = false) {
 		DrawExtendGraph(titleX, titleY, titleX + 190, titleY + 60, image, TRUE);
+		if (getKey) update(*UserInput::getKey());
 	}
 
 	void update(Key& key) {
@@ -68,7 +63,7 @@ public:
 		}
 	}
 
-		bool isClicked(Mouse& mouse) {
+	bool isClicked(Mouse& mouse) {
 		int upLeftX = titleX;
 		int upLeftY = titleY - 5;
 		int lowRightX = titleX + 185;

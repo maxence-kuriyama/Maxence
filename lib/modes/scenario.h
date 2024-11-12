@@ -1,8 +1,10 @@
 #pragma once
 
-#include "lib/modes/common/scenario_base.h"
-#include "lib/encrypter.h"
-
+#include "lib/mode.h"
+#include "lib/utils/music.h"
+#include "lib/utils/encrypter.h"
+#include "lib/components/menu.h"
+#include "./scenario_base.h"
 
 const int SCENE_ACTION_EQ(11);
 const int SCENE_ACTION_WAIT(12);
@@ -230,37 +232,40 @@ public:
 		mrK[0].turn(MRK_KEY_DOWN);
 	}
 
-	int show(UserInput& ui, COM& com, Music& music, bool debug = false) {
+	int show(COM& com) {
+		SetBackgroundColor(0, 0, 0);
+
+		if (Music::drawLoadMsg()) return MODE_SCENARIO;
+
 		// 背景・人物の描画
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
-		bool is_reset = (!onBattle && !isTalking && saveOrReset(ui));
+		bool is_reset = (!onBattle && !isTalking && saveOrReset());
 		
-		int res = ScenarioBase::show(ui, com, music, debug);
-		showAdditionalAction(ui);
-		music_name[0] = music.musicName[0];
-		music_name[1] = music.musicName[1];
+		int res = ScenarioBase::show(com);
+		showAdditionalAction();
+		music_name[0] = Music::getMusicName(0);
+		music_name[1] = Music::getMusicName(1);
 
 		if (is_reset) {
-			return FLAG_TITLE;
+			return MODE_TITLE;
 		}
 		else if (res != SCENE_RES_DEFAULT) {
 			return res;
 		}
 		else {
-			return FLAG_SCENARIO;
+			return MODE_SCENARIO;
 		}
 	}
 
-	void setSenko() {
-		game.setSenko();
+	void route(Mode& mode, int res) {
+		if (res == MODE_TITLE) {
+			Music::unloadAll();
+			mode.goTitle();
+			initialize();
+		}
 	}
-
-	void setKoko() {
-		game.setKoko();
-	}
-
 
 	/*===========================*/
 	//    Save and Load
@@ -297,7 +302,7 @@ public:
 		}
 	}
 
-	void load(Music& music) {
+	void load() {
 		Encrypter encrypter(saveFilePath);
 		nlohmann::json res = encrypter.read();
 		Logger::ss << "Scenario loaded: " << res.dump();
@@ -305,8 +310,8 @@ public:
 
 		initialize();
 
-		loadMusic(music, res);
-		loadScenario(res["flg"], music);
+		loadMusic(res);
+		loadScenario(res["flg"]);
 
 		onBattle = res["onBattle"];
 		if (onBattle) {
@@ -322,33 +327,29 @@ public:
 		remove(saveFilePath.c_str());
 	}
 
-	void loadScenario(int flg_saved, Music& music) {
-		Mouse mouse;
-		Key key;
-		UserInput dummy_ui = { &key, &mouse };
+	void loadScenario(int flg_saved) {
 		COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
 		while (flg < flg_saved) {
 			old_flg = flg;
 			Scene scene = getCurrentScene();
-			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_ui, dummy_com, music);
+			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
 		isTalking = false;
 	}
 
-	void loadMusic(Music& music, nlohmann::json res) {
+	void loadMusic(nlohmann::json res) {
 		music_name[0] = res["music_name0"];
 		music_name[1] = res["music_name1"];
-		music.unloadAll();
-		music.load(music_name[0].c_str(), 0);
-		music.load(music_name[1].c_str(), 0);
-		music.enableSwap();
-		music.play();
+		Music::unloadAll();
+		Music::load(music_name[0].c_str(), 0);
+		Music::load(music_name[1].c_str(), 0);
+		Music::enableSwap();
+		Music::play();
 	}
-
 
 	/*===========================*/
 	//    Battle Mode
@@ -362,18 +363,17 @@ public:
 		ScenarioBase::debugDump();
 	}
 
-
 private:
 
-	int showAdditionalAction(UserInput& ui) {
+	int showAdditionalAction() {
 		Scene scene = getCurrentScene();
 
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
-			performEQ(scene.how, *ui.mouse);
+			performEQ(scene.how);
 			break;
 		case SCENE_ACTION_WAIT:
-			waitClick(*ui.mouse);
+			waitClick();
 		default:
 			break;
 		}
@@ -381,11 +381,11 @@ private:
 		return SCENE_RES_DEFAULT;
 	}
 
-	void performEQ(string how, Mouse &mouse) {
+	void performEQ(string how) {
 		if (how == "true") {
 			// happenEQ
 			eqX = 10 * sin(eqX + M_PI * (rand() % 10) / 10.0);
-			waitClick(mouse);
+			waitClick();
 		}
 		else {
 			// stopEQ
@@ -420,18 +420,20 @@ private:
 	}
 
 	// override
-	int doBattle(UserInput& ui, COM& com, bool debug) {
-		ScenarioBase::doBattle(ui, com, debug);
+	int doBattle(COM& com) {
+		ScenarioBase::doBattle(com);
 
-		if (saveOrReset(ui)) {
+		if (saveOrReset()) {
 			initializeBattle();
-			return FLAG_TITLE;
+			return MODE_TITLE;
 		}
 
 		// 対戦スキップ（一人用デバッグ）
-		if (debug && skipBattle(ui)) goNext();
+		if (FlagStore::isDebug()) {
+			if (skipBattle()) goNext();
+		}
 			
-		return FLAG_SCENARIO;
+		return MODE_SCENARIO;
 	}
 
 	// TODO: getCurrentScene()に応じて使うCOMを変えること
@@ -451,24 +453,24 @@ private:
 	}
 
 	// デバッグ用
-	bool skipBattle(UserInput& ui) {
-		if (ui.onKeySkipDebug()) {
+	bool skipBattle() {
+		if (UserInput::onKeySkipDebug()) {
 			initializeBattle();
 			return true;
 		}
 		return false;
 	}
 
-	bool saveOrReset(UserInput& ui) {
+	bool saveOrReset() {
 		bool no_keyboard = true;
-		int choice = menu.choose(ui, strColorMenu, no_keyboard);
+		int choice = menu.choose(strColorMenu, no_keyboard);
 
 		// save
 		if (choice == 0) save();
 
 		//reset
 		if (choice == 0 || choice == 1) {
-			ui.reset();
+			UserInput::reset();
 			game.reset();
 			return true;
 		}

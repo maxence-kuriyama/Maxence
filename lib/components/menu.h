@@ -1,7 +1,14 @@
 #pragma once
 
-#include "lib/user_input.h"
+#include "lib/utils/user_input.h"
 
+const int MENU_CHOICE_VS_HUMAN(10);
+const int MENU_CHOICE_VS_COM(11);
+const int MENU_CHOICE_TUTORIAL(12);
+const int MENU_CHOICE_MUSIC_ROOM(13);
+const int MENU_CHOICE_START(20);
+const int MENU_CHOICE_LOAD(21);
+const int MENU_CHOICE_NONE(-1);
 
 // メニュー画面管理用クラス
 class Button {
@@ -47,40 +54,26 @@ public:
 		initialize(tx, ty, tx - 16, ty - 16, tx + 8 * label.length() + 32, ty + 24, label);
 	}
 
-	void display(Mouse& mouse, int strColor) {
+	void display(int strColor) {
 		DrawFormatString(textX, textY, strColor, text.c_str());
-		if (isOn(mouse)) {
+		if (isMouseOn()) {
 			DrawFormatString(textX, textY, Red, text.c_str());
 		}
 	}
 
-	void display(UserInput& ui, int strColor) {
-		display(*ui.mouse, strColor);
-	}
-
-	// active = 0/1: inactive/active
-	void display(int active, int strColor) {
+	void display(bool active, int strColor) {
 		DrawFormatString(textX, textY, strColor, text.c_str());
-		if (active == 1) {
+		if (active) {
 			DrawFormatString(textX, textY, Red, text.c_str());
 		}
 	}
 
-	bool isOn(Mouse& mouse) {
-		return (mouse.x > upLeftX && mouse.x < lowRightX&& mouse.y > upLeftY && mouse.y < lowRightY);
+	bool isMouseOn() {
+		return UserInput::onButton(upLeftX, upLeftY, lowRightX, lowRightY);
 	}
 
-	bool isClicked(Mouse& mouse) {
-		if (mouse.x > upLeftX && mouse.x < lowRightX && mouse.y > upLeftY && mouse.y < lowRightY) {
-			if (mouse.click()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	bool isClicked(UserInput& ui) {
-		return isClicked(*ui.mouse);
+	bool isClicked() {
+		return (isMouseOn() && UserInput::isClicked());
 	}
 
 	Button operator = (Button& src) {
@@ -131,9 +124,9 @@ public:
 
 	void display(int strColor) {
 		for (int i = 0; i < size; ++i) {
-			button[i].display(0, strColor);
+			button[i].display(false, strColor);
 		}
-		button[id].display(1, strColor);
+		button[id].display(true, strColor);
 	}
 
 	void toggle(Key& key) {
@@ -151,24 +144,25 @@ public:
 		}
 	}
 
-	int choose(UserInput& ui, int strColor, bool noKeyboard = false) {
-		if (!noKeyboard && ui.keyboard) {
+	int choose(int strColor, bool noKeyboard = false) {
+		Key* key = UserInput::getKey();
+		if (!noKeyboard && UserInput::usingKeyboard()) {
 			display(strColor);
-			if (ui.key->onReturn()) {
+			if (key->onReturn()) {
 				return id;
 			}
 		}
 		else {
 			for (int i = 0; i < size; ++i) {
-				button[i].display(ui, strColor);
+				button[i].display(strColor);
 			}
 			for (int i = 0; i < size; ++i) {
-				if (button[i].isClicked(ui)) {
+				if (button[i].isClicked()) {
 					return i;
 				}
 			}
 		}
-		toggle(*ui.key);
+		toggle(*key);
 		return -1;
 	}
 };

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
-#include "lib/vect.h"
-#include "lib/logger.h"
+#include "lib/utils/logger.h"
+#include "./vect.h"
 
 using namespace Eigen;
 

@@ -2,10 +2,10 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "lib/vect.h"
 #include "lib/const.h"
-#include "lib/com/minmax.h"
-#include "lib/com/loader.h"
+#include "./com/vect.h"
+#include "./com/minmax.h"
+#include "./com/loader.h"
 
 using namespace Eigen;
 

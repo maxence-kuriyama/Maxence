@@ -17,9 +17,6 @@ private:
 		}
 		return _instance;
 	}
-	
-	Logger() {}
-	~Logger() { delete _instance; }
 
 public:
 	static stringstream ss;

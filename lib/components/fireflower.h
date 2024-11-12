@@ -1,8 +1,7 @@
 #pragma once
 
-
 // 花火オブジェクト
-class fireflower {
+class FireFlower {
 private:
 	int cnt;			// 花火の寿命カウンタ
 	double particle[12][2];
@@ -14,9 +13,9 @@ private:
 	double maxY = 480.0;
 
 public:
-	int sound = 0;		// SEを出すか否か
+	bool sound = false;
 
-	fireflower() {
+	FireFlower() {
 		initialize();
 	}
 
@@ -64,7 +63,7 @@ public:
 		else {
 			initialize();
 		}
-		if (sound == 1 && cnt == 80) PlaySound("sound/owin31.wav", NULL, SND_ASYNC);
+		if (sound && cnt == 80) PlaySound("sound/owin31.wav", NULL, SND_ASYNC);
 	}
 
 	void draw() {

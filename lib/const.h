@@ -18,16 +18,6 @@
 #define TEXT_RESET_X		340
 #define TEXT_RESET_Y		440
 
-#define FLAG_OPENING		-1
-#define FLAG_TITLE			0
-#define FLAG_BATTLE			1
-#define FLAG_RESULT			2
-#define FLAG_RESULT_CANCEL	10
-#define FLAG_SCENARIO		-6
-#define FLAG_ENDING			-4
-#define FLAG_TUTORIAL		-2
-#define FLAG_MUSIC_ROOM		-8
-
 #define RWD_VICTORY			1.0
 #define RWD_DOMINANT		1.0
 #define RWD_PUT				0.0
@@ -55,14 +45,6 @@
 
 #define TEBAN_SENKO			0
 #define TEBAN_KOKO			1
-
-#define MENU_CHOICE_VS_HUMAN		10
-#define MENU_CHOICE_VS_COM			11
-#define MENU_CHOICE_TUTORIAL		12
-#define MENU_CHOICE_MUSIC_ROOM		13
-#define MENU_CHOICE_START			20
-#define MENU_CHOICE_LOAD			21
-#define MENU_CHOICE_NONE			-1
 
 #define MACHINE_INPUT_SIZE		180
 #define MACHINE_OUTPUT_SIZE		81

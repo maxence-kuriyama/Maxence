@@ -31,25 +31,25 @@
     <ClInclude Include="vect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\board.h">
+    <ClInclude Include="lib\components\board.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\logger.h">
+    <ClInclude Include="lib\utils\logger.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\com\minmax.h">
+    <ClInclude Include="lib\utils\com\minmax.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\board\field.h">
+    <ClInclude Include="lib\components\board\field.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\board\hist.h">
+    <ClInclude Include="lib\components\board\hist.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\anime.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\com.h">
+    <ClInclude Include="lib\utils\com.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\comment.h">
@@ -67,19 +67,19 @@
     <ClInclude Include="lib\load_obj.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\logo.h">
+    <ClInclude Include="lib\components\logo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\menu.h">
+    <ClInclude Include="lib\components\menu.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\message.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\movie.h">
+    <ClInclude Include="lib\utils\movie.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\music.h">
+    <ClInclude Include="lib\utils\music.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\OBJ_Loader.h">
@@ -88,7 +88,7 @@
     <ClInclude Include="lib\sprite.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\vect.h">
+    <ClInclude Include="lib\utils\com\vect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\game\anime.h">
@@ -109,19 +109,19 @@
     <ClInclude Include="lib\battle\game\comment.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\synchronizer.h">
+    <ClInclude Include="lib\utils\synchronizer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\battle\comment.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\user_input\keyboard.h">
+    <ClInclude Include="lib\utils\user_input\keyboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\user_input\mouse.h">
+    <ClInclude Include="lib\utils\user_input\mouse.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\user_input.h">
+    <ClInclude Include="lib\utils\user_input.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\battle.h">
@@ -139,7 +139,7 @@
     <ClInclude Include="lib\modes\title.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\common\fireflower.h">
+    <ClInclude Include="lib\components\fireflower.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\battle\anime.h">
@@ -151,7 +151,7 @@
     <ClInclude Include="lib\modes\game.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\common.h">
+    <ClInclude Include="lib\components\draw_round_box.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\scenario\message.h">
@@ -160,31 +160,31 @@
     <ClInclude Include="lib\modes\battle\camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\common\game.h">
+    <ClInclude Include="lib\components\game.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\modes\battle\result.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\result.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\battle_result.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\modes\common\scenario_base.h">
+    <ClInclude Include="lib\modes\scenario_base.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\tutorial.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\encrypter.h">
+    <ClInclude Include="lib\utils\encrypter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\common\message.h">
+    <ClInclude Include="lib\components\message.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\common\sprite.h">
+    <ClInclude Include="lib\components\sprite.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\com\loader.h">
+    <ClInclude Include="lib\utils\com\loader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\nlohmann\json.hpp">
@@ -193,10 +193,16 @@
     <ClInclude Include="lib\modes\music_room.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\music_unlocker.h">
+    <ClInclude Include="lib\utils\music_unlocker.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\music_room\bg_character.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\utils\flag_store.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\mode.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
