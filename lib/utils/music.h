@@ -32,13 +32,12 @@ private:
 
 	int strColorDebug = GetColor(0, 250, 250);
 
-public:
-	string musicName[2] = { "", "" };	// それぞれのメモリに読み込まれたファイル名
-
 	~Music() {
 		unloadAll();
-		delete _instance;
 	}
+
+public:
+	string musicName[2] = { "", "" };	// それぞれのメモリに読み込まれたファイル名
 
 	static string getMusicName(int id) {
 		Music* music = Music::getInstance();

@@ -14,9 +14,6 @@ private:
 		return _instance;
 	}
 
-	FlagStore() {}
-	~FlagStore() { delete _instance; }
-
 public:
 
 	/*===========================*/

@@ -35,7 +35,6 @@ private:
 	~UserInput() {
 		delete key;
 		delete mouse;
-		delete _instance;
 	}
 
 	void toggleMouseOrKeyboard() {
