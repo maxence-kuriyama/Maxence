@@ -197,7 +197,7 @@
     <ClInclude Include="lib\modes\battle\anime.h" />
     <ClInclude Include="lib\modes\battle\camera.h" />
     <ClInclude Include="lib\modes\battle\comment.h" />
-    <ClInclude Include="lib\modes\battle_result.h" />
+    <ClInclude Include="lib\modes\battle\result.h" />
     <ClInclude Include="lib\components\game.h" />
     <ClInclude Include="lib\components\message.h" />
     <ClInclude Include="lib\modes\scenario_base.h" />

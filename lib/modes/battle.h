@@ -11,6 +11,10 @@
 #include "./battle/camera.h"
 #include "./battle/anime.h"
 #include "./battle/comment.h"
+#include "./battle/result.h"
+
+const int BATTLE_MODE_BATTLE(0);
+const int BATTLE_MODE_RESULT(1);
 
 // バトルモード
 // 主にGameの操作と描画
@@ -24,6 +28,7 @@ private:
 	Anime cutin;
 	Camera camera;
 	Comment comment;
+	Result result;
 	double theta = 0.3;
 
 	int strColor = GetColor(255, 255, 255);
@@ -33,6 +38,7 @@ private:
 	bool likelihoodFlg = false; // 学習機械の出力フラグ
 	bool commentFlg = false;
 	int playCnt = 0;			// 1ターンに費やしたカウント
+	int innerMode = BATTLE_MODE_BATTLE;
 
 public:
 	Game game;
@@ -87,7 +93,7 @@ public:
 	//    Battle Mode
 	/*===========================*/
 	int show(COM& com) {
-		int return_flg = MODE_BATTLE;
+		if (innerMode == BATTLE_MODE_RESULT) return showResult();
 
 		toggleByKey();
 		game.drawBeforePlay();
@@ -118,13 +124,14 @@ public:
 		// 勝利判定
 		if (game.victory() != 0) {
 			UserInput::reset();
-			return_flg = MODE_RESULT;
+			innerMode = BATTLE_MODE_RESULT;
 		}
 
 		if (cancelPlay()) com.setWait();
-		if (saveOrReset()) return_flg = MODE_TITLE;
+	
+		if (saveOrReset()) return MODE_TITLE;
 
-		return return_flg;
+		return MODE_BATTLE;
 	}
 
 	void route(Mode& mode, int res) {
@@ -132,9 +139,6 @@ public:
 		case MODE_TITLE:
 			// initialize();
 			mode.goTitle();
-			break;
-		case MODE_RESULT:
-			mode.goResult();
 			break;
 		}
 	}
@@ -179,6 +183,21 @@ public:
 	}
 
 private:
+
+	int showResult() {
+		int res = result.show(game);
+
+		if (res == MODE_BATTLE) {
+			innerMode = BATTLE_MODE_BATTLE;
+			start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+		}
+		else if (res == MODE_RESULT_CANCEL) {
+			innerMode = BATTLE_MODE_BATTLE;
+			resume(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+		}
+
+		return MODE_BATTLE;
+	}
 
 	bool playByPlayer() {
 		if (game.isPlayTurn() && game.playTurn()) {

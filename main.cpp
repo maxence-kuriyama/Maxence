@@ -26,7 +26,6 @@ using namespace std;
 #include "lib/modes/tutorial.h"
 #include "lib/modes/scenario.h"
 #include "lib/modes/battle.h"
-#include "lib/modes/battle_result.h"
 #include "lib/modes/opening.h"
 #include "lib/modes/ending.h"
 #include "lib/modes/music_room.h"
@@ -65,7 +64,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Opening opening;
 	Ending ending;
 	Battle battle;
-	BattleResult result;
 
 	int strColorDebug = GetColor(0, 0, 0);
 
@@ -128,21 +126,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			res = battle.show(com);
 			logo.draw(true);
 			battle.route(mode, res);
-			break;
-		case MODE_RESULT:
-			SetBackgroundColor(0, 0, 0);
-			res = result.show(battle.game);
-			logo.draw();
-			result.route(mode, res);
-
-			switch (res) {
-			case MODE_BATTLE:
-				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
-				break;
-			case MODE_RESULT_CANCEL:
-				battle.resume(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
-				break;
-			}
 			break;
 		case MODE_ENDING:
 			Music::load("sound/bgm09.ogg");

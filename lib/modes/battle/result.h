@@ -15,7 +15,7 @@ const int W_AGAIN(72);
 const int H_AGAIN(16);
 
 // 試合後の結果画面モード
-class BattleResult {
+class Result {
 private:
 	Menu menu;
 	Button btnAgain;
@@ -26,7 +26,7 @@ private:
 
 public:
 
-	BattleResult() {
+	Result() {
 		int padding = 8;
 		int ulx = TEXT_AGAIN_X - padding;
 		int uly = TEXT_AGAIN_Y - padding;
@@ -36,36 +36,21 @@ public:
 	}
 
 	int show(Game& game) {
-		int return_flg = MODE_RESULT;
-
 		drawGameBoard(game);
 
 		// メッセージの描画
 		btnAgain.display(btnColor);
 		if (btnAgain.isClicked() || UserInput::onReturn()) {
-			return_flg = MODE_BATTLE;
+			return MODE_BATTLE;
 		}
 
 		// コメントの描画
 		// drawComment();
 
 		// 動作の取り消し
-		if (cancel(game)) return_flg = MODE_RESULT_CANCEL;
+		if (cancel(game)) return MODE_RESULT_CANCEL;
 
-		return return_flg;
-	}
-
-	void route(Mode& mode, int res) {
-		switch (res) {
-		case MODE_BATTLE:
-			// initialize();
-			mode.goBattle();
-			break;
-		case MODE_RESULT_CANCEL:
-			// initialize();
-			mode.goBattle();
-			break;
-		}
+		return MODE_RESULT;
 	}
 
 private:

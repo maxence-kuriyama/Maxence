@@ -163,10 +163,10 @@
     <ClInclude Include="lib\components\game.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\result.h">
+    <ClInclude Include="lib\modes\battle\result.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\battle_result.h">
+    <ClInclude Include="lib\modes\result.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\modes\scenario_base.h">
