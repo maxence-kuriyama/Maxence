@@ -4,6 +4,7 @@
 #include "lib/mode.h"
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
+#include "lib/utils/synchronizer.h"
 #include "lib/components/sprite.h"
 #include "lib/components/game.h"
 #include "lib/components/logo.h"
@@ -54,8 +55,9 @@ public:
 		initialize();
 	}
 
-	int show(int fps) {
+	int show() {
 		// 実効FPSを元にアニメーション速度を調整
+		int fps = Synchronizer::actualFps();
 		cntInc = 30.2 / fps;
 
 		logo.draw();

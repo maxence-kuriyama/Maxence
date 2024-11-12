@@ -53,7 +53,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	
 	Mode mode;
-	Synchronizer sync(FPS);
+	int strColorDebug = GetColor(0, 0, 0);
 
 	Title title;
 	Tutorial tutorial;
@@ -62,8 +62,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Opening opening;
 	Ending ending;
 	Battle battle;
-
-	int strColorDebug = GetColor(0, 0, 0);
 
 	COM com;
 
@@ -125,7 +123,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			Music::load("sound/bgm09.ogg");
 			SetBackgroundColor(0, 0, 0);
 			ending.drawGameBoard(battle.game);
-			res = ending.show(sync.fps);
+			res = ending.show();
 			ending.route(mode, res);
 			break;
 		case MODE_SCENARIO:
@@ -139,7 +137,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		battle.tick();
-		sync.execute();
+		Synchronizer::execute();
 
 		// エンディングモードのデバッグ
 		if (FlagStore::isDebug() && UserInput::onKeyEndingDebug()) {
@@ -151,7 +149,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// デバッグ情報出力
 		if (FlagStore::isDebug()) {
-			DrawFormatString(5, 45, strColorDebug, "fps: %d", sync.fps);
+			DrawFormatString(5, 45, strColorDebug, "fps: %d", Synchronizer::actualFps());
 			DrawFormatString(5, 65, strColorDebug, "gameFlg: %d", mode.current());
 			DrawFormatString(5, 85, strColorDebug, "keyboardFlg: %d", UserInput::usingKeyboard());
 			battle.debugDump();
