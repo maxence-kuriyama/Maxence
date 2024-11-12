@@ -15,20 +15,25 @@ void init_ending_text(string* job, string* who);
 // 単体での使用を想定
 class Ending {
 private:
-	double cnt = 0.0;
-	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
-	string job[20];
-	string who[20];
+
 	int Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int MLogo = LoadGraph("graph/M.png");
 	int axence = LoadGraph("graph/axence.png");
 	unsigned int White = GetColor(255, 255, 255);
+
 	unsigned int strColorDebug = GetColor(180, 180, 180);
+
+	string job[20];
+	string who[20];
 	int end_pict[20];
 	int sprite[15];
+
+	double cnt = 0.0;
+	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
 	Logo logo;
+	Game game;
 
 public:
 	MrK mrK[4];
@@ -56,10 +61,13 @@ public:
 	}
 
 	int show() {
+		SetBackgroundColor(0, 0, 0);
+
 		// 実効FPSを元にアニメーション速度を調整
 		int fps = Synchronizer::actualFps();
 		cntInc = 30.2 / fps;
 
+		drawGameBoard();
 		logo.draw();
 
 		// フェードイン
@@ -187,13 +195,8 @@ public:
 		}
 	}
 
-	void drawGameBoard(Game& game) {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-		game.drawLocalState();
-		game.drawCurrentCoord();
+	void copyGame(Game& src) {
+		game = src;
 	}
 
 	void debugDump() {
@@ -213,6 +216,15 @@ private:
 	void initialize() {
 		cnt = 0.0;
 		init_ending_text(job, who);
+	}
+
+	void drawGameBoard() {
+		game.drawBase();
+		game.drawGlobalState();
+		game.drawHistLast();
+		game.drawNextField();
+		game.drawLocalState();
+		game.drawCurrentCoord();
 	}
 
 	void fadeinMusic() {

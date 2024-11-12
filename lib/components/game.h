@@ -142,12 +142,19 @@ public:
 		teban = TEBAN_SENKO;
 	}
 
-	void setSenko() {
-		teban = TEBAN_SENKO;
-	}
+	Game operator = (const Game& src) {
+		taijin = src.taijin;
+		teban = src.teban;
+		cnt = src.cnt;
+		player1 = src.player1;
+		player2 = src.player2;
+		player1_h = src.player1_h;
+		player2_h = src.player2_h;
 
-	void setKoko() {
-		teban = TEBAN_KOKO;
+		mode = src.mode;
+		board = src.board;
+
+		return src;
 	}
 
 

@@ -121,8 +121,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		case MODE_ENDING:
 			Music::load("sound/bgm09.ogg");
-			SetBackgroundColor(0, 0, 0);
-			ending.drawGameBoard(battle.game);
 			res = ending.show();
 			ending.route(mode, res);
 			break;
@@ -143,6 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (FlagStore::isDebug() && UserInput::onKeyEndingDebug()) {
 			if (mode.current() != MODE_ENDING) {
 				Music::unloadAll();
+				ending.copyGame(battle.game);
 				mode.goEnding();
 			}
 		}
