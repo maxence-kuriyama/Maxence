@@ -2,6 +2,13 @@
 
 #include "lib/utils/user_input.h"
 
+const int MENU_CHOICE_VS_HUMAN(10);
+const int MENU_CHOICE_VS_COM(11);
+const int MENU_CHOICE_TUTORIAL(12);
+const int MENU_CHOICE_MUSIC_ROOM(13);
+const int MENU_CHOICE_START(20);
+const int MENU_CHOICE_LOAD(21);
+const int MENU_CHOICE_NONE(-1);
 
 // メニュー画面管理用クラス
 class Button {

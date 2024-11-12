@@ -31,6 +31,9 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
+void prepareBattle(Battle& battle, int* choice);
+void prepareScenario(Scenario& scenario, int* choice);
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	SetOutApplicationLogValidFlag(FALSE);
@@ -83,32 +86,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			Music::load("sound/bgm03.ogg"); // シナリオ用
 			Music::load("sound/bgm02.ogg"); // チュートリアル用
 			choice = title.show();
-			switch (choice) {
-			case MENU_CHOICE_VS_HUMAN:
-				if (battle.hasSaveFile()) {
-					choice = MENU_CHOICE_NONE;
-				}
-				battle.startNewVsHuman();
-				break;
-			case MENU_CHOICE_VS_COM:
-				if (scenario.hasSaveFile()) {
-					choice = MENU_CHOICE_NONE;
-				}
-				break;
-			case MENU_CHOICE_START:
-				if (title.isBattleMode()) {
-					battle.startVsHuman();
-				}
-				break;
-			case MENU_CHOICE_LOAD:
-				if (title.isBattleMode()) {
-					battle.load();
-				}
-				else if (title.isScenarioMode()) {
-					scenario.load();
-				}
-				break;
-			}
+			prepareBattle(battle, &choice);
+			prepareScenario(scenario, &choice);
 			title.route(mode, choice);
 			break;
 		case MODE_TUTORIAL:
@@ -165,4 +144,36 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DxLib_End();
 
 	return 0;
+}
+
+void prepareBattle(Battle& battle, int* choice) {
+	switch (*choice) {
+	case MENU_CHOICE_VS_HUMAN:
+		if (battle.hasSaveFile()) {
+			*choice = MENU_CHOICE_NONE;
+		}
+		battle.startNewVsHuman();
+		break;
+	case TITLE_MENU_CHOICE_START_BATTLE:
+		battle.startVsHuman();
+		break;
+	case TITLE_MENU_CHOICE_LOAD_BATTLE:
+		battle.load();
+		break;
+	}
+}
+
+void prepareScenario(Scenario& scenario, int* choice) {
+	switch (*choice) {
+	case MENU_CHOICE_VS_COM:
+		if (scenario.hasSaveFile()) {
+			*choice = MENU_CHOICE_NONE;
+		}
+		break;
+	case TITLE_MENU_CHOICE_START_SCENARIO:
+		break;
+	case TITLE_MENU_CHOICE_LOAD_SCENARIO:
+		scenario.load();
+		break;
+	}
 }

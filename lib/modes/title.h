@@ -11,6 +11,11 @@ const int TITLE_GAME_MODE(1);
 const int TITLE_LOAD_BATTLE(11);
 const int TITLE_LOAD_SCENARIO(12);
 
+const int TITLE_MENU_CHOICE_START_BATTLE(200);
+const int TITLE_MENU_CHOICE_START_SCENARIO(201);
+const int TITLE_MENU_CHOICE_LOAD_BATTLE(210);
+const int TITLE_MENU_CHOICE_LOAD_SCENARIO(211);
+
 class Title {
 private:
 	FireFlower tama[FIRE_FLOWER_NUM];
@@ -82,22 +87,20 @@ public:
 			mode.goScenario();
 			initialize();
 			break;
-		case MENU_CHOICE_START:
-			if (isBattleMode()) {
-				mode.goBattle();
-			}
-			else if (isScenarioMode()) {
-				mode.goScenario();
-			}
+		case TITLE_MENU_CHOICE_START_BATTLE:
+			mode.goBattle();
 			initialize();
 			break;
-		case MENU_CHOICE_LOAD:
-			if (isBattleMode()) {
-				mode.goBattle();
-			}
-			else if (isScenarioMode()) {
-				mode.goScenario();
-			}
+		case TITLE_MENU_CHOICE_START_SCENARIO:
+			mode.goScenario();
+			initialize();
+			break;
+		case TITLE_MENU_CHOICE_LOAD_BATTLE:
+			mode.goBattle();
+			initialize();
+			break;
+		case TITLE_MENU_CHOICE_LOAD_SCENARIO:
+			mode.goScenario();
 			initialize();
 			break;
 		}
@@ -169,8 +172,20 @@ private:
 		int choice = menuChoose();
 		switch (choice) {
 		case 0:
+			if (isBattleMode()) {
+				return TITLE_MENU_CHOICE_START_BATTLE;
+			}
+			else if (isScenarioMode()) {
+				return TITLE_MENU_CHOICE_START_SCENARIO;
+			}
 			return MENU_CHOICE_START;
 		case 1:
+			if (isBattleMode()) {
+				return TITLE_MENU_CHOICE_LOAD_BATTLE;
+			}
+			else if (isScenarioMode()) {
+				return TITLE_MENU_CHOICE_LOAD_SCENARIO;
+			}
 			return MENU_CHOICE_LOAD;
 		default:
 			return MENU_CHOICE_NONE;
