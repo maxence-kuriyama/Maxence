@@ -233,6 +233,8 @@ public:
 	}
 
 	int show(COM& com) {
+		SetBackgroundColor(0, 0, 0);
+
 		if (Music::drawLoadMsg()) return MODE_SCENARIO;
 
 		// îwåiÅEêlï®ÇÃï`âÊ

@@ -93,6 +93,8 @@ public:
 	//    Battle Mode
 	/*===========================*/
 	int show(COM& com) {
+		SetBackgroundColor(0, 0, 0);
+
 		if (innerMode == BATTLE_MODE_RESULT) return showResult();
 
 		toggleByKey();

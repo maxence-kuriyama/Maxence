@@ -84,7 +84,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			opening.route(mode, res);
 			break;
 		case MODE_TITLE:
-			SetBackgroundColor(0, 128, 128);
 			Music::load("sound/bgm03.ogg"); // シナリオ用
 			Music::load("sound/bgm02.ogg"); // チュートリアル用
 			choice = title.show();
@@ -117,12 +116,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			title.route(mode, choice);
 			break;
 		case MODE_TUTORIAL:
-			SetBackgroundColor(0, 0, 0);
 			res = tutorial.show();
 			tutorial.route(mode, res);
 			break;
 		case MODE_BATTLE:
-			SetBackgroundColor(0, 0, 0);
 			res = battle.show(com);
 			logo.draw(true);
 			battle.route(mode, res);
@@ -136,12 +133,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ending.route(mode, res);
 			break;
 		case MODE_SCENARIO:
-			SetBackgroundColor(0, 0, 0);
 			res = scenario.show(com);
 			scenario.route(mode, res);
 			break;
 		case MODE_MUSIC_ROOM:
-			SetBackgroundColor(0, 0, 0);
 			res = musicRoom.show();
 			musicRoom.route(mode, res);
 			break;

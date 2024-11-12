@@ -51,6 +51,8 @@ public:
 	}
 
 	int show() {
+		SetBackgroundColor(0, 128, 128);
+
 		toggleSound();
 		showFireFlower();
 		showTitleLogo();

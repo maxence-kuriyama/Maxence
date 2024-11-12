@@ -86,6 +86,7 @@ public:
 	}
 
 	int show() {
+		SetBackgroundColor(0, 0, 0);
 		bg.draw();
 		showFireFlower();
 		msg.draw();

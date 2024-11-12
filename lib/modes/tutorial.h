@@ -57,6 +57,8 @@ private:
 public:
 
 	int show() {
+		SetBackgroundColor(0, 0, 0);
+
 		if (Music::drawLoadMsg()) return MODE_TUTORIAL;
 
 		int res = ScenarioBase::show();
