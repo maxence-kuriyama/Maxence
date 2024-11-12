@@ -1,13 +1,14 @@
 #pragma once
 
 #include <regex>
-#include "lib/music.h"
-#include "lib/user_input.h"
-#include "lib/com.h"
-#include "lib/modes/common/sprite.h"
-#include "lib/modes/common/message.h"
-#include "lib/modes/common/game.h"
-
+#include "lib/mode.h"
+#include "lib/utils/flag_store.h"
+#include "lib/utils/music.h"
+#include "lib/utils/user_input.h"
+#include "lib/utils/com.h"
+#include "lib/components/sprite.h"
+#include "lib/components/message.h"
+#include "lib/components/game.h"
 
 const int MAX_SCENE_NUM(400);
 const double SPRITE_EXPAND_RATE(0.0006);
@@ -24,7 +25,6 @@ const int SCENE_ACTION_PLAY(9);
 const int SCENE_ACTION_STOP(-1);
 
 const int SCENE_RES_DEFAULT(-100);
-
 
 // シナリオ抽象クラス
 class ScenarioBase {
@@ -95,14 +95,13 @@ public:
 
 	}
 
-	int show(UserInput& ui, Music& music, bool debug = false) {
+	int show() {
 		COM dummy_com(false);
-		return show(ui, dummy_com, music, debug);
+		return show(dummy_com);
 	}
 
-	int show(UserInput& ui, COM& com, Music& music, bool debug = false) {
-		getKey(*ui.key);
-		Mouse mouse = *ui.mouse;
+	int show(COM& com) {
+		getKey();
 
 		// 人物の描画
 		deer.draw();
@@ -116,32 +115,32 @@ public:
 
 		switch (scene.action) {
 		case SCENE_ACTION_TALK:
-			readMsg(scene.how, scene.who, mouse);
+			readMsg(scene.how, scene.who);
 			break;
 		case SCENE_ACTION_COCK:
 			setTrigger(scene.how);
 			break;
 		case SCENE_ACTION_MOVE:
-			doMove(scene.how, mouse);
+			doMove(scene.how);
 			break;
 		case SCENE_ACTION_EXIBIT:
-			doExibit(scene.how, scene.who, mouse);
+			doExibit(scene.how, scene.who);
 			break;
 		case SCENE_ACTION_LOAD:
-			music.load(scene.how);
+			Music::load(scene.how);
 			goNext();
 			break;
 		case SCENE_ACTION_MUSIC:
-			performMusic(scene.how, music);
+			performMusic(scene.how);
 			break;
 		case SCENE_ACTION_GRAPH:
-			performGraph(scene.how, mouse);
+			performGraph(scene.how);
 			break;
 		case SCENE_ACTION_BATTLE:
 			setBattle(scene.how);
 			break;
 		case SCENE_ACTION_PLAY:
-			return doBattle(ui, com, debug);
+			return doBattle(com);
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -154,24 +153,25 @@ public:
 	}
 
 	// キーボード入力を取得する
-	void getKey(Key& keyboard) {
-		if (keyboard.onGoingDown()) {
+	void getKey() {
+		Key* keyboard = UserInput::getKey();
+		if (keyboard->onGoingDown()) {
 			key = MRK_KEY_DOWN;
 		}
-		else if (keyboard.onGoingRight()) {
+		else if (keyboard->onGoingRight()) {
 			key = MRK_KEY_RIGHT;
 		}
-		else if (keyboard.onGoingUp()) {
+		else if (keyboard->onGoingUp()) {
 			key = MRK_KEY_UP;
 		}
-		else if (keyboard.onGoingLeft()) {
+		else if (keyboard->onGoingLeft()) {
 			key = MRK_KEY_LEFT;
 		}
 		else {
 			key = MRK_KEY_NONE;
 		}
 
-		if (keyboard.onReturn()) {
+		if (keyboard->onReturn()) {
 			onOk = 1;
 		}
 		else {
@@ -201,8 +201,9 @@ public:
 
 protected:
 
-	void waitClick(Mouse& mouse) {
-		if (onOk || mouse.click()) flg++;
+	void waitClick() {
+		Mouse* mouse = UserInput::getMouse();
+		if (onOk || mouse->click()) flg++;
 	}
 
 	void goNext() {
@@ -214,7 +215,7 @@ protected:
 	}
 
 	// メッセージを読む
-	void readMsg(string str, int who, Mouse& mouse) {
+	void readMsg(string str, int who) {
 		if (!msg.isShown) {
 			if (str == "clear") {
 				msg.setEmpty(who);
@@ -224,13 +225,15 @@ protected:
 				msg.set(str, who);
 			}
 		}
-		if ((onOk || mouse.click()) && msg.skip()) flg++;
+
+		Mouse* mouse = UserInput::getMouse();
+		if ((onOk || mouse->click()) && msg.skip()) flg++;
 	}
 
-	void doMove(const char how[], Mouse& mouse) {
+	void doMove(const char how[]) {
 		if (isTalking) {
 			int who = checkMrK();
-			talkMrK(who, how, mouse);
+			talkMrK(who, how);
 		}
 		else {
 			if (isTriggered()) goNext();
@@ -239,25 +242,27 @@ protected:
 				mrK[0].turn(key);
 				mrK[0].move();
 			}
-			if (onOk || mouse.click()) {
+
+			Mouse* mouse = UserInput::getMouse();
+			if (onOk || mouse->click()) {
 				int who = checkMrK();
 				talkResetMrK(who);
-				talkMrK(who, how, mouse);
+				talkMrK(who, how);
 			}
 		}
 	}
 
-	void doExibit(string how, int who, Mouse& mouse) {
+	void doExibit(string how, int who) {
 		MrK* obj = getObject(who);
 		if (!obj) return;
 
 		if (how == "exibit") {
 			obj->exhibit();
-			waitClick(mouse);
+			waitClick();
 		}
 		else if (how == "hide") {
 			obj->hide();
-			waitClick(mouse);
+			waitClick();
 		}
 		else if (how == "exibit_nowait") {
 			obj->exhibit();
@@ -269,42 +274,42 @@ protected:
 		}
 	}
 
-	void performMusic(string how, Music& music) {
+	void performMusic(string how) {
 		if (how == "play") {
-			music.play();
+			Music::play();
 		}
 		else if (how == "stop") {
-			music.stop();
-			music.enableSwap();
+			Music::stop();
+			Music::enableSwap();
 		}
 		else if (how == "pop_once") {
-			music.popOnce();
+			Music::popOnce();
 		}
 		else if (how == "swap") {
-			if (music.swap(strColorLoad)) {
-				music.enableSwap();
+			if (Music::swap(strColorLoad)) {
+				Music::enableSwap();
 			}
 			else {
 				return;
 			}
 		}
 		else if (how == "pop") {
-			music.pop(strColorLoad);
+			Music::pop(strColorLoad);
 		}
 		else if (how == "unload") {
-			music.unload(1);
+			Music::unload(1);
 		}
 		goNext();
 	}
 
-	void performGraph(string how, Mouse& mouse) {
+	void performGraph(string how) {
 		imgFront = how;
 		if (how == "clear") {
 			imgFront = "";
 			goNext();
 		}
 		else {
-			waitClick(mouse);
+			waitClick();
 		}
 	}
 
@@ -392,10 +397,10 @@ protected:
 		game.drawAfterPlay();
 	}
 
-	virtual int doBattle(UserInput& ui, COM& com, bool debug = false) {
+	virtual int doBattle(COM& com) {
 		game.drawBeforePlay();
 
-		if (playTurn(ui, com)) {
+		if (playTurn(com)) {
 			if (battle_trigger == "play_once") {
 				battle_trigger = "fired";
 			}
@@ -405,25 +410,25 @@ protected:
 
 		// 勝利判定
 		if (game.victory() != 0) {
-			ui.reset();
+			UserInput::reset();
 		}
 
 		if (isTriggered()) goNext();
 
-		return FLAG_TITLE;
+		return MODE_TITLE;
 	}
 
-	virtual bool playTurn(UserInput& ui, COM& com) {
+	virtual bool playTurn(COM& com) {
 		if (game.isPlayTurn()) {
-			return playByPlayer(ui);
+			return playByPlayer();
 		}
 		else {
 			return playByCom(com);
 		}
 	}
 
-	bool playByPlayer(UserInput& ui) {
-		if (!game.playTurn(ui)) return false;
+	bool playByPlayer() {
+		if (!game.playTurn()) return false;
 
 		double res = game.update();
 		return game.isUpdated(res);
@@ -439,7 +444,7 @@ protected:
 		return game.isUpdated(res);
 	}
 
-	void talkMrK(int who, const char key[], Mouse& mouse) {
+	void talkMrK(int who, const char key[]) {
 		MrK* obj = getObject(who);
 		if (!obj) return;
 
@@ -465,7 +470,9 @@ protected:
 		if (!msg.isShown) {
 			msg.set(saying.say, saying.who);
 		}
-		if ((onOk || mouse.click()) && msg.skip()) obj->talkNext();
+
+		Mouse* mouse = UserInput::getMouse();
+		if ((onOk || mouse->click()) && msg.skip()) obj->talkNext();
 	}
 
 	bool isMrK(int who) {

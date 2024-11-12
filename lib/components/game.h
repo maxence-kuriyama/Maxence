@@ -2,11 +2,11 @@
 
 #include <Eigen/Core>
 #include "lib/const.h"
-#include "lib/user_input.h"
-#include "lib/board.h"
-#include "lib/encrypter.h"
-#include "lib/logger.h"
-
+#include "lib/utils/music.h"
+#include "lib/utils/user_input.h"
+#include "lib/utils/encrypter.h"
+#include "lib/utils/logger.h"
+#include "lib/components/board.h"
 
 const int VS_HUMAN(0);
 const int VS_COM(1);
@@ -67,26 +67,24 @@ public:
 		board.initialize();
 	}
 
-	void reset() {
+	void reset(bool resetMusic = false) {
 		initialize();
 
 		// ‚±‚¢‚Â‚ç‚Í‡î•ñ‚Å‚È‚¢‚Ì‚Åinitialize‚Å‰Šú‰»‚µ‚È‚¢
 		mode = "";
 		taijin = VS_HUMAN;
 		teban = TEBAN_SENKO;
-	}
 
-	void reset(Music& bgm) {
-		reset();
-		bgm.unloadAll();
+		if (resetMusic) Music::unloadAll();
 	}
-
 
 	/*===========================*/
 	//    €”õˆ—
 	/*===========================*/
 	void prepare(int pl1, int pl2 , bool init = true) {
 		if (init) initialize();
+		if (pl1 == BATTLE_PLAYER_NONE && pl2 == BATTLE_PLAYER_NONE) return;
+	
 		player1 = pl1;
 		player2 = pl2;
 		setPlayersGraph(pl1, pl2);
@@ -144,12 +142,19 @@ public:
 		teban = TEBAN_SENKO;
 	}
 
-	void setSenko() {
-		teban = TEBAN_SENKO;
-	}
+	Game operator = (const Game& src) {
+		taijin = src.taijin;
+		teban = src.teban;
+		cnt = src.cnt;
+		player1 = src.player1;
+		player2 = src.player2;
+		player1_h = src.player1_h;
+		player2_h = src.player2_h;
 
-	void setKoko() {
-		teban = TEBAN_KOKO;
+		mode = src.mode;
+		board = src.board;
+
+		return src;
 	}
 
 
@@ -349,15 +354,15 @@ public:
 		coordinate = { globalX, globalY, localX, localY, DUMMY_LAST_FIELD };
 	}
 
-	bool playTurn(UserInput& ui) {
-		if (ui.keyboard) {
-			moveCoordByKey(*ui.key);
+	bool playTurn() {
+		if (UserInput::usingKeyboard()) {
+			moveCoordByKey(*UserInput::getKey());
 		}
 		else {
-			getMouseCoord(*ui.mouse);
+			getMouseCoord(*UserInput::getMouse());
 		}
 
-		return ui.check();
+		return UserInput::check();
 	}
 
 	double update(int side = 0) {

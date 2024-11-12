@@ -1,28 +1,39 @@
 #pragma once
 
-#include "lib/modes/common/sprite.h"
-#include "lib/modes/common/game.h"
+#include "lib/const.h"
+#include "lib/mode.h"
+#include "lib/utils/flag_store.h"
+#include "lib/utils/music.h"
+#include "lib/utils/synchronizer.h"
+#include "lib/components/sprite.h"
+#include "lib/components/game.h"
+#include "lib/components/logo.h"
 
 void init_ending_text(string* job, string* who);
-
 
 //エンディング管理用クラス
 // 単体での使用を想定
 class Ending {
 private:
-	double cnt = 0.0;
-	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
-	string job[20];
-	string who[20];
+
 	int Font2 = CreateFontToHandle("HG教科書体", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int Font3 = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int MLogo = LoadGraph("graph/M.png");
 	int axence = LoadGraph("graph/axence.png");
 	unsigned int White = GetColor(255, 255, 255);
+
 	unsigned int strColorDebug = GetColor(180, 180, 180);
+
+	string job[20];
+	string who[20];
 	int end_pict[20];
 	int sprite[15];
+
+	double cnt = 0.0;
+	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
+	Logo logo;
+	Game game;
 
 public:
 	MrK mrK[4];
@@ -49,17 +60,18 @@ public:
 		initialize();
 	}
 
-	void initialize() {
-		cnt = 0.0;
-		init_ending_text(job, who);
-	}
+	int show() {
+		SetBackgroundColor(0, 0, 0);
 
-	int show(Music& music, int fps) {
 		// 実効FPSを元にアニメーション速度を調整
+		int fps = Synchronizer::actualFps();
 		cntInc = 30.2 / fps;
 
+		drawGameBoard();
+		logo.draw();
+
 		// フェードイン
-		fadeinMusic(music);
+		fadeinMusic();
 		fadeinTitle();
 
 		// スナップショット
@@ -170,22 +182,62 @@ public:
 
 		//Fin
 		drawFin();
-		fadeoutMusic(music);
+		fadeoutMusic();
 
 		return 0;
 	}
 
-	void fadeinMusic(Music& music) {
-		if (cnt > 280.0 && cnt <= 900.0) {
-			music.changeVolume(22.0 * pow(cnt - 250.0, 0.3));
-			music.play();
+	void route(Mode& mode, int res) {
+		if (UserInput::onKeyEndingDebug()) {
+			Music::unloadAll();
+			initialize();
+			mode.goTitle();
 		}
 	}
 
-	void fadeoutMusic(Music& music) {
+	void copyGame(Game& src) {
+		game = src;
+	}
+
+	void debugDump() {
+		int strColor = strColorDebug;
+
+		DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
+		DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
+		DrawFormatString(365, 305, strColor, "mrK0.walkCnt: %d", mrK[0].walkCnt);
+		DrawFormatString(365, 325, strColor, "mrK1.walkCnt: %d", mrK[1].walkCnt);
+		DrawFormatString(365, 345, strColor, "mrK2.walkCnt: %d", mrK[2].walkCnt);
+		DrawFormatString(365, 365, strColor, "mrK3.walkCnt: %d", mrK[3].walkCnt);
+		DrawFormatString(365, 385, strColor, "deer.walkCnt: %d", deer.walkCnt);
+	}
+
+private:
+
+	void initialize() {
+		cnt = 0.0;
+		init_ending_text(job, who);
+	}
+
+	void drawGameBoard() {
+		game.drawBase();
+		game.drawGlobalState();
+		game.drawHistLast();
+		game.drawNextField();
+		game.drawLocalState();
+		game.drawCurrentCoord();
+	}
+
+	void fadeinMusic() {
+		if (cnt > 280.0 && cnt <= 900.0) {
+			Music::changeVolume(22.0 * pow(cnt - 250.0, 0.3));
+			Music::play();
+		}
+	}
+
+	void fadeoutMusic() {
 		if (cnt > 6100.0 && cnt <= 6200.0) {
-			music.changeVolume(7.57 * pow(6250.0 - cnt, 0.6));
-			music.play();
+			Music::changeVolume(7.57 * pow(6250.0 - cnt, 0.6));
+			Music::play();
 		}
 	}
 
@@ -203,15 +255,6 @@ public:
 			DrawExtendGraph(170, 170 - 1.2 * (cnt - 300.0), 255, 260 - 1.2 * (cnt - 300.0), MLogo, TRUE);
 			DrawExtendGraph(250, 170 - 1.2 * (cnt - 300.0), 490, 260 - 1.2 * (cnt - 300.0), axence, TRUE);
 		}
-	}
-
-	void drawGameBoard(Game& game) {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-		game.drawLocalState();
-		game.drawCurrentCoord();
 	}
 
 	void drawEndroll() {
@@ -250,19 +293,6 @@ public:
 			}
 		}
 	}
-
-	void debugDump() {
-		int strColor = strColorDebug;
-
-		DrawFormatString(365, 265, strColor, "endingCnt: %4.2f", cnt);
-		DrawFormatString(365, 285, strColor, "endingCntInc: %4.2f", cntInc);
-		DrawFormatString(365, 305, strColor, "mrK0.walkCnt: %d", mrK[0].walkCnt);
-		DrawFormatString(365, 325, strColor, "mrK1.walkCnt: %d", mrK[1].walkCnt);
-		DrawFormatString(365, 345, strColor, "mrK2.walkCnt: %d", mrK[2].walkCnt);
-		DrawFormatString(365, 365, strColor, "mrK3.walkCnt: %d", mrK[3].walkCnt);
-		DrawFormatString(365, 385, strColor, "deer.walkCnt: %d", deer.walkCnt);
-	}
-
 };
 
 void init_ending_text(string* job, string* who) {

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "lib/modes/common/scenario_base.h"
-
+#include "lib/mode.h"
+#include "lib/components/menu.h"
+#include "./scenario_base.h"
 
 // チュートリアルのシナリオクラス
 class Tutorial : public ScenarioBase {
@@ -55,10 +56,22 @@ private:
 
 public:
 
-	int show(UserInput& ui, Music& music, bool debug = false) {
-		int res = ScenarioBase::show(ui, music, debug);
+	int show() {
+		SetBackgroundColor(0, 0, 0);
 
-		return (res != SCENE_RES_DEFAULT) ? res : FLAG_TUTORIAL;
+		if (Music::drawLoadMsg()) return MODE_TUTORIAL;
+
+		int res = ScenarioBase::show();
+
+		return (res != SCENE_RES_DEFAULT) ? res : MODE_TUTORIAL;
+	}
+
+	void route(Mode& mode, int res) {
+		if (res == MODE_TITLE) {
+			initialize();
+			Music::unloadAll();
+			mode.goTitle();
+		}
 	}
 
 	void debugDump() {
@@ -87,18 +100,18 @@ private:
 	}
 
 	// override
-	int doBattle(UserInput& ui, COM& com, bool debug) {
-		ScenarioBase::doBattle(ui, com);
+	int doBattle(COM& com) {
+		ScenarioBase::doBattle(com);
 
-		if (reset(ui)) return FLAG_TITLE;
+		if (reset()) return MODE_TITLE;
 
-		return FLAG_TUTORIAL;
+		return MODE_TUTORIAL;
 	}
 
-	bool reset(UserInput& ui) {
-		btnReset.display(ui, strColorMenu);
-		if (btnReset.isClicked(ui)) {
-			ui.reset();
+	bool reset() {
+		btnReset.display(strColorMenu);
+		if (btnReset.isClicked()) {
+			UserInput::reset();
 			game.reset();
 			return true;
 		}

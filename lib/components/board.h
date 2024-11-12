@@ -1,9 +1,9 @@
 #pragma once
 
-#include "lib/board/field.h"
-#include "lib/board/hist.h"
 #include "lib/const.h"
-#include "lib/logger.h"
+#include "lib/utils/logger.h"
+#include "./board/field.h"
+#include "./board/hist.h"
 
 
 const int DUMMY_LAST_FIELD(-1);

@@ -3,7 +3,7 @@
 #include "DxLib.h"
 #include <string>
 #include "lib/const.h"
-#include "lib/keyboard.h"
+#include "lib/utils/user_input.h"
 
 
 // 動画のロード・再生をするクラス

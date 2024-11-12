@@ -3,12 +3,13 @@
 #include <sstream>
 #include <iomanip>
 #include "lib/const.h"
-#include "lib/music.h"
-#include "lib/music_unlocker.h"
-#include "lib/user_input.h"
-#include "lib/modes/common/message.h"
-#include "lib/modes/common/fireflower.h"
-#include "lib/modes/music_room/bg_character.h"
+#include "lib/mode.h"
+#include "lib/utils/music.h"
+#include "lib/utils/music_unlocker.h"
+#include "lib/components/menu.h"
+#include "lib/components/fireflower.h"
+#include "lib/components/message.h"
+#include "./music_room/bg_character.h"
 
 const int MUSIC_NUM(15);
 const int MUSIC_MAX_INDEX(MUSIC_NUM);
@@ -63,7 +64,7 @@ private:
 	Menu menu;
 	Button buttons[MUSIC_NUM + 1]; // 末尾の要素は「タイトルへ」
 	Message msg;
-	fireflower tama[MUSIC_ROOM_FIRE_FLOWER_NUM];
+	FireFlower tama[MUSIC_ROOM_FIRE_FLOWER_NUM];
 	BgCharacter bg;
 	int choice = -1;
 	bool isLoading = false;
@@ -79,39 +80,49 @@ public:
 		initializeMessage();
 		initializeButtons();
 		initializeFireFlower();
+		initializeBg();
 		choice = -1;
 		isLoading = false;
 	}
 
-	int show(UserInput& ui, Music& music) {
+	int show() {
+		SetBackgroundColor(0, 0, 0);
 		bg.draw();
 		showFireFlower();
 		msg.draw();
 		drawSpeakerIcon();
 	
-		int currentChoice = choose(ui);
+		int currentChoice = menu.choose(strColorMenu);
 
 		// タイトルへ戻る
-		if (currentChoice == MUSIC_MAX_INDEX) return FLAG_TITLE;
+		if (currentChoice == MUSIC_MAX_INDEX) return MODE_TITLE;
 
 		// 別の曲を選択
 		if (currentChoice != -1) {
 			choice = currentChoice;
-			music.stop();
+			Music::stop();
 			setBgCharacter();
 			showMusicDesc();
 		}
 
 		if (currentChoice != -1 || isLoading) {
-			if (play(music)) {
+			if (play()) {
 				isLoading = false;
 			}
 			else {
 				isLoading = true;
-				music.drawLoadMsg();
+				Music::drawLoadMsg();
 			}
 		}
-		return FLAG_MUSIC_ROOM;
+		return MODE_MUSIC_ROOM;
+	}
+
+	void route(Mode& mode, int res) {
+		if (res == MODE_TITLE) {
+			initialize();
+			Music::unloadAll();
+			mode.goTitle();
+		}
 	}
 
 	void debugDump() {
@@ -122,26 +133,20 @@ public:
 
 private:
 
-	int choose(UserInput& ui) {
-		return menu.choose(ui, strColorMenu);
-	}
-
-	bool reset(UserInput& ui) {}
-
-	int play(Music& music) {
+	int play() {
 		if (choice == -1) return 1;
 
 		MusicInfo info = infoList[choice];
 		string filename = getMusicFileName(info);
-		if (music.musicName[0] == filename) {
-			return (music.stop() && music.play(MUSIC_START_FROM_TOP));
+		if (Music::getMusicName(0) == filename) {
+			return (Music::stop() && Music::play(MUSIC_START_FROM_TOP));
 		}
-		else if (music.musicName[1] == filename) {
-			return (music.swapWithoutPlay() && music.play(MUSIC_START_FROM_TOP));
+		else if (Music::getMusicName(1) == filename) {
+			return (Music::swapWithoutPlay() && Music::play(MUSIC_START_FROM_TOP));
 		}
 		else {
-			music.unload(1); // 必要?
-			music.load(filename.c_str());
+			Music::unload(1); // 必要?
+			Music::load(filename.c_str());
 			return 0;
 		}
 	}
@@ -231,5 +236,9 @@ private:
 		for (int i = 0; i < MUSIC_ROOM_FIRE_FLOWER_NUM; ++i) {
 			tama[i].initialize(60.0, 600.0, 520.0, 600.0);
 		}
+	}
+
+	void initializeBg() {
+		bg.initialize();
 	}
 };

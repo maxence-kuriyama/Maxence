@@ -2,7 +2,8 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "lib/user_input.h"
+#include "lib/mode.h"
+#include "lib/utils/user_input.h"
 
 const int DEMO_FIRST(1);
 const int DEMO_SECOND(2);
@@ -29,24 +30,38 @@ private:
 
 public:
 
+	int show() {
+		showDemo();
+		return 0;
+	}
+
+	void route(Mode& mode, int _res) {
+		if (isOver()) {
+			// initialize();
+			mode.goTitle();
+		}
+	}
+
+private:
+
 	bool isOver() {
 		return (flg == DEMO_OVER);
 	}
 
-	void showDemo(UserInput& ui) {
+	void showDemo() {
 		if (flg == DEMO_FIRST) {
-			showDemoFirst(ui);
+			showDemoFirst();
 		}
 		else if (flg == DEMO_SECOND) {
-			showDemoSecond(ui);
+			showDemoSecond();
 		}
 		else if (flg == DEMO_THIRD) {
-			showDemoThird(ui);
+			showDemoThird();
 		}
 	}
 
 	// OPアニメーション ClickToStartまで
-	void showDemoFirst(UserInput& ui) {
+	void showDemoFirst() {
 		SetBackgroundColor(0, 0, 0);	//背景色
 		if (logoX <= 120.0) {
 			DrawExtendGraph(270, 170, 358, 260, MLogo, TRUE);
@@ -68,14 +83,14 @@ public:
 		}
 		logoX += 2.0;
 
-		if (logoX > 480.0 || ui.clickOrReturn()) {
+		if (logoX > 480.0 || UserInput::clickOrReturn()) {
 			flg = DEMO_SECOND;
 			logoX = M_PI_2;
 		}
 	}
 
 	// OPアニメーション ClickToStart点滅
-	void showDemoSecond(UserInput& ui) {
+	void showDemoSecond() {
 		DrawExtendGraph(170, 170, 258, 260, MLogo, TRUE);
 		DrawExtendGraph(250, 170, 490, 260, axence, TRUE);
 
@@ -84,7 +99,7 @@ public:
 		DrawExtendGraph(200, 290, 460, 360, ClickToStart, TRUE);
 		SetDrawBright(255, 255, 255);
 
-		if (ui.clickOrReturn()) {
+		if (UserInput::clickOrReturn()) {
 			flg = DEMO_THIRD;
 			SetBackgroundColor(0, 128, 128);	//背景色
 			SetDrawBright(255, 255, 255);
@@ -92,7 +107,7 @@ public:
 	}
 
 	// OPアニメーション メインロゴ
-	void showDemoThird(UserInput& ui) {
+	void showDemoThird() {
 		if (logoX <= 37.5) {
 			DrawExtendGraph(160, 170, 490, 260, Logo0, TRUE);
 		}
@@ -112,7 +127,7 @@ public:
 			DrawExtendGraph(160 + (rand() % 11) - 5.0, 170, 485 + (rand() % 11) - 5.0, 260, Logo4, TRUE);
 		}
 		if (logoX < 1000.0) logoX += 1.0;
-		if (logoX > 120 || ui.clickOrReturn()) {
+		if (logoX > 120 || UserInput::clickOrReturn()) {
 			flg = DEMO_OVER;
 		}
 	}
