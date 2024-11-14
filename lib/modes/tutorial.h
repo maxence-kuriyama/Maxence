@@ -10,9 +10,7 @@ class Tutorial : public ScenarioBase {
 public:
 
 	Tutorial() : ScenarioBase() {
-		for (int i = 0; i < MAX_SCENE_NUM; i++) {
-			sceneList[i] = scenes[i];
-		}
+		sceneQueue.initialize(scenes);
 		btnReset.initialize(260, 440, "ƒ^ƒCƒgƒ‹");
 	}
 
@@ -76,7 +74,7 @@ public:
 
 	void debugDump() {
 		int strColor = strColorDebug;
-		Scene scene = getCurrentScene();
+		Scene scene = sceneQueue.get();
 
 		DrawFormatString(365, 405, strColor, "tutoTrigger: %s", battle_trigger);
 		DrawFormatString(365, 425, strColor, "tutoAction: %d", scene.action);

@@ -10,8 +10,8 @@
 #include "lib/components/message.h"
 #include "lib/components/game.h"
 #include "./scenario_base/state.h"
+#include "./scenario_base/scene_queue.h"
 
-const int MAX_SCENE_NUM(400);
 const double SPRITE_EXPAND_RATE(0.0006);
 
 const int SCENE_ACTION_TALK(1);
@@ -30,18 +30,9 @@ const int SCENE_RES_DEFAULT(-100);
 // シナリオ抽象クラス
 class ScenarioBase {
 protected:
-
-	// シーン + 主人公のアクション
-	struct Scene {
-		int action;
-		int who;
-		char how[100];
-	};
-
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
 
-	int flg = 0;	// シナリオ管理用フラグ
 	string seName;	// SEのファイル名
 	Sprite mrK[4];
 	Sprite deer;
@@ -50,11 +41,7 @@ protected:
 	bool onBattle = false;
 	string battle_trigger = "";
 	State state;
-	
-	struct Scene sceneList[MAX_SCENE_NUM] = {
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"Nothing to say...\nPlease define me." },
-		{ -1,					-1,					"" },
-	};
+	SceneQueue sceneQueue;
 
 public:
 
@@ -65,12 +52,12 @@ public:
 		mrK[3].set(420, 260, "graph/sprite14.png", 1);
 		deer.set(300, 160, "graph/sprite15.png", 0);
 		initialize();
-		msg.initialize();
 	}
 
 	void initialize() {
-		flg = 0;
 		state.initialize();
+		sceneQueue.initialize();
+		msg.initialize();
 		initializeDisplya();
 		initializeBattle();
 	}
@@ -91,7 +78,7 @@ public:
 
 		if (onBattle) showBattle();
 
-		Scene scene = sceneList[flg];
+		Scene scene = sceneQueue.get();
 
 		switch (scene.action) {
 		case SCENE_ACTION_TALK:
@@ -158,7 +145,7 @@ public:
 		int strColor = strColorDebug;
 
 		DrawFormatString(245, 185, strColor, "seName: %s", seName.c_str());
-		DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
+		DrawFormatString(245, 205, strColor, "sceneFlg: %d", sceneQueue.getCurrentId());
 		DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
 		DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
 		DrawFormatString(245, 305, strColor, "who: %d", msg.who);
@@ -171,7 +158,6 @@ public:
 		DrawFormatString(245, 445, strColor, "isTalking: %s", state.isTalking() ? "true" : "false");
 		DrawFormatString(245, 465, strColor, "hasMsg: %s", msg.isShown ? "true" : "false");
 	}
-
 
 protected:
 
@@ -195,11 +181,7 @@ protected:
 	}
 
 	void goNext() {
-		flg++;
-	}
-
-	Scene getCurrentScene() {
-		return sceneList[flg];
+		sceneQueue.goNext();
 	}
 
 	// メッセージを読む

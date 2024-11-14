@@ -34,10 +34,8 @@ public:
 		mrK[2].setSayings(sayings2);
 		mrK[3].setSayings(sayings3);
 		card.setSayings(sayingsCard);
+		sceneQueue.initialize(scenes);
 
-		for (int i = 0; i < MAX_SCENE_NUM; i++) {
-			sceneList[i] = scenes[i];
-		}
 		initialize();
 		msg.initialize();
 	}
@@ -161,7 +159,7 @@ private:
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DEER,		"ならば鹿他無い\n唯、私が上であることを確認するだけだ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DEER,		"かかって来なさい" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DEER,		"…………" },
-		{ -1,					-1,					"" },
+		{ SCENE_ACTION_END_OF_LIST,	-1,					"" },
 	};
 	struct Saying sayings1[20] = {
 		{ "10",		MESSAGE_WHO_BLUE,		"貴方は私にとって利用価値のある存在です" },
@@ -285,7 +283,7 @@ public:
 	void save() {
 		Encrypter encrypter(saveFilePath);
 		nlohmann::json data = {
-			{"flg", flg},
+			{"flg", sceneQueue.getCurrentId()},
 			{"onBattle", onBattle},
 			{"battle_trigger", battle_trigger},
 			{"mrk_trigger0", mrK[0].trigger},
@@ -331,11 +329,11 @@ public:
 		COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
-		while (flg < flg_saved) {
-			old_flg = flg;
-			Scene scene = getCurrentScene();
+		while (sceneQueue.getCurrentId() < flg_saved) {
+			old_flg = sceneQueue.getCurrentId();
+			Scene scene = sceneQueue.get();
 			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
-			new_flg = flg;
+			new_flg = sceneQueue.getCurrentId();
 			if (new_flg == old_flg) goNext();
 		}
 		state.initialize();
@@ -366,7 +364,7 @@ public:
 private:
 
 	int showAdditionalAction() {
-		Scene scene = getCurrentScene();
+		Scene scene = sceneQueue.get();
 
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
@@ -397,7 +395,7 @@ private:
 	// override
 	void setBattle(string how) {
 		if (how == "start") {
-			Scene scene = getCurrentScene();
+			Scene scene = sceneQueue.get();
 			if (scene.who == MESSAGE_WHO_RED) {
 				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 			}
