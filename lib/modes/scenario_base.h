@@ -40,8 +40,6 @@ protected:
 
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
-	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
-	int onOk = 0;		// キーボード入力（Enter or Space）
 	string seName;		// SEのファイル名（デバッグ用）
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
@@ -75,7 +73,6 @@ public:
 	void initialize() {
 		flg = 0;
 		cnt = 0;
-		onOk = 0;
 		state.initialize();
 		initializeDisplya();
 		initializeBattle();
@@ -155,28 +152,24 @@ public:
 
 	// キーボード入力を取得する
 	void getKey() {
+		state.resetKeyboard();
+
 		Key* keyboard = UserInput::getKey();
 		if (keyboard->onGoingDown()) {
-			key = MRK_KEY_DOWN;
+			state.setKey(SPRITE_KEY_DOWN);
 		}
 		else if (keyboard->onGoingRight()) {
-			key = MRK_KEY_RIGHT;
+			state.setKey(SPRITE_KEY_RIGHT);
 		}
 		else if (keyboard->onGoingUp()) {
-			key = MRK_KEY_UP;
+			state.setKey(SPRITE_KEY_UP);
 		}
 		else if (keyboard->onGoingLeft()) {
-			key = MRK_KEY_LEFT;
-		}
-		else {
-			key = MRK_KEY_NONE;
+			state.setKey(SPRITE_KEY_LEFT);
 		}
 
 		if (keyboard->onReturn()) {
-			onOk = 1;
-		}
-		else {
-			onOk = 0;
+			state.pushReturn();
 		}
 	}
 
@@ -194,7 +187,7 @@ public:
 		DrawFormatString(245, 365, strColor, "mrK2.vis: %d", mrK[2].visible);
 		DrawFormatString(245, 385, strColor, "mrK3.vis: %d", mrK[3].visible);
 		DrawFormatString(245, 405, strColor, "deer.vis: %d", deer.visible);
-		DrawFormatString(245, 425, strColor, "key: %d", key);
+		DrawFormatString(245, 425, strColor, "key: %d", state.getKey());
 		DrawFormatString(245, 445, strColor, "isTalking: %s", state.isTalking() ? "true" : "false");
 		DrawFormatString(245, 465, strColor, "hasMsg: %s", msg.isShown ? "true" : "false");
 	}
@@ -203,8 +196,7 @@ public:
 protected:
 
 	void waitClick() {
-		Mouse* mouse = UserInput::getMouse();
-		if (onOk || mouse->click()) flg++;
+		if (state.isOnReturnOrClicked()) flg++;
 	}
 
 	void goNext() {
@@ -227,8 +219,7 @@ protected:
 			}
 		}
 
-		Mouse* mouse = UserInput::getMouse();
-		if ((onOk || mouse->click()) && msg.skip()) flg++;
+		if (state.isOnReturnOrClicked() && msg.skip()) flg++;
 	}
 
 	void doMove(const char how[]) {
@@ -239,13 +230,13 @@ protected:
 		else {
 			if (isTriggered()) goNext();
 
-			if (key != MRK_KEY_NONE) {
+			int key = state.getKey();
+			if (key != SPRITE_KEY_NONE) {
 				mrK[0].turn(key);
 				mrK[0].move();
 			}
 
-			Mouse* mouse = UserInput::getMouse();
-			if (onOk || mouse->click()) {
+			if (state.isOnReturnOrClicked()) {
 				int who = checkMrK();
 				talkResetMrK(who);
 				talkMrK(who, how);
@@ -472,8 +463,7 @@ protected:
 			msg.set(saying.say, saying.who);
 		}
 
-		Mouse* mouse = UserInput::getMouse();
-		if ((onOk || mouse->click()) && msg.skip()) obj->talkNext();
+		if (state.isOnReturnOrClicked() && msg.skip()) obj->talkNext();
 	}
 
 	bool isMrK(int who) {

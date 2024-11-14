@@ -229,7 +229,7 @@ public:
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "ƒ^ƒCƒgƒ‹");
 		menu.set(btnSave, btnReset);
 		mrK[0].set(170, 30);
-		mrK[0].turn(MRK_KEY_DOWN);
+		mrK[0].turn(SPRITE_KEY_DOWN);
 	}
 
 	int show(COM& com) {

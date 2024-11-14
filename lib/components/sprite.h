@@ -2,15 +2,15 @@
 
 #include <string>
 
-const int MRK_TRIGGER_NONE(-1);
-const int MRK_TRIGGER_FIRED(1);
-const int MRK_TRIGGER_TALK(2);
+const int SPRITE_TRIGGER_NONE(-1);
+const int SPRITE_TRIGGER_FIRED(1);
+const int SPRITE_TRIGGER_TALK(2);
 
-const int MRK_KEY_NONE(-1);
-const int MRK_KEY_DOWN(0);
-const int MRK_KEY_RIGHT(1);
-const int MRK_KEY_UP(2);
-const int MRK_KEY_LEFT(3);
+const int SPRITE_KEY_NONE(-1);
+const int SPRITE_KEY_DOWN(0);
+const int SPRITE_KEY_RIGHT(1);
+const int SPRITE_KEY_UP(2);
+const int SPRITE_KEY_LEFT(3);
 
 struct Saying {
 	char key[4];
@@ -29,7 +29,7 @@ public:
 	int walkCnt = 0;
 	int img[16];		// 0-3: Front, 4-7: Right, 8-11: Back, 12-15: Left
 	int spImg[4];		// Special
-	int trigger = MRK_TRIGGER_NONE;	// 次のシナリオに進むトリガー
+	int trigger = SPRITE_TRIGGER_NONE;	// 次のシナリオに進むトリガー
 
 private:
 	int direction = 0;	// 0: Front, 1: Right, 2; Back, 3; Left
@@ -112,16 +112,16 @@ public:
 	}
 
 	void move() {
-		if (direction == MRK_KEY_UP) {
+		if (direction == SPRITE_KEY_UP) {
 			y -= walkSpeed;
 		}
-		else if (direction == MRK_KEY_RIGHT) {
+		else if (direction == SPRITE_KEY_RIGHT) {
 			x += walkSpeed;
 		}
-		else if (direction == MRK_KEY_DOWN) {
+		else if (direction == SPRITE_KEY_DOWN) {
 			y += walkSpeed;
 		}
-		else if (direction == MRK_KEY_LEFT) {
+		else if (direction == SPRITE_KEY_LEFT) {
 			x -= walkSpeed;
 		}
 		walk();
@@ -195,28 +195,28 @@ public:
 	}
 
 	bool isTriggered() {
-		return (trigger == MRK_TRIGGER_FIRED);
+		return (trigger == SPRITE_TRIGGER_FIRED);
 	}
 
 	void setTrigger(string how) {
 		resetTrigger();
 		if (how == "talk") {
-			trigger = MRK_TRIGGER_TALK;
+			trigger = SPRITE_TRIGGER_TALK;
 		}
 		else if (how == "fired") {
-			trigger = MRK_TRIGGER_FIRED;
+			trigger = SPRITE_TRIGGER_FIRED;
 		}
 	}
 
 	void resetTrigger() {
-		trigger = MRK_TRIGGER_NONE;
+		trigger = SPRITE_TRIGGER_NONE;
 		talked = 0;
 	}
 
 	Saying talk(const char key[]) {
 		talked++;
-		if (trigger == MRK_TRIGGER_TALK) {
-			trigger = MRK_TRIGGER_FIRED;
+		if (trigger == SPRITE_TRIGGER_TALK) {
+			trigger = SPRITE_TRIGGER_FIRED;
 		}
 		int cnt = 0;
 		int n = 0;
