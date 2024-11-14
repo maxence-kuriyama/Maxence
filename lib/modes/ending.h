@@ -36,8 +36,8 @@ private:
 	Game game;
 
 public:
-	MrK mrK[4];
-	MrK deer;
+	Sprite mrK[4];
+	Sprite deer;
 
 	Ending() {
 		for (int i = 1; i <= 20; ++i) {

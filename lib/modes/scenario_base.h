@@ -48,8 +48,8 @@ protected:
 	int strColorLoad = GetColor(0, 0, 0);
 
 	int flg = 0; // シナリオ管理用フラグ
-	MrK mrK[4];
-	MrK deer;
+	Sprite mrK[4];
+	Sprite deer;
 	Message msg;
 	Game game;
 	bool onBattle = false;
@@ -253,7 +253,7 @@ protected:
 	}
 
 	void doExibit(string how, int who) {
-		MrK* obj = getObject(who);
+		Sprite* obj = getObject(who);
 		if (!obj) return;
 
 		if (how == "exibit") {
@@ -445,7 +445,7 @@ protected:
 	}
 
 	void talkMrK(int who, const char key[]) {
-		MrK* obj = getObject(who);
+		Sprite* obj = getObject(who);
 		if (!obj) return;
 
 		// 特殊コマンド
@@ -513,7 +513,7 @@ protected:
 		}
 	}
 
-	virtual MrK* getObject(int who) {
+	virtual Sprite* getObject(int who) {
 		if (who == MESSAGE_WHO_DEER) return &deer;
 		if (isMrK(who)) return &mrK[who - 1];
 		return NULL;

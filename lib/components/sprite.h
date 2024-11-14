@@ -2,7 +2,6 @@
 
 #include <string>
 
-
 const int MRK_TRIGGER_NONE(-1);
 const int MRK_TRIGGER_FIRED(1);
 const int MRK_TRIGGER_TALK(2);
@@ -22,7 +21,7 @@ struct Saying {
 // キャラクターオブジェクトのクラス
 // グラフィックの表示を主に行っているが、メッセージの保持も行うべきか？
 // ScenarioやEndingなどでの使用を想定
-class MrK {
+class Sprite {
 public:
 	int x;
 	int y;
@@ -48,7 +47,7 @@ private:
 
 public:
 
-	~MrK() {
+	~Sprite() {
 		for (int i = 0; i < 16; ++i) {
 			DeleteGraph(img[i]);
 		}

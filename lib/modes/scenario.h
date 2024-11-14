@@ -15,7 +15,7 @@ const int MESSAGE_WHO_CARD(11);
 class Scenario : public ScenarioBase {
 
 public:
-	MrK card;
+	Sprite card;
 
 	Scenario() {
 		imgRoom = LoadGraph("graph/room.bmp");
@@ -521,7 +521,7 @@ private:
 	}
 
 	// override
-	MrK* getObject(int who) {
+	Sprite* getObject(int who) {
 		if (who == MESSAGE_WHO_CARD) return &card;
 		return ScenarioBase::getObject(who);
 	}
