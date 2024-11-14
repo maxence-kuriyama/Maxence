@@ -75,21 +75,6 @@ public:
 		initializeBattle();
 	}
 
-	void initializeDisplya() {
-		mrK[0].exhibit();
-		mrK[1].exhibit();
-		mrK[2].exhibit();
-		mrK[3].exhibit();
-		deer.hide();
-	}
-
-	void initializeBattle() {
-		onBattle = false;
-		game.initialize();
-		game.setVsCOM();
-		battle_trigger = "";
-	}
-
 	int show() {
 		COM dummy_com(false);
 		return show(dummy_com);
@@ -190,8 +175,23 @@ public:
 
 protected:
 
+	void initializeDisplya() {
+		mrK[0].exhibit();
+		mrK[1].exhibit();
+		mrK[2].exhibit();
+		mrK[3].exhibit();
+		deer.hide();
+	}
+
+	void initializeBattle() {
+		onBattle = false;
+		game.initialize();
+		game.setVsCOM();
+		battle_trigger = "";
+	}
+
 	void waitClick() {
-		if (state.isOnReturnOrClicked()) flg++;
+		if (state.isOnReturnOrClicked()) goNext();
 	}
 
 	void goNext() {
@@ -207,14 +207,14 @@ protected:
 		if (!msg.isShown) {
 			if (str == "clear") {
 				msg.setEmpty(who);
-				flg++;
+				goNext();
 			}
 			else {
 				msg.set(str, who);
 			}
 		}
 
-		if (state.isOnReturnOrClicked() && msg.skip()) flg++;
+		if (state.isOnReturnOrClicked() && msg.skip()) goNext();
 	}
 
 	void doMove(const char how[]) {
