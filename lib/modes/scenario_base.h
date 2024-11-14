@@ -9,6 +9,7 @@
 #include "lib/components/sprite.h"
 #include "lib/components/message.h"
 #include "lib/components/game.h"
+#include "./scenario_base/state.h"
 
 const int MAX_SCENE_NUM(400);
 const double SPRITE_EXPAND_RATE(0.0006);
@@ -40,7 +41,6 @@ protected:
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
 	bool isTalking = false;	// NPCと会話中か否か
-	string imgFront;	// フロントサイドに表示する画像
 	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
 	int onOk = 0;		// キーボード入力（Enter or Space）
 	string seName;		// SEのファイル名（デバッグ用）
@@ -54,6 +54,7 @@ protected:
 	Game game;
 	bool onBattle = false;
 	string battle_trigger = "";
+	State state;
 	
 	struct Scene sceneList[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"Nothing to say...\nPlease define me." },
@@ -72,19 +73,22 @@ public:
 		msg.initialize();
 	}
 
-
 	void initialize() {
 		flg = 0;
 		cnt = 0;
+		onOk = 0;
+		isTalking = false;
+		state.initialize();
+		initializeDisplya();
+		initializeBattle();
+	}
+
+	void initializeDisplya() {
 		mrK[0].exhibit();
 		mrK[1].exhibit();
 		mrK[2].exhibit();
 		mrK[3].exhibit();
 		deer.hide();
-		imgFront = "";
-		onOk = 0;
-		isTalking = false;
-		initializeBattle();
 	}
 
 	void initializeBattle() {
@@ -92,7 +96,6 @@ public:
 		game.initialize();
 		game.setVsCOM();
 		battle_trigger = "";
-
 	}
 
 	int show() {
@@ -303,12 +306,12 @@ protected:
 	}
 
 	void performGraph(string how) {
-		imgFront = how;
 		if (how == "clear") {
-			imgFront = "";
+			state.setGraph("");
 			goNext();
 		}
 		else {
+			state.setGraph(how);
 			waitClick();
 		}
 	}

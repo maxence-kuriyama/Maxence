@@ -480,7 +480,7 @@ private:
 
 	// override
 	void showGraph() {
-		if (imgFront == "card") {
+		if (state.getGraph() == "card") {
 			DrawExtendGraph(0, 0, 640, 400, imgCard, FALSE);
 		}
 	}
