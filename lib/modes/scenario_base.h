@@ -40,7 +40,6 @@ protected:
 
 	int cnt = 0;		// フレームカウンタ
 	int textCnt = 0;	// テキストカウンタ
-	bool isTalking = false;	// NPCと会話中か否か
 	int key = -1;		// キーボード入力 0: Up, 1: Right, 2: Down, 3: Left
 	int onOk = 0;		// キーボード入力（Enter or Space）
 	string seName;		// SEのファイル名（デバッグ用）
@@ -77,7 +76,6 @@ public:
 		flg = 0;
 		cnt = 0;
 		onOk = 0;
-		isTalking = false;
 		state.initialize();
 		initializeDisplya();
 		initializeBattle();
@@ -149,7 +147,7 @@ public:
 			break;
 		}
 
-		if (isTalking || scene.action == SCENE_ACTION_TALK) msg.draw();
+		if (state.isTalking() || scene.action == SCENE_ACTION_TALK) msg.draw();
 		cnt = (cnt + 1) % 10000;
 
 		return SCENE_RES_DEFAULT;
@@ -197,7 +195,7 @@ public:
 		DrawFormatString(245, 385, strColor, "mrK3.vis: %d", mrK[3].visible);
 		DrawFormatString(245, 405, strColor, "deer.vis: %d", deer.visible);
 		DrawFormatString(245, 425, strColor, "key: %d", key);
-		DrawFormatString(245, 445, strColor, "isTalking: %s", isTalking ? "true" : "false");
+		DrawFormatString(245, 445, strColor, "isTalking: %s", state.isTalking() ? "true" : "false");
 		DrawFormatString(245, 465, strColor, "hasMsg: %s", msg.isShown ? "true" : "false");
 	}
 
@@ -234,7 +232,7 @@ protected:
 	}
 
 	void doMove(const char how[]) {
-		if (isTalking) {
+		if (state.isTalking()) {
 			int who = checkMrK();
 			talkMrK(who, how);
 		}
@@ -454,7 +452,7 @@ protected:
 		// 特殊コマンド
 		Saying saying = obj->talk(key);
 		if (strcmp(saying.say, "") == 0 || saying.who == -1) {
-			isTalking = false;
+			state.finishTalking();
 			msg.setEmpty();
 			return;
 		}
@@ -509,7 +507,7 @@ protected:
 
 	virtual void talkResetMrK(int who) {
 		if (who) {
-			isTalking = true;
+			state.talk();
 			if (isMrK(who)) {
 				mrK[who - 1].talkReset();
 			}

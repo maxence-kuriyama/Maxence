@@ -241,7 +241,7 @@ public:
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
-		bool is_reset = (!onBattle && !isTalking && saveOrReset());
+		bool is_reset = (!onBattle && !state.isTalking() && saveOrReset());
 		
 		int res = ScenarioBase::show(com);
 		showAdditionalAction();
@@ -338,7 +338,7 @@ public:
 			new_flg = flg;
 			if (new_flg == old_flg) goNext();
 		}
-		isTalking = false;
+		state.initialize();
 	}
 
 	void loadMusic(nlohmann::json res) {
@@ -515,7 +515,7 @@ private:
 		ScenarioBase::talkResetMrK(who);
 
 		if (who == MESSAGE_WHO_CARD) {
-			isTalking = true;
+			state.talk();
 			card.talkReset();
 		}
 	}

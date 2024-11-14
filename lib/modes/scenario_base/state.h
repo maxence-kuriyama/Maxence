@@ -7,6 +7,7 @@ using namespace std;
 class State {
 private:
 	string graph = "";		// 画像表示イベントのフラグ
+	bool talking = false;	// NPCと会話中か否か
 
 public:
 
@@ -16,6 +17,7 @@ public:
 
 	void initialize() {
 		graph = "";
+		talking = false;
 	}
 
 	string getGraph() {
@@ -24,5 +26,17 @@ public:
 
 	void setGraph(string src) {
 		graph = src;
+	}
+
+	bool isTalking() {
+		return talking;
+	}
+
+	void finishTalking() {
+		talking = false;
+	}
+
+	void talk() {
+		talking = true;
 	}
 };
