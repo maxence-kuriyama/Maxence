@@ -38,13 +38,11 @@ protected:
 		char how[100];
 	};
 
-	int cnt = 0;		// フレームカウンタ
-	int textCnt = 0;	// テキストカウンタ
-	string seName;		// SEのファイル名（デバッグ用）
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
 
-	int flg = 0; // シナリオ管理用フラグ
+	int flg = 0;	// シナリオ管理用フラグ
+	string seName;	// SEのファイル名
 	Sprite mrK[4];
 	Sprite deer;
 	Message msg;
@@ -72,7 +70,6 @@ public:
 
 	void initialize() {
 		flg = 0;
-		cnt = 0;
 		state.initialize();
 		initializeDisplya();
 		initializeBattle();
@@ -145,7 +142,6 @@ public:
 		}
 
 		if (state.isTalking() || scene.action == SCENE_ACTION_TALK) msg.draw();
-		cnt = (cnt + 1) % 10000;
 
 		return SCENE_RES_DEFAULT;
 	}
@@ -178,7 +174,6 @@ public:
 
 		DrawFormatString(245, 185, strColor, "seName: %s", seName.c_str());
 		DrawFormatString(245, 205, strColor, "sceneFlg: %d", flg);
-		DrawFormatString(245, 225, strColor, "frameCnt: %d", cnt);
 		DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
 		DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
 		DrawFormatString(245, 305, strColor, "who: %d", msg.who);
