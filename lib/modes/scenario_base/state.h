@@ -67,6 +67,28 @@ public:
 		keyboard.onOk = false;
 	}
 
+	void updateKeyboard() {
+		resetKeyboard();
+
+		Key* keyboard = UserInput::getKey();
+		if (keyboard->onGoingDown()) {
+			setKey(SPRITE_KEY_DOWN);
+		}
+		else if (keyboard->onGoingRight()) {
+			setKey(SPRITE_KEY_RIGHT);
+		}
+		else if (keyboard->onGoingUp()) {
+			setKey(SPRITE_KEY_UP);
+		}
+		else if (keyboard->onGoingLeft()) {
+			setKey(SPRITE_KEY_LEFT);
+		}
+
+		if (keyboard->onReturn()) {
+			pushReturn();
+		}
+	}
+
 	bool isOnReturnOrClicked() {
 		Mouse* mouse = UserInput::getMouse();
 		return (keyboard.onOk || mouse->click());

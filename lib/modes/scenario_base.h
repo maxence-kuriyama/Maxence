@@ -64,7 +64,7 @@ public:
 	}
 
 	int show(COM& com) {
-		getKey();
+		state.updateKeyboard();
 
 		// 人物の描画
 		deer.draw();
@@ -112,29 +112,6 @@ public:
 		if (state.isTalking() || scene.action == SCENE_ACTION_TALK) msg.draw();
 
 		return SCENE_RES_DEFAULT;
-	}
-
-	// キーボード入力を取得する
-	void getKey() {
-		state.resetKeyboard();
-
-		Key* keyboard = UserInput::getKey();
-		if (keyboard->onGoingDown()) {
-			state.setKey(SPRITE_KEY_DOWN);
-		}
-		else if (keyboard->onGoingRight()) {
-			state.setKey(SPRITE_KEY_RIGHT);
-		}
-		else if (keyboard->onGoingUp()) {
-			state.setKey(SPRITE_KEY_UP);
-		}
-		else if (keyboard->onGoingLeft()) {
-			state.setKey(SPRITE_KEY_LEFT);
-		}
-
-		if (keyboard->onReturn()) {
-			state.pushReturn();
-		}
 	}
 
 	void debugDump() {
@@ -273,38 +250,34 @@ protected:
 
 	virtual void setTrigger(string trigger) {
 		if (trigger == "talk_all") {
+			setTriggerAllMrK("talk");
 			mrK[0].setTrigger("fired");
-			for (int i = 1; i < 4; ++i) {
-				mrK[i].setTrigger("talk");
-			}
 		}
 		else if (trigger == "talk_red") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
+			setTriggerAllMrK("fired");
 			mrK[MESSAGE_WHO_RED - 1].setTrigger("talk");
 		}
 		else if (trigger == "talk_green") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
+			setTriggerAllMrK("fired");
 			mrK[MESSAGE_WHO_GREEN - 1].setTrigger("talk");
 		}
 		else if (trigger == "talk_blue") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
+			setTriggerAllMrK("fired");
 			mrK[MESSAGE_WHO_BLUE - 1].setTrigger("talk");
 		}
 		else if (trigger == "none") {
-			for (int i = 0; i < 4; ++i) {
-				mrK[i].setTrigger("fired");
-			}
+			setTriggerAllMrK("fired");
 		}
 		else {
 			battle.setTrigger(trigger);
 		}
 		goNext();
+	}
+
+	void setTriggerAllMrK(string trigger) {
+		for (int i = 0; i < 4; ++i) {
+			mrK[i].setTrigger(trigger);
+		}
 	}
 
 	virtual bool isTriggered() {
@@ -382,7 +355,7 @@ protected:
 			std::cmatch m;
 			if (regex_match(saying.say, m, std::regex(R"(SE\[(.+)\])"))) {
 				seName = m[1].str(); // デバッグ用
-				obj->playSE(seName);
+				playSE(seName);
 				obj->talkNext();
 				msg.isShown = false;
 				return;
@@ -395,6 +368,10 @@ protected:
 		}
 
 		if (state.isOnReturnOrClicked() && msg.skip()) obj->talkNext();
+	}
+
+	void playSE(string fileName) {
+		PlaySoundFile(fileName.c_str(), DX_PLAYTYPE_BACK);
 	}
 
 	bool isMrK(int who) {

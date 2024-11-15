@@ -155,14 +155,6 @@ public:
 		turn(3);
 	}
 
-	void playSE(string fileName) {
-		playSE(fileName.c_str());
-	}
-
-	void playSE(const char fileName[]) {
-		PlaySoundFile(fileName, DX_PLAYTYPE_BACK);
-	}
-
 	void draw(int epX = 0, int epY = 0) {
 		if (visible) {
 			int image = 0;
