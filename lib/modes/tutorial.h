@@ -76,7 +76,7 @@ public:
 		int strColor = strColorDebug;
 		Scene scene = sceneList.get();
 
-		DrawFormatString(365, 405, strColor, "tutoTrigger: %s", battle_trigger);
+		DrawFormatString(365, 405, strColor, "tutoTrigger: %s", battle.getTrigger());
 		DrawFormatString(365, 425, strColor, "tutoAction: %d", scene.action);
 
 		// game.debugDump();
@@ -87,12 +87,10 @@ private:
 	// override
 	void setBattle(string how) {
 		if (how == "start") {
-			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-			game.setTutorial();
-			onBattle = true;
+			battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 		}
 		else if (how == "end") {
-			initializeBattle();
+			battle.initialize();
 		}
 		goNext();
 	}
@@ -109,8 +107,7 @@ private:
 	bool reset() {
 		btnReset.display(strColorMenu);
 		if (btnReset.isClicked()) {
-			UserInput::reset();
-			game.reset();
+			battle.resetGame();
 			return true;
 		}
 		return false;

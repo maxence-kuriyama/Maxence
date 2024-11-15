@@ -4,13 +4,11 @@
 #include "lib/mode.h"
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
-#include "lib/utils/user_input.h"
-#include "lib/utils/com.h"
 #include "lib/components/sprite.h"
 #include "lib/components/message.h"
-#include "lib/components/game.h"
 #include "./scenario_base/state.h"
 #include "./scenario_base/scene_list.h"
+#include "./scenario_base/scenario_battle.h"
 
 const double SPRITE_EXPAND_RATE(0.0006);
 
@@ -37,11 +35,9 @@ protected:
 	Sprite mrK[4];
 	Sprite deer;
 	Message msg;
-	Game game;
-	bool onBattle = false;
-	string battle_trigger = "";
 	State state;
 	SceneList sceneList;
+	ScenarioBattle battle;
 
 public:
 
@@ -58,8 +54,8 @@ public:
 		state.initialize();
 		sceneList.initialize();
 		msg.initialize();
-		initializeDisplya();
-		initializeBattle();
+		initializeDisplay();
+		battle.initialize();
 	}
 
 	int show() {
@@ -74,9 +70,9 @@ public:
 		deer.draw();
 		drawMrKs();
 		mrK[0].stop();
-		showGraph();
 
-		if (onBattle) showBattle();
+		showGraph();
+		showBattle();
 
 		Scene scene = sceneList.get();
 
@@ -161,19 +157,12 @@ public:
 
 protected:
 
-	void initializeDisplya() {
+	void initializeDisplay() {
 		mrK[0].exhibit();
 		mrK[1].exhibit();
 		mrK[2].exhibit();
 		mrK[3].exhibit();
 		deer.hide();
-	}
-
-	void initializeBattle() {
-		onBattle = false;
-		game.initialize();
-		game.setVsCOM();
-		battle_trigger = "";
 	}
 
 	void waitClick() {
@@ -313,13 +302,13 @@ protected:
 			}
 		}
 		else {
-			battle_trigger = trigger;
+			battle.setTrigger(trigger);
 		}
 		goNext();
 	}
 
 	virtual bool isTriggered() {
-		if (battle_trigger == "") {
+		if (battle.hasNoTrigger()) {
 			for (int i = 0; i < 4; ++i) {
 				if (!mrK[i].isTriggered()) {
 					return false;
@@ -327,68 +316,42 @@ protected:
 			}
 			return true;
 		}
-		else if (battle_trigger == "play_once") {
-			// do nothing here (see doGame)
-		}
-		else if (battle_trigger == "local_victory") {
-			for (int index = 0; index < 9; index++) {
-				if (game.board.localVictory(index)) {
-					battle_trigger = "fired";
-				}
-			}
-		}
-		else if (battle_trigger == "victory") {
-			if (game.victory() != 0) {
-				battle_trigger = "fired";
-			}
-		}
-		else if (battle_trigger == "fired") {
-			battle_trigger = "";
-			return true;
-		}
-		return false;
+
+		return battle.isTriggered();
 	}
 
 	virtual void setBattle(string how) {
 		if (how == "start") {
-			game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-			game.setVsCOM();
-			onBattle = true;
+			battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 		}
 		else if (how == "end") {
-			initializeBattle();
+			battle.initialize();
 		}
 		goNext();
 	}
 
 	virtual void showBattle() {
-		game.drawBeforePlay();
-		game.drawAfterPlay();
+		battle.show();
 	}
 
 	virtual int doBattle(COM& com) {
-		game.drawBeforePlay();
-
+		battle.showBefore();
 		if (playTurn(com)) {
-			if (battle_trigger == "play_once") {
-				battle_trigger = "fired";
+			if (battle.getTrigger() == "play_once") {
+				battle.setTrigger("fired");
 			}
 		}
+		battle.showAfter();
 
-		game.drawAfterPlay();
-
-		// Ÿ—˜”»’è
-		if (game.victory() != 0) {
-			UserInput::reset();
+		if (isTriggered()) {
+			goNext();
 		}
-
-		if (isTriggered()) goNext();
 
 		return MODE_TITLE;
 	}
-
-	virtual bool playTurn(COM& com) {
-		if (game.isPlayTurn()) {
+	
+	bool playTurn(COM& com) {
+		if (battle.isPlayTurn()) {
 			return playByPlayer();
 		}
 		else {
@@ -396,21 +359,12 @@ protected:
 		}
 	}
 
-	bool playByPlayer() {
-		if (!game.playTurn()) return false;
-
-		double res = game.update();
-		return game.isUpdated(res);
+	virtual bool playByPlayer() {
+		return battle.playByPlayer();
 	}
 
-	bool playByCom(COM& com) {
-		MinMaxNode node(game.board, game.currentSide());
-		int depth = 1;
-		int index = node.search(depth);
-		Coordinate choice = Board::coordinates(index);
-
-		double res = game.update(choice);
-		return game.isUpdated(res);
+	virtual bool playByCom(COM& com) {
+		return battle.playByComLevel0();
 	}
 
 	void talkMrK(int who, const char key[]) {

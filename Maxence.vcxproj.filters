@@ -211,6 +211,9 @@
     <ClInclude Include="lib\modes\scenario_base\scene_list.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="lib\modes\scenario_base\scenario_battle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Maxence.ico">

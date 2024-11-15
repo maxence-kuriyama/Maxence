@@ -239,7 +239,7 @@ public:
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
-		bool is_reset = (!onBattle && !state.isTalking() && saveOrReset());
+		bool is_reset = (!battle.isOnGame() && !state.isTalking() && saveOrReset());
 		
 		int res = ScenarioBase::show(com);
 		showAdditionalAction();
@@ -284,8 +284,8 @@ public:
 		Encrypter encrypter(saveFilePath);
 		nlohmann::json data = {
 			{"flg", sceneList.getCurrentId()},
-			{"onBattle", onBattle},
-			{"battle_trigger", battle_trigger},
+			{"onBattle", battle.isOnGame()},
+			{"battle_trigger", battle.getTrigger()},
 			{"mrk_trigger0", mrK[0].trigger},
 			{"mrk_trigger1", mrK[1].trigger},
 			{"mrk_trigger2", mrK[2].trigger},
@@ -295,9 +295,7 @@ public:
 		};
 		encrypter.write(data);
 
-		if (onBattle) {
-			game.save(saveGameFilePath);
-		}
+		battle.save(saveGameFilePath);
 	}
 
 	void load() {
@@ -310,13 +308,8 @@ public:
 
 		loadMusic(res);
 		loadScenario(res["flg"]);
+		battle.load(res, saveGameFilePath);
 
-		onBattle = res["onBattle"];
-		if (onBattle) {
-			game.load(saveGameFilePath);
-		}
-
-		battle_trigger = res["battle_trigger"];
 		mrK[0].trigger = res["mrk_trigger0"];
 		mrK[1].trigger = res["mrk_trigger1"];
 		mrK[2].trigger = res["mrk_trigger2"];
@@ -355,7 +348,7 @@ public:
 	void debugDump() {
 		int strColor = strColorDebug;
 
-		DrawFormatString(245, 165, strColor, "trigger: %s", battle_trigger);
+		DrawFormatString(245, 165, strColor, "trigger: %s", battle.getTrigger());
 		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
 
 		ScenarioBase::debugDump();
@@ -397,22 +390,23 @@ private:
 		if (how == "start") {
 			Scene scene = sceneList.get();
 			if (scene.who == MESSAGE_WHO_RED) {
-				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 			}
 			else if (scene.who == MESSAGE_WHO_GREEN) {
-				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_GREEN);
+				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_GREEN);
 			}
 			else if (scene.who == MESSAGE_WHO_BLUE) {
-				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_BLUE);
+				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_BLUE);
 			}
 			else if (scene.who == MESSAGE_WHO_YELLOW) {
-				game.prepare(BATTLE_PLAYER_PLAYER, BATTLE_PLAYER_YELLOW);
+				battle.start(BATTLE_PLAYER_PLAYER, BATTLE_PLAYER_YELLOW);
 			}
-			game.setVsCOM();
-			onBattle = true;
+			else {
+				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+			}
 		}
 		else if (how == "end") {
-			initializeBattle();
+			battle.initialize();
 		}
 		goNext();
 	}
@@ -422,7 +416,7 @@ private:
 		ScenarioBase::doBattle(com);
 
 		if (saveOrReset()) {
-			initializeBattle();
+			battle.initialize();
 			return MODE_TITLE;
 		}
 
@@ -434,26 +428,17 @@ private:
 		return MODE_SCENARIO;
 	}
 
+	// override
 	// TODO: getCurrentScene()に応じて使うCOMを変えること
 	// com.playの中で変えるべきか？
 	bool playByCom(COM& com) {
-		// MinMaxNode node(game.board, game.currentSide());
-		// int depth = 2;
-		// int index = node.search(depth);
-		// Coordinate choice = Board::coordinates(index);
-
-		VectorXd input = game.stateToInput();
-		com.play(input, game.board, game.currentSide());
-		Coordinate choice = com.choice;
-
-		double res = game.update(choice);
-		return game.isUpdated(res);
+		return battle.playByComLevel1(com);
 	}
 
 	// デバッグ用
 	bool skipBattle() {
 		if (UserInput::onKeySkipDebug()) {
-			initializeBattle();
+			battle.initialize();
 			return true;
 		}
 		return false;
@@ -468,8 +453,7 @@ private:
 
 		//reset
 		if (choice == 0 || choice == 1) {
-			UserInput::reset();
-			game.reset();
+			battle.resetGame();
 			return true;
 		}
 

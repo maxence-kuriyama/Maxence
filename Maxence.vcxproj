@@ -177,6 +177,7 @@
     <ClInclude Include="lib\components\board.h" />
     <ClInclude Include="lib\components\board\field.h" />
     <ClInclude Include="lib\components\board\hist.h" />
+    <ClInclude Include="lib\modes\scenario_base\scenario_battle.h" />
     <ClInclude Include="lib\modes\scenario_base\scene_list.h" />
     <ClInclude Include="lib\modes\scenario_base\state.h" />
     <ClInclude Include="lib\utils\com.h" />
