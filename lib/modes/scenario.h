@@ -242,7 +242,18 @@ public:
 		bool is_reset = (!battle.isOnGame() && !state.isTalking() && saveOrReset());
 		
 		int res = ScenarioBase::show(com);
-		showAdditionalAction();
+
+		Scene scene = sceneList.get();
+		switch (scene.action) {
+		case SCENE_ACTION_EQ:
+			performEQ(scene.how);
+			break;
+		case SCENE_ACTION_WAIT:
+			waitClick();
+		default:
+			break;
+		}
+
 		music_name[0] = Music::getMusicName(0);
 		music_name[1] = Music::getMusicName(1);
 
@@ -265,6 +276,15 @@ public:
 		}
 	}
 
+	void debugDump() {
+		int strColor = strColorDebug;
+
+		DrawFormatString(245, 165, strColor, "trigger: %s", battle.getTrigger());
+		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
+
+		ScenarioBase::debugDump();
+	}
+
 	/*===========================*/
 	//    Save and Load
 	/*===========================*/
@@ -278,24 +298,6 @@ public:
 			file.close();
 			return false;
 		}
-	}
-
-	void save() {
-		Encrypter encrypter(saveFilePath);
-		nlohmann::json data = {
-			{"flg", sceneList.getCurrentId()},
-			{"onBattle", battle.isOnGame()},
-			{"battle_trigger", battle.getTrigger()},
-			{"mrk_trigger0", mrK[0].trigger},
-			{"mrk_trigger1", mrK[1].trigger},
-			{"mrk_trigger2", mrK[2].trigger},
-			{"mrk_trigger3", mrK[3].trigger},
-			{"music_name0", music_name[0]},
-			{"music_name1", music_name[1]},
-		};
-		encrypter.write(data);
-
-		battle.save(saveGameFilePath);
 	}
 
 	void load() {
@@ -316,6 +318,26 @@ public:
 		mrK[3].trigger = res["mrk_trigger3"];
 
 		remove(saveFilePath.c_str());
+	}
+
+private:
+
+	void save() {
+		Encrypter encrypter(saveFilePath);
+		nlohmann::json data = {
+			{"flg", sceneList.getCurrentId()},
+			{"onBattle", battle.isOnGame()},
+			{"battle_trigger", battle.getTrigger()},
+			{"mrk_trigger0", mrK[0].trigger},
+			{"mrk_trigger1", mrK[1].trigger},
+			{"mrk_trigger2", mrK[2].trigger},
+			{"mrk_trigger3", mrK[3].trigger},
+			{"music_name0", music_name[0]},
+			{"music_name1", music_name[1]},
+		};
+		encrypter.write(data);
+
+		battle.save(saveGameFilePath);
 	}
 
 	void loadScenario(int flg_saved) {
@@ -340,36 +362,6 @@ public:
 		Music::load(music_name[1].c_str(), 0);
 		Music::enableSwap();
 		Music::play();
-	}
-
-	/*===========================*/
-	//    Battle Mode
-	/*===========================*/
-	void debugDump() {
-		int strColor = strColorDebug;
-
-		DrawFormatString(245, 165, strColor, "trigger: %s", battle.getTrigger());
-		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
-
-		ScenarioBase::debugDump();
-	}
-
-private:
-
-	int showAdditionalAction() {
-		Scene scene = sceneList.get();
-
-		switch (scene.action) {
-		case SCENE_ACTION_EQ:
-			performEQ(scene.how);
-			break;
-		case SCENE_ACTION_WAIT:
-			waitClick();
-		default:
-			break;
-		}
-
-		return SCENE_RES_DEFAULT;
 	}
 
 	void performEQ(string how) {
