@@ -208,7 +208,7 @@
     <ClInclude Include="lib\modes\scenario_base\state.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\scenario_base\scene_queue.h">
+    <ClInclude Include="lib\modes\scenario_base\scene_list.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

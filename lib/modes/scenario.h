@@ -34,7 +34,7 @@ public:
 		mrK[2].setSayings(sayings2);
 		mrK[3].setSayings(sayings3);
 		card.setSayings(sayingsCard);
-		sceneQueue.initialize(scenes);
+		sceneList.initialize(scenes);
 
 		initialize();
 		msg.initialize();
@@ -283,7 +283,7 @@ public:
 	void save() {
 		Encrypter encrypter(saveFilePath);
 		nlohmann::json data = {
-			{"flg", sceneQueue.getCurrentId()},
+			{"flg", sceneList.getCurrentId()},
 			{"onBattle", onBattle},
 			{"battle_trigger", battle_trigger},
 			{"mrk_trigger0", mrK[0].trigger},
@@ -329,11 +329,11 @@ public:
 		COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
-		while (sceneQueue.getCurrentId() < flg_saved) {
-			old_flg = sceneQueue.getCurrentId();
-			Scene scene = sceneQueue.get();
+		while (sceneList.getCurrentId() < flg_saved) {
+			old_flg = sceneList.getCurrentId();
+			Scene scene = sceneList.get();
 			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
-			new_flg = sceneQueue.getCurrentId();
+			new_flg = sceneList.getCurrentId();
 			if (new_flg == old_flg) goNext();
 		}
 		state.initialize();
@@ -364,7 +364,7 @@ public:
 private:
 
 	int showAdditionalAction() {
-		Scene scene = sceneQueue.get();
+		Scene scene = sceneList.get();
 
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
@@ -395,7 +395,7 @@ private:
 	// override
 	void setBattle(string how) {
 		if (how == "start") {
-			Scene scene = sceneQueue.get();
+			Scene scene = sceneList.get();
 			if (scene.who == MESSAGE_WHO_RED) {
 				game.prepare(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 			}

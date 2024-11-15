@@ -14,7 +14,7 @@ struct Scene {
 	char how[100];
 };
 
-class SceneQueue {
+class SceneList {
 private:
 	struct Scene list[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_NONE,		MESSAGE_WHO_DESC,	"" },
@@ -25,7 +25,7 @@ private:
 
 public:
 
-	SceneQueue() {
+	SceneList() {
 		initialize();
 	}
 

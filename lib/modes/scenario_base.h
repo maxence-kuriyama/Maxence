@@ -10,7 +10,7 @@
 #include "lib/components/message.h"
 #include "lib/components/game.h"
 #include "./scenario_base/state.h"
-#include "./scenario_base/scene_queue.h"
+#include "./scenario_base/scene_list.h"
 
 const double SPRITE_EXPAND_RATE(0.0006);
 
@@ -41,7 +41,7 @@ protected:
 	bool onBattle = false;
 	string battle_trigger = "";
 	State state;
-	SceneQueue sceneQueue;
+	SceneList sceneList;
 
 public:
 
@@ -56,7 +56,7 @@ public:
 
 	void initialize() {
 		state.initialize();
-		sceneQueue.initialize();
+		sceneList.initialize();
 		msg.initialize();
 		initializeDisplya();
 		initializeBattle();
@@ -78,7 +78,7 @@ public:
 
 		if (onBattle) showBattle();
 
-		Scene scene = sceneQueue.get();
+		Scene scene = sceneList.get();
 
 		switch (scene.action) {
 		case SCENE_ACTION_TALK:
@@ -145,7 +145,7 @@ public:
 		int strColor = strColorDebug;
 
 		DrawFormatString(245, 185, strColor, "seName: %s", seName.c_str());
-		DrawFormatString(245, 205, strColor, "sceneFlg: %d", sceneQueue.getCurrentId());
+		DrawFormatString(245, 205, strColor, "sceneFlg: %d", sceneList.getCurrentId());
 		DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
 		DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
 		DrawFormatString(245, 305, strColor, "who: %d", msg.who);
@@ -181,7 +181,7 @@ protected:
 	}
 
 	void goNext() {
-		sceneQueue.goNext();
+		sceneList.goNext();
 	}
 
 	// メッセージを読む
