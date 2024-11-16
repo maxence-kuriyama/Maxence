@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "lib/utils/user_input.h"
 #include "lib/components/sprite.h"
 
 using namespace std;
@@ -15,7 +16,6 @@ private:
 	};
 
 	string graph = "";		// 画像表示イベントのフラグ
-	bool talking = false;	// NPCと会話中か否か
 	StickyKeyboard keyboard = { SPRITE_KEY_NONE, false };
 
 public:
@@ -26,7 +26,6 @@ public:
 
 	void initialize() {
 		graph = "";
-		talking = false;
 		resetKeyboard();
 	}
 
@@ -36,18 +35,6 @@ public:
 
 	void setGraph(string src) {
 		graph = src;
-	}
-
-	bool isTalking() {
-		return talking;
-	}
-
-	void finishTalking() {
-		talking = false;
-	}
-
-	void talk() {
-		talking = true;
 	}
 
 	int getKey() {

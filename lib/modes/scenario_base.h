@@ -1,14 +1,13 @@
 #pragma once
 
-#include <regex>
 #include "lib/mode.h"
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/components/sprite.h"
-#include "lib/components/message.h"
 #include "./scenario_base/state.h"
 #include "./scenario_base/scene_list.h"
 #include "./scenario_base/scenario_battle.h"
+#include "./scenario_base/scenario_message.h"
 
 const double SPRITE_EXPAND_RATE(0.0006);
 
@@ -31,12 +30,11 @@ protected:
 	int strColorDebug = GetColor(150, 0, 0);
 	int strColorLoad = GetColor(0, 0, 0);
 
-	string seName;	// SEのファイル名
 	Sprite mrK[4];
 	Sprite deer;
-	Message msg;
 	State state;
 	SceneList sceneList;
+	ScenarioMessage msg;
 	ScenarioBattle battle;
 
 public:
@@ -109,7 +107,7 @@ public:
 			break;
 		}
 
-		if (state.isTalking() || scene.action == SCENE_ACTION_TALK) msg.draw();
+		if (msg.isTalking() || scene.action == SCENE_ACTION_TALK) msg.draw();
 
 		return SCENE_RES_DEFAULT;
 	}
@@ -117,19 +115,19 @@ public:
 	void debugDump() {
 		int strColor = strColorDebug;
 
-		DrawFormatString(245, 185, strColor, "seName: %s", seName.c_str());
-		DrawFormatString(245, 205, strColor, "sceneFlg: %d", sceneList.getCurrentId());
-		DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
-		DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
-		DrawFormatString(245, 305, strColor, "who: %d", msg.who);
+		DrawFormatString(245, 185, strColor, "sceneFlg: %d", sceneList.getCurrentId());
+		// DrawFormatString(245, 245, strColor, "seName: %s", seName.c_str());
+		// DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
+		// DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
+		// DrawFormatString(245, 305, strColor, "who: %d", msg.who);
 		DrawFormatString(245, 325, strColor, "mrK0.vis: %d", mrK[0].visible);
 		DrawFormatString(245, 345, strColor, "mrK1.vis: %d", mrK[1].visible);
 		DrawFormatString(245, 365, strColor, "mrK2.vis: %d", mrK[2].visible);
 		DrawFormatString(245, 385, strColor, "mrK3.vis: %d", mrK[3].visible);
 		DrawFormatString(245, 405, strColor, "deer.vis: %d", deer.visible);
 		DrawFormatString(245, 425, strColor, "key: %d", state.getKey());
-		DrawFormatString(245, 445, strColor, "isTalking: %s", state.isTalking() ? "true" : "false");
-		DrawFormatString(245, 465, strColor, "hasMsg: %s", msg.isShown ? "true" : "false");
+		DrawFormatString(245, 445, strColor, "isTalking: %s", msg.isTalking() ? "true" : "false");
+		msg.debugDump(strColor);
 	}
 
 protected:
@@ -152,21 +150,13 @@ protected:
 
 	// メッセージを読む
 	void readMsg(string str, int who) {
-		if (!msg.isShown) {
-			if (str == "clear") {
-				msg.setEmpty(who);
-				goNext();
-			}
-			else {
-				msg.set(str, who);
-			}
-		}
+		if (msg.readNext(str, who)) goNext();
 
 		if (state.isOnReturnOrClicked() && msg.skip()) goNext();
 	}
 
 	void doMove(const char how[]) {
-		if (state.isTalking()) {
+		if (msg.isTalking()) {
 			int who = checkMrK();
 			talkMrK(who, how);
 		}
@@ -181,7 +171,7 @@ protected:
 
 			if (state.isOnReturnOrClicked()) {
 				int who = checkMrK();
-				talkResetMrK(who);
+				startTalkMrK(who);
 				talkMrK(who, how);
 			}
 		}
@@ -344,34 +334,7 @@ protected:
 		Sprite* obj = getObject(who);
 		if (!obj) return;
 
-		// 特殊コマンド
-		Saying saying = obj->talk(key);
-		if (strcmp(saying.say, "") == 0 || saying.who == -1) {
-			state.finishTalking();
-			msg.setEmpty();
-			return;
-		}
-		else {
-			std::cmatch m;
-			if (regex_match(saying.say, m, std::regex(R"(SE\[(.+)\])"))) {
-				seName = m[1].str(); // デバッグ用
-				playSE(seName);
-				obj->talkNext();
-				msg.isShown = false;
-				return;
-			}
-		}
-
-		// メッセージ表示処理
-		if (!msg.isShown) {
-			msg.set(saying.say, saying.who);
-		}
-
-		if (state.isOnReturnOrClicked() && msg.skip()) obj->talkNext();
-	}
-
-	void playSE(string fileName) {
-		PlaySoundFile(fileName.c_str(), DX_PLAYTYPE_BACK);
+		msg.talkNext(obj, key, state.isOnReturnOrClicked());
 	}
 
 	bool isMrK(int who) {
@@ -403,9 +366,9 @@ protected:
 		return 0;
 	}
 
-	virtual void talkResetMrK(int who) {
+	virtual void startTalkMrK(int who) {
 		if (who) {
-			state.talk();
+			msg.startTalk();
 			if (isMrK(who)) {
 				mrK[who - 1].talkReset();
 			}

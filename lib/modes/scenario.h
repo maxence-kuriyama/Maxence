@@ -239,7 +239,7 @@ public:
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
-		bool is_reset = (!battle.isOnGame() && !state.isTalking() && saveOrReset());
+		bool is_reset = (!battle.isOnGame() && !msg.isTalking() && saveOrReset());
 		
 		int res = ScenarioBase::show(com);
 
@@ -485,11 +485,11 @@ private:
 	}
 
 	// override
-	void talkResetMrK(int who) {
-		ScenarioBase::talkResetMrK(who);
+	void startTalkMrK(int who) {
+		ScenarioBase::startTalkMrK(who);
 
 		if (who == MESSAGE_WHO_CARD) {
-			state.talk();
+			msg.startTalk();
 			card.talkReset();
 		}
 	}
