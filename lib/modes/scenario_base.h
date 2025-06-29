@@ -20,7 +20,7 @@ const int SCENE_ACTION_GRAPH(6);
 const int SCENE_ACTION_BATTLE(7);
 const int SCENE_ACTION_COCK(8);
 const int SCENE_ACTION_PLAY(9);
-const int SCENE_ACTION_STOP(-1);
+const int SCENE_ACTION_STOP(10);
 
 const int SCENE_RES_DEFAULT(-100);
 

@@ -5,7 +5,7 @@
 const int MAX_SCENE_NUM(400);
 
 const int SCENE_ACTION_NONE(0);
-const int SCENE_ACTION_END_OF_LIST(0);
+const int SCENE_ACTION_END_OF_LIST(-1);
 
 // シーン + 主人公のアクション
 struct Scene {
