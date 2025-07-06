@@ -67,8 +67,8 @@ public:
 		int fps = Synchronizer::actualFps();
 		cntInc = 30.2 / fps;
 
-		drawGameBoard();
-		logo.draw();
+		// drawGameBoard();
+		// logo.draw();
 
 		// フェードイン
 		fadeinMusic();

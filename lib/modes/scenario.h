@@ -8,6 +8,7 @@
 
 const int SCENE_ACTION_EQ(11);
 const int SCENE_ACTION_WAIT(12);
+const int SCENE_ACTION_ENDING(13);
 
 const int MESSAGE_WHO_CARD(11);
 
@@ -43,8 +44,11 @@ public:
 private:
 	int eqX = 0;
 	int eqY = 0; // eq = earthquake
+	int endingCnt = 0;
 	int imgRoom;
 	int imgCard;
+	unsigned int White = GetColor(255, 255, 255);
+	unsigned int Black = GetColor(0, 0, 0);
 
 	Menu menu;
 	Button btnSave;
@@ -146,10 +150,12 @@ private:
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"start" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"c" },
-		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"end" },
-		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_YELLOW,		"stop" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"‚ ‚è‚ª‚Æ‚¤B" },
+		{ SCENE_ACTION_ENDING,	MESSAGE_WHO_DESC,		"prepare" },
+		{ SCENE_ACTION_ENDING,	MESSAGE_WHO_DESC,		"go" },
+//		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"end" },
+//		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_YELLOW,		"stop" },
+//		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"‚ ‚è‚ª‚Æ‚¤B" },
 		{ SCENE_ACTION_STOP,	MESSAGE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DEER,		"‚µ‚©‚ÆŒ©“Í‚¯‚½‚¼" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DEER,		"Ž­‚ÆŒ©“Í‚¯‚½‚¼" },
@@ -228,6 +234,7 @@ public:
 		menu.set(btnSave, btnReset);
 		mrK[0].set(170, 30);
 		mrK[0].turn(SPRITE_KEY_DOWN);
+		endingCnt = 0;
 	}
 
 	int show(COM& com) {
@@ -250,6 +257,10 @@ public:
 			break;
 		case SCENE_ACTION_WAIT:
 			waitClick();
+			break;
+		case SCENE_ACTION_ENDING:
+			res = prepareEnding(scene.how);
+			break;
 		default:
 			break;
 		}
@@ -272,6 +283,11 @@ public:
 		if (res == MODE_TITLE) {
 			Music::unloadAll();
 			mode.goTitle();
+			initialize();
+		}
+		else if (res == MODE_ENDING) {
+			Music::unloadAll();
+			mode.goEnding();
 			initialize();
 		}
 	}
@@ -375,6 +391,31 @@ private:
 			eqX = 0;
 			goNext();
 		}
+	}
+
+	int prepareEnding(string how) {
+		if (how == "go") {
+			DrawBox(-1, -1, 641, 481, Black, TRUE);
+			return MODE_ENDING;
+		}
+
+		endingCnt++;
+		if (how == "prepare") {
+			if (endingCnt > 160.0) {
+				goNext();
+			}
+
+			// fadeout
+			double fade = min(255.0, 0.01 * pow(max(0.0, endingCnt), 2.0));
+			SetDrawBlendMode(DX_BLENDMODE_SUB, fade);
+			DrawBox(-1, -1, 641, 481, White, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+			// fadeoutMusic
+			Music::changeVolume(7.57 * pow(160.0 - endingCnt, 0.6));
+			Music::play();
+		}
+		return SCENE_RES_DEFAULT;
 	}
 
 	// override
