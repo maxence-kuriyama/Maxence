@@ -146,6 +146,7 @@ private:
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"Mr.K、僕も見えたよ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"さぁ、後はこの世界にいるのは僕だけだ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"だからこの王である僕を殺して世界を救ってくれ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"君の手で！" },
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_YELLOW,		"pop" },
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"start" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
