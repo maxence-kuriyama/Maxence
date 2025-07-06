@@ -6,8 +6,6 @@
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
 #include "lib/components/sprite.h"
-#include "lib/components/game.h"
-#include "lib/components/logo.h"
 
 void init_ending_text(string* job, string* who);
 
@@ -32,8 +30,6 @@ private:
 
 	double cnt = 0.0;
 	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
-	Logo logo;
-	Game game;
 
 public:
 	Sprite mrK[4];
@@ -66,9 +62,6 @@ public:
 		// 実効FPSを元にアニメーション速度を調整
 		int fps = Synchronizer::actualFps();
 		cntInc = 30.2 / fps;
-
-		// drawGameBoard();
-		// logo.draw();
 
 		// フェードイン
 		fadeinMusic();
@@ -195,10 +188,6 @@ public:
 		}
 	}
 
-	void copyGame(Game& src) {
-		game = src;
-	}
-
 	void debugDump() {
 		int strColor = strColorDebug;
 
@@ -216,15 +205,6 @@ private:
 	void initialize() {
 		cnt = 0.0;
 		init_ending_text(job, who);
-	}
-
-	void drawGameBoard() {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-		game.drawLocalState();
-		game.drawCurrentCoord();
 	}
 
 	void fadeinMusic() {
