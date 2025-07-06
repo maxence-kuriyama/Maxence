@@ -120,7 +120,7 @@ private:
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_BLUE,		"start" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_BLUE,		"You win!\n貴方の勝ちです！" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_BLUE,		"You win!!\n貴方の勝ちです！" },
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_BLUE,		"end" },
 		{ SCENE_ACTION_LOAD,	MESSAGE_WHO_BLUE,		"sound/bgm07.ogg" },
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_BLUE,		"stop" },
@@ -413,8 +413,9 @@ private:
 		}
 
 		// 対戦スキップ（一人用デバッグ）
-		if (FlagStore::isDebug()) {
-			if (skipBattle()) goNext();
+		if (FlagStore::isDebug() && UserInput::onKeySkipDebug()) {
+			// battle.initialize();
+			goNext();
 		}
 			
 		return MODE_SCENARIO;
@@ -425,15 +426,6 @@ private:
 	// com.playの中で変えるべきか？
 	bool playByCom(COM& com) {
 		return battle.playByComLevel1(com);
-	}
-
-	// デバッグ用
-	bool skipBattle() {
-		if (UserInput::onKeySkipDebug()) {
-			battle.initialize();
-			return true;
-		}
-		return false;
 	}
 
 	bool saveOrReset() {
