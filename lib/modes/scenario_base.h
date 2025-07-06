@@ -115,11 +115,7 @@ public:
 	void debugDump() {
 		int strColor = strColorDebug;
 
-		DrawFormatString(245, 185, strColor, "sceneFlg: %d", sceneList.getCurrentId());
-		// DrawFormatString(245, 245, strColor, "seName: %s", seName.c_str());
-		// DrawFormatString(245, 265, strColor, "textLen: %d", msg.textLen);
-		// DrawFormatString(245, 285, strColor, "charCnt: %d", int(msg.cnt * msg.cntPerFrame));
-		// DrawFormatString(245, 305, strColor, "who: %d", msg.who);
+		DrawFormatString(245, 225, strColor, "sceneFlg: %d", sceneList.getCurrentId());
 		DrawFormatString(245, 325, strColor, "mrK0.vis: %d", mrK[0].visible);
 		DrawFormatString(245, 345, strColor, "mrK1.vis: %d", mrK[1].visible);
 		DrawFormatString(245, 365, strColor, "mrK2.vis: %d", mrK[2].visible);

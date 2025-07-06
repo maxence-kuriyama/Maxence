@@ -49,6 +49,7 @@ private:
 	int imgCard;
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
+	int strColorDebug = GetColor(100, 30, 30);
 
 	Menu menu;
 	Button btnSave;
@@ -297,7 +298,7 @@ public:
 		int strColor = strColorDebug;
 
 		DrawFormatString(245, 165, strColor, "trigger: %s", battle.getTrigger());
-		DrawFormatString(245, 245, strColor, "eqX: %d", eqX);
+		DrawFormatString(245, 185, strColor, "eqX: %d", eqX);
 
 		ScenarioBase::debugDump();
 	}
