@@ -107,7 +107,7 @@ public:
 			break;
 		}
 
-		if (msg.isTalking() || scene.action == SCENE_ACTION_TALK) msg.draw();
+		if (hasMsg(scene)) msg.draw();
 
 		return SCENE_RES_DEFAULT;
 	}
@@ -375,5 +375,9 @@ protected:
 		if (who == MESSAGE_WHO_DEER) return &deer;
 		if (isMrK(who)) return &mrK[who - 1];
 		return NULL;
+	}
+
+	bool hasMsg(Scene scene) {
+		return (msg.isTalking() || scene.action == SCENE_ACTION_TALK);
 	}
 };

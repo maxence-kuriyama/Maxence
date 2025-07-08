@@ -248,11 +248,11 @@ public:
 		DrawExtendGraph(0 + eqX, -50, 640 + eqX, 380, imgRoom, FALSE);
 		card.draw(eqX);
 
-		bool is_reset = (!battle.isOnGame() && !msg.isTalking() && saveOrReset());
+		Scene scene = sceneList.get();
+
+		bool is_reset = (!battle.isOnGame() && !hasMsg(scene) && saveOrReset());
 		
 		int res = ScenarioBase::show(com);
-
-		Scene scene = sceneList.get();
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
 			performEQ(scene.how);
