@@ -41,9 +41,9 @@ public:
 			pict_name = "graph/end_pict" + to_string(i) + ".png";
 			end_pict[i - 1] = LoadGraph(pict_name.c_str());
 		}
-		mrK[0].set(-100, 415, "graph/sprite1.png");
-		mrK[1].set(-100, 425, "graph/sprite2.png");
-		mrK[2].set(-100, 420, "graph/sprite1.png");
+		mrK[0].set(-100, 415, "graph/sprite0.png");
+		mrK[1].set(-100, 425, "graph/sprite1.png");
+		mrK[2].set(-100, 420, "graph/sprite2.png");
 		mrK[3].img[0] = LoadGraph("graph/sprite3.png");
 		mrK[3].img[1] = LoadGraph("graph/sprite4.png");
 		mrK[3].img[2] = LoadGraph("graph/sprite3.png");
