@@ -457,7 +457,6 @@ private:
 
 		// 対戦スキップ（一人用デバッグ）
 		if (FlagStore::isDebug() && UserInput::onKeySkipDebug()) {
-			// battle.initialize();
 			goNext();
 		}
 			
@@ -468,6 +467,8 @@ private:
 	// TODO: getCurrentScene()に応じて使うCOMを変えること
 	// com.playの中で変えるべきか？
 	bool playByCom(COM& com) {
+		if (FlagStore::isDebug()) return playByPlayer();
+	
 		return battle.playByComLevel1(com);
 	}
 
