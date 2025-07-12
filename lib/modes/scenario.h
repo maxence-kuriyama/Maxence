@@ -369,6 +369,7 @@ private:
 			new_flg = sceneList.getCurrentId();
 			if (new_flg == old_flg) goNext();
 		}
+		msg.finishTalk();
 		state.initialize();
 	}
 
