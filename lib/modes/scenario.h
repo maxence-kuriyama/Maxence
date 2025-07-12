@@ -9,6 +9,7 @@
 const int SCENE_ACTION_EQ(11);
 const int SCENE_ACTION_WAIT(12);
 const int SCENE_ACTION_ENDING(13);
+const int SCENE_ACTION_LOSE(14);
 
 const int MESSAGE_WHO_CARD(11);
 
@@ -86,6 +87,7 @@ private:
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_RED,		"start" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
+		{ SCENE_ACTION_LOSE,	MESSAGE_WHO_RED,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_RED,		"負けたのか！？\nこの俺が！！"},
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_RED,		"end" },
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_RED,		"pop_once" },
@@ -106,6 +108,7 @@ private:
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_GREEN,		"start" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
+		{ SCENE_ACTION_LOSE,	MESSAGE_WHO_GREEN,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_GREEN,		"そうか…\nそうだったのか…" },
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_GREEN,		"end" },
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_GREEN,		"pop_once" },
@@ -125,6 +128,7 @@ private:
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_BLUE,		"start" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
+		{ SCENE_ACTION_LOSE,	MESSAGE_WHO_BLUE,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_BLUE,		"You win!!\n貴方の勝ちです！" },
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_BLUE,		"end" },
 		{ SCENE_ACTION_LOAD,	MESSAGE_WHO_BLUE,		"sound/bgm07.ogg" },
@@ -152,6 +156,7 @@ private:
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"start" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
+		{ SCENE_ACTION_LOSE,	MESSAGE_WHO_YELLOW,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"ありがとう。" },
 		{ SCENE_ACTION_ENDING,	MESSAGE_WHO_DESC,		"prepare" },
 		{ SCENE_ACTION_ENDING,	MESSAGE_WHO_DESC,		"go" },
@@ -262,6 +267,9 @@ public:
 			break;
 		case SCENE_ACTION_ENDING:
 			res = prepareEnding(scene.how);
+			break;
+		case SCENE_ACTION_LOSE:
+			lostBattle();
 			break;
 		default:
 			break;
@@ -461,6 +469,15 @@ private:
 			goNext();
 		}
 			
+		return MODE_SCENARIO;
+	}
+
+	int lostBattle() {
+		if (battle.isLost()) {
+		}
+		else {
+			goNext();
+		}
 		return MODE_SCENARIO;
 	}
 

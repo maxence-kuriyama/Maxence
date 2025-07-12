@@ -133,6 +133,10 @@ public:
 		return (trigger == "");
 	}
 
+	bool isLost() {
+		return (game.victory() == -1);
+	}
+
 	void save(const string filePath) {
 		if (onGame) {
 			game.save(filePath);
