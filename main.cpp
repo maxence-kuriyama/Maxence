@@ -139,6 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
+	Music::unloadAll();
 	InitGraph();
 	DxLib_End();
 
