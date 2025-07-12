@@ -13,6 +13,8 @@ const int SCENE_ACTION_LOSE(14);
 
 const int MESSAGE_WHO_CARD(11);
 
+const string SCENARIO_MSG_LOST_BATTLE("敗北してしまった…");
+
 // シナリオ管理用クラス
 class Scenario : public ScenarioBase {
 
@@ -269,7 +271,7 @@ public:
 			res = prepareEnding(scene.how);
 			break;
 		case SCENE_ACTION_LOSE:
-			lostBattle();
+			res = lostBattle();
 			break;
 		default:
 			break;
@@ -474,6 +476,10 @@ private:
 
 	int lostBattle() {
 		if (battle.isLost()) {
+			msg.readNext(SCENARIO_MSG_LOST_BATTLE, MESSAGE_WHO_DESC);
+			if (state.isOnReturnOrClicked() && msg.skip()) {
+				return MODE_TITLE;
+			}
 		}
 		else {
 			goNext();
@@ -552,5 +558,12 @@ private:
 	Sprite* getObject(int who) {
 		if (who == MESSAGE_WHO_CARD) return &card;
 		return ScenarioBase::getObject(who);
+	}
+
+	// override
+	bool hasMsg(Scene scene) {
+		if (ScenarioBase::hasMsg(scene)) return true;
+		
+		return (scene.action == SCENE_ACTION_LOSE);
 	}
 };

@@ -377,7 +377,7 @@ protected:
 		return NULL;
 	}
 
-	bool hasMsg(Scene scene) {
+	virtual bool hasMsg(Scene scene) {
 		return (msg.isTalking() || scene.action == SCENE_ACTION_TALK);
 	}
 };
