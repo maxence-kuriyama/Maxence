@@ -5,6 +5,7 @@
 #include "lib/utils/encrypter.h"
 #include "lib/components/menu.h"
 #include "./scenario_base.h"
+#include "./scenario/gameover.h"
 
 const int SCENE_ACTION_EQ(11);
 const int SCENE_ACTION_WAIT(12);
@@ -57,6 +58,7 @@ private:
 	Menu menu;
 	Button btnSave;
 	Button btnReset;
+	GameOver gameover;
 
 	int strColorMenu = GetColor(255, 255, 255);
 	string music_name[2] = { "", "" };
@@ -271,7 +273,7 @@ public:
 			res = prepareEnding(scene.how);
 			break;
 		case SCENE_ACTION_LOSE:
-			res = lostBattle();
+			res = lostBattle(scene.who);
 			break;
 		default:
 			break;
@@ -474,11 +476,13 @@ private:
 		return MODE_SCENARIO;
 	}
 
-	int lostBattle() {
+	int lostBattle(int who) {
 		if (battle.isLost()) {
+			if (gameover.isActivated()) return gameover.show();
+
 			msg.readNext(SCENARIO_MSG_LOST_BATTLE, MESSAGE_WHO_DESC);
 			if (state.isOnReturnOrClicked() && msg.skip()) {
-				return MODE_TITLE;
+				gameover.setMode(who);
 			}
 		}
 		else {
