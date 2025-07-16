@@ -389,8 +389,8 @@ private:
 		music_name[0] = res["music_name0"];
 		music_name[1] = res["music_name1"];
 		Music::unloadAll();
-		Music::load(music_name[0].c_str(), 0);
-		Music::load(music_name[1].c_str(), 0);
+		Music::loadSync(music_name[0].c_str());
+		Music::loadSync(music_name[1].c_str());
 		Music::enableSwap();
 		Music::play();
 	}

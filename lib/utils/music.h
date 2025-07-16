@@ -46,9 +46,16 @@ public:
 
 	// 空メモリに指定した音楽ファイルを読み込む
 	// ロードが成功したか否かを返す
-	static int load(const char* fileName, int async = 1, int strColor = 0) {
+	static int load(const char* fileName, int strColor = 0) {
 		Music* music = Music::getInstance();
-		return music->_load(fileName, async, strColor);
+		return music->_load(fileName, 1, strColor);
+	}
+
+	// 空メモリに指定した音楽ファイルを同期読み込み
+	// ロードが成功したか否かを返す
+	static int loadSync(const char* fileName, int strColor = 0) {
+		Music* music = Music::getInstance();
+		return music->_load(fileName, 0, strColor);
 	}
 
 	// 指定したメモリを解放する
