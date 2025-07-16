@@ -14,7 +14,7 @@ const int SCENE_ACTION_LOSE(14);
 
 const int MESSAGE_WHO_CARD(11);
 
-const string SCENARIO_MSG_LOST_BATTLE("敗北してしまった…");
+const string SCENARIO_MSG_LOST_BATTLE("敗北してしまった…\n目の前が暗くなる…");
 
 // シナリオ管理用クラス
 class Scenario : public ScenarioBase {
@@ -58,9 +58,9 @@ private:
 	Menu menu;
 	Button btnSave;
 	Button btnReset;
+	int strColorMenu = GetColor(255, 255, 255);
 	GameOver gameover;
 
-	int strColorMenu = GetColor(255, 255, 255);
 	string music_name[2] = { "", "" };
 	string saveFilePath = SAVE_FILE_SCENARIO;
 	string saveGameFilePath = SAVE_FILE_SCENARIO_GAME;
@@ -213,7 +213,7 @@ private:
 	struct Saying sayings3[20] = {
 		{ "10",		MESSAGE_WHO_GREEN,	"この平和の中、何のために生きているのだろう" },
 		{ "10",		MESSAGE_WHO_YELLOW,	"お前はいつもそれだな\n考えてもしょうがないのに" },
-		{ "10",		MESSAGE_WHO_BLUE,		"私はこの世界を手に入れたいですねぇ" },
+		{ "10",		MESSAGE_WHO_BLUE,	"私はこの世界を手に入れたいですねぇ" },
 		{ "20",		MESSAGE_WHO_GREEN,	"何かが動き出したのですね…\n貴方はどう見ますか？" },
 		{ "20",		MESSAGE_WHO_YELLOW,	"さっき突然現れた奴が何者かが気になるなぁ" },
 		{ "20",		MESSAGE_WHO_GREEN,	"私も同感です\n奴の意図は読めませんね" },
@@ -238,11 +238,14 @@ public:
 
 	void initialize() {
 		ScenarioBase::initialize();
+		gameover.initialize();
 		card.hide();
+
 		// ボタン初期化
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
 		menu.set(btnSave, btnReset);
+
 		mrK[0].set(170, 30);
 		mrK[0].turn(SPRITE_KEY_DOWN);
 		endingCnt = 0;
@@ -482,7 +485,7 @@ private:
 
 			msg.readNext(SCENARIO_MSG_LOST_BATTLE, MESSAGE_WHO_DESC);
 			if (state.isOnReturnOrClicked() && msg.skip()) {
-				gameover.setMode(who);
+				gameover.activate(who);
 			}
 		}
 		else {

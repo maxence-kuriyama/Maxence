@@ -13,6 +13,7 @@ public:
 		mrK[2].set(-100, -100, "graph/sprite13.png", 0);
 		mrK[3].set(-100, -100, "graph/sprite14.png", 0);
 
+		mrK[0].setSayings(sayings0);
 		mrK[1].setSayings(sayings1);
 		mrK[2].setSayings(sayings2);
 		mrK[3].setSayings(sayings3);
@@ -23,41 +24,54 @@ public:
 	}
 
 private:
-	int mode = MESSAGE_WHO_DESC;
+	int who = MESSAGE_WHO_DESC; // 誰に負けたか
 	int imgBack;
 	unsigned int Black = GetColor(0, 0, 0);
+
+	Menu menu;
+	Button btnSave;
+	Button btnReset;
+	int strColorMenu = GetColor(255, 255, 255);
 
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_DESC,		"unload" },
 		{ SCENE_ACTION_LOAD,	MESSAGE_WHO_DESC,		"sound/bgm15.ogg" },
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_DESC,		"swap" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"ゲームーオーバー画面だよ" },
+		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"talk_all" },
+		{ SCENE_ACTION_MOVE,	MESSAGE_WHO_DESC,		"10" },
 		{ SCENE_ACTION_STOP,	MESSAGE_WHO_DESC,		"" },
 		{ -1,					-1,						"" },
 	};
-	struct Saying sayings1[20] = {
-		{ "10",		MESSAGE_WHO_BLUE,		"貴方は私にとって利用価値のある存在です" },
-		{ "10",		MESSAGE_WHO_BLUE,		"これからも是非お付き合いください" },
-		{ "10",		MESSAGE_WHO_YELLOW,		"……" },
+	struct Saying sayings0[8] = {
+		{ "10",		MESSAGE_WHO_YELLOW,		"仕方ない" },
+		{ "10",		MESSAGE_WHO_YELLOW,		"僕はこの世界と一緒に眠るよ" },
 		{ "999",	-1,						"" },
 	};
-	struct Saying sayings2[20] = {
-		{ "10",		MESSAGE_WHO_RED,		"俺たちはチーム！\nそして何より正義だ！" },
-		{ "10",		MESSAGE_WHO_YELLOW,		"あぁ、そうだな\nこれから先もだ" },
+	struct Saying sayings1[8] = {
+		{ "10",		MESSAGE_WHO_BLUE,		"作戦どおり" },
+		{ "10",		MESSAGE_WHO_BLUE,		"これで世界は私のもの" },
 		{ "999",	-1,						"" },
 	};
-	struct Saying sayings3[20] = {
-		{ "10",		MESSAGE_WHO_GREEN,	"この平和の中、何のために生きているのだろう" },
-		{ "10",		MESSAGE_WHO_YELLOW,	"お前はいつもそれだな\n考えてもしょうがないのに" },
-		{ "10",		MESSAGE_WHO_BLUE,		"私はこの世界を手に入れたいですねぇ" },
-		{ "999",	-1,					"" },
+	struct Saying sayings2[8] = {
+		{ "10",		MESSAGE_WHO_RED,		"俺が…" },
+		{ "10",		MESSAGE_WHO_RED,		"俺が正義ダァーーー！！" },
+		{ "999",	-1,						"" },
+	};
+	struct Saying sayings3[8] = {
+		{ "10",		MESSAGE_WHO_GREEN,		"おやすみなさい" },
+		{ "10",		MESSAGE_WHO_GREEN,		"貴方の犠牲は無駄にはしませんよ…" },
+		{ "999",	-1,						"" },
 	};
 
 public:
 
 	void initialize() {
 		ScenarioBase::initialize();
-		mode = MESSAGE_WHO_DESC;
+		who = MESSAGE_WHO_DESC;
+		// ボタン初期化
+		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
+		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
+		menu.set(btnSave, btnReset);
 	}
 
 	int show() {
@@ -66,15 +80,42 @@ public:
 		DrawBox(-1, -1, 641, 481, Black, TRUE);
 		DrawExtendGraph(0, -20, 640, 460, imgBack, FALSE);
 
+		Scene scene = sceneList.get();
+		bool is_reset = (!hasMsg(scene) && continueOrReset());
+
 		int res = ScenarioBase::show();
+
+		if (is_reset) {
+			return MODE_TITLE;
+		}
 		return res;
 	}
 
-	void setMode(int who) {
-		mode = who;
+	void activate(int srcWho) {
+		who = srcWho;
+		startTalkMrK(who);
 	}
 
 	bool isActivated() {
-		return (mode != MESSAGE_WHO_DESC);
+		return (who != MESSAGE_WHO_DESC);
+	}
+
+private:
+
+	// override
+	int checkMrK() {
+		return who;
+	}
+
+	bool continueOrReset() {
+		bool no_keyboard = true;
+		int choice = menu.choose(strColorMenu, no_keyboard);
+
+		// continue
+		// コンティニューフラグを立てて、シナリオ側で検知
+		// if (choice == 0) continue();
+
+		//reset
+		return (choice == 1);
 	}
 };
