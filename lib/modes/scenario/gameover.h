@@ -6,7 +6,7 @@ class GameOver : public ScenarioBase {
 public:
 
 	GameOver() : ScenarioBase() {
-		imgBack = LoadGraph("graph/end_pict16.png");
+		imgBack = LoadGraph("graph/gameover.png");
 
 		mrK[0].set(-100, -100, "graph/sprite11.png", 0);
 		mrK[1].set(-100, -100, "graph/sprite12.png", 0);
@@ -64,7 +64,7 @@ public:
 		// e‚Ìo—Í‚ğã‘‚«
 		SetBackgroundColor(0, 0, 0);
 		DrawBox(-1, -1, 641, 481, Black, TRUE);
-		DrawExtendGraph(0, -50, 640, 380, imgBack, FALSE);
+		DrawExtendGraph(0, -20, 640, 460, imgBack, FALSE);
 
 		int res = ScenarioBase::show();
 		return res;
