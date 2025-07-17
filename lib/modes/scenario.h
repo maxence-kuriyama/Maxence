@@ -28,7 +28,7 @@ public:
 
 		mrK[0].set(170, 30);
 		mrK[0].setExpand(SPRITE_EXPAND_RATE, 72, 85);
-		mrK[0].setSerialImages(16, "graph/move_test", 1);
+		mrK[0].setSerialImages(16, "graph/move", 1);
 		mrK[1].set(320, 80, "graph/sprite12.png", 1);
 		mrK[2].set(200, 230, "graph/sprite13.png", 1);
 		mrK[3].set(500, 260, "graph/sprite14.png", 1);
