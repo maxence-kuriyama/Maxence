@@ -5,10 +5,13 @@
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
+#include "lib/components/menu.h"
 #include "lib/components/sprite.h"
 
 void init_ending_text(string* job, string* who);
 
+const int ENDING_SKIP_X(540);
+const int ENDING_SKIP_Y(440);
 const int ENDING_RESET_X(480);
 const int ENDING_RESET_Y(440);
 
@@ -34,7 +37,9 @@ private:
 	double cnt = 0.0;
 	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
 
-	Menu menu;
+	Menu menuSkip;
+	Button btnSkip;
+	Menu menuReset;
 	Button btnReset;
 	int strColorMenu = GetColor(255, 255, 255);
 
@@ -184,11 +189,8 @@ public:
 		drawFin();
 		fadeoutMusic();
 
+		if (FlagStore::isDebug()) skip();
 		if (reset()) return MODE_TITLE;
-
-		if (cnt > 60.0 && FlagStore::isDebug() && UserInput::onKeyEndingDebug()) {
-			cnt = 5900.0;
-		}
 
 		return MODE_ENDING;
 	}
@@ -220,8 +222,17 @@ private:
 		init_ending_text(job, who);
 
 		// ボタン初期化
+		btnSkip.initialize(ENDING_SKIP_X, ENDING_SKIP_Y, "スキップ");
+		menuSkip.set(&btnSkip, 1);
 		btnReset.initializeUsingLabelLen(ENDING_RESET_X, ENDING_RESET_Y, "タイトルに戻る");
-		menu.set(&btnReset, 1);
+		menuReset.set(&btnReset, 1);
+	}
+
+	void skip() {
+		if (cnt <= 280.0 || cnt > 5600.0) return;
+
+		int choice = menuSkip.choose(strColorMenu);
+		if (choice == 0) cnt = 5700.0;
 	}
 
 	void fadeinMusic() {
@@ -294,7 +305,7 @@ private:
 	bool reset() {
 		if (cnt <= 6200.0) return false;
 
-		int choice = menu.choose(strColorMenu);
+		int choice = menuReset.choose(strColorMenu);
 		return (choice == 0);
 	}
 };
