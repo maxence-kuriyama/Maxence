@@ -9,6 +9,9 @@
 
 void init_ending_text(string* job, string* who);
 
+const int ENDING_RESET_X(480);
+const int ENDING_RESET_Y(440);
+
 //エンディング管理用クラス
 // 単体での使用を想定
 class Ending {
@@ -30,6 +33,10 @@ private:
 
 	double cnt = 0.0;
 	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
+
+	Menu menu;
+	Button btnReset;
+	int strColorMenu = GetColor(255, 255, 255);
 
 public:
 	Sprite mrK[4];
@@ -177,11 +184,17 @@ public:
 		drawFin();
 		fadeoutMusic();
 
-		return 0;
+		if (reset()) return MODE_TITLE;
+
+		if (cnt > 60.0 && FlagStore::isDebug() && UserInput::onKeyEndingDebug()) {
+			cnt = 5900.0;
+		}
+
+		return MODE_ENDING;
 	}
 
 	void route(Mode& mode, int res) {
-		if (UserInput::onKeyEndingDebug()) {
+		if (res == MODE_TITLE) {
 			Music::unloadAll();
 			initialize();
 			mode.goTitle();
@@ -205,6 +218,10 @@ private:
 	void initialize() {
 		cnt = 0.0;
 		init_ending_text(job, who);
+
+		// ボタン初期化
+		btnReset.initializeUsingLabelLen(ENDING_RESET_X, ENDING_RESET_Y, "タイトルに戻る");
+		menu.set(&btnReset, 1);
 	}
 
 	void fadeinMusic() {
@@ -272,6 +289,13 @@ private:
 				DrawStringToHandle(270, 520.0 - 1.2 * 270.0, "Fin", White, Font4);
 			}
 		}
+	}
+
+	bool reset() {
+		if (cnt <= 6200.0) return false;
+
+		int choice = menu.choose(strColorMenu);
+		return (choice == 0);
 	}
 };
 
