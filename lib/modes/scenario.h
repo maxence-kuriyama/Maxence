@@ -42,7 +42,6 @@ public:
 		sceneList.initialize(scenes);
 
 		initialize();
-		msg.initialize();
 	}
 
 private:
