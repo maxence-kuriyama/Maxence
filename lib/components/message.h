@@ -56,7 +56,7 @@ public:
 		sprite[3].set(x, y, "graph/sprite13.png");
 		sprite[4].set(x, y, "graph/sprite14.png");
 		sprite[5].set(x, y, "graph/sprite15.png");
-		isShown = false;
+		setEmpty();
 	}
 
 	void initialize(int srcIniX, int srcEndX) {

@@ -91,6 +91,8 @@ public:
 		return res;
 	}
 
+	void debugDump() {}
+
 	void activate(int srcWho) {
 		who = srcWho;
 		startTalkMrK(who);
