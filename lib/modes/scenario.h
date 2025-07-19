@@ -355,7 +355,18 @@ public:
 private:
 
 	void save() {
+		nlohmann::json content = build_save_content();
+		save(content);
+	}
+
+	void save(nlohmann::json content) {
 		Encrypter encrypter(saveFilePath);
+		encrypter.write(content);
+
+		battle.save(saveGameFilePath);
+	}
+
+	nlohmann::json build_save_content() {
 		nlohmann::json data = {
 			{"flg", sceneList.getCurrentId()},
 			{"onBattle", battle.isOnGame()},
@@ -368,9 +379,23 @@ private:
 			{"music_name1", music_name[1]},
 			{"numContinue", numContinue},
 		};
-		encrypter.write(data);
+		return data;
+	}
 
-		battle.save(saveGameFilePath);
+	nlohmann::json build_save_content_for_lost() {
+		nlohmann::json data = {
+			{"flg", sceneList.getCurrentId() - 4},
+			{"onBattle", false},
+			{"battle_trigger", battle.getTrigger()},
+			{"mrk_trigger0", mrK[0].trigger},
+			{"mrk_trigger1", mrK[1].trigger},
+			{"mrk_trigger2", mrK[2].trigger},
+			{"mrk_trigger3", mrK[3].trigger},
+			{"music_name0", music_name[0]},
+			{"music_name1", music_name[1]},
+			{"numContinue", numContinue + 1},
+		};
+		return data;
 	}
 
 	void loadScenario(int flg_saved) {
@@ -485,8 +510,9 @@ private:
 
 			msg.readNext(SCENARIO_MSG_LOST_BATTLE, MESSAGE_WHO_DESC);
 			if (state.isOnReturnOrClicked() && msg.skip()) {
-				numContinue += 1;
-				// autosave
+				nlohmann::json content = build_save_content_for_lost();
+				save(content);
+
 				gameover.activate(who);
 			}
 		}
