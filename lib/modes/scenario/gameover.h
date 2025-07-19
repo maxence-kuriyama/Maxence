@@ -1,5 +1,13 @@
 #pragma once
 
+#include "lib/components/menu.h"
+#include "./scenario_base.h"
+
+const int GAMEOVER_SAVE_X(200);
+const int GAMEOVER_SAVE_Y(TEXT_SAVE_Y);
+const int GAMEOVER_RESET_X(360);
+const int GAMEOVER_RESET_Y(TEXT_RESET_Y);
+
 // シナリオ管理用クラス
 class GameOver : public ScenarioBase {
 
@@ -25,6 +33,7 @@ public:
 
 private:
 	int who = MESSAGE_WHO_DESC; // 誰に負けたか
+	bool continueFlag = false;
 	int imgBack;
 	unsigned int Black = GetColor(0, 0, 0);
 
@@ -58,7 +67,7 @@ private:
 		{ "999",	-1,						"" },
 	};
 	struct Saying sayings3[8] = {
-		{ "10",		MESSAGE_WHO_GREEN,		"おやすみなさい" },
+		{ "10",		MESSAGE_WHO_GREEN,		"…おやすみなさい" },
 		{ "10",		MESSAGE_WHO_GREEN,		"貴方の犠牲は無駄にはしませんよ…" },
 		{ "999",	-1,						"" },
 	};
@@ -68,9 +77,10 @@ public:
 	void initialize() {
 		ScenarioBase::initialize();
 		who = MESSAGE_WHO_DESC;
+		continueFlag = false;
 		// ボタン初期化
-		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
-		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
+		btnSave.initializeUsingLabelLen(GAMEOVER_SAVE_X, GAMEOVER_SAVE_Y, "コンティニュー");
+		btnReset.initialize(GAMEOVER_RESET_X, GAMEOVER_RESET_Y, "タイトル");
 		menu.set(btnSave, btnReset);
 	}
 
@@ -82,6 +92,7 @@ public:
 
 		Scene scene = sceneList.get();
 		bool is_reset = (!hasMsg(scene) && continueOrReset());
+		if (goingContinue()) return MODE_SCENARIO;
 
 		int res = ScenarioBase::show();
 
@@ -102,6 +113,10 @@ public:
 		return (who != MESSAGE_WHO_DESC);
 	}
 
+	bool goingContinue() {
+		return continueFlag;
+	}
+
 private:
 
 	// override
@@ -115,9 +130,13 @@ private:
 
 		// continue
 		// コンティニューフラグを立てて、シナリオ側で検知
-		// if (choice == 0) continue();
+		if (choice == 0) goContinue();
 
 		//reset
 		return (choice == 1);
+	}
+
+	void goContinue() {
+		continueFlag = true;
 	}
 };

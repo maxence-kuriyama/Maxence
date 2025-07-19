@@ -506,7 +506,11 @@ private:
 
 	int lostBattle(int who) {
 		if (battle.isLost()) {
-			if (gameover.isActivated()) return gameover.show();
+			if (gameover.isActivated()) {
+				int res = gameover.show();
+				if (gameover.goingContinue()) load();
+				return res;
+			}
 
 			msg.readNext(SCENARIO_MSG_LOST_BATTLE, MESSAGE_WHO_DESC);
 			if (state.isOnReturnOrClicked() && msg.skip()) {
