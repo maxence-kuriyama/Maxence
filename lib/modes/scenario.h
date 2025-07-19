@@ -50,6 +50,7 @@ private:
 	int endingCnt = 0;
 	int imgRoom;
 	int imgCard;
+	int numContinue = 0;
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
 	int strColorDebug = GetColor(100, 30, 30);
@@ -244,6 +245,7 @@ public:
 		mrK[0].set(170, 30);
 		mrK[0].turn(SPRITE_KEY_DOWN);
 		endingCnt = 0;
+		numContinue = 0;
 	}
 
 	int show(COM& com) {
@@ -309,6 +311,7 @@ public:
 
 		DrawFormatString(245, 165, strColor, "trigger: %s", battle.getTrigger());
 		DrawFormatString(245, 185, strColor, "eqX: %d", eqX);
+		DrawFormatString(245, 205, strColor, "continue: %d", numContinue);
 
 		ScenarioBase::debugDump();
 	}
@@ -340,6 +343,7 @@ public:
 		loadScenario(res["flg"]);
 		battle.load(res, saveGameFilePath);
 
+		numContinue = res["numContinue"];
 		mrK[0].trigger = res["mrk_trigger0"];
 		mrK[1].trigger = res["mrk_trigger1"];
 		mrK[2].trigger = res["mrk_trigger2"];
@@ -362,6 +366,7 @@ private:
 			{"mrk_trigger3", mrK[3].trigger},
 			{"music_name0", music_name[0]},
 			{"music_name1", music_name[1]},
+			{"numContinue", numContinue},
 		};
 		encrypter.write(data);
 
@@ -480,6 +485,8 @@ private:
 
 			msg.readNext(SCENARIO_MSG_LOST_BATTLE, MESSAGE_WHO_DESC);
 			if (state.isOnReturnOrClicked() && msg.skip()) {
+				numContinue += 1;
+				// autosave
 				gameover.activate(who);
 			}
 		}
