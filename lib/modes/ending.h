@@ -5,11 +5,15 @@
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
+#include "lib/components/menu.h"
 #include "lib/components/sprite.h"
-#include "lib/components/game.h"
-#include "lib/components/logo.h"
 
 void init_ending_text(string* job, string* who);
+
+const int ENDING_SKIP_X(540);
+const int ENDING_SKIP_Y(440);
+const int ENDING_RESET_X(480);
+const int ENDING_RESET_Y(440);
 
 //エンディング管理用クラス
 // 単体での使用を想定
@@ -32,12 +36,16 @@ private:
 
 	double cnt = 0.0;
 	double cntInc = 30.0 / FPS;		// 1Fあたりのcntの増分
-	Logo logo;
-	Game game;
+
+	Menu menuSkip;
+	Button btnSkip;
+	Menu menuReset;
+	Button btnReset;
+	int strColorMenu = GetColor(255, 255, 255);
 
 public:
-	MrK mrK[4];
-	MrK deer;
+	Sprite mrK[4];
+	Sprite deer;
 
 	Ending() {
 		for (int i = 1; i <= 20; ++i) {
@@ -45,9 +53,9 @@ public:
 			pict_name = "graph/end_pict" + to_string(i) + ".png";
 			end_pict[i - 1] = LoadGraph(pict_name.c_str());
 		}
-		mrK[0].set(-100, 415, "graph/sprite1.png");
-		mrK[1].set(-100, 425, "graph/sprite2.png");
-		mrK[2].set(-100, 420, "graph/sprite1.png");
+		mrK[0].set(-100, 415, "graph/sprite0.png");
+		mrK[1].set(-100, 425, "graph/sprite1.png");
+		mrK[2].set(-100, 420, "graph/sprite2.png");
 		mrK[3].img[0] = LoadGraph("graph/sprite3.png");
 		mrK[3].img[1] = LoadGraph("graph/sprite4.png");
 		mrK[3].img[2] = LoadGraph("graph/sprite3.png");
@@ -66,9 +74,6 @@ public:
 		// 実効FPSを元にアニメーション速度を調整
 		int fps = Synchronizer::actualFps();
 		cntInc = 30.2 / fps;
-
-		drawGameBoard();
-		logo.draw();
 
 		// フェードイン
 		fadeinMusic();
@@ -184,19 +189,18 @@ public:
 		drawFin();
 		fadeoutMusic();
 
-		return 0;
+		if (FlagStore::isDebug()) skip();
+		if (reset()) return MODE_TITLE;
+
+		return MODE_ENDING;
 	}
 
 	void route(Mode& mode, int res) {
-		if (UserInput::onKeyEndingDebug()) {
+		if (res == MODE_TITLE) {
 			Music::unloadAll();
 			initialize();
 			mode.goTitle();
 		}
-	}
-
-	void copyGame(Game& src) {
-		game = src;
 	}
 
 	void debugDump() {
@@ -216,15 +220,19 @@ private:
 	void initialize() {
 		cnt = 0.0;
 		init_ending_text(job, who);
+
+		// ボタン初期化
+		btnSkip.initialize(ENDING_SKIP_X, ENDING_SKIP_Y, "スキップ");
+		menuSkip.set(&btnSkip, 1);
+		btnReset.initializeUsingLabelLen(ENDING_RESET_X, ENDING_RESET_Y, "タイトルに戻る");
+		menuReset.set(&btnReset, 1);
 	}
 
-	void drawGameBoard() {
-		game.drawBase();
-		game.drawGlobalState();
-		game.drawHistLast();
-		game.drawNextField();
-		game.drawLocalState();
-		game.drawCurrentCoord();
+	void skip() {
+		if (cnt <= 280.0 || cnt > 5600.0) return;
+
+		int choice = menuSkip.choose(strColorMenu);
+		if (choice == 0) cnt = 5700.0;
 	}
 
 	void fadeinMusic() {
@@ -293,6 +301,13 @@ private:
 			}
 		}
 	}
+
+	bool reset() {
+		if (cnt <= 6200.0) return false;
+
+		int choice = menuReset.choose(strColorMenu);
+		return (choice == 0);
+	}
 };
 
 void init_ending_text(string* job, string* who) {
@@ -300,33 +315,33 @@ void init_ending_text(string* job, string* who) {
 	job[0] = "企画";
 	who[0] = "兼 総監督 Mr.A";
 	job[1] = "原案・脚本";
-	who[1] = "想像力の権化\n Mr.A & Mr.O";
-	job[2] = "キャラクター\n デザイン";
-	who[2] = "未来の世界の\n クリエイター\n  Mr.O & Mr.A";
-	job[3] = "グラフィック";
-	who[3] = "既成概念など知らぬ\n Mr.O";
-	job[4] = "ドット絵";
-	who[4] = "激震のマウスカーソル\n Mr.T";
-	job[5] = "3Dモデル";
-	who[5] = "インテリジェンス\n デザイナー\n  Mr.O";
-	job[6] = "動画";
-	who[6] = "踊り狂う探究心\n Mr.O";
-	job[7] = "システム\n デザイン";
-	who[7] = "目先の仕事は\n 投げるもの\n  Mr.T";
-	job[8] = "プログラム";
-	who[8] = "量産型九龍城砦\n Mr.T";
-	job[9] = "音楽";
-	who[9] = "破壊と調和の境界線\n Mr.O & Mr.A";
-	job[10] = "セリフ";
-	who[10] = "唯一無二の有頂天\n Mr.A";
-	job[11] = "ゲーム\n デザイン";
-	who[11] = "悪乗りの玉手箱\n Mr.T & Mr.O";
-	job[12] = "タイトルロゴ\n デザイン";
-	who[12] = "すみませんでした\n Mr.T";
+	who[1] = "とめどなき想像力\n Mr.A & Mr.O";
+	job[2] = "タイトルロゴ";
+	who[2] = "深夜のテンション\n Mr.T";
+	job[3] = "3Dモデル";
+	who[3] = "未来の世界の\n クリエイター\n Mr.O";
+	job[4] = "グラフィック";
+	who[4] = "永遠の17歳\n Mr.O";
+	job[5] = "ゲームデザイン";
+	who[5] = "混沌の体現者\n Mr.T & Mr.Ok\n  & Mr.O";
+	job[6] = "プログラム";
+	who[6] = "量産型九龍城砦\n Mr.T";
+	job[7] = "キャラクター\n デザイン";
+	who[7] = "混沌の体現者\n Mr.O & Mr.A";
+	job[8] = "ドット絵";
+	who[8] = "激震のマウスカーソル\n Mr.T";
+	job[9] = "BGM 作曲";
+	who[9] = "破壊と調和の境界線\n Mr.O & Mr.A\n  & Mr.T";
+	job[10] = "BGM 編曲";
+	who[10] = "踊り狂う探究心\n Mr.O";
+	job[11] = "Sound Effect";
+	who[11] = "キックが効いてる\n Mr.K";
+	job[12] = "セリフ";
+	who[12] = "唯一無二の有頂天\n Mr.A";
 	job[13] = "デバッグ\n テストプレイ";
-	who[13] = "Densuke Shiraishi";
+	who[13] = "うどん屋\n デンノスケ";
 	job[14] = "スペシャル\n サンクス";
-	who[14] = "Maxence";
+	who[14] = "遠い国から\n Maxence";
 	job[15] = "And YOU";
 	who[15] = "Thank you\n for playing!!";
 
