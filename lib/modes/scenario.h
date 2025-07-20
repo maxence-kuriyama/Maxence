@@ -50,15 +50,26 @@ public:
 		sceneList.initialize(scenes);
 
 		initialize();
+
+		// g—p‚·‚éSE‚ğˆê“xƒƒ‚ƒŠ‚Éæ‚¹‚Ä‚¨‚­
+		SetUseASyncLoadFlag(TRUE);
+		seHandleKick = LoadSoundMem("sound/kick01.m4a");
+		SetUseASyncLoadFlag(FALSE);
+	}
+
+	~Scenario() {
+		DeleteSoundMem(seHandleKick);
 	}
 
 private:
 	int eqX = 0;
 	int eqY = 0; // eq = earthquake
 	int endingCnt = 0;
+	int numContinue = 0;
+
 	int imgRoom;
 	int imgCard;
-	int numContinue = 0;
+	int seHandleKick = 0;
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
 	int strColorDebug = GetColor(100, 30, 30);
