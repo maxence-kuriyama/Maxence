@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lib/components/menu.h"
-#include "./scenario_base.h"
+#include "../scenario_base.h"
 
 const int GAMEOVER_SAVE_X(200);
 const int GAMEOVER_SAVE_Y(TEXT_SAVE_Y);
@@ -53,7 +53,8 @@ private:
 	};
 	struct Saying sayings0[8] = {
 		{ "10",		MESSAGE_WHO_YELLOW,		"édï˚Ç»Ç¢" },
-		{ "10",		MESSAGE_WHO_YELLOW,		"ñlÇÕÇ±ÇÃê¢äEÇ∆àÍèèÇ…ñ∞ÇÈÇÊ" },
+		{ "10",		MESSAGE_WHO_YELLOW,		"ñlÇÕÇ±ÇÃê¢äEÇ∆ã§Ç…ñ≈Ç—ÇÈÇæÇØÇæ" },
+		{ "10",		MESSAGE_WHO_YELLOW,		"Ç‹ÇΩâÔÇ®Ç§" },
 		{ "999",	-1,						"" },
 	};
 	struct Saying sayings1[8] = {

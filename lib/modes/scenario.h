@@ -12,6 +12,14 @@ const int SCENE_ACTION_WAIT(12);
 const int SCENE_ACTION_ENDING(13);
 const int SCENE_ACTION_LOSE(14);
 
+const int SCENARIO_ID_BEFORE_RED(17);
+const int SCENARIO_ID_AFTER_RED(25);
+const int SCENARIO_ID_BEFORE_GREEN(37);
+const int SCENARIO_ID_AFTER_GREEN(45);
+const int SCENARIO_ID_BEFORE_BLUE(56);
+const int SCENARIO_ID_AFTER_BLUE(64);
+const int SCENARIO_ID_BEFORE_YELLOW(79);
+
 const int MESSAGE_WHO_CARD(11);
 
 const string SCENARIO_MSG_LOST_BATTLE("îsñkÇµÇƒÇµÇ‹Ç¡ÇΩÅc\nñ⁄ÇÃëOÇ™à√Ç≠Ç»ÇÈÅc");
@@ -384,18 +392,32 @@ private:
 
 	nlohmann::json build_save_content_for_lost() {
 		nlohmann::json data = {
-			{"flg", sceneList.getCurrentId() - 4},
+			{"flg", getContinueId()},
 			{"onBattle", false},
 			{"battle_trigger", battle.getTrigger()},
-			{"mrk_trigger0", mrK[0].trigger},
-			{"mrk_trigger1", mrK[1].trigger},
-			{"mrk_trigger2", mrK[2].trigger},
-			{"mrk_trigger3", mrK[3].trigger},
-			{"music_name0", music_name[0]},
-			{"music_name1", music_name[1]},
+			{"mrk_trigger0", SPRITE_TRIGGER_FIRED},
+			{"mrk_trigger1", SPRITE_TRIGGER_FIRED},
+			{"mrk_trigger2", SPRITE_TRIGGER_FIRED},
+			{"mrk_trigger3", SPRITE_TRIGGER_FIRED},
+			{"music_name0", getContinueMusic()},
+			{"music_name1", music_name[0]},
 			{"numContinue", numContinue + 1},
 		};
 		return data;
+	}
+
+	int getContinueId() {
+		int currentId = sceneList.getCurrentId();
+		if (currentId < SCENARIO_ID_AFTER_RED) return SCENARIO_ID_BEFORE_RED;
+		if (currentId < SCENARIO_ID_AFTER_GREEN) return SCENARIO_ID_BEFORE_GREEN;
+		if (currentId < SCENARIO_ID_AFTER_BLUE) return SCENARIO_ID_BEFORE_BLUE;
+		return SCENARIO_ID_BEFORE_YELLOW;
+	}
+
+	string getContinueMusic() {
+		int currentId = sceneList.getCurrentId();
+		if (currentId < SCENARIO_ID_AFTER_BLUE) return "sound/bgm03.ogg";
+		return "sound/bgm07.ogg";
 	}
 
 	void loadScenario(int flg_saved) {
