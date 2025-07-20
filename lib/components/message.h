@@ -24,7 +24,7 @@ int MultiByteLength(const char* String);
 // 一括管理ではなく各キャラクターオブジェクトに紐づけるべきか？
 class Message {
 private:
-	MrK sprite[6];
+	Sprite sprite[6];
 	string text;
 	int strColor = GetColor(255, 255, 255);
 	int boxColor = GetColor(250, 250, 150);
@@ -56,7 +56,7 @@ public:
 		sprite[3].set(x, y, "graph/sprite13.png");
 		sprite[4].set(x, y, "graph/sprite14.png");
 		sprite[5].set(x, y, "graph/sprite15.png");
-		isShown = false;
+		setEmpty();
 	}
 
 	void initialize(int srcIniX, int srcEndX) {

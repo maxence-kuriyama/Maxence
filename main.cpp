@@ -120,7 +120,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (FlagStore::isDebug() && UserInput::onKeyEndingDebug()) {
 			if (mode.current() != MODE_ENDING) {
 				Music::unloadAll();
-				ending.copyGame(battle.game);
 				mode.goEnding();
 			}
 		}
@@ -140,6 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
+	Music::unloadAll();
 	InitGraph();
 	DxLib_End();
 
