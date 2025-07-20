@@ -56,13 +56,6 @@ public:
 		btnSave.initialize(TEXT_SAVE_X, TEXT_SAVE_Y, "中断");
 		btnReset.initialize(TEXT_RESET_X, TEXT_RESET_Y, "タイトル");
 		menu.set(btnSave, btnReset);
-
-		// カットイン画像初期化
-		int Cutin1 = LoadGraph("graph/cutin1.png");
-		int Cutin10 = LoadGraph("graph/cutin10.png");
-		GraphBlend(Cutin1, Cutin10, 255, DX_GRAPH_BLEND_MULTIPLE);
-		cutin.image0 = Cutin1;
-		cutin.image1 = Cutin10;
 	}
 
 	~Battle() {}
@@ -247,7 +240,7 @@ private:
 		if (FlagStore::isDebug()) {
 			// カットインを入れる
 			if (UserInput::onKeyCutinDebug()) {
-				cutin.flg = 1;
+				cutin.start();
 			}
 
 			// 学習機械の出力を見る
