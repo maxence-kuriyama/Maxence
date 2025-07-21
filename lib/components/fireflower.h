@@ -63,7 +63,7 @@ public:
 		else {
 			initialize();
 		}
-		if (sound && cnt == 80) PlaySound("sound/owin31.wav", NULL, SND_ASYNC);
+		if (sound && cnt == 80) PlaySound("sound/bgm00.wav", NULL, SND_ASYNC);
 	}
 
 	void draw() {
