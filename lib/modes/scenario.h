@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>
 #include "lib/mode.h"
 #include "lib/utils/music.h"
 #include "lib/utils/encrypter.h"
@@ -19,6 +20,7 @@ const int SCENARIO_ID_AFTER_GREEN(45);
 const int SCENARIO_ID_BEFORE_BLUE(56);
 const int SCENARIO_ID_AFTER_BLUE(64);
 const int SCENARIO_ID_BEFORE_YELLOW(79);
+const int SCENARIO_MAX_EQ_CNT(4);
 
 const int MESSAGE_WHO_CARD(11);
 
@@ -31,7 +33,7 @@ public:
 	Sprite card;
 
 	Scenario() {
-		imgRoom = LoadGraph("graph/room.bmp");
+		imgRoom = LoadGraph("graph/room0.png");
 		imgCard = LoadGraph("graph/card.bmp");
 
 		mrK[0].set(170, 30);
@@ -50,15 +52,29 @@ public:
 		sceneList.initialize(scenes);
 
 		initialize();
+
+		// Žg—p‚·‚éSE‚ðˆê“xƒƒ‚ƒŠ‚Éæ‚¹‚Ä‚¨‚­
+		SetUseASyncLoadFlag(TRUE);
+		seHandleKick = LoadSoundMem("sound/kick01.m4a");
+		SetUseASyncLoadFlag(FALSE);
+	}
+
+	~Scenario() {
+		DeleteSoundMem(seHandleKick);
+		DeleteGraph(imgRoom);
+		DeleteGraph(imgCard);
 	}
 
 private:
+	int eqCnt = 0;
 	int eqX = 0;
 	int eqY = 0; // eq = earthquake
 	int endingCnt = 0;
+	int numContinue = 0;
+
 	int imgRoom;
 	int imgCard;
-	int numContinue = 0;
+	int seHandleKick = 0;
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
 	int strColorDebug = GetColor(100, 30, 30);
@@ -454,8 +470,22 @@ private:
 		else {
 			// stopEQ
 			eqX = 0;
+			// ”wŒi·‚µ‘Ö‚¦
+			eqCnt++;
+			updateImgRoom();
 			goNext();
 		}
+	}
+
+	void updateImgRoom() {
+		if (eqCnt > SCENARIO_MAX_EQ_CNT) eqCnt = SCENARIO_MAX_EQ_CNT;
+
+		ostringstream ss;
+		ss << "./graph/room" << eqCnt << ".png";
+		string filename = ss.str();
+
+		DeleteGraph(imgRoom);
+		imgRoom = LoadGraph(filename.c_str());
 	}
 
 	int prepareEnding(string how) {
