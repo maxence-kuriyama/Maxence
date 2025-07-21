@@ -1,18 +1,19 @@
 #pragma once
+#pragma once
 
 #include "lib/components/anime.h"
 
 // 試合中のアニメーションクラス
-class SlideCutin : public AnimeBase {
+class FadeCutin : public AnimeBase {
 private:
 	int image0 = NULL;
 	int image1 = NULL;
 
 public:
 
-	SlideCutin() {
-		image0 = LoadGraph("graph/cutin1_0.png");
-		image1 = LoadGraph("graph/cutin1_1.png");
+	FadeCutin() {
+		image0 = LoadGraph("graph/cutin2_0.png");
+		image1 = LoadGraph("graph/cutin2_1.png");
 		GraphBlend(image0, image1, 255, DX_GRAPH_BLEND_MULTIPLE);
 
 		AnimeBase::initialize();

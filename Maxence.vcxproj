@@ -173,6 +173,8 @@
     <ClInclude Include="lib\battle\comment.h" />
     <ClInclude Include="lib\battle\game.h" />
     <ClInclude Include="lib\battle\game\comment.h" />
+    <ClInclude Include="lib\components\anime\fade_cutin.h" />
+    <ClInclude Include="lib\components\anime\slide_cutin.h" />
     <ClInclude Include="lib\modes\music_room\bg_character.h" />
     <ClInclude Include="lib\components\board.h" />
     <ClInclude Include="lib\components\board\field.h" />
