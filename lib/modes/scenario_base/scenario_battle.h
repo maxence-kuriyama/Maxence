@@ -4,6 +4,7 @@
 #include "lib/utils/com.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
+#include "lib/utils/character.h"
 #include "lib/components/game.h"
 #include "lib/components/anime/fade_cutin.h"
 
@@ -53,6 +54,8 @@ public:
 		game.prepare(player1, player2);
 		game.setVsCOM();
 		onGame = true;
+
+		cutin.setCharacter(getCharacter(player2));
 	}
 
 	void startTutorial(int player1, int player2) {
@@ -155,6 +158,27 @@ public:
 		trigger = res["battle_trigger"];
 		if (onGame) {
 			game.load(filePath);
+		}
+	}
+
+private:
+
+	int getCharacter(int player) {
+		switch (player) {
+		case BATTLE_PLAYER_YELLOW:
+			return CHARACTER_WHO_YELLOW;
+		case BATTLE_PLAYER_BLUE:
+			return CHARACTER_WHO_BLUE;
+		case BATTLE_PLAYER_RED:
+			return CHARACTER_WHO_RED;
+		case BATTLE_PLAYER_GREEN:
+			return CHARACTER_WHO_GREEN;
+		case BATTLE_PLAYER_DEER:
+			return CHARACTER_WHO_DEER;
+		case BATTLE_PLAYER_PLAYER:
+			return CHARACTER_WHO_PL_YELLOW;
+		default:
+			return CHARACTER_WHO_NONE;
 		}
 	}
 };

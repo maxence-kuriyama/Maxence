@@ -4,7 +4,7 @@
 #include "lib/utils/character.h"
 
 const int FADE_CUTIN_RIGHT_CHARA_X = 400;
-const int FADE_CUTIN_RIGHT_CHARA_Y = 50;
+const int FADE_CUTIN_RIGHT_CHARA_Y = 0;
 
 // 試合中のアニメーションクラス
 class FadeCutin : public AnimeBase {
@@ -19,12 +19,19 @@ public:
 		initialize();
 	}
 
+	void setCharacter(int who) {
+		chara.initialize(who);
+		chara.alpha = 0;
+		chara.x = FADE_CUTIN_RIGHT_CHARA_X;
+		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
+	}
+
 private:
 
 	void initialize() {
 		AnimeBase::initialize();
 
-		chara.initialize(CHARACTER_WHO_RED);
+		chara.initialize();
 		chara.alpha = 0;
 		chara.x = FADE_CUTIN_RIGHT_CHARA_X;
 		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
