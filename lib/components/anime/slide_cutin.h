@@ -15,12 +15,16 @@ public:
 		image1 = LoadGraph("graph/cutin1_1.png");
 		GraphBlend(image0, image1, 255, DX_GRAPH_BLEND_MULTIPLE);
 
+		initialize();
+	}
+
+private:
+
+	void initialize() {
 		AnimeBase::initialize();
 	}
 
-	void update() {
-		if (!active) return;
-
+	void _update() {
 		if (cnt <= 15) {
 			slideIn();
 		}
@@ -30,12 +34,7 @@ public:
 		else if (cnt <= 120) {
 			slideOut();
 		}
-		cnt++;
-
-		if (cnt > 120) initialize();
 	}
-
-private:
 
 	void slideIn() {
 		SetDrawBlendMode(DX_BLENDMODE_SUB, 255);

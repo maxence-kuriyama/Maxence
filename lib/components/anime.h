@@ -16,10 +16,21 @@ public:
 		active = true;
 	}
 
+	void update() {
+		if (!active) return;
+
+		_update();
+		cnt++;
+
+		if (cnt > 120) initialize();
+	}
+
 protected:
 
-	void initialize() {
+	virtual void initialize() {
 		cnt = 0;
 		active = false;
 	}
+
+	virtual void _update() {}
 };

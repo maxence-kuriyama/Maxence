@@ -27,9 +27,17 @@ public:
 		initialize();
 	}
 
-	void update() {
-		if (!active) return;
+private:
 
+	void initialize() {
+		AnimeBase::initialize();
+
+		alpha = 0;
+		x = FADE_CUTIN_RIGHT_CHARA_X;
+		y = FADE_CUTIN_RIGHT_CHARA_Y;
+	}
+
+	void _update() {
 		if (cnt <= 15) {
 			alpha += 10;
 		}
@@ -41,19 +49,6 @@ public:
 		}
 		x -= 1;
 		display();
-		cnt++;
-
-		if (cnt > 120) initialize();
-	}
-
-private:
-
-	void initialize() {
-		AnimeBase::initialize();
-
-		alpha = 0;
-		x = FADE_CUTIN_RIGHT_CHARA_X;
-		y = FADE_CUTIN_RIGHT_CHARA_Y;
 	}
 
 	void display() {
