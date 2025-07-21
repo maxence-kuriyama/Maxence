@@ -223,6 +223,9 @@
     <ClInclude Include="lib\components\anime\slide_cutin.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="lib\modes\scenario\gameover.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Maxence.ico">
