@@ -50,9 +50,12 @@ private:
 		SetDrawScreen(screenHandle);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawBox(-1, -1, 641, 481, Black, TRUE);
-		chara.draw(screenHandle, DX_SCREEN_BACK);
+		chara.draw(screenHandle);
 
 		SetDrawScreen(DX_SCREEN_BACK);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DrawGraph(0, 0, screenHandle, TRUE);
+
 		DeleteGraph(screenHandle);
 	}
 };

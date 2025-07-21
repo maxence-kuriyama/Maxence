@@ -4,8 +4,8 @@
 
 const int BG_NUM(3);
 const int BG_SIZE_SCALE(10);
-const double BG_ALPHA_FRONT(210);
-const double BG_ALPHA_LAST(240);
+const double BG_ALPHA_FRONT(240);
+const double BG_ALPHA_LAST(120);
 const int BG_MIN_X(-100);
 const int BG_MAX_X(300);
 const int BG_MIN_Y(0);
@@ -45,13 +45,11 @@ public:
 		int screenHandle = MakeScreen(640, 480, TRUE);
 
 		for (int i = BG_NUM - 1; i >= 0; --i) {
-			int screenHandleSub = MakeScreen(640, 480, TRUE);
-			bg[i].draw(screenHandle, screenHandleSub);
-
-			DeleteGraph(screenHandle);
-			screenHandle = screenHandleSub;
+			bg[i].draw(screenHandle);
 		}
+
 		SetDrawScreen(DX_SCREEN_BACK);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawGraph(0, 0, screenHandle, TRUE);
 		DeleteGraph(screenHandle);
 	}

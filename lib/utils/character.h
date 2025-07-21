@@ -26,7 +26,7 @@ public:
 	int x = 0;
 	int y = 0;
 	int scale = 10;
-	int alpha = 255;
+	int alpha = 0;
 
 	Character& operator=(const Character& src);
 
@@ -48,21 +48,31 @@ public:
 		initialize();
 	}
 
-	void draw(int screen1, int screen2) {
-		//int screenHandle = MakeScreen(640, 480, TRUE);
-
+	// Ç‡Ç∆ÇÃscreenÇ…ÉLÉÉÉâï`âÊÇµÅAÇ∑Ç◊ÇƒìßâﬂÇµÇƒçƒï`âÊ
+	void draw(int screenHandle) {
+		int screen1 = MakeScreen(640, 480, TRUE);
+		int screen2 = MakeScreen(640, 480, TRUE);
+		
+		// screen1Ç…ì]é  & í«ãL
+		SetDrawScreen(screen1);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DrawGraph(0, 0, screenHandle, FALSE);
 		if (imgHandle != 0) {
-			SetDrawScreen(screen1);
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			DrawExtendGraph(x, y, x + w * scale, y + h * scale, imgHandle, TRUE);
 		}
-		
+
+		// screen2Ç…alpha-blend
 		SetDrawScreen(screen2);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawGraph(0, 0, screen1, TRUE);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		//DeleteGraph(screenHandle);
+		// Ç‡Ç∆ÇÃscreenÇ…ì]é 
+		SetDrawScreen(screenHandle);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DrawGraph(0, 0, screen2, TRUE);
+
+		DeleteGraph(screen1);
+		DeleteGraph(screen2);
 	}
 
 	int getWho() {
