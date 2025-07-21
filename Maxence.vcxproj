@@ -184,6 +184,7 @@
     <ClInclude Include="lib\modes\scenario_base\scenario_message.h" />
     <ClInclude Include="lib\modes\scenario_base\scene_list.h" />
     <ClInclude Include="lib\modes\scenario_base\state.h" />
+    <ClInclude Include="lib\utils\character.h" />
     <ClInclude Include="lib\utils\com.h" />
     <ClInclude Include="lib\comment.h" />
     <ClInclude Include="lib\components\draw_round_box.h" />
