@@ -5,15 +5,25 @@ class AnimeBase {
 protected:
 	int cnt = 0;
 	bool active = false;
+	int seHandle = 0;
 
 public:
 	
 	AnimeBase() {
 		initialize();
+
+		SetUseASyncLoadFlag(TRUE);
+		seHandle = LoadSoundMem("sound/kick02.m4a");
+		SetUseASyncLoadFlag(FALSE);
+	}
+
+	~AnimeBase() {
+		DeleteSoundMem(seHandle);
 	}
 
 	void start() {
 		active = true;
+		playSE();
 	}
 
 	void update() {
@@ -33,4 +43,8 @@ protected:
 	}
 
 	virtual void _update() {}
+
+	void playSE() {
+		PlaySoundMem(seHandle, DX_PLAYTYPE_BACK);
+	}
 };
