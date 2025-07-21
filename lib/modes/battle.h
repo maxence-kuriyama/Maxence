@@ -9,8 +9,8 @@
 #include "lib/components/menu.h"
 #include "lib/components/game.h"
 #include "lib/components/logo.h"
+#include "lib/components/anime.h"
 #include "./battle/camera.h"
-#include "./battle/anime.h"
 #include "./battle/comment.h"
 #include "./battle/result.h"
 

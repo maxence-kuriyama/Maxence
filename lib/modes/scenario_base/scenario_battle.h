@@ -5,11 +5,13 @@
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
 #include "lib/components/game.h"
+#include "lib/components/anime.h"
 
 using namespace std;
 
 class ScenarioBattle {
 protected:
+	Anime cutin;
 	Game game;
 	bool onGame = false;
 	string trigger = "";
@@ -30,8 +32,12 @@ public:
 	void show() {
 		if (!onGame) return;
 
-		game.drawBeforePlay();
-		game.drawAfterPlay();
+		if (FlagStore::isDebug() && UserInput::onKeyCutinDebug()) {
+			cutin.start();
+		}
+
+		showBefore();
+		showAfter();
 	}
 
 	void showBefore() {
@@ -40,6 +46,7 @@ public:
 
 	void showAfter() {
 		game.drawAfterPlay();
+		cutin.update();
 	}
 
 	void start(int player1, int player2) {
