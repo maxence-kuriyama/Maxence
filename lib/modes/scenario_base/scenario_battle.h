@@ -5,13 +5,13 @@
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
 #include "lib/components/game.h"
-#include "lib/components/anime.h"
+#include "lib/components/anime/slide_cutin.h"
 
 using namespace std;
 
 class ScenarioBattle {
 protected:
-	Anime cutin;
+	SlideCutin cutin;
 	Game game;
 	bool onGame = false;
 	string trigger = "";

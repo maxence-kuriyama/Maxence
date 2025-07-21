@@ -9,7 +9,7 @@
 #include "lib/components/menu.h"
 #include "lib/components/game.h"
 #include "lib/components/logo.h"
-#include "lib/components/anime.h"
+#include "lib/components/anime/slide_cutin.h"
 #include "./battle/camera.h"
 #include "./battle/comment.h"
 #include "./battle/result.h"
@@ -26,7 +26,7 @@ private:
 	Button btnSave;
 	Button btnReset;
 
-	Anime cutin;
+	SlideCutin cutin;
 	Camera camera;
 	Comment comment;
 	Logo logo;
