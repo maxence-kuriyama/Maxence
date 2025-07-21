@@ -203,7 +203,6 @@
     <ClInclude Include="lib\message.h" />
     <ClInclude Include="lib\modes\battle.h" />
     <ClInclude Include="lib\components\anime.h" />
-    <ClInclude Include="lib\modes\battle\camera.h" />
     <ClInclude Include="lib\modes\battle\comment.h" />
     <ClInclude Include="lib\modes\battle\result.h" />
     <ClInclude Include="lib\components\game.h" />

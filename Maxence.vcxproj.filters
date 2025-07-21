@@ -157,9 +157,6 @@
     <ClInclude Include="lib\modes\scenario\message.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\battle\camera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="lib\components\game.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

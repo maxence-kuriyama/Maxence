@@ -10,7 +10,6 @@
 #include "lib/components/game.h"
 #include "lib/components/logo.h"
 #include "lib/components/anime/slide_cutin.h"
-#include "./battle/camera.h"
 #include "./battle/comment.h"
 #include "./battle/result.h"
 
@@ -27,7 +26,6 @@ private:
 	Button btnReset;
 
 	SlideCutin cutin;
-	Camera camera;
 	Comment comment;
 	Logo logo;
 	Result result;
@@ -49,7 +47,6 @@ public:
 		UserInput::reset();
 
 		game.initialize();
-		camera.initialize();
 		comment.initialize();
 
 		// ƒ{ƒ^ƒ“‰Šú‰»
