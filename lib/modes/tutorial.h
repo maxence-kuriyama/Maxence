@@ -9,12 +9,16 @@ class Tutorial : public ScenarioBase {
 
 public:
 
-	Tutorial() : ScenarioBase() {
+	Tutorial() {
+		imgRoom = LoadGraph("graph/room0.png");
+
 		sceneList.initialize(scenes);
-		btnReset.initialize(260, 440, "タイトル");
+
+		initialize();
 	}
 
 private:
+	int imgRoom;
 	Button btnReset;
 	int strColorMenu = GetColor(255, 255, 255);
 
@@ -23,13 +27,15 @@ private:
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_DESC,		"swap" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"――世界は１つの部屋で出来ている" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"チュートリアルテスト" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,	"まあ" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,	"とにかく" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,	"バトるか" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"おや？君は…\nどこかで会ったような…" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"まあ、それはともかくとして" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"君はこの世界の決闘方法を知る必要がある" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"とにかくやってみようか" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
-		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,	"start" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,	"バトル画面やで" },
+		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"start" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"決闘はこの盤面で行われるよ\n赤い枠が縦に3個、横に3個並んでいるね" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"この赤い枠はそれぞれが3×3の小盤面だよ\n全体は9×9の81マスで構成されているんだ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"まずは一手、指してみよう\nマウスカーソルでマスを選択して、右クリックで決定だ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
@@ -45,19 +51,33 @@ private:
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"終わり" },
-		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,	"end" },
-		{ SCENE_ACTION_EXIBIT,	MESSAGE_WHO_YELLOW,	"exibit_nowait" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,	"おかえり" },
+		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"end" },
+		{ SCENE_ACTION_EXIBIT,	MESSAGE_WHO_YELLOW,		"exibit_nowait" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"おかえり" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"つづきはまだない" },
-		{ -1,					-1,					"" },
+		{ -1,					-1,						"" },
 	};
 
 public:
+	void initialize() {
+		ScenarioBase::initialize();
+
+		// ボタン初期化
+		btnReset.initialize(260, 440, "タイトル");
+
+		mrK[0].set(300, 140);
+		mrK[1].hide();
+		mrK[2].hide();
+		mrK[3].hide();
+	}
 
 	int show() {
 		SetBackgroundColor(0, 0, 0);
 
 		if (Music::drawLoadMsg()) return MODE_TUTORIAL;
+
+		// 背景の描画
+		DrawExtendGraph(0, -50, 640, 380, imgRoom, FALSE);
 
 		int res = ScenarioBase::show();
 
