@@ -30,6 +30,7 @@ private:
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"おや？君は…\nどこかで会ったような…" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"まあ、それはともかくとして" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"君はこの世界の決闘方法を知る必要がある" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"何故…？\n…それは追々わかるんじゃないかな" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"とにかくやってみようか" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"start" },
@@ -39,7 +40,12 @@ private:
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"相手の手番" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST]いま君は赤い枠の「[LAST]」に置いたね" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:NEXT]すると、相手が次に置ける場所は全体の「[LAST]」の赤枠内に制限されるんだ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"重要なことを言ったからもう一回言うね" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"君が置いた石の位置によって、次に相手が置ける場所が制限されるんだ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"相手の番→君の番の場合でも、このルールは同じだよ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"ここから相手の番だから、相手がどこに置くか注目するんだ" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"あなたの手番" },
@@ -79,7 +85,16 @@ public:
 		// 背景の描画
 		DrawExtendGraph(0, -50, 640, 380, imgRoom, FALSE);
 
+		Scene scene = sceneList.get();
+
 		int res = ScenarioBase::show();
+		switch (scene.action) {
+		case SCENE_ACTION_TALK:
+			moveForTeach(scene.how, scene.who);
+			break;
+		default:
+			break;
+		}
 
 		return (res != SCENE_RES_DEFAULT) ? res : MODE_TUTORIAL;
 	}
@@ -103,6 +118,9 @@ public:
 	}
 
 private:
+	void moveForTeach(string str, int who) {
+		// Mr.Kを説明用に移動する
+	}
 
 	// override
 	void setBattle(string how) {
