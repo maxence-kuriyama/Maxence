@@ -147,6 +147,10 @@ public:
 		return (game.victory() == -1);
 	}
 
+	Coordinate last() {
+		return game.last();
+	}
+
 	void save(const string filePath) {
 		if (onGame) {
 			game.save(filePath);

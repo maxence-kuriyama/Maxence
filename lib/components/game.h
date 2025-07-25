@@ -437,6 +437,10 @@ public:
 		return 1 - 2 * (cnt % 2);
 	}
 
+	Coordinate last() {
+		return board.last();
+	}
+
 
 	/*===========================*/
 	//    Save and Load

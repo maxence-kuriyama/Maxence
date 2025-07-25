@@ -1,8 +1,12 @@
 #pragma once
 
+#include <string>
+#include <regex>
 #include "lib/mode.h"
 #include "lib/components/menu.h"
 #include "./scenario_base.h"
+
+using namespace std;
 
 // チュートリアルのシナリオクラス
 class Tutorial : public ScenarioBase {
@@ -88,13 +92,13 @@ public:
 		Scene scene = sceneList.get();
 
 		int res = ScenarioBase::show();
-		switch (scene.action) {
-		case SCENE_ACTION_TALK:
-			moveForTeach(scene.how, scene.who);
-			break;
-		default:
-			break;
-		}
+		//switch (scene.action) {
+		//case SCENE_ACTION_TALK:
+		//	moveForTeach(scene.how, scene.who);
+		//	break;
+		//default:
+		//	break;
+		//}
 
 		return (res != SCENE_RES_DEFAULT) ? res : MODE_TUTORIAL;
 	}
@@ -118,8 +122,27 @@ public:
 	}
 
 private:
-	void moveForTeach(string str, int who) {
-		// Mr.Kを説明用に移動する
+	void readMsg(string str, int who) {
+		cmatch m;
+		string display_str = str;
+		int x = 300;
+		int y = 140;
+		if (regex_match(str.c_str(), m, regex(R"(\[MOVE:(?:LAST|NEXT)\](.*))"))) {
+			display_str = m[1].str();
+			Coordinate last = battle.last();
+			if (regex_match(str.c_str(), m, regex(R"(\[MOVE:LAST\].*)"))) {
+				x = 100 + 100 * last.global_x + 33 * last.x;
+				y = 60 + 100 * last.global_y + 33 * last.y;
+			}
+			else if (regex_match(str.c_str(), m, regex(R"(\[MOVE:NEXT\].*)"))) {
+				x = 100 + 100 * last.x;
+				y = 60 + 100 * last.y;
+			}
+			mrK[0].set(x, y);
+			mrK[0].draw();
+		}
+
+		ScenarioBase::readMsg(display_str, who);
 	}
 
 	// override
