@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <iostream>
 #include <regex>
 #include "lib/mode.h"
 #include "lib/components/menu.h"
@@ -124,12 +124,32 @@ public:
 private:
 	void readMsg(string str, int who) {
 		cmatch m;
-		string display_str = str;
+		string displayStr = str;
 		int x = 300;
 		int y = 140;
+		stringstream lastSs;
 		if (regex_match(str.c_str(), m, regex(R"(\[MOVE:(?:LAST|NEXT)\](.*))"))) {
-			display_str = m[1].str();
+			displayStr = m[1].str();
 			Coordinate last = battle.last();
+			switch (last.x) {
+			case 0:
+				lastSs << "¶";
+				break;
+			case 2:
+				lastSs << "‰E";
+				break;
+			}
+			switch (last.y) {
+			case 0:
+				lastSs << "ã";
+				break;
+			case 2:
+				lastSs << "‰º";
+				break;
+			}
+			string lastStr = lastSs.str();
+			if (lastStr == "") lastStr = "^‚ñ’†";
+			displayStr = regex_replace(displayStr, regex(R"(\[LAST\])"), lastStr);
 			if (regex_match(str.c_str(), m, regex(R"(\[MOVE:LAST\].*)"))) {
 				x = 100 + 100 * last.global_x + 33 * last.x;
 				y = 60 + 100 * last.global_y + 33 * last.y;
@@ -142,7 +162,7 @@ private:
 			mrK[0].draw();
 		}
 
-		ScenarioBase::readMsg(display_str, who);
+		ScenarioBase::readMsg(displayStr, who);
 	}
 
 	// override
