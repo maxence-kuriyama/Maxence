@@ -127,29 +127,9 @@ private:
 		string displayStr = str;
 		int x = 300;
 		int y = 140;
-		stringstream lastSs;
 		if (regex_match(str.c_str(), m, regex(R"(\[MOVE:(?:LAST|NEXT)\](.*))"))) {
-			displayStr = m[1].str();
 			Coordinate last = battle.last();
-			switch (last.x) {
-			case 0:
-				lastSs << "左";
-				break;
-			case 2:
-				lastSs << "右";
-				break;
-			}
-			switch (last.y) {
-			case 0:
-				lastSs << "上";
-				break;
-			case 2:
-				lastSs << "下";
-				break;
-			}
-			string lastStr = lastSs.str();
-			if (lastStr == "") lastStr = "真ん中";
-			displayStr = regex_replace(displayStr, regex(R"(\[LAST\])"), lastStr);
+			displayStr = replaceLastToken(m[1].str(), last);
 			if (regex_match(str.c_str(), m, regex(R"(\[MOVE:LAST\].*)"))) {
 				x = 100 + 100 * last.global_x + 33 * last.x;
 				y = 60 + 100 * last.global_y + 33 * last.y;
@@ -192,5 +172,31 @@ private:
 			return true;
 		}
 		return false;
+	}
+
+	string getLastPosition(Coordinate last) {
+		stringstream lastSs;
+		switch (last.x) {
+		case 0:
+			lastSs << "左";
+			break;
+		case 2:
+			lastSs << "右";
+			break;
+		}
+		switch (last.y) {
+		case 0:
+			lastSs << "上";
+			break;
+		case 2:
+			lastSs << "下";
+			break;
+		}
+		return (lastSs.str() == "") ? "真ん中" : lastSs.str();
+	}
+
+	string replaceLastToken(string srcStr, Coordinate last) {
+		string lastStr = getLastPosition(last);
+		return regex_replace(srcStr, regex(R"(\[LAST\])"), lastStr);
 	}
 };
