@@ -44,15 +44,17 @@ private:
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST]いま君は赤い枠の「[LAST]」に置いたね" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:NEXT]すると、相手が次に置ける場所は全体の「[LAST]」の赤枠内に制限されるんだ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST]いま君はこの枠の中の「[LAST]」に置いたね" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:NEXT]すると、相手が次に置ける場所は、全体の中で「[LAST]」に位置するこの赤枠内に制限されるんだ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"重要なことを言ったからもう一回言うね" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"君が置いた石の位置によって、次に相手が置ける場所が制限されるんだ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"相手の番→君の番の場合でも、このルールは同じだよ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"ここから相手の番だから、相手がどこに置くか注目するんだ" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"あなたの手番" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST]相手はこの枠内の「[LAST]」に置いたようだ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:NEXT]君が次に置ける場所はここ。全体の中で「[LAST]」の赤枠内だよ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"じゃあ、同じ要領である程度のところまで盤面を進めてみよう\n僕はしばらく黙っているよ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"local_victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
@@ -92,13 +94,6 @@ public:
 		Scene scene = sceneList.get();
 
 		int res = ScenarioBase::show();
-		//switch (scene.action) {
-		//case SCENE_ACTION_TALK:
-		//	moveForTeach(scene.how, scene.who);
-		//	break;
-		//default:
-		//	break;
-		//}
 
 		return (res != SCENE_RES_DEFAULT) ? res : MODE_TUTORIAL;
 	}
