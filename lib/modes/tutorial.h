@@ -44,8 +44,8 @@ private:
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"play_once" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST]いま君は[PREV]の枠の中の「[LAST]」に置いたね" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:NEXT]すると、相手が次に置ける場所は\n『全体の中で「[LAST]」』に位置するこの赤枠内に制限されるんだ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST]いま君は[PREV]の枠の中の「[LAST]」に石を置いたね" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:NEXT]すると、相手が次に石を置ける場所は\n『全体の中で「[LAST]」』に位置するこの赤枠内に制限されるんだ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"重要なことを言ったからもう一回言うね" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"『君が置いた石の位置によって、次に相手が置ける場所が制限される』んだ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"相手の番→君の番の場合でも、このルールは同じだよ" },
@@ -64,15 +64,16 @@ private:
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"ようやくだけど勝利条件を教えよう\n『君の色の小盤面を三目並べること』\nこれが君の勝利条件だ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"いかに相手を誘導して、君が置きたい場所に石を置けるようにするかが重要になるね" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"逆に『相手の色の小盤面を三目並べ』られると君の負けだからね\n誘導されないよう注意するんだ" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"それじゃあ、決着がつくまで進めてみよう\nちなみに、色のついた小盤面にさらに石を置くことはできないよ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"それじゃあ、勝敗が決まるまで進めてみよう\nちなみに、色のついた小盤面にさらに石を置くことはできないよ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"clear" },
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"終わり" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"…決着がついたようだね" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"今回は[VICT]の勝ちだ\n[MSG:VICT]" },
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"end" },
 		{ SCENE_ACTION_EXIBIT,	MESSAGE_WHO_YELLOW,		"exibit_nowait" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"おかえり" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"つづきはまだない" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"この世界の決闘方法はだいたいわかったかな\nそれじゃあ健闘を祈っているよ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"また会おう" },
 		{ -1,					-1,						"" },
 	};
 
@@ -126,9 +127,9 @@ private:
 	void readMsg(string str, int who) {
 		cmatch m;
 		string displayStr = str;
-		int x = 300;
-		int y = 140;
 		if (regex_match(str.c_str(), m, regex(R"(\[MOVE:(?:LAST|NEXT)\]([\s\S]*))"))) {
+			int x = 300;
+			int y = 140;
 			Coordinate last = battle.last();
 			displayStr = replaceLastToken(m[1].str(), last);
 			displayStr = replacePrevtToken(displayStr, last);
@@ -142,6 +143,9 @@ private:
 			}
 			mrK[0].set(x, y);
 			mrK[0].draw();
+		}
+		else if (regex_match(str.c_str(), m, regex(R"([\s\S]*\[VICT\][\s\S]*)"))) {
+			displayStr = replaceVictToken(str);
 		}
 
 		ScenarioBase::readMsg(displayStr, who);
@@ -205,5 +209,18 @@ private:
 	string replacePrevtToken(string srcStr, Coordinate last) {
 		string prevStr = getPositionStr(last.global_x, last.global_y);
 		return regex_replace(srcStr, regex(R"(\[PREV\])"), prevStr);
+	}
+
+	string replaceVictToken(string srcStr) {
+		string displayStr = srcStr;
+		if (battle.isLost()) {
+			displayStr = regex_replace(displayStr, regex(R"(\[VICT\])"), "相手");
+			displayStr = regex_replace(displayStr, regex(R"(\[MSG:VICT\])"), "残念だったね");
+		}
+		else {
+			displayStr = regex_replace(displayStr, regex(R"(\[VICT\])"), "君");
+			displayStr = regex_replace(displayStr, regex(R"(\[MSG:VICT\])"), "やったね");
+		}
+		return displayStr;
 	}
 };
