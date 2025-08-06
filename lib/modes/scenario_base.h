@@ -295,16 +295,17 @@ protected:
 
 	virtual int doBattle(COM& com) {
 		battle.showBefore();
-		if (playTurn(com)) {
-			if (battle.getTrigger() == "play_once") {
-				battle.setTrigger("fired");
-			}
-		}
-		battle.showAfter();
-
 		if (isTriggered()) {
 			goNext();
 		}
+		else {
+			if (playTurn(com)) {
+				if (battle.getTrigger() == "play_once") {
+					battle.setTrigger("fired");
+				}
+			}
+		}
+		battle.showAfter();
 
 		return MODE_TITLE;
 	}
