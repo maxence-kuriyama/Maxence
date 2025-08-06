@@ -11,7 +11,7 @@ const int SCENE_ACTION_END_OF_LIST(-1);
 struct Scene {
 	int action;
 	int who;
-	char how[100];
+	char how[120];
 };
 
 class SceneList {
