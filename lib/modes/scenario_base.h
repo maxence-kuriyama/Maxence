@@ -276,7 +276,7 @@ protected:
 			return true;
 		}
 
-		return battle.isTriggered();
+		return battle.checkTriggered() || battle.isTriggered();
 	}
 
 	virtual void setBattle(string how) {
@@ -295,17 +295,16 @@ protected:
 
 	virtual int doBattle(COM& com) {
 		battle.showBefore();
-		if (isTriggered()) {
-			goNext();
-		}
-		else {
-			if (playTurn(com)) {
-				if (battle.getTrigger() == "play_once") {
-					battle.setTrigger("fired");
-				}
+		if (playTurn(com)) {
+			if (battle.getTrigger() == "play_once") {
+				battle.setTrigger("fired");
 			}
 		}
 		battle.showAfter();
+
+		if (isTriggered()) {
+			goNext();
+		}
 
 		return MODE_TITLE;
 	}

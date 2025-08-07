@@ -115,7 +115,7 @@ public:
 		return trigger;
 	}
 
-	bool isTriggered() {
+	bool checkTriggered() {
 		if (trigger == "play_once") {
 			// do nothing here
 		}
@@ -137,6 +137,10 @@ public:
 			return true;
 		}
 		return false;
+	}
+
+	bool isTriggered() {
+		return (trigger == "fired");
 	}
 
 	bool hasNoTrigger() {
