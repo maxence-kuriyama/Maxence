@@ -8,6 +8,10 @@
 
 using namespace std;
 
+const int SCENE_ACTION_TUTO_WIN(21);
+const int SCENE_ACTION_TUTO_LOSE(22);
+const int SCENE_ACTION_TUTO_DRAW(23);
+
 // チュートリアルのシナリオクラス
 class Tutorial : public ScenarioBase {
 
@@ -61,7 +65,7 @@ private:
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST][PREV]の枠で三目並んだようだね" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"[MOVE:LAST]決着がついた小盤面は色がつくよ\n君が勝つと赤に、相手が勝つと青に" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"ようやくだけど勝利条件を教えよう\n『君の色の小盤面を三目並べること』\nこれが君の勝利条件だ" },
+		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"そろそろ勝利条件を教えよう\n『君の色の小盤面を三目並べること』\nこれが君の勝利条件だ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"いかに相手を誘導して、君が置きたい場所に石を置けるようにするかが重要になるね" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"逆に『相手の色の小盤面を三目並べ』られると君の負けだからね\n誘導されないよう注意するんだ" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"それじゃあ、勝敗が決まるまで進めてみよう\nちなみに、色のついた小盤面にさらに石を置くことはできないよ" },
@@ -69,7 +73,9 @@ private:
 		{ SCENE_ACTION_COCK,	MESSAGE_WHO_DESC,		"victory" },
 		{ SCENE_ACTION_PLAY,	MESSAGE_WHO_DESC,		"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"…決着がついたようだね" },
-		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"今回は[VICT]の勝ちだ\n[MSG:VICT]" },
+		{ SCENE_ACTION_TUTO_LOSE,	MESSAGE_WHO_YELLOW,		"今回は相手の勝ちだ\n残念だったね" },
+		{ SCENE_ACTION_TUTO_DRAW,	MESSAGE_WHO_YELLOW,		"おっと引き分けか\nこういうこともある" },
+		{ SCENE_ACTION_TUTO_WIN,	MESSAGE_WHO_YELLOW,		"今回は君の勝ちだ\nやったね" },
 		{ SCENE_ACTION_BATTLE,	MESSAGE_WHO_YELLOW,		"end" },
 		{ SCENE_ACTION_EXIBIT,	MESSAGE_WHO_YELLOW,		"exibit_nowait" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"この世界の決闘方法はだいたいわかったかな\nそれじゃあ健闘を祈っているよ" },
@@ -99,6 +105,15 @@ public:
 		DrawExtendGraph(0, -50, 640, 380, imgRoom, FALSE);
 
 		Scene scene = sceneList.get();
+		switch (scene.action) {
+		case SCENE_ACTION_TUTO_WIN:
+		case SCENE_ACTION_TUTO_LOSE:
+		case SCENE_ACTION_TUTO_DRAW:
+			readMsgAfterBattle(scene.action, scene.how, scene.who);
+			break;
+		default:
+			break;
+		}
 
 		int res = ScenarioBase::show();
 
@@ -151,6 +166,16 @@ private:
 		ScenarioBase::readMsg(displayStr, who);
 	}
 
+	void readMsgAfterBattle(int action, string str, int who) {
+		if ((action == SCENE_ACTION_TUTO_WIN && !battle.isWon()) 
+			|| (action == SCENE_ACTION_TUTO_LOSE && !battle.isLost())
+			|| (action == SCENE_ACTION_TUTO_DRAW && !battle.isDraw())) {
+			goNext();
+			return;
+		}
+		readMsg(str, who);
+	}
+
 	// override
 	void setBattle(string how) {
 		if (how == "start") {
@@ -178,6 +203,15 @@ private:
 			return true;
 		}
 		return false;
+	}
+
+	// override
+	bool hasMsg(Scene scene) {
+		if (ScenarioBase::hasMsg(scene)) return true;
+
+		return (scene.action == SCENE_ACTION_TUTO_WIN
+			|| scene.action == SCENE_ACTION_TUTO_LOSE
+			|| scene.action == SCENE_ACTION_TUTO_DRAW);
 	}
 
 	string getPositionStr(int x, int y) {

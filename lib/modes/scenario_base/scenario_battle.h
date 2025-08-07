@@ -143,8 +143,16 @@ public:
 		return (trigger == "");
 	}
 
+	bool isWon() {
+		return (game.victory() == 1);
+	}
+
 	bool isLost() {
 		return (game.victory() == -1);
+	}
+
+	bool isDraw() {
+		return (game.victory() == 10);
 	}
 
 	Coordinate last() {
