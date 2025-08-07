@@ -7,6 +7,7 @@ const int CHARACTER_WHO_GREEN(3);
 const int CHARACTER_WHO_BLUE(4);
 const int CHARACTER_WHO_DEER(5);
 const int CHARACTER_WHO_PL_YELLOW(6);
+const int CHARACTER_WHO_PL_PLAYER(7);
 
 class Character {
 private:

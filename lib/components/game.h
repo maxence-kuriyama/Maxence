@@ -2,6 +2,7 @@
 
 #include <Eigen/Core>
 #include "lib/const.h"
+#include "lib/utils/character.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
@@ -11,24 +12,26 @@
 const int VS_HUMAN(0);
 const int VS_COM(1);
 
+const int GAME_CHARACTER_X1(-40);
+const int GAME_CHARACTER_X2(450);
+const int GAME_CHARACTER_Y(100);
+const double GAME_CHARACTER_SCALE(5.7);
+const int GAME_CHARACTER_ALPHA_ACTIVE(245);
+const int GAME_CHARACTER_ALPHA_INACTIVE(230);
+
 // 試合進行管理インスタンスクラス
 class Game {
 private:
 	// 定数
-	int Green = GetColor(0, 255, 0);
-	int Red = GetColor(255, 0, 0);
-	int Blue = GetColor(0, 0, 255);
-	int White = GetColor(255, 255, 255);
-	int Black = GetColor(0, 0, 0);
 	int bkColorBase = GetColor(255, 255, 245);
-	int frColorBase = Black;
+	int frColorBase = GetColor(0, 0, 0);
 	int bkColorLastHist = GetColor(255, 160, 160);
 	int bkColorStateWin = GetColor(130, 70, 70);
 	int bkColorStateLose = GetColor(70, 70, 130);
 	int bkColorStateDraw = GetColor(70, 130, 70);
-	int frColorNextField = Red;
-	int frColorCurrentCoord = Black;
-	int strColorDebug = Blue;
+	int frColorNextField = GetColor(255, 0, 0);
+	int frColorCurrentCoord = GetColor(0, 0, 0);
+	int strColorDebug = GetColor(0, 0, 255);
 	int bkGraph = LoadGraph("graph/game_background.png");
 	int stone1 = LoadGraph("graph/stone1.png");
 	int stone2 = LoadGraph("graph/stone2.png");
@@ -37,13 +40,11 @@ private:
 
 	int taijin = VS_HUMAN;
 	int teban = TEBAN_SENKO;	// 0: senko, 1: koko
-	int player1 = 0;
-	int player2 = 0;
+	int origPl1 = BATTLE_PLAYER_NONE;
+	int origPl2 = BATTLE_PLAYER_NONE;
+	Character player1;
+	Character player2;
 	int cnt = 0;			// ターン数
-
-	// プレイヤー画像のハンドラ
-	int player1_h = 0;
-	int player2_h = 0;
 
 	// 引き分け時の強制終了のためのカウント
 	int drawCnt = 0;
@@ -85,45 +86,53 @@ public:
 		if (init) initialize();
 		if (pl1 == BATTLE_PLAYER_NONE && pl2 == BATTLE_PLAYER_NONE) return;
 	
-		player1 = pl1;
-		player2 = pl2;
-		setPlayersGraph(pl1, pl2);
+		setPlayer1(pl1);
+		setPlayer2(pl2);
 	}
 
-	void setPlayersGraph(int pl1, int pl2) {
-		DeleteGraph(player1_h);
-		switch (pl1)
-		{
+	void setPlayer1(int pl1) {
+		origPl1 = pl1;
+		switch (pl1) {
 		case BATTLE_PLAYER_YELLOW:
-			player1_h = LoadGraph("graph/player_yellow.png");
+			player1.initialize(CHARACTER_WHO_PL_YELLOW);
 			break;
 		case BATTLE_PLAYER_PLAYER:
-			player1_h = LoadGraph("graph/player_player.png");
+			player1.initialize(CHARACTER_WHO_PL_PLAYER);
 			break;
 		case BATTLE_PLAYER_NONE:
+			player1.initialize();
 		default:
 			break;
 		}
+		player1.x = GAME_CHARACTER_X1;
+		player1.y = GAME_CHARACTER_Y;
+		player1.scale = GAME_CHARACTER_SCALE;
+		player1.alpha = GAME_CHARACTER_ALPHA_ACTIVE;
+	}
 
-		DeleteGraph(player2_h);
-		switch (pl2)
-		{
+	void setPlayer2(int pl2) {
+		origPl1 = pl2;
+		switch (pl2) {
 		case BATTLE_PLAYER_YELLOW:
-			player2_h = LoadGraph("graph/enemy_yellow.png");
+			player2.initialize(CHARACTER_WHO_YELLOW);
 			break;
 		case BATTLE_PLAYER_RED:
-			player2_h = LoadGraph("graph/enemy_red.png");
+			player2.initialize(CHARACTER_WHO_RED);
 			break;
 		case BATTLE_PLAYER_BLUE:
-			player2_h = LoadGraph("graph/enemy_blue.png");
+			player2.initialize(CHARACTER_WHO_BLUE);
 			break;
 		case BATTLE_PLAYER_GREEN:
-			player2_h = LoadGraph("graph/enemy_green.png");
+			player2.initialize(CHARACTER_WHO_GREEN);
 			break;
 		case BATTLE_PLAYER_NONE:
 		default:
 			break;
 		}
+		player2.x = GAME_CHARACTER_X2;
+		player2.y = GAME_CHARACTER_Y;
+		player2.scale = GAME_CHARACTER_SCALE;
+		player2.alpha = GAME_CHARACTER_ALPHA_ACTIVE;
 	}
 
 	void setVsHuman() {
@@ -148,8 +157,6 @@ public:
 		cnt = src.cnt;
 		player1 = src.player1;
 		player2 = src.player2;
-		player1_h = src.player1_h;
-		player2_h = src.player2_h;
 
 		mode = src.mode;
 		board = src.board;
@@ -285,17 +292,22 @@ public:
 		}
 
 		if (side == 1) {
-			DrawExtendGraph(0, 100, 200, 340, player1_h, TRUE);
-			SetDrawBright(155, 155, 155);
-			DrawExtendGraph(440, 100, 640, 340, player2_h, TRUE);
 			SetDrawBright(255, 255, 255);
+			player1.alpha = GAME_CHARACTER_ALPHA_ACTIVE;
+			player1.draw(DX_SCREEN_BACK);
+			SetDrawBright(200, 200, 200);
+			player2.alpha = GAME_CHARACTER_ALPHA_INACTIVE;
+			player2.draw(DX_SCREEN_BACK);
 		}
 		else if (side == -1) {
-			SetDrawBright(155, 155, 155);
-			DrawExtendGraph(0, 100, 200, 340, player1_h, TRUE);
+			SetDrawBright(200, 200, 200);
+			player1.alpha = GAME_CHARACTER_ALPHA_INACTIVE;
+			player1.draw(DX_SCREEN_BACK);
 			SetDrawBright(255, 255, 255);
-			DrawExtendGraph(440, 100, 640, 340, player2_h, TRUE);
+			player2.alpha = GAME_CHARACTER_ALPHA_ACTIVE;
+			player2.draw(DX_SCREEN_BACK);
 		}
+		SetDrawBright(255, 255, 255);
 	}
 
 
@@ -452,8 +464,8 @@ public:
 			{"teban", teban},
 			{"cnt", cnt},
 			{"mode", mode},
-			{"player1", player1},
-			{"player2", player2},
+			{"player1", origPl1},
+			{"player2", origPl2},
 			{"board", board.json()},
 		};
 		encrypter.write(data);
@@ -469,9 +481,10 @@ public:
 		teban = res["teban"];
 		cnt = res["cnt"];
 		mode = res["mode"];
-		player1 = res["player1"];
-		player2 = res["player2"];
-		setPlayersGraph(player1, player2);
+		origPl1 = res["player1"];
+		origPl2 = res["player2"];
+		setPlayer1(origPl1);
+		setPlayer2(origPl2);
 
 		board.restore(res["board"]);
 
