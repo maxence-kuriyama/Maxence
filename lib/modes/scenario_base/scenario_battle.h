@@ -115,7 +115,7 @@ public:
 		return trigger;
 	}
 
-	bool isTriggered() {
+	bool checkTriggered() {
 		if (trigger == "play_once") {
 			// do nothing here
 		}
@@ -139,12 +139,28 @@ public:
 		return false;
 	}
 
+	bool isTriggered() {
+		return (trigger == "fired");
+	}
+
 	bool hasNoTrigger() {
 		return (trigger == "");
 	}
 
+	bool isWon() {
+		return (game.victory() == 1);
+	}
+
 	bool isLost() {
 		return (game.victory() == -1);
+	}
+
+	bool isDraw() {
+		return (game.victory() == 10);
+	}
+
+	Coordinate last() {
+		return game.last();
 	}
 
 	void save(const string filePath) {

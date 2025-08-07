@@ -145,7 +145,7 @@ protected:
 	}
 
 	// メッセージを読む
-	void readMsg(string str, int who) {
+	virtual void readMsg(string str, int who) {
 		if (msg.readNext(str, who)) goNext();
 
 		if (state.isOnReturnOrClicked() && msg.skip()) goNext();
@@ -276,7 +276,7 @@ protected:
 			return true;
 		}
 
-		return battle.isTriggered();
+		return battle.checkTriggered() || battle.isTriggered();
 	}
 
 	virtual void setBattle(string how) {
