@@ -105,6 +105,9 @@ public:
 		DrawExtendGraph(0, -50, 640, 380, imgRoom, FALSE);
 
 		Scene scene = sceneList.get();
+
+		bool is_reset = (!battle.isOnGame() && !hasMsg(scene) && reset());
+
 		switch (scene.action) {
 		case SCENE_ACTION_TUTO_WIN:
 		case SCENE_ACTION_TUTO_LOSE:
@@ -117,7 +120,15 @@ public:
 
 		int res = ScenarioBase::show();
 
-		return (res != SCENE_RES_DEFAULT) ? res : MODE_TUTORIAL;
+		if (is_reset) {
+			return MODE_TITLE;
+		}
+		else if (res != SCENE_RES_DEFAULT) {
+			return res;
+		}
+		else {
+			return MODE_TUTORIAL;
+		}
 	}
 
 	void route(Mode& mode, int res) {
@@ -191,7 +202,10 @@ private:
 	int doBattle(COM& com) {
 		ScenarioBase::doBattle(com);
 
-		if (reset()) return MODE_TITLE;
+		if (reset()) {
+			battle.initialize();
+			return MODE_TITLE;
+		}
 
 		return MODE_TUTORIAL;
 	}
