@@ -11,6 +11,7 @@ using namespace std;
 const int SCENE_ACTION_TUTO_WIN(21);
 const int SCENE_ACTION_TUTO_LOSE(22);
 const int SCENE_ACTION_TUTO_DRAW(23);
+const int SCENE_ACTION_TUTO_WAIT(24);
 
 // チュートリアルのシナリオクラス
 class Tutorial : public ScenarioBase {
@@ -35,6 +36,7 @@ private:
 	struct Scene scenes[MAX_SCENE_NUM] = {
 		{ SCENE_ACTION_MUSIC,	MESSAGE_WHO_DESC,		"swap" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_DESC,		"――世界は１つの部屋で出来ている" },
+		{ SCENE_ACTION_TUTO_WAIT,	MESSAGE_WHO_DESC,	"" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"おや？君は…\nどこかで会ったような…" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"まあ、それはともかくとして" },
 		{ SCENE_ACTION_TALK,	MESSAGE_WHO_YELLOW,		"君はこの世界の決闘方法を知る必要がある" },
@@ -113,6 +115,9 @@ public:
 		case SCENE_ACTION_TUTO_LOSE:
 		case SCENE_ACTION_TUTO_DRAW:
 			readMsgAfterBattle(scene.action, scene.how, scene.who);
+			break;
+		case SCENE_ACTION_TUTO_WAIT:
+			waitClick();
 			break;
 		default:
 			break;
