@@ -76,7 +76,7 @@ public:
 	}
 
 	void initialize() {
-		initializeMusicInfo();
+		updateMusicInfo();
 		initializeMessage();
 		initializeButtons();
 		initializeFireFlower();
@@ -86,6 +86,8 @@ public:
 	}
 
 	int show() {
+		if (MusicUnlocker::check()) initialize();
+
 		SetBackgroundColor(0, 0, 0);
 		bg.draw();
 		showFireFlower();
@@ -199,7 +201,7 @@ private:
 	/*===========================*/
 	//    Initialization
 	/*===========================*/
-	void initializeMusicInfo() {
+	void updateMusicInfo() {
 		for (int i = 0; i < MUSIC_NUM; ++i) {
 			struct MusicInfo info = infoMaster[i];
 			if (MusicUnlocker::isUnlocked(info.id)) {

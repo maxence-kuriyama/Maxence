@@ -15,6 +15,7 @@ private:
 	static MusicUnlocker* _instance; // singleton
 	string saveFilePath = SAVE_FILE_MUSIC_ROOM;
 	nlohmann::json unlockedIds = nlohmann::json::array();
+	bool hasNew = false;
 
 	static MusicUnlocker* getInstance() {
 		if (!_instance) {
@@ -43,6 +44,14 @@ public:
 		return unlocker->_isUnlocked(id);
 	}
 
+	static bool check() {
+		MusicUnlocker* unlocker = getInstance();
+		if (!unlocker->hasNew) return false;
+
+		unlocker->hasNew = false;
+		return true;
+	}
+
 private:
 
 	void _unlock(const string fileName) {
@@ -51,6 +60,7 @@ private:
 		if (isUnlocked(id)) return;
 
 		unlockedIds.push_back(id);
+		hasNew = true;
 		save();
 		Logger::ss << "MusicUnlocker unlocked " << fileName;
 		Logger::log();
