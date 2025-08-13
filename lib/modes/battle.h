@@ -80,7 +80,7 @@ public:
 	/*===========================*/
 	//    Battle Mode
 	/*===========================*/
-	int show(COM& com) {
+	int show() {
 		SetBackgroundColor(0, 0, 0);
 
 		if (innerMode == BATTLE_MODE_RESULT) return showResult();
@@ -90,21 +90,21 @@ public:
 		game.drawBeforePlay();
 
 		if (playByPlayer()) {
-			if (game.isVsCOM()) com.setWait();
+			if (game.isVsCOM()) COM::setWait();
 		}
 		
 		VectorXd input = game.stateToInput();
 
 		// äwèKã@äBÇÃèoóÕï`âÊ
 		if (likelihoodFlg) {
-			com.visualize(input);
+			COM::visualize(input);
 		}
 
 		// COMÇÃéËî‘
 		if (!game.isPlayTurn()) {
-			com.play(input, game.board, game.currentSide());
-			//com.playMinMax(game.board, game.currentSide());
-			game.update(com.choice);
+			COM::play(input, game.board, game.currentSide());
+			// COM::playMinMax(game.board, game.currentSide());
+			game.update(COM::choice);
 		}
 
 		game.drawAfterPlay();
@@ -119,7 +119,7 @@ public:
 			innerMode = BATTLE_MODE_RESULT;
 		}
 
-		if (cancelPlay()) com.setWait();
+		if (cancelPlay()) COM::setWait();
 	
 		if (saveOrReset()) return MODE_TITLE;
 

@@ -272,7 +272,7 @@ public:
 		numContinue = 0;
 	}
 
-	int show(COM& com) {
+	int show() {
 		SetBackgroundColor(0, 0, 0);
 
 		if (Music::drawLoadMsg()) return MODE_SCENARIO;
@@ -285,7 +285,7 @@ public:
 
 		bool is_reset = (!battle.isOnGame() && !hasMsg(scene) && saveOrReset());
 		
-		int res = ScenarioBase::show(com);
+		int res = ScenarioBase::show();
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
 			performEQ(scene.how);
@@ -437,13 +437,14 @@ private:
 	}
 
 	void loadScenario(int flg_saved) {
-		COM dummy_com(false);
+		// COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
 		while (sceneList.getCurrentId() < flg_saved) {
 			old_flg = sceneList.getCurrentId();
 			Scene scene = sceneList.get();
-			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
+			// if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
+			if (scene.action != SCENE_ACTION_MUSIC) show();
 			new_flg = sceneList.getCurrentId();
 			if (new_flg == old_flg) goNext();
 		}
@@ -540,8 +541,8 @@ private:
 	}
 
 	// override
-	int doBattle(COM& com) {
-		ScenarioBase::doBattle(com);
+	int doBattle() {
+		ScenarioBase::doBattle();
 
 		if (saveOrReset()) {
 			battle.initialize();
@@ -581,10 +582,10 @@ private:
 	// override
 	// TODO: getCurrentScene()‚É‰ž‚¶‚ÄŽg‚¤COM‚ð•Ï‚¦‚é‚±‚Æ
 	// com.play‚Ì’†‚Å•Ï‚¦‚é‚×‚«‚©H
-	bool playByCom(COM& com) {
+	bool playByCom() {
 		if (FlagStore::isDebug()) return playByPlayer();
 	
-		return battle.playByComLevel1(com);
+		return battle.playByComLevel1();
 	}
 
 	bool saveOrReset() {

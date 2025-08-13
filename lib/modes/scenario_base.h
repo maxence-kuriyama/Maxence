@@ -56,12 +56,14 @@ public:
 		battle.initialize();
 	}
 
+	/*
 	int show() {
 		COM dummy_com(false);
 		return show(dummy_com);
 	}
+	*/
 
-	int show(COM& com) {
+	int show() {
 		state.updateKeyboard();
 
 		// êlï®ÇÃï`âÊ
@@ -101,7 +103,7 @@ public:
 			setBattle(scene.how);
 			break;
 		case SCENE_ACTION_PLAY:
-			return doBattle(com);
+			return doBattle();
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -293,9 +295,9 @@ protected:
 		battle.show();
 	}
 
-	virtual int doBattle(COM& com) {
+	virtual int doBattle() {
 		battle.showBefore();
-		if (playTurn(com)) {
+		if (playTurn()) {
 			if (battle.getTrigger() == "play_once") {
 				battle.setTrigger("fired");
 			}
@@ -309,12 +311,12 @@ protected:
 		return MODE_TITLE;
 	}
 	
-	bool playTurn(COM& com) {
+	bool playTurn() {
 		if (battle.isPlayTurn()) {
 			return playByPlayer();
 		}
 		else {
-			return playByCom(com);
+			return playByCom();
 		}
 	}
 
@@ -322,7 +324,7 @@ protected:
 		return battle.playByPlayer();
 	}
 
-	virtual bool playByCom(COM& com) {
+	virtual bool playByCom() {
 		return battle.playByComLevel0();
 	}
 

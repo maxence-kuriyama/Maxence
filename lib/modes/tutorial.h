@@ -204,8 +204,8 @@ private:
 	}
 
 	// override
-	int doBattle(COM& com) {
-		ScenarioBase::doBattle(com);
+	int doBattle() {
+		ScenarioBase::doBattle();
 
 		if (reset()) {
 			battle.initialize();

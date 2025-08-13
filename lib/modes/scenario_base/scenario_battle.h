@@ -97,15 +97,15 @@ public:
 		return game.isUpdated(res);
 	}
 
-	bool playByComLevel1(COM& com) {
+	bool playByComLevel1() {
 		// MinMaxNode node(game.board, game.currentSide());
 		// int depth = 2;
 		// int index = node.search(depth);
 		// Coordinate choice = Board::coordinates(index);
 
 		VectorXd input = game.stateToInput();
-		com.play(input, game.board, game.currentSide());
-		Coordinate choice = com.choice;
+		COM::play(input, game.board, game.currentSide());
+		Coordinate choice = COM::choice;
 
 		double res = game.update(choice);
 		return game.isUpdated(res);
