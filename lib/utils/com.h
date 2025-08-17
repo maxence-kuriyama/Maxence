@@ -30,8 +30,8 @@ private:
 public:
 	static Coordinate choice; //COM‚Ì‘I‚ÔÀ•W
 
-	COM(bool init = true) {
-		if (init) initialize();
+	COM() {
+		initialize();
 	}
 
 	~COM() {}

@@ -2,7 +2,6 @@
 
 #include <sstream>
 #include "lib/mode.h"
-#include "lib/utils/music.h"
 #include "lib/utils/encrypter.h"
 #include "lib/components/menu.h"
 #include "./scenario_base.h"
@@ -437,7 +436,6 @@ private:
 	}
 
 	void loadScenario(int flg_saved) {
-		// COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
 		while (sceneList.getCurrentId() < flg_saved) {

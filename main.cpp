@@ -20,7 +20,6 @@ using namespace std;
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
-#include "lib/utils/com.h"
 #include "lib/modes/title.h"
 #include "lib/modes/tutorial.h"
 #include "lib/modes/scenario.h"

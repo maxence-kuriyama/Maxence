@@ -2,6 +2,7 @@
 
 #include "lib/mode.h"
 #include "lib/utils/flag_store.h"
+#include "lib/utils/com.h"
 #include "lib/utils/music.h"
 #include "lib/components/sprite.h"
 #include "./scenario_base/state.h"
@@ -55,13 +56,6 @@ public:
 		initializeDisplay();
 		battle.initialize();
 	}
-
-	/*
-	int show() {
-		COM dummy_com(false);
-		return show(dummy_com);
-	}
-	*/
 
 	int show() {
 		state.updateKeyboard();
