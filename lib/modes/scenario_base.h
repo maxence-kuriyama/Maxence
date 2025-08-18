@@ -319,7 +319,7 @@ protected:
 	}
 
 	virtual bool playByCom() {
-		return battle.playByComLevel0();
+		return battle.playByCom(COM_LEVEL0);
 	}
 
 	void talkMrK(int who, const char key[]) {

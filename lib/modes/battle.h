@@ -103,7 +103,6 @@ public:
 		// COM‚ÌŽè”Ô
 		if (!game.isPlayTurn()) {
 			COM::play(input, game.board, game.currentSide());
-			// COM::playMinMax(game.board, game.currentSide());
 			game.update(COM::choice);
 		}
 

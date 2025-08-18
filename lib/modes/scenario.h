@@ -582,8 +582,8 @@ private:
 	// com.play‚Ì’†‚Å•Ï‚¦‚é‚×‚«‚©H
 	bool playByCom() {
 		if (FlagStore::isDebug()) return playByPlayer();
-	
-		return battle.playByComLevel1();
+
+		return battle.playByCom(COM_LEVEL1);
 	}
 
 	bool saveOrReset() {

@@ -14,8 +14,13 @@ const float SOFTMAX_ALPHA(5.0);  // softmaxの係数
 const float ANNEALING_RATE(1.0); // epsilon-greedyの割合
 const int LAYER_DEPTH(4);
 
+const int COM_THINKING_WAIT(100);
+const int COM_LEVEL0(0); // Only MiniMax depth 1
+const int COM_LEVEL1(1); // Only MLP
+const int COM_LEVEL2(2); // MPL with MiniMax depth 2
+const int COM_LEVEL3(3); // MPL with MiniMax depth 3
+
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
-// 単体での使用を想定（Gameオブジェクトから呼び出すべきか？）
 class COM {
 private:
 	static COM* _instance; // singleton
@@ -38,7 +43,6 @@ public:
 
 private:
 	int cnt = 0;
-	int wait = 20; //COMが手を打つまでのウェイト
 	int maxId = 0;
 	double maxVal = 0.0;
 	int annealed = 0;
@@ -102,7 +106,7 @@ private:
 public:
 	static void setWait() {
 		COM* com = getInstance();
-		com->cnt = com->wait;
+		com->cnt = COM_THINKING_WAIT;
 	}
 
 	static void visualize(VectorXd input) {
@@ -115,27 +119,22 @@ public:
 		return com->_predict(input);
 	}
 
-	static void play(VectorXd input, const Board board, int side) {
+	static void play(VectorXd input, const Board board, int side, int level = COM_LEVEL1) {
 		COM* com = getInstance();
+		int depth = 4;
+		switch (level) {
+		case COM_LEVEL0:
+			depth = 1;
+			return com->_playMinMax(board, side, depth);
+		case COM_LEVEL1:
+			return com->_play(input, board, side);
+		case COM_LEVEL2:
+		case COM_LEVEL3:
+		default:
+			break;
+		}
 		return com->_play(input, board, side);
 	}
-
-	/*
-	void playMinMax(const Board board, int side) {
-		cnt--;
-		if (cnt > 0) return;
-
-		MinMaxNode node(board, side);
-		MinMaxNode::truncate = true;
-		int depth = 4;
-		int index = node.search(depth);
-
-		COM::choice = Board::coordinates(index);
-		annealed = 0;
-		
-		miniMaxDebugStr = node.debugStr();
-	}
-	*/
 
 	static void debugDump() {
 		COM* com = getInstance();
@@ -203,6 +202,20 @@ private:
 		else {
 			chooseMax();
 		}
+	}
+
+	void _playMinMax(const Board board, int side, int depth = 4) {
+		cnt--;
+		if (cnt > 0) return;
+
+		MinMaxNode node(board, side);
+		MinMaxNode::truncate = true;
+		int index = node.search(depth);
+
+		COM::choice = Board::coordinates(index);
+		annealed = 0;
+
+		miniMaxDebugStr = node.debugStr();
 	}
 	
 	void chooseRandom() {
