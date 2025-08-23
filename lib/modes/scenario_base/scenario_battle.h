@@ -25,12 +25,15 @@ public:
 		initialize();
 	}
 
+	~ScenarioBattle() {
+		delete enemyCom;
+	}
+
 	void initialize() {
 		onGame = false;
 		game.initialize();
 		game.setVsCOM();
 		trigger = "";
-		delete enemyCom;
 	}
 
 	void show() {
@@ -57,6 +60,8 @@ public:
 		game.prepare(player1, player2);
 		game.setVsCOM();
 		onGame = true;
+
+		delete enemyCom;
 		enemyCom = new Enemy();
 
 		cutin.setCharacter(getCharacter(player2));
