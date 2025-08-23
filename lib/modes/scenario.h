@@ -515,6 +515,7 @@ private:
 	// override
 	void setBattle(string how) {
 		if (how == "start") {
+			enemyCom = new Enemy();
 			Scene scene = sceneList.get();
 			if (scene.who == MESSAGE_WHO_RED) {
 				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
@@ -531,11 +532,10 @@ private:
 			else {
 				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 			}
+			goNext();
+			return;
 		}
-		else if (how == "end") {
-			battle.initialize();
-		}
-		goNext();
+		return ScenarioBase::setBattle(how);
 	}
 
 	// override
@@ -553,6 +553,13 @@ private:
 		}
 			
 		return MODE_SCENARIO;
+	}
+
+	// override
+	bool playByCom() {
+		if (FlagStore::isDebug()) return playByPlayer();
+
+		return ScenarioBase::playByCom();
 	}
 
 	int lostBattle(int who) {
@@ -575,15 +582,6 @@ private:
 			goNext();
 		}
 		return MODE_SCENARIO;
-	}
-
-	// override
-	// TODO: getCurrentScene()Ç…âûÇ∂ÇƒégÇ§COMÇïœÇ¶ÇÈÇ±Ç∆
-	// com.playÇÃíÜÇ≈ïœÇ¶ÇÈÇ◊Ç´Ç©ÅH
-	bool playByCom() {
-		if (FlagStore::isDebug()) return playByPlayer();
-
-		return battle.playByCom(COM_LEVEL1);
 	}
 
 	bool saveOrReset() {

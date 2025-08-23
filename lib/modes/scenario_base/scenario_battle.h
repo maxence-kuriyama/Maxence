@@ -7,6 +7,7 @@
 #include "lib/utils/character.h"
 #include "lib/components/game.h"
 #include "lib/components/anime/fade_cutin.h"
+#include "./enemy.h"
 
 using namespace std;
 
@@ -87,10 +88,8 @@ public:
 		return game.isUpdated(res);
 	}
 
-	bool playByCom(int level = COM_LEVEL0) {
-		VectorXd input = game.stateToInput();
-		COM::play(input, game.board, game.currentSide(), level);
-		Coordinate choice = COM::choice;
+	bool playByCom(Enemy enemyCom) {
+		Coordinate choice = enemyCom.play(game);
 
 		double res = game.update(choice);
 		return game.isUpdated(res);

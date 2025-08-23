@@ -180,6 +180,7 @@
     <ClInclude Include="lib\components\board\field.h" />
     <ClInclude Include="lib\components\board\hist.h" />
     <ClInclude Include="lib\modes\scenario\gameover.h" />
+    <ClInclude Include="lib\modes\scenario_base\enemy.h" />
     <ClInclude Include="lib\modes\scenario_base\scenario_battle.h" />
     <ClInclude Include="lib\modes\scenario_base\scenario_message.h" />
     <ClInclude Include="lib\modes\scenario_base\scene_list.h" />

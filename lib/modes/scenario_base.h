@@ -9,6 +9,7 @@
 #include "./scenario_base/scene_list.h"
 #include "./scenario_base/scenario_battle.h"
 #include "./scenario_base/scenario_message.h"
+#include "./scenario_base/enemy.h"
 
 const double SPRITE_EXPAND_RATE(0.0006);
 
@@ -37,6 +38,7 @@ protected:
 	SceneList sceneList;
 	ScenarioMessage msg;
 	ScenarioBattle battle;
+	Enemy* enemyCom = NULL;
 
 public:
 
@@ -277,9 +279,11 @@ protected:
 
 	virtual void setBattle(string how) {
 		if (how == "start") {
+			enemyCom = new Enemy();
 			battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 		}
 		else if (how == "end") {
+			delete enemyCom;
 			battle.initialize();
 		}
 		goNext();
@@ -319,7 +323,7 @@ protected:
 	}
 
 	virtual bool playByCom() {
-		return battle.playByCom(COM_LEVEL0);
+		return battle.playByCom(*enemyCom);
 	}
 
 	void talkMrK(int who, const char key[]) {
