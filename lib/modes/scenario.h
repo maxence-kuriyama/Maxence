@@ -514,7 +514,6 @@ private:
 
 	// override
 	void startBattle() {
-		enemyCom = new Enemy();
 		Scene scene = sceneList.get();
 		if (scene.who == MESSAGE_WHO_RED) {
 			battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);

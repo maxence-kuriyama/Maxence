@@ -38,7 +38,6 @@ protected:
 	SceneList sceneList;
 	ScenarioMessage msg;
 	ScenarioBattle battle;
-	Enemy* enemyCom = NULL;
 
 public:
 
@@ -288,12 +287,10 @@ protected:
 	}
 
 	virtual void startBattle() {
-		enemyCom = new Enemy();
 		battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
 	}
 
 	virtual void finishBattle() {
-		delete enemyCom;
 		battle.initialize();
 	}
 
@@ -331,7 +328,7 @@ protected:
 	}
 
 	virtual bool playByCom() {
-		return battle.playByCom(*enemyCom);
+		return battle.playByCom();
 	}
 
 	void talkMrK(int who, const char key[]) {

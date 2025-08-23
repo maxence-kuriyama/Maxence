@@ -17,6 +17,7 @@ protected:
 	Game game;
 	bool onGame = false;
 	string trigger = "";
+	Enemy* enemyCom = NULL;
 
 public:
 
@@ -29,6 +30,7 @@ public:
 		game.initialize();
 		game.setVsCOM();
 		trigger = "";
+		delete enemyCom;
 	}
 
 	void show() {
@@ -55,6 +57,7 @@ public:
 		game.prepare(player1, player2);
 		game.setVsCOM();
 		onGame = true;
+		enemyCom = new Enemy();
 
 		cutin.setCharacter(getCharacter(player2));
 	}
@@ -88,8 +91,8 @@ public:
 		return game.isUpdated(res);
 	}
 
-	bool playByCom(Enemy enemyCom) {
-		Coordinate choice = enemyCom.play(game);
+	bool playByCom() {
+		Coordinate choice = enemyCom->play(game);
 
 		double res = game.update(choice);
 		return game.isUpdated(res);

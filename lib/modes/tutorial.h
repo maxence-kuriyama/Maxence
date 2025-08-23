@@ -194,7 +194,6 @@ private:
 
 	// override
 	void startBattle() {
-		enemyCom = new Enemy();
 		battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 	}
 
