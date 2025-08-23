@@ -277,16 +277,24 @@ protected:
 		return battle.checkTriggered() || battle.isTriggered();
 	}
 
-	virtual void setBattle(string how) {
+	void setBattle(string how) {
 		if (how == "start") {
-			enemyCom = new Enemy();
-			battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+			startBattle();
 		}
 		else if (how == "end") {
-			delete enemyCom;
-			battle.initialize();
+			finishBattle();
 		}
 		goNext();
+	}
+
+	virtual void startBattle() {
+		enemyCom = new Enemy();
+		battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+	}
+
+	virtual void finishBattle() {
+		delete enemyCom;
+		battle.initialize();
 	}
 
 	virtual void showBattle() {

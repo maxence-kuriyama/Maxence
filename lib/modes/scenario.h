@@ -513,29 +513,24 @@ private:
 	}
 
 	// override
-	void setBattle(string how) {
-		if (how == "start") {
-			enemyCom = new Enemy();
-			Scene scene = sceneList.get();
-			if (scene.who == MESSAGE_WHO_RED) {
-				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-			}
-			else if (scene.who == MESSAGE_WHO_GREEN) {
-				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_GREEN);
-			}
-			else if (scene.who == MESSAGE_WHO_BLUE) {
-				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_BLUE);
-			}
-			else if (scene.who == MESSAGE_WHO_YELLOW) {
-				battle.start(BATTLE_PLAYER_PLAYER, BATTLE_PLAYER_YELLOW);
-			}
-			else {
-				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
-			}
-			goNext();
-			return;
+	void startBattle() {
+		enemyCom = new Enemy();
+		Scene scene = sceneList.get();
+		if (scene.who == MESSAGE_WHO_RED) {
+			battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 		}
-		return ScenarioBase::setBattle(how);
+		else if (scene.who == MESSAGE_WHO_GREEN) {
+			battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_GREEN);
+		}
+		else if (scene.who == MESSAGE_WHO_BLUE) {
+			battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_BLUE);
+		}
+		else if (scene.who == MESSAGE_WHO_YELLOW) {
+			battle.start(BATTLE_PLAYER_PLAYER, BATTLE_PLAYER_YELLOW);
+		}
+		else {
+			battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+		}
 	}
 
 	// override

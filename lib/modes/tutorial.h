@@ -193,14 +193,9 @@ private:
 	}
 
 	// override
-	void setBattle(string how) {
-		if (how == "start") {
-			enemyCom = new Enemy();
-			battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-			goNext();
-			return;
-		}
-		return ScenarioBase::setBattle(how);
+	void startBattle() {
+		enemyCom = new Enemy();
+		battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 	}
 
 	// override
