@@ -6,14 +6,12 @@
 #include "lib/utils/encrypter.h"
 #include "lib/utils/character.h"
 #include "lib/components/game.h"
-#include "lib/components/anime/fade_cutin.h"
 #include "./enemy.h"
 
 using namespace std;
 
 class ScenarioBattle {
 protected:
-	FadeCutin cutin;
 	Game game;
 	bool onGame = false;
 	string trigger = "";
@@ -40,7 +38,7 @@ public:
 		if (!onGame) return;
 
 		if (FlagStore::isDebug() && UserInput::onKeyCutinDebug()) {
-			cutin.start();
+			enemyCom->showCutin();
 		}
 
 		showBefore();
@@ -53,7 +51,7 @@ public:
 
 	void showAfter() {
 		game.drawAfterPlay();
-		cutin.update();
+		enemyCom->updateCutin();
 	}
 
 	void start(int player1, int player2) {
@@ -62,9 +60,7 @@ public:
 		onGame = true;
 
 		delete enemyCom;
-		enemyCom = new Enemy();
-
-		cutin.setCharacter(getCharacter(player2));
+		enemyCom = new Enemy(getCharacter(player2));
 	}
 
 	void startTutorial(int player1, int player2) {
