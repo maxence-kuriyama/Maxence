@@ -5,11 +5,13 @@
 #include "lib/components/anime/fade_cutin.h"
 
 class Enemy {
-private:
+protected:
 	int comLevel = COM_LEVEL0;
 	FadeCutin cutin;
 
 public:
+	Enemy() {}
+
 	Enemy(int character) {
 		cutin.setCharacter(character);
 	}
@@ -20,11 +22,22 @@ public:
 		return COM::choice;
 	}
 
-	void showCutin() {
+	void showCutin(Game game) {
+		if (!shouldShowCutin(game)) return;
+		
+		return cutin.start();
+	}
+
+	void showCutinDebug() {
 		return cutin.start();
 	}
 
 	void updateCutin() {
 		return cutin.update();
+	}
+
+private:
+	virtual bool shouldShowCutin(Game game) {
+		return false;
 	}
 };

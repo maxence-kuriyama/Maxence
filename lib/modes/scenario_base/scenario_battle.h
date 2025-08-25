@@ -6,7 +6,7 @@
 #include "lib/utils/encrypter.h"
 #include "lib/utils/character.h"
 #include "lib/components/game.h"
-#include "./enemy.h"
+#include "./enemy_red.h"
 
 using namespace std;
 
@@ -38,8 +38,9 @@ public:
 		if (!onGame) return;
 
 		if (FlagStore::isDebug() && UserInput::onKeyCutinDebug()) {
-			enemyCom->showCutin();
+			enemyCom->showCutinDebug();
 		}
+		enemyCom->showCutin(game);
 
 		showBefore();
 		showAfter();
@@ -60,7 +61,7 @@ public:
 		onGame = true;
 
 		delete enemyCom;
-		enemyCom = new Enemy(getCharacter(player2));
+		enemyCom = createEnemy(getCharacter(player2));
 	}
 
 	void startTutorial(int player1, int player2) {
@@ -167,6 +168,15 @@ public:
 
 private:
 
+	Enemy* createEnemy(int character) {
+		switch (character) {
+		case CHARACTER_WHO_RED:
+			return new EnemyRed();
+		default:
+			return new Enemy(character);
+		}
+	}
+
 	int getCharacter(int player) {
 		switch (player) {
 		case BATTLE_PLAYER_YELLOW:
@@ -181,6 +191,8 @@ private:
 			return CHARACTER_WHO_DEER;
 		case BATTLE_PLAYER_PLAYER:
 			return CHARACTER_WHO_PL_YELLOW;
+		case BATTLE_PLAYER_TUTO_RED:
+			return CHARACTER_WHO_TUTO_RED;
 		default:
 			return CHARACTER_WHO_NONE;
 		}

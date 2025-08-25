@@ -9,7 +9,6 @@
 #include "./scenario_base/scene_list.h"
 #include "./scenario_base/scenario_battle.h"
 #include "./scenario_base/scenario_message.h"
-#include "./scenario_base/enemy.h"
 
 const double SPRITE_EXPAND_RATE(0.0006);
 

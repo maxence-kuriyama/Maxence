@@ -44,7 +44,7 @@ private:
 	int origPl2 = BATTLE_PLAYER_NONE;
 	Character player1;
 	Character player2;
-	int cnt = 0;			// ターン数
+	int cnt = 0; // ターン数
 
 	// 引き分け時の強制終了のためのカウント
 	int drawCnt = 0;
@@ -124,6 +124,9 @@ public:
 			break;
 		case BATTLE_PLAYER_GREEN:
 			player2.initialize(CHARACTER_WHO_GREEN);
+			break;
+		case BATTLE_PLAYER_TUTO_RED:
+			player2.initialize(CHARACTER_WHO_TUTO_RED);
 			break;
 		case BATTLE_PLAYER_NONE:
 		default:
@@ -451,6 +454,10 @@ public:
 
 	Coordinate last() {
 		return board.last();
+	}
+
+	int getTurnCount() {
+		return cnt;
 	}
 
 

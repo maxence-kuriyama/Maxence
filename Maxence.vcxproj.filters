@@ -226,7 +226,10 @@
     <ClInclude Include="lib\utils\character.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\modes\scenario_base\enemy.h">
+    <ClInclude Include="lib\components\enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\modes\scenario_base\enemy_red.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

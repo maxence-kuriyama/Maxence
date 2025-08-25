@@ -8,6 +8,7 @@ const int CHARACTER_WHO_BLUE(4);
 const int CHARACTER_WHO_DEER(5);
 const int CHARACTER_WHO_PL_YELLOW(6);
 const int CHARACTER_WHO_PL_PLAYER(7);
+const int CHARACTER_WHO_TUTO_RED(100);
 
 class Character {
 private:
@@ -88,6 +89,7 @@ private:
 			w = 35; h = 52;
 			break;
 		case CHARACTER_WHO_RED:
+		case CHARACTER_WHO_TUTO_RED:
 			imgHandle = imgRed;
 			w = 38; h = 50;
 			break;

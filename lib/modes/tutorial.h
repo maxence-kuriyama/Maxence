@@ -194,7 +194,7 @@ private:
 
 	// override
 	void startBattle() {
-		battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
+		battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_TUTO_RED);
 	}
 
 	// override
