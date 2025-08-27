@@ -8,6 +8,7 @@ class Enemy {
 protected:
 	int comLevel = COM_LEVEL0;
 	FadeCutin cutin;
+	bool skillReloaded = true;
 
 public:
 	Enemy() {}
@@ -23,8 +24,14 @@ public:
 	}
 
 	void showCutin(Game game) {
-		if (!shouldShowCutin(game)) return;
+		if (!shouldShowCutin(game)) {
+			skillReloaded = true;
+			return;
+		}
+
+		if (!skillReloaded) return;
 		
+		skillReloaded = false;
 		return cutin.start();
 	}
 
