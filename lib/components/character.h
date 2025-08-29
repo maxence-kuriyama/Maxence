@@ -23,6 +23,7 @@ private:
 	int imgBlue = LoadGraph("graph/enemy_blue.png");
 	// int imgDeer   = LoadGraph("graph/enemy_deer.png");
 	int imgPlYellow = LoadGraph("graph/player_yellow.png");
+	int imgPlPlayer = LoadGraph("graph/player_player.png");
 
 public:
 	int x = 0;
@@ -107,6 +108,10 @@ private:
 		case CHARACTER_WHO_PL_YELLOW:
 			imgHandle = imgPlYellow;
 			w = 47; h = 50;
+			break;
+		case CHARACTER_WHO_PL_PLAYER:
+			imgHandle = imgPlPlayer;
+			w = 43; h = 51;
 			break;
 		default:
 			imgHandle = 0;
