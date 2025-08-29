@@ -4,7 +4,6 @@
 #include "lib/utils/com.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
-#include "lib/utils/character.h"
 #include "lib/components/game.h"
 #include "./enemy_red.h"
 

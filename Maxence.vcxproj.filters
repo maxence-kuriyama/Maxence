@@ -223,7 +223,7 @@
     <ClInclude Include="lib\modes\scenario\gameover.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="lib\utils\character.h">
+    <ClInclude Include="lib\components\character.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\components\enemy.h">

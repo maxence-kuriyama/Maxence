@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lib/utils/character.h"
 #include "lib/components/game.h"
+#include "lib/components/character.h"
 #include "lib/components/anime/fade_cutin.h"
 
 class Enemy {

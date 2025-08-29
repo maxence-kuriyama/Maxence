@@ -2,12 +2,12 @@
 
 #include <Eigen/Core>
 #include "lib/const.h"
-#include "lib/utils/character.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
 #include "lib/utils/logger.h"
 #include "lib/components/board.h"
+#include "lib/components/character.h"
 
 const int VS_HUMAN(0);
 const int VS_COM(1);
