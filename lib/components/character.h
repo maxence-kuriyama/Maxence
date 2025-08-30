@@ -25,6 +25,9 @@ private:
 	int imgPlYellow = LoadGraph("graph/player_yellow.png");
 	int imgPlPlayer = LoadGraph("graph/player_player.png");
 
+	int strColorPlayerName = GetColor(0, 0, 0);
+	int fontPlayerName = CreateFontToHandle(NULL, 20, 10, DX_FONTTYPE_NORMAL);
+
 public:
 	int x = 0;
 	int y = 0;
@@ -53,6 +56,8 @@ public:
 
 	// Ç‡Ç∆ÇÃscreenÇ…ÉLÉÉÉâï`âÊÇµÅAÇ∑Ç◊ÇƒìßâﬂÇµÇƒçƒï`âÊ
 	void draw(int screenHandle) {
+		if (who == CHARACTER_WHO_PL_PLAYER) drawPlayerName();
+
 		int screen1 = MakeScreen(640, 480, TRUE);
 		int screen2 = MakeScreen(640, 480, TRUE);
 		
@@ -118,6 +123,12 @@ private:
 			w = 0; h = 0;
 			break;
 		}
+	}
+
+	void drawPlayerName() {
+		DrawStringToHandle(0, 80,
+			"YOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!",
+			strColorPlayerName, fontPlayerName);
 	}
 };
 
