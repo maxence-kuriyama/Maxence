@@ -1,11 +1,11 @@
 #pragma once
 
-#include "lib/utils/character.h"
+#include "lib/components/character.h"
 
 const int BG_NUM(3);
 const int BG_SIZE_SCALE(10);
 const double BG_ALPHA_FRONT(240);
-const double BG_ALPHA_LAST(120);
+const double BG_ALPHA_LAST(130);
 const int BG_MIN_X(-100);
 const int BG_MAX_X(300);
 const int BG_MIN_Y(0);

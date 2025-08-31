@@ -2,7 +2,6 @@
 
 #include <sstream>
 #include "lib/mode.h"
-#include "lib/utils/music.h"
 #include "lib/utils/encrypter.h"
 #include "lib/components/menu.h"
 #include "./scenario_base.h"
@@ -272,7 +271,7 @@ public:
 		numContinue = 0;
 	}
 
-	int show(COM& com) {
+	int show() {
 		SetBackgroundColor(0, 0, 0);
 
 		if (Music::drawLoadMsg()) return MODE_SCENARIO;
@@ -285,7 +284,7 @@ public:
 
 		bool is_reset = (!battle.isOnGame() && !hasMsg(scene) && saveOrReset());
 		
-		int res = ScenarioBase::show(com);
+		int res = ScenarioBase::show();
 		switch (scene.action) {
 		case SCENE_ACTION_EQ:
 			performEQ(scene.how);
@@ -437,13 +436,13 @@ private:
 	}
 
 	void loadScenario(int flg_saved) {
-		COM dummy_com(false);
 		int new_flg = 0;
 		int old_flg = 0;
 		while (sceneList.getCurrentId() < flg_saved) {
 			old_flg = sceneList.getCurrentId();
 			Scene scene = sceneList.get();
-			if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
+			// if (scene.action != SCENE_ACTION_MUSIC) show(dummy_com);
+			if (scene.action != SCENE_ACTION_MUSIC) show();
 			new_flg = sceneList.getCurrentId();
 			if (new_flg == old_flg) goNext();
 		}
@@ -514,34 +513,28 @@ private:
 	}
 
 	// override
-	void setBattle(string how) {
-		if (how == "start") {
-			Scene scene = sceneList.get();
-			if (scene.who == MESSAGE_WHO_RED) {
-				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-			}
-			else if (scene.who == MESSAGE_WHO_GREEN) {
-				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_GREEN);
-			}
-			else if (scene.who == MESSAGE_WHO_BLUE) {
-				battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_BLUE);
-			}
-			else if (scene.who == MESSAGE_WHO_YELLOW) {
-				battle.start(BATTLE_PLAYER_PLAYER, BATTLE_PLAYER_YELLOW);
-			}
-			else {
-				battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
-			}
+	void startBattle() {
+		Scene scene = sceneList.get();
+		if (scene.who == MESSAGE_WHO_RED) {
+			battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
 		}
-		else if (how == "end") {
-			battle.initialize();
+		else if (scene.who == MESSAGE_WHO_GREEN) {
+			battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_GREEN);
 		}
-		goNext();
+		else if (scene.who == MESSAGE_WHO_BLUE) {
+			battle.start(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_BLUE);
+		}
+		else if (scene.who == MESSAGE_WHO_YELLOW) {
+			battle.start(BATTLE_PLAYER_PLAYER, BATTLE_PLAYER_YELLOW);
+		}
+		else {
+			battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+		}
 	}
 
 	// override
-	int doBattle(COM& com) {
-		ScenarioBase::doBattle(com);
+	int doBattle() {
+		ScenarioBase::doBattle();
 
 		if (saveOrReset()) {
 			battle.initialize();
@@ -554,6 +547,13 @@ private:
 		}
 			
 		return MODE_SCENARIO;
+	}
+
+	// override
+	bool playByCom() {
+		if (FlagStore::isDebug()) return playByPlayer();
+
+		return ScenarioBase::playByCom();
 	}
 
 	int lostBattle(int who) {
@@ -576,15 +576,6 @@ private:
 			goNext();
 		}
 		return MODE_SCENARIO;
-	}
-
-	// override
-	// TODO: getCurrentScene()‚É‰ž‚¶‚ÄŽg‚¤COM‚ð•Ï‚¦‚é‚±‚Æ
-	// com.play‚Ì’†‚Å•Ï‚¦‚é‚×‚«‚©H
-	bool playByCom(COM& com) {
-		if (FlagStore::isDebug()) return playByPlayer();
-	
-		return battle.playByComLevel1(com);
 	}
 
 	bool saveOrReset() {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lib/components/anime.h"
-#include "lib/utils/character.h"
+#include "lib/components/character.h"
 
 const int FADE_CUTIN_RIGHT_CHARA_X = 400;
 const int FADE_CUTIN_RIGHT_CHARA_Y = 0;

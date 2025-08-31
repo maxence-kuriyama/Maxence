@@ -4,23 +4,26 @@
 #include "lib/utils/com.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
-#include "lib/utils/character.h"
 #include "lib/components/game.h"
-#include "lib/components/anime/fade_cutin.h"
+#include "./enemy_red.h"
 
 using namespace std;
 
 class ScenarioBattle {
 protected:
-	FadeCutin cutin;
 	Game game;
 	bool onGame = false;
 	string trigger = "";
+	Enemy* enemyCom = NULL;
 
 public:
 
 	ScenarioBattle() {
 		initialize();
+	}
+
+	~ScenarioBattle() {
+		delete enemyCom;
 	}
 
 	void initialize() {
@@ -34,8 +37,9 @@ public:
 		if (!onGame) return;
 
 		if (FlagStore::isDebug() && UserInput::onKeyCutinDebug()) {
-			cutin.start();
+			enemyCom->showCutinDebug();
 		}
+		enemyCom->showCutin(game);
 
 		showBefore();
 		showAfter();
@@ -47,7 +51,7 @@ public:
 
 	void showAfter() {
 		game.drawAfterPlay();
-		cutin.update();
+		enemyCom->updateCutin();
 	}
 
 	void start(int player1, int player2) {
@@ -55,7 +59,8 @@ public:
 		game.setVsCOM();
 		onGame = true;
 
-		cutin.setCharacter(getCharacter(player2));
+		delete enemyCom;
+		enemyCom = createEnemy(getCharacter(player2));
 	}
 
 	void startTutorial(int player1, int player2) {
@@ -87,25 +92,8 @@ public:
 		return game.isUpdated(res);
 	}
 
-	bool playByComLevel0() {
-		MinMaxNode node(game.board, game.currentSide());
-		int depth = 1;
-		int index = node.search(depth);
-		Coordinate choice = Board::coordinates(index);
-
-		double res = game.update(choice);
-		return game.isUpdated(res);
-	}
-
-	bool playByComLevel1(COM& com) {
-		// MinMaxNode node(game.board, game.currentSide());
-		// int depth = 2;
-		// int index = node.search(depth);
-		// Coordinate choice = Board::coordinates(index);
-
-		VectorXd input = game.stateToInput();
-		com.play(input, game.board, game.currentSide());
-		Coordinate choice = com.choice;
+	bool playByCom() {
+		Coordinate choice = enemyCom->play(game);
 
 		double res = game.update(choice);
 		return game.isUpdated(res);
@@ -115,7 +103,7 @@ public:
 		return trigger;
 	}
 
-	bool isTriggered() {
+	bool checkTriggered() {
 		if (trigger == "play_once") {
 			// do nothing here
 		}
@@ -139,12 +127,28 @@ public:
 		return false;
 	}
 
+	bool isTriggered() {
+		return (trigger == "fired");
+	}
+
 	bool hasNoTrigger() {
 		return (trigger == "");
 	}
 
+	bool isWon() {
+		return (game.victory() == 1);
+	}
+
 	bool isLost() {
 		return (game.victory() == -1);
+	}
+
+	bool isDraw() {
+		return (game.victory() == 10);
+	}
+
+	Coordinate last() {
+		return game.last();
 	}
 
 	void save(const string filePath) {
@@ -163,6 +167,15 @@ public:
 
 private:
 
+	Enemy* createEnemy(int character) {
+		switch (character) {
+		case CHARACTER_WHO_RED:
+			return new EnemyRed();
+		default:
+			return new Enemy(character);
+		}
+	}
+
 	int getCharacter(int player) {
 		switch (player) {
 		case BATTLE_PLAYER_YELLOW:
@@ -177,6 +190,8 @@ private:
 			return CHARACTER_WHO_DEER;
 		case BATTLE_PLAYER_PLAYER:
 			return CHARACTER_WHO_PL_YELLOW;
+		case BATTLE_PLAYER_TUTO_RED:
+			return CHARACTER_WHO_TUTO_RED;
 		default:
 			return CHARACTER_WHO_NONE;
 		}

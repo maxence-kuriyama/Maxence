@@ -20,7 +20,6 @@ using namespace std;
 #include "lib/utils/flag_store.h"
 #include "lib/utils/music.h"
 #include "lib/utils/synchronizer.h"
-#include "lib/utils/com.h"
 #include "lib/modes/title.h"
 #include "lib/modes/tutorial.h"
 #include "lib/modes/scenario.h"
@@ -66,8 +65,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Ending ending;
 	Battle battle;
 
-	COM com;
-
 	//ÉÅÉCÉìÉãÅ[Év
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
 		// ì¸óÕèÓïÒÇéÊìæ
@@ -95,7 +92,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			tutorial.route(mode, res);
 			break;
 		case MODE_BATTLE:
-			res = battle.show(com);
+			res = battle.show();
 			battle.route(mode, res);
 			break;
 		case MODE_ENDING:
@@ -104,7 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ending.route(mode, res);
 			break;
 		case MODE_SCENARIO:
-			res = scenario.show(com);
+			res = scenario.show();
 			scenario.route(mode, res);
 			break;
 		case MODE_MUSIC_ROOM:
@@ -135,7 +132,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			musicRoom.debugDump();
 			scenario.debugDump();
 			ending.debugDump();
-			com.debugDump();
+			COM::debugDump();
 		}
 	}
 

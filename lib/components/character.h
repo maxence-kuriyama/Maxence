@@ -7,6 +7,8 @@ const int CHARACTER_WHO_GREEN(3);
 const int CHARACTER_WHO_BLUE(4);
 const int CHARACTER_WHO_DEER(5);
 const int CHARACTER_WHO_PL_YELLOW(6);
+const int CHARACTER_WHO_PL_PLAYER(7);
+const int CHARACTER_WHO_TUTO_RED(100);
 
 class Character {
 private:
@@ -21,6 +23,10 @@ private:
 	int imgBlue = LoadGraph("graph/enemy_blue.png");
 	// int imgDeer   = LoadGraph("graph/enemy_deer.png");
 	int imgPlYellow = LoadGraph("graph/player_yellow.png");
+	int imgPlPlayer = LoadGraph("graph/player_player.png");
+
+	int strColorPlayerName = GetColor(0, 0, 0);
+	int fontPlayerName = CreateFontToHandle(NULL, 20, 10, DX_FONTTYPE_NORMAL);
 
 public:
 	int x = 0;
@@ -50,6 +56,8 @@ public:
 
 	// Ç‡Ç∆ÇÃscreenÇ…ÉLÉÉÉâï`âÊÇµÅAÇ∑Ç◊ÇƒìßâﬂÇµÇƒçƒï`âÊ
 	void draw(int screenHandle) {
+		if (who == CHARACTER_WHO_PL_PLAYER) drawPlayerName();
+
 		int screen1 = MakeScreen(640, 480, TRUE);
 		int screen2 = MakeScreen(640, 480, TRUE);
 		
@@ -87,6 +95,7 @@ private:
 			w = 35; h = 52;
 			break;
 		case CHARACTER_WHO_RED:
+		case CHARACTER_WHO_TUTO_RED:
 			imgHandle = imgRed;
 			w = 38; h = 50;
 			break;
@@ -105,11 +114,21 @@ private:
 			imgHandle = imgPlYellow;
 			w = 47; h = 50;
 			break;
+		case CHARACTER_WHO_PL_PLAYER:
+			imgHandle = imgPlPlayer;
+			w = 43; h = 51;
+			break;
 		default:
 			imgHandle = 0;
 			w = 0; h = 0;
 			break;
 		}
+	}
+
+	void drawPlayerName() {
+		DrawStringToHandle(0, 80,
+			"YOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!\nYOU!!YOU!!YOU!!",
+			strColorPlayerName, fontPlayerName);
 	}
 };
 

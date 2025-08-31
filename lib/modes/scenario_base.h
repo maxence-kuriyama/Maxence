@@ -2,6 +2,7 @@
 
 #include "lib/mode.h"
 #include "lib/utils/flag_store.h"
+#include "lib/utils/com.h"
 #include "lib/utils/music.h"
 #include "lib/components/sprite.h"
 #include "./scenario_base/state.h"
@@ -57,11 +58,6 @@ public:
 	}
 
 	int show() {
-		COM dummy_com(false);
-		return show(dummy_com);
-	}
-
-	int show(COM& com) {
 		state.updateKeyboard();
 
 		// 人物の描画
@@ -101,7 +97,7 @@ public:
 			setBattle(scene.how);
 			break;
 		case SCENE_ACTION_PLAY:
-			return doBattle(com);
+			return doBattle();
 		case SCENE_ACTION_STOP:
 		default:
 			break;
@@ -145,7 +141,7 @@ protected:
 	}
 
 	// メッセージを読む
-	void readMsg(string str, int who) {
+	virtual void readMsg(string str, int who) {
 		if (msg.readNext(str, who)) goNext();
 
 		if (state.isOnReturnOrClicked() && msg.skip()) goNext();
@@ -276,26 +272,34 @@ protected:
 			return true;
 		}
 
-		return battle.isTriggered();
+		return battle.checkTriggered() || battle.isTriggered();
 	}
 
-	virtual void setBattle(string how) {
+	void setBattle(string how) {
 		if (how == "start") {
-			battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+			startBattle();
 		}
 		else if (how == "end") {
-			battle.initialize();
+			finishBattle();
 		}
 		goNext();
+	}
+
+	virtual void startBattle() {
+		battle.start(BATTLE_PLAYER_NONE, BATTLE_PLAYER_NONE);
+	}
+
+	virtual void finishBattle() {
+		battle.initialize();
 	}
 
 	virtual void showBattle() {
 		battle.show();
 	}
 
-	virtual int doBattle(COM& com) {
+	virtual int doBattle() {
 		battle.showBefore();
-		if (playTurn(com)) {
+		if (playTurn()) {
 			if (battle.getTrigger() == "play_once") {
 				battle.setTrigger("fired");
 			}
@@ -309,12 +313,12 @@ protected:
 		return MODE_TITLE;
 	}
 	
-	bool playTurn(COM& com) {
+	bool playTurn() {
 		if (battle.isPlayTurn()) {
 			return playByPlayer();
 		}
 		else {
-			return playByCom(com);
+			return playByCom();
 		}
 	}
 
@@ -322,8 +326,8 @@ protected:
 		return battle.playByPlayer();
 	}
 
-	virtual bool playByCom(COM& com) {
-		return battle.playByComLevel0();
+	virtual bool playByCom() {
+		return battle.playByCom();
 	}
 
 	void talkMrK(int who, const char key[]) {
