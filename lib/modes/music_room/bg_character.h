@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/utils/character.h"
+#include "lib/components/character.h"
 
 const int BG_NUM(3);
 const int BG_SIZE_SCALE(10);

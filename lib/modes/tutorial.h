@@ -193,19 +193,13 @@ private:
 	}
 
 	// override
-	void setBattle(string how) {
-		if (how == "start") {
-			battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_RED);
-		}
-		else if (how == "end") {
-			battle.initialize();
-		}
-		goNext();
+	void startBattle() {
+		battle.startTutorial(BATTLE_PLAYER_YELLOW, BATTLE_PLAYER_TUTO_RED);
 	}
 
 	// override
-	int doBattle(COM& com) {
-		ScenarioBase::doBattle(com);
+	int doBattle() {
+		ScenarioBase::doBattle();
 
 		if (reset()) {
 			battle.initialize();

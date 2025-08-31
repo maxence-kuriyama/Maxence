@@ -3,26 +3,59 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "lib/const.h"
+#include "lib/components/board.h"
 #include "./com/vect.h"
 #include "./com/minmax.h"
 #include "./com/loader.h"
 
 using namespace Eigen;
 
-const float SOFTMAX_ALPHA(5.0);  // softmaxの係数
-const float ANNEALING_RATE(1.0); // epsilon-greedyの割合
 const int LAYER_DEPTH(4);
 
+const int COM_THINKING_WAIT(100);
+const float COM_ANNEALING_RATE(0.10); // epsilon-greedy
+const float COM_SOFTMAX_ALPHA(5.0);  // softmaxの係数
+const float COM_HYBRID_THRESHOLD(0.75); // epsilon-greedy
+
+const int COM_LEVEL0(0); // Only MiniMax depth 1
+const int COM_LEVEL1(1); // Only MLP
+const int COM_LEVEL2(2); // MPL with MiniMax depth 2
+const int COM_LEVEL3(3); // MPL with MiniMax depth 3
+
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
-// 単体での使用を想定（Gameオブジェクトから呼び出すべきか？）
 class COM {
 private:
+	static COM* _instance; // singleton
+
+	static COM* getInstance() {
+		if (!_instance) {
+			_instance = new COM();
+		}
+		return _instance;
+	}
+
+public:
+	static Coordinate choice; //COMの選ぶ座標
+
+	COM() {
+		initialize();
+	}
+
+	~COM() {}
+
+private:
 	int cnt = 0;
-	int wait = 20;						//COMが手を打つまでのウェイト
-	double mom = 0.9;
-	double varc = 0.999;				// adamのパラメータ
-	double annealRate = 1.0;				
+	int maxId = 0;
+	double maxVal = 0.0;
+	double lastMinMaxVal = 0.0;
 	int annealed = 0;
+	string miniMaxDebugStr;
+	int strColorDebug = GetColor(255, 100, 0);
+	
+	//学習機械関連
+	int layerSize[LAYER_DEPTH + 1] = { MACHINE_INPUT_SIZE, 1200, 400, 160, MACHINE_OUTPUT_SIZE };
+	double mom = 0.9;
+	double varc = 0.999;    // adamのパラメータ
 	::Affine Q1;
 	::Affine Q2;
 	::Affine Q3;
@@ -34,35 +67,16 @@ private:
 	Machine critic;
 	Loader loader;
 
-	int strColorDebug = GetColor(255, 100, 0);
-	string miniMaxDebugStr;
-
-public:
-	Coordinate choice;					//COMの選ぶ座標
-	int max_id = 0;
-	double max_val = 0.0;
-
-	//学習機械関連
-	int lay_size[LAYER_DEPTH + 1] = { MACHINE_INPUT_SIZE, 1200, 400, 160, MACHINE_OUTPUT_SIZE };
-	double reward2 = 0.0;
-	double rwd_tmp = 0.0;
-
-	COM(bool init = true) {
-		if (init) initialize();
-	}
-
-	~COM() {}
-
 	void initialize() {
 		// MLPの初期化
-		MatrixXd P1 = MatrixXd::Random(lay_size[0], lay_size[1]) * sqrt(0.1 / lay_size[0]);
-		VectorXd B1 = VectorXd::Random(lay_size[1]) * 0.1;
-		MatrixXd P2 = MatrixXd::Random(lay_size[1], lay_size[2]) * sqrt(0.1 / lay_size[1]);
-		VectorXd B2 = VectorXd::Random(lay_size[2]) * 0.1;
-		MatrixXd P3 = MatrixXd::Random(lay_size[2], lay_size[3]) * sqrt(0.1 / lay_size[2]);
-		VectorXd B3 = VectorXd::Random(lay_size[3]) * 0.1;
-		MatrixXd P4 = MatrixXd::Random(lay_size[3], lay_size[4]) * sqrt(0.1 / lay_size[3]);
-		VectorXd B4 = VectorXd::Random(lay_size[4]) * 0.05;
+		MatrixXd P1 = MatrixXd::Random(layerSize[0], layerSize[1]) * sqrt(0.1 / layerSize[0]);
+		VectorXd B1 = VectorXd::Random(layerSize[1]) * 0.1;
+		MatrixXd P2 = MatrixXd::Random(layerSize[1], layerSize[2]) * sqrt(0.1 / layerSize[1]);
+		VectorXd B2 = VectorXd::Random(layerSize[2]) * 0.1;
+		MatrixXd P3 = MatrixXd::Random(layerSize[2], layerSize[3]) * sqrt(0.1 / layerSize[2]);
+		VectorXd B3 = VectorXd::Random(layerSize[3]) * 0.1;
+		MatrixXd P4 = MatrixXd::Random(layerSize[3], layerSize[4]) * sqrt(0.1 / layerSize[3]);
+		VectorXd B4 = VectorXd::Random(layerSize[4]) * 0.05;
 		Q1.setParam(P1, B1);
 		Q1.setCoef(mom, varc);
 		Q2.setParam(P2, B2);
@@ -85,17 +99,62 @@ public:
 		output = VectorXd::Zero(MACHINE_OUTPUT_SIZE);
 		load();
 	}
-
+	
 	void load() {
 		::Affine* layers[LAYER_DEPTH] = { &Q1, &Q2, &Q3, &Q4 };
-		loader.read(LAYER_DEPTH, lay_size, layers);
+		loader.read(LAYER_DEPTH, layerSize, layers);
 	}
 
-	void setWait() {
-		cnt = wait;
+public:
+	static void setWait() {
+		COM* com = getInstance();
+		com->cnt = COM_THINKING_WAIT;
+		COM::choice = { -1, -1, -1, -1, DUMMY_LAST_FIELD };
 	}
 
-	void visualize(VectorXd input) {
+	static void visualize(VectorXd input) {
+		COM* com = getInstance();
+		return com->_visualize(input);
+	}
+
+	static void predict(VectorXd input) {
+		COM* com = getInstance();
+		return com->_predict(input);
+	}
+
+	static void play(VectorXd input, const Board board, int side, int level = COM_LEVEL1) {
+		COM* com = getInstance();
+
+		com->cnt--;
+		if (com->cnt > 0) return;
+
+		int depth = 3;
+		switch (level) {
+		case COM_LEVEL0:
+			depth = 1;
+			return com->_playByMinMax(board, side, depth);
+		case COM_LEVEL1:
+			return com->_playByMachine(input, board, side);
+		case COM_LEVEL2:
+			depth = 2;
+			return com->_play(input, board, side, depth);
+		case COM_LEVEL3:
+			depth = 3;
+			return com->_play(input, board, side, depth);
+		}
+		return com->_play(input, board, side, depth);
+	}
+
+	static void debugDump() {
+		COM* com = getInstance();
+		int strColor = com->strColorDebug;
+
+		DrawFormatString(505, 25, strColor, "anneal: %d", com->annealed);
+		DrawFormatString(505, 65, strColor, (com->miniMaxDebugStr).c_str());
+	}
+
+private:
+	void _visualize(VectorXd input) {
 		output = critic.predict(input);
 		for (int index = 0; index < 81; index++) {
 			int color;
@@ -127,72 +186,52 @@ public:
 		}
 	}
 
-	void predict(VectorXd input) {
+	void _predict(VectorXd input) {
 		output = critic.predict(input);
-		max_val = output.maxCoeff(&max_id);
+		maxVal = output.maxCoeff(&maxId);
 	}
 
-	void play(VectorXd input, const Board board, int side) {
-		cnt--;
-		if (cnt > 0) return;
+	void _play(VectorXd input, const Board board, int side, int depth = 3) {
+		_playByMinMax(board, side, depth);
+		if (lastMinMaxVal > COM_HYBRID_THRESHOLD) return;
 
-		MinMaxNode node(board, side);
-		int depth = 3;
-		int index = node.search(depth);
-		if (node.value > 0.75) {
-			choice = Board::coordinates(index);
-			annealed = 0;
-			return;
-		}
+		return _playByMachine(input, board, side);
+	}
 
-		predict(input);
-		if (unif(mt) < annealRate) {
-			chooseRandom();
+	void _playByMachine(VectorXd input, const Board board, int side) {
+		_predict(input);
+		if (unif(mt) < COM_ANNEALING_RATE) {
+			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+			annealed = 1;
 		}
 		else {
-			chooseMax();
+			COM::choice = Board::coordinates(maxId);
+			annealed = 0;
 		}
 	}
 
-	void playMinMax(const Board board, int side) {
-		cnt--;
-		if (cnt > 0) return;
-
+	void _playByMinMax(const Board board, int side, int depth = 3) {
 		MinMaxNode node(board, side);
 		MinMaxNode::truncate = true;
-		int depth = 4;
 		int index = node.search(depth);
+		lastMinMaxVal = node.value;
 
-		choice = Board::coordinates(index);
+		COM::choice = Board::coordinates(index);
 		annealed = 0;
-		
+
 		miniMaxDebugStr = node.debugStr();
-	}
-
-	void chooseRandom() {
-		choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
-		annealed = 1;
-	}
-
-	void chooseMax() {
-		choice = Board::coordinates(max_id);
-		annealed = 0;
 	}
 
 	// TODO: softmax使うか要検討
 	VectorXd softmax(const VectorXd& src) {
 		VectorXd trg;
 
-		trg = (SOFTMAX_ALPHA * src).array().exp();
+		trg = (COM_SOFTMAX_ALPHA * src).array().exp();
 		trg = trg / trg.sum();
 
 		return trg;
 	}
-
-	void debugDump() {
-		int strColor = strColorDebug;
-
-		DrawFormatString(505, 25, strColor, "anneal: %d", annealed);
-		DrawFormatString(505, 65, strColor, miniMaxDebugStr.c_str());
-	}
 };
+
+COM* COM::_instance = NULL;
+Coordinate COM::choice;

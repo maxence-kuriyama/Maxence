@@ -2,12 +2,12 @@
 
 #include <Eigen/Core>
 #include "lib/const.h"
-#include "lib/utils/character.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
 #include "lib/utils/logger.h"
 #include "lib/components/board.h"
+#include "lib/components/character.h"
 
 const int VS_HUMAN(0);
 const int VS_COM(1);
@@ -44,7 +44,7 @@ private:
 	int origPl2 = BATTLE_PLAYER_NONE;
 	Character player1;
 	Character player2;
-	int cnt = 0;			// ターン数
+	int cnt = 0; // ターン数
 
 	// 引き分け時の強制終了のためのカウント
 	int drawCnt = 0;
@@ -124,6 +124,9 @@ public:
 			break;
 		case BATTLE_PLAYER_GREEN:
 			player2.initialize(CHARACTER_WHO_GREEN);
+			break;
+		case BATTLE_PLAYER_TUTO_RED:
+			player2.initialize(CHARACTER_WHO_TUTO_RED);
 			break;
 		case BATTLE_PLAYER_NONE:
 		default:
@@ -451,6 +454,10 @@ public:
 
 	Coordinate last() {
 		return board.last();
+	}
+
+	int getTurnCount() {
+		return cnt;
 	}
 
 
