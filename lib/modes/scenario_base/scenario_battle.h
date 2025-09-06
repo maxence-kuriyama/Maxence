@@ -39,7 +39,6 @@ public:
 		if (FlagStore::isDebug() && UserInput::onKeyCutinDebug()) {
 			enemyCom->showCutinDebug();
 		}
-		enemyCom->showCutin(game);
 
 		showBefore();
 		showAfter();
@@ -51,7 +50,7 @@ public:
 
 	void showAfter() {
 		game.drawAfterPlay();
-		enemyCom->updateCutin();
+		enemyCom->tick();
 	}
 
 	void start(int player1, int player2) {
@@ -93,6 +92,8 @@ public:
 	}
 
 	bool playByCom() {
+		if (!enemyCom->useSkill(game)) return false;
+
 		Coordinate choice = enemyCom->play(game);
 
 		double res = game.update(choice);

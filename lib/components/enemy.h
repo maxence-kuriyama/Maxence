@@ -23,28 +23,33 @@ public:
 		return COM::choice;
 	}
 
-	void showCutin(Game game) {
-		if (!shouldShowCutin(game)) {
+	bool useSkill(Game game) {
+		if (!shouldUseSkill(game)) {
 			skillReloaded = true;
-			return;
+			return false;
 		}
 
-		if (!skillReloaded) return;
-		
-		skillReloaded = false;
-		return cutin.start();
+		if (!skillReloaded) return false;
+
+		showCutin(game);
+		return true;
 	}
 
 	void showCutinDebug() {
 		return cutin.start();
 	}
 
-	void updateCutin() {
+	void tick() {
 		return cutin.update();
 	}
 
 private:
-	virtual bool shouldShowCutin(Game game) {
+	void showCutin(Game game) {
+		skillReloaded = false;
+		return cutin.start();
+	}
+
+	virtual bool shouldUseSkill(Game game) {
 		return false;
 	}
 };
