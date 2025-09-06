@@ -92,7 +92,8 @@ public:
 	}
 
 	bool playByCom() {
-		if (!enemyCom->useSkill(game)) return false;
+		enemyCom->useSkill(game);
+		if (enemyCom->usingSkill()) return false;
 
 		Coordinate choice = enemyCom->play(game);
 

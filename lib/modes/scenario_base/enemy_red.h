@@ -9,7 +9,7 @@ public:
 	}
 
 private:
-	bool shouldShowCutin(Game game) {
+	bool shouldUseSkill(Game game) {
 		return (game.getTurnCount() / 2 == 2);
 	}
 };

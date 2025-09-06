@@ -4,10 +4,10 @@
 class AnimeBase {
 protected:
 	int cnt = 0;
-	bool active = false;
 	int seHandle = 0;
 
 public:
+	bool active = false;
 	
 	AnimeBase() {
 		initialize();
