@@ -74,7 +74,9 @@ private:
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawGraph(0, 0, screenHandle, TRUE);
 		if (skillName != "") {
-			DrawStringToHandle(360, 30, skillName.c_str(), strColor, FadeCutin::fontHandle);
+			const char* skillNameStr = skillName.c_str();
+			int strWidth = GetDrawStringWidth(skillNameStr, strlen(skillNameStr)) * 1.65;
+			DrawStringToHandle(640 - strWidth, 30, skillNameStr, strColor, FadeCutin::fontHandle);
 		}
 
 		DeleteGraph(screenHandle);
