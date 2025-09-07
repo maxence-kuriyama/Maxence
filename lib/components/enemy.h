@@ -4,6 +4,7 @@
 #include "lib/components/game.h"
 #include "lib/components/character.h"
 #include "lib/components/anime/fade_cutin.h"
+#include "lib/components/message.h"
 
 const int SKILL_USING_STATUS_NONE(-1);
 const int SKILL_USING_STATUS_RELOADED(0);
@@ -12,6 +13,11 @@ const int SKILL_USING_STATUS_START_CUTIN(20);
 const int SKILL_USING_STATUS_CUTIN(30);
 
 const int MAX_SKILL_NUM(5);
+
+struct skillInfo {
+	string message;
+	string name;
+};
 
 class Enemy {
 protected:
@@ -22,7 +28,9 @@ protected:
 	int skillUsingStatus = SKILL_USING_STATUS_RELOADED;
 
 	int skillIndex = 0;
-	string skillMessages[MAX_SKILL_NUM] = { "" };
+	struct skillInfo skills[MAX_SKILL_NUM] = {
+		{ "", "" }
+	};
 
 public:
 	int who = MESSAGE_WHO_DESC;
@@ -93,7 +101,7 @@ private:
 
 	void drawPreMessage() {
 		if (!msg.isShown) {
-			string skillMessage = skillMessages[skillIndex];
+			string skillMessage = skills[skillIndex].message;
 			msg.setWithoutNext(skillMessage, who);
 		}
 
@@ -105,6 +113,8 @@ private:
 
 	void startCutin() {
 		skillUsingStatus = SKILL_USING_STATUS_CUTIN;
+		string skillName = skills[skillIndex].name;
+		cutin.setSkillName(skillName);
 		return cutin.start();
 	}
 

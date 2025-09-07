@@ -8,7 +8,7 @@ public:
 	EnemyRed() {
 		comLevel = COM_LEVEL0;
 		who = MESSAGE_WHO_RED;
-		skillMessages[0] = "これを使わせるとはな！！";
+		skills[0] = { "これを使わせるとはな！！", "燃やし尽くす義憤" };
 		cutin.setCharacter(CHARACTER_WHO_RED);
 	}
 
