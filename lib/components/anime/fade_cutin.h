@@ -9,10 +9,10 @@ const int FADE_CUTIN_RIGHT_CHARA_Y(0);
 // 試合中のアニメーションクラス
 class FadeCutin : public AnimeBase {
 private:
+	static int fontHandle;
 	int Black = GetColor(0, 0, 0);
 	int strColor = GetColor(255, 255, 255);
 	string skillName = "";
-	int fontHandle = CreateFontToHandle("游明朝", 16, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	Character chara;
 
@@ -20,6 +20,9 @@ public:
 
 	FadeCutin() {
 		initialize();
+		if (FadeCutin::fontHandle == NULL) {
+			FadeCutin::fontHandle = CreateFontToHandle("游明朝", 16, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+		}
 	}
 
 	void initialize() {
@@ -71,9 +74,11 @@ private:
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawGraph(0, 0, screenHandle, TRUE);
 		if (skillName != "") {
-			DrawStringToHandle(360, 30, skillName.c_str(), strColor, fontHandle);
+			DrawStringToHandle(360, 30, skillName.c_str(), strColor, FadeCutin::fontHandle);
 		}
 
 		DeleteGraph(screenHandle);
 	}
 };
+
+int FadeCutin::fontHandle = NULL;

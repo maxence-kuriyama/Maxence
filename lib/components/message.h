@@ -24,11 +24,11 @@ int MultiByteLength(const char* String);
 // 一括管理ではなく各キャラクターオブジェクトに紐づけるべきか？
 class Message {
 private:
+	static int fontHandle;
 	Sprite sprite[6];
 	string text;
 	int strColor = GetColor(255, 255, 255);
 	int boxColor = GetColor(250, 250, 150);
-	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int nextIcon = LoadGraph("graph/next.png");
 	int iconCnt = 0;
 	bool iconVisible = false;
@@ -42,6 +42,12 @@ public:
 	float cntPerFrame = 15.0 / FPS;	// FPSに依存しないようにする倍率
 	int textLen = 0;				// テキスト長
 	bool isShown = false;
+
+	Message() {
+		if (Message::fontHandle == NULL) {
+			Message::fontHandle = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+		}
+	}
 
 	~Message() {
 		DeleteGraph(nextIcon);
@@ -107,7 +113,7 @@ public:
 			cnt++;
 		}
 		DrawRoundBox(15, MESSAGE_INT_Y - 2, 10, 609, 81, boxColor);
-		DrawMessage(charCnt, iniX, MESSAGE_INT_Y + 2, endX, GetFontSize(), text.c_str(), strColor, font, boxColor);
+		DrawMessage(charCnt, iniX, MESSAGE_INT_Y + 2, endX, GetFontSize(), text.c_str(), strColor, Message::fontHandle, boxColor);
 		if (existsNext) {
 			if (isReading()) {
 				drawBlinkIcon();
@@ -143,6 +149,8 @@ private:
 		return drawIcon(true);
 	}
 };
+
+int Message::fontHandle = NULL;
 
 
 void DrawMessage(int cnt, int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor) {
