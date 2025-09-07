@@ -2,7 +2,6 @@
 
 #include "lib/components/game.h"
 #include "lib/components/character.h"
-#include "lib/components/message.h"
 #include "lib/components/anime/fade_cutin.h"
 
 const int SKILL_USING_STATUS_NONE(-1);
@@ -15,14 +14,16 @@ const int MAX_SKILL_NUM(5);
 
 class Enemy {
 protected:
-	int comLevel = COM_LEVEL0;
-	Message msg;
 	FadeCutin cutin;
+
+	int comLevel = COM_LEVEL0;
 	int skillUsingStatus = SKILL_USING_STATUS_RELOADED;
 
+	int skillIndex = 0;
 	string skillMessages[MAX_SKILL_NUM] = { "" };
 
 public:
+	int who = MESSAGE_WHO_DESC;
 
 	Enemy() {
 		initialize();
@@ -50,7 +51,7 @@ public:
 			skillUsingStatus = SKILL_USING_STATUS_PRE_MESSAGE;
 			break;
 		case SKILL_USING_STATUS_PRE_MESSAGE:
-			skillUsingStatus = SKILL_USING_STATUS_START_CUTIN;
+			// wait for being called finishPreMessage()
 			break;
 		case SKILL_USING_STATUS_START_CUTIN:
 			startCutin();
@@ -78,12 +79,24 @@ public:
 		return cutin.update();
 	}
 
+	string getMessageStr() {
+		if (skillUsingStatus == SKILL_USING_STATUS_PRE_MESSAGE) {
+			return skillMessages[skillIndex];
+		}
+		return "";
+	}
+
+	void finishPreMessage() {
+		skillUsingStatus = SKILL_USING_STATUS_START_CUTIN;
+	}
+
 private:
 
 	void initialize() {
-		msg.initialize();
-		cutin.initialize();
 		skillUsingStatus = SKILL_USING_STATUS_RELOADED;
+		skillIndex = 0;
+
+		cutin.initialize();
 	}
 
 	void startCutin() {

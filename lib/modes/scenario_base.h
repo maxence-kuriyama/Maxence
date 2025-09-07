@@ -327,7 +327,7 @@ protected:
 	}
 
 	virtual bool playByCom() {
-		return battle.playByCom();
+		return battle.playByCom(state.isOnReturnOrClicked());
 	}
 
 	void talkMrK(int who, const char key[]) {

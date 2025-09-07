@@ -4,13 +4,16 @@
 
 class EnemyRed : public Enemy {
 public:
-	string skillMessage = { "これを使わせるとはな！！" };
-	
+
 	EnemyRed() {
+		comLevel = COM_LEVEL0;
+		who = MESSAGE_WHO_RED;
+		skillMessages[0] = "これを使わせるとはな！！";
 		cutin.setCharacter(CHARACTER_WHO_RED);
 	}
 
 private:
+
 	bool shouldUseSkill(Game game) {
 		return (game.getTurnCount() / 2 == 2);
 	}
