@@ -18,6 +18,7 @@ protected:
 	Message msg;
 
 public:
+	bool usingSkill = false;
 
 	ScenarioBattle() {
 		initialize();
@@ -96,7 +97,8 @@ public:
 	bool playByCom(bool clicked = false) {
 		enemyCom->useSkill(game);
 		drawSkillMessage(clicked);
-		if (enemyCom->usingSkill()) return false;
+		usingSkill = enemyCom->usingSkill();
+		if (usingSkill) return false;
 
 		Coordinate choice = enemyCom->play(game);
 
