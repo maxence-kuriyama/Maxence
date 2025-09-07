@@ -19,15 +19,6 @@ public:
 		initialize();
 	}
 
-	void setCharacter(int who) {
-		chara.initialize(who);
-		chara.alpha = 0;
-		chara.x = FADE_CUTIN_RIGHT_CHARA_X;
-		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
-	}
-
-private:
-
 	void initialize() {
 		AnimeBase::initialize();
 
@@ -36,6 +27,15 @@ private:
 		chara.x = FADE_CUTIN_RIGHT_CHARA_X;
 		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
 	}
+
+	void setCharacter(int who) {
+		chara.initialize(who);
+		chara.alpha = 0;
+		chara.x = FADE_CUTIN_RIGHT_CHARA_X;
+		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
+	}
+
+private:
 
 	void _update() {
 		if (cnt <= 15) {

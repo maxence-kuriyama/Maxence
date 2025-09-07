@@ -4,6 +4,8 @@
 
 class EnemyRed : public Enemy {
 public:
+	string skillMessage = { "‚±‚ê‚ğg‚í‚¹‚é‚Æ‚Í‚ÈII" };
+	
 	EnemyRed() {
 		cutin.setCharacter(CHARACTER_WHO_RED);
 	}
