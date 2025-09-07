@@ -20,8 +20,8 @@ const int ENDING_RESET_Y(440);
 class Ending {
 private:
 
-	int Font2 = CreateFontToHandle("HGã≥â»èëëÃ", 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
-	int Font3 = CreateFontToHandle("HGã≥â»èëëÃ", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font2 = CreateFontToHandle(NULL, 36, 4, DX_FONTTYPE_ANTIALIASING_EDGE);
+	int Font3 = CreateFontToHandle(NULL, 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int Font4 = CreateFontToHandle("Times New Roman", 72, 6, DX_FONTTYPE_ANTIALIASING_EDGE);
 	int MLogo = LoadGraph("graph/M.png");
 	int axence = LoadGraph("graph/axence.png");

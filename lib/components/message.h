@@ -45,7 +45,7 @@ public:
 
 	Message() {
 		if (Message::fontHandle == NULL) {
-			Message::fontHandle = CreateFontToHandle("HGã≥â»èëëÃ", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+			Message::fontHandle = CreateFontToHandle(NULL, 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 		}
 	}
 
