@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lib/utils/user_input.h"
 #include "lib/components/game.h"
 #include "lib/components/character.h"
 #include "lib/components/anime/fade_cutin.h"
@@ -15,6 +16,7 @@ const int MAX_SKILL_NUM(5);
 class Enemy {
 protected:
 	FadeCutin cutin;
+	Message msg;
 
 	int comLevel = COM_LEVEL0;
 	int skillUsingStatus = SKILL_USING_STATUS_RELOADED;
@@ -51,7 +53,7 @@ public:
 			skillUsingStatus = SKILL_USING_STATUS_PRE_MESSAGE;
 			break;
 		case SKILL_USING_STATUS_PRE_MESSAGE:
-			// wait for being called finishPreMessage()
+			drawPreMessage();
 			break;
 		case SKILL_USING_STATUS_START_CUTIN:
 			startCutin();
@@ -79,17 +81,6 @@ public:
 		return cutin.update();
 	}
 
-	string getMessageStr() {
-		if (skillUsingStatus == SKILL_USING_STATUS_PRE_MESSAGE) {
-			return skillMessages[skillIndex];
-		}
-		return "";
-	}
-
-	void finishPreMessage() {
-		skillUsingStatus = SKILL_USING_STATUS_START_CUTIN;
-	}
-
 private:
 
 	void initialize() {
@@ -97,6 +88,19 @@ private:
 		skillIndex = 0;
 
 		cutin.initialize();
+		msg.initialize();
+	}
+
+	void drawPreMessage() {
+		if (!msg.isShown) {
+			string skillMessage = skillMessages[skillIndex];
+			msg.setWithoutNext(skillMessage, who);
+		}
+
+		msg.draw();
+		if (isOnReturnOrClicked() && msg.skip()) {
+			skillUsingStatus = SKILL_USING_STATUS_START_CUTIN;
+		}
 	}
 
 	void startCutin() {
@@ -110,5 +114,11 @@ private:
 
 	virtual bool shouldUseSkill(Game game) {
 		return false;
+	}
+
+	bool isOnReturnOrClicked() {
+		Key* keyboard = UserInput::getKey();
+		Mouse* mouse = UserInput::getMouse();
+		return (keyboard->onReturn() || mouse->click());
 	}
 };

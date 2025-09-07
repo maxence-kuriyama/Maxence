@@ -15,7 +15,6 @@ protected:
 	bool onGame = false;
 	string trigger = "";
 	Enemy* enemyCom = NULL;
-	Message msg;
 
 public:
 	bool usingSkill = false;
@@ -33,7 +32,6 @@ public:
 		game.initialize();
 		game.setVsCOM();
 		trigger = "";
-		msg.initialize();
 	}
 
 	void show() {
@@ -94,9 +92,8 @@ public:
 		return game.isUpdated(res);
 	}
 
-	bool playByCom(bool clicked = false) {
+	bool playByCom() {
 		enemyCom->useSkill(game);
-		drawSkillMessage(clicked);
 		usingSkill = enemyCom->usingSkill();
 		if (usingSkill) return false;
 
@@ -173,20 +170,6 @@ public:
 	}
 
 private:
-
-	void drawSkillMessage(bool clicked) {
-		string skillMessage = enemyCom->getMessageStr();
-		if (skillMessage == "") return;
-
-		if (!msg.isShown) {
-			msg.setWithoutNext(skillMessage, enemyCom->who);
-		}
-
-		msg.draw();
-		if (clicked && msg.skip()) {
-			enemyCom->finishPreMessage();
-		}
-	}
 
 	Enemy* createEnemy(int character) {
 		switch (character) {
