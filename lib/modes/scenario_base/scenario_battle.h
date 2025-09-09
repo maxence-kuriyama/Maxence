@@ -6,6 +6,9 @@
 #include "lib/utils/encrypter.h"
 #include "lib/components/game.h"
 #include "./enemy_red.h"
+#include "./enemy_green.h"
+#include "./enemy_blue.h"
+#include "./enemy_yellow.h"
 
 using namespace std;
 
@@ -175,6 +178,12 @@ private:
 		switch (character) {
 		case CHARACTER_WHO_RED:
 			return new EnemyRed();
+		case CHARACTER_WHO_GREEN:
+			return new EnemyGreen();
+		case CHARACTER_WHO_BLUE:
+			return new EnemyBlue();
+		case CHARACTER_WHO_YELLOW:
+			return new EnemyYellow();
 		default:
 			return new Enemy(character);
 		}

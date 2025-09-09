@@ -15,6 +15,6 @@ public:
 private:
 
 	bool shouldUseSkill(Game game) {
-		return (game.getTurnCount() / 2 == 2);
+		return (game.getTurnCount() / 2 + 1 == 12);
 	}
 };

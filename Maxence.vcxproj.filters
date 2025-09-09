@@ -232,6 +232,15 @@
     <ClInclude Include="lib\modes\scenario_base\enemy_red.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="lib\modes\scenario_base\enemy_blue.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\modes\scenario_base\enemy_green.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\modes\scenario_base\enemy_yellow.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Maxence.ico">
