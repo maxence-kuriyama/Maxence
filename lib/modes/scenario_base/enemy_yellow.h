@@ -18,7 +18,7 @@ private:
 
 	bool shouldUseSkill(Game game) {
 		return ((skillIndex == 0 && game.getTurnCount() / 2 + 1 == 12)
-			|| (skillIndex == 1 && game.getTurnCount() / 2 + 1 == 18)
+			|| (skillIndex == 1 && game.getTurnCount() / 2 + 1 == 17)
 			|| (skillIndex == 2 && game.getTurnCount() / 2 + 1 == 22));
 	}
 };

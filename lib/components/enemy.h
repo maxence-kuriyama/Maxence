@@ -119,7 +119,10 @@ private:
 	}
 
 	void checkCutin() {
-		if (!cutin.active) skillUsingStatus = SKILL_USING_STATUS_NONE;
+		if (cutin.active) return;
+		
+		skillUsingStatus = SKILL_USING_STATUS_NONE;
+		skillIndex++;
 	}
 
 	virtual bool shouldUseSkill(Game game) {
