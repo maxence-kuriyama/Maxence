@@ -512,4 +512,12 @@ public:
 		DrawFormatString(5, 145, strColor, "cnt: %d", cnt);
 		DrawFormatString(5, 165, strColor, "mode: %s", mode.c_str());
 	}
+
+
+	/*===========================*/
+	//    EnemyƒXƒLƒ‹—p
+	/*===========================*/
+	void minusOneTurnCheat() {
+		cnt--;
+	}
 };

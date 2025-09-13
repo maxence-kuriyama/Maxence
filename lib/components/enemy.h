@@ -11,6 +11,8 @@ const int SKILL_USING_STATUS_RELOADED(0);
 const int SKILL_USING_STATUS_PRE_MESSAGE(10);
 const int SKILL_USING_STATUS_START_CUTIN(20);
 const int SKILL_USING_STATUS_CUTIN(30);
+const int SKILL_USING_STATUS_DO_SKILL(40);
+const int SKILL_USING_STATUS_DONE_SKILL(50);
 
 const int MAX_SKILL_NUM(5);
 
@@ -50,7 +52,7 @@ public:
 		return COM::choice;
 	}
 
-	bool useSkill(Game game) {
+	bool useSkill(Game &game) {
 		if (!shouldUseSkill(game)) {
 			skillUsingStatus = SKILL_USING_STATUS_RELOADED;
 			return false;
@@ -69,6 +71,11 @@ public:
 		case SKILL_USING_STATUS_CUTIN:
 			checkCutin();
 			break;
+		case SKILL_USING_STATUS_DO_SKILL:
+			doSkill(game);
+			break;
+		case SKILL_USING_STATUS_DONE_SKILL:
+			checkDone();
 		default:
 			return false;
 		}
@@ -78,7 +85,12 @@ public:
 	bool usingSkill() {
 		return (skillUsingStatus == SKILL_USING_STATUS_PRE_MESSAGE
 			|| skillUsingStatus == SKILL_USING_STATUS_START_CUTIN
-			|| skillUsingStatus == SKILL_USING_STATUS_CUTIN);
+			|| skillUsingStatus == SKILL_USING_STATUS_CUTIN
+			|| skillUsingStatus == SKILL_USING_STATUS_DO_SKILL);
+	}
+
+	bool doneSkill() {
+		return (skillUsingStatus == SKILL_USING_STATUS_DONE_SKILL);
 	}
 
 	void showCutinDebug() {
@@ -121,8 +133,22 @@ private:
 	void checkCutin() {
 		if (cutin.active) return;
 		
-		skillUsingStatus = SKILL_USING_STATUS_NONE;
+		skillUsingStatus = SKILL_USING_STATUS_DO_SKILL;
 		skillIndex++;
+	}
+
+protected:
+
+	virtual void doSkill(Game &game) {
+		finishSkill();
+	}
+
+	void finishSkill() {
+		skillUsingStatus = SKILL_USING_STATUS_DONE_SKILL;
+	}
+
+	void checkDone() {
+		skillUsingStatus = SKILL_USING_STATUS_NONE;
 	}
 
 	virtual bool shouldUseSkill(Game game) {

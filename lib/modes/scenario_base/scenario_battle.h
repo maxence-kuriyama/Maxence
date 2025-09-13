@@ -99,6 +99,7 @@ public:
 		enemyCom->useSkill(game);
 		usingSkill = enemyCom->usingSkill();
 		if (usingSkill) return false;
+		if (enemyCom->doneSkill()) return true;
 
 		Coordinate choice = enemyCom->play(game);
 

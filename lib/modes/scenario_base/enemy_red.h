@@ -13,8 +13,30 @@ public:
 	}
 
 private:
+	bool playedOneTurn = false;
 
 	bool shouldUseSkill(Game game) {
 		return (game.getTurnCount() / 2 + 1 == 12);
+	}
+
+	// 2É^Å[ÉìçsìÆ
+	void doSkill(Game &game) {
+		if (!playedOneTurn) {
+			if (playOneTurn(game)) {
+				game.minusOneTurnCheat();
+				playedOneTurn = true;
+			}
+		} else {
+			if (playOneTurn(game)) {
+				finishSkill();
+			}
+		}
+	}
+
+	bool playOneTurn(Game &game) {
+		Coordinate choice = play(game);
+
+		double res = game.update(choice);
+		return game.isUpdated(res);
 	}
 };
