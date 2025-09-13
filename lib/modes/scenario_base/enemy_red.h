@@ -23,12 +23,13 @@ private:
 	void doSkill(Game &game) {
 		if (!playedOneTurn) {
 			if (playOneTurn(game)) {
+				COM::setWait();
 				game.minusOneTurnCheat();
 				playedOneTurn = true;
-				COM::setWait();
 			}
 		} else {
 			if (playOneTurn(game)) {
+				COM::setWait();
 				finishSkill();
 			}
 		}

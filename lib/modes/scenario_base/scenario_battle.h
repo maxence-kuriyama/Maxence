@@ -92,12 +92,7 @@ public:
 		if (!game.playTurn()) return false;
 
 		double res = game.update();
-		if (game.isUpdated(res)) {
-			COM::setWait();
-			return true;
-		}
-
-		return false;
+		return game.isUpdated(res);
 	}
 
 	bool playByCom() {
@@ -109,7 +104,12 @@ public:
 		Coordinate choice = enemyCom->play(game);
 
 		double res = game.update(choice);
-		return game.isUpdated(res);
+		if (game.isUpdated(res)) {
+			COM::setWait();
+			return true;
+		}
+
+		return false;
 	}
 
 	string getTrigger() {
