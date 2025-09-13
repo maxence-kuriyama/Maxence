@@ -25,6 +25,7 @@ private:
 			if (playOneTurn(game)) {
 				game.minusOneTurnCheat();
 				playedOneTurn = true;
+				COM::setWait();
 			}
 		} else {
 			if (playOneTurn(game)) {
