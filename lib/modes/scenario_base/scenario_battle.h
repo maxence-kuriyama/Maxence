@@ -92,7 +92,12 @@ public:
 		if (!game.playTurn()) return false;
 
 		double res = game.update();
-		return game.isUpdated(res);
+		if (game.isUpdated(res)) {
+			COM::setWait();
+			return true;
+		}
+
+		return false;
 	}
 
 	bool playByCom() {

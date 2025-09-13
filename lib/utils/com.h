@@ -12,7 +12,7 @@ using namespace Eigen;
 
 const int LAYER_DEPTH(4);
 
-const int COM_THINKING_WAIT(100);
+const int COM_THINKING_WAIT(0.8 * FPS);
 const float COM_ANNEALING_RATE(0.10); // epsilon-greedy
 const float COM_SOFTMAX_ALPHA(5.0);  // softmax‚ÌŒW”
 const float COM_HYBRID_THRESHOLD(0.75); // epsilon-greedy
@@ -44,7 +44,7 @@ public:
 	~COM() {}
 
 private:
-	int cnt = 0;
+	int wait = 0;
 	int maxId = 0;
 	double maxVal = 0.0;
 	double lastMinMaxVal = 0.0;
@@ -108,7 +108,7 @@ private:
 public:
 	static void setWait() {
 		COM* com = getInstance();
-		com->cnt = COM_THINKING_WAIT;
+		com->wait = COM_THINKING_WAIT;
 		COM::choice = { -1, -1, -1, -1, DUMMY_LAST_FIELD };
 	}
 
@@ -125,8 +125,8 @@ public:
 	static void play(VectorXd input, const Board board, int side, int level = COM_LEVEL1) {
 		COM* com = getInstance();
 
-		com->cnt--;
-		if (com->cnt > 0) return;
+		com->wait--;
+		if (com->wait > 0) return;
 
 		int depth = 3;
 		switch (level) {
