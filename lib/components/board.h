@@ -17,7 +17,9 @@ private:
 public:
 	int nextField = -1; // éüÇÃî’ñ ÅA-1: anywhere
 
-	Board() { initialize(); }
+	Board() {
+		initialize();
+	}
 	~Board() {}
 
 	void initialize() {
@@ -229,6 +231,25 @@ public:
 	double update(int index, int side, bool logging = true) {
 		Coordinate c = coordinates(index);
 		return update(c, side, logging);
+	}
+
+	double forceVictory(int global_x, int global_y, int side) {
+		for (int x = 0; x < 3; x++) {
+			for (int y = 0; y < 3; y++) {
+				local[global_x][global_y].forceUpdate(x, y, side);
+			}
+		}
+		global.forceUpdate(global_x, global_y, localVictory(global_x, global_y));
+
+		// óöóÇÕíÜâõÇ…ÇµÇƒÇ®Ç≠
+		addHistory(global_x, global_y, 1, 1);
+
+		nextField = -1;
+		return 1;
+	}
+
+	double forceVictory(Coordinate& c, int side) {
+		return forceVictory(c.global_x, c.global_y, side);
 	}
 
 	void addHistory(int global_x, int global_y, int local_x, int local_y) {

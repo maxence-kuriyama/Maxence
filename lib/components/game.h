@@ -520,4 +520,9 @@ public:
 	void minusOneTurnCheat() {
 		cnt--;
 	}
+
+	void forceWinLocalCheat(Coordinate c) {
+		board.forceVictory(c, currentSide());
+		cnt++;
+	}
 };

@@ -106,9 +106,9 @@ private:
 	}
 
 public:
-	static void setWait() {
+	static void setWait(int wait = COM_THINKING_WAIT) {
 		COM* com = getInstance();
-		com->wait = COM_THINKING_WAIT;
+		com->wait = wait;
 		COM::choice = { -1, -1, -1, -1, DUMMY_LAST_FIELD };
 	}
 

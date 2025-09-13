@@ -22,6 +22,7 @@ private:
 	// 2É^Å[ÉìçsìÆ
 	void doSkill(Game &game) {
 		if (!playedOneTurn) {
+			COM::setWait(0);
 			if (playOneTurn(game)) {
 				COM::setWait();
 				game.minusOneTurnCheat();

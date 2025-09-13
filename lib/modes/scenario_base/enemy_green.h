@@ -17,4 +17,19 @@ private:
 	bool shouldUseSkill(Game game) {
 		return (game.getTurnCount() / 2 + 1 == 12);
 	}
+
+	// Ÿ‚É’u‚«‚½‚¢êŠ‚ğ‹­§Šm•Û
+	void doSkill(Game& game) {
+		Game copied = game;
+
+		COM::setWait(0);
+		Coordinate choice = play(copied);
+		double res = copied.update(choice);
+
+		if (copied.isUpdated(res)) {
+			game.forceWinLocalCheat(choice);
+			COM::setWait();
+			finishSkill();
+		}
+	}
 };
