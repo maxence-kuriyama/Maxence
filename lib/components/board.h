@@ -80,6 +80,10 @@ public:
 		return c;
 	}
 
+	static int index(Coordinate c) {
+		return c.global_x * 27 + c.global_y * 9 + c.x * 3 + c.y;
+	}
+
 	Board operator = (const Board& src) {
 		global = src.global;
 		for (int i = 0; i < 3; i++) {

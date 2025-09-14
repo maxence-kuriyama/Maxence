@@ -15,12 +15,13 @@ const int LAYER_DEPTH(4);
 const int COM_THINKING_WAIT(0.8 * FPS);
 const float COM_ANNEALING_RATE(0.10); // epsilon-greedy
 const float COM_SOFTMAX_ALPHA(5.0);  // softmaxの係数
-const float COM_HYBRID_THRESHOLD(0.75); // epsilon-greedy
+const float COM_HYBRID_THRESHOLD_WIN(0.75); // 複合戦略でMLPを使うしきい値
+const float COM_HYBRID_THRESHOLD_LOSE(-0.75); // 複合戦略でMLPを棄却するしきい値
 
 const int COM_LEVEL0(0); // Only MiniMax depth 1
 const int COM_LEVEL1(1); // Only MLP
-const int COM_LEVEL2(2); // MPL with MiniMax depth 2
-const int COM_LEVEL3(3); // MPL with MiniMax depth 3
+const int COM_LEVEL2(2); // MLP with MiniMax depth 2
+const int COM_LEVEL3(3); // MLP with MiniMax depth 3
 
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
 class COM {
@@ -41,13 +42,15 @@ public:
 		initialize();
 	}
 
-	~COM() {}
+	~COM() {
+		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
+	}
 
 private:
 	int wait = 0;
 	int maxId = 0;
 	double maxVal = 0.0;
-	double lastMinMaxVal = 0.0;
+	MinMaxNode* lastMinMaxNode = NULL;
 	int annealed = 0;
 	string miniMaxDebugStr;
 	int strColorDebug = GetColor(255, 100, 0);
@@ -193,9 +196,21 @@ private:
 
 	void _play(VectorXd input, const Board board, int side, int depth = 3) {
 		_playByMinMax(board, side, depth);
-		if (lastMinMaxVal > COM_HYBRID_THRESHOLD) return;
+		if (lastMinMaxNode->value > COM_HYBRID_THRESHOLD_WIN) return;
 
-		return _playByMachine(input, board, side);
+		_playByMachine(input, board, side);
+
+		int index = Board::index(COM::choice);
+		double minMaxValue = lastMinMaxNode->getChildValue(index);
+		if (minMaxValue >= COM_HYBRID_THRESHOLD_LOSE) return;
+
+		Logger::ss << "Reject!! ==== "
+			<< "chosen index: " << index << ", "
+			<< "value: " << minMaxValue << " < "
+			<< "threshold: " << COM_HYBRID_THRESHOLD_LOSE;
+		Logger::log();
+		COM::choice = Board::coordinates(lastMinMaxNode->max_child_index);
+		annealed = 0;
 	}
 
 	void _playByMachine(VectorXd input, const Board board, int side) {
@@ -211,15 +226,17 @@ private:
 	}
 
 	void _playByMinMax(const Board board, int side, int depth = 3) {
-		MinMaxNode node(board, side);
+		MinMaxNode* node = new MinMaxNode(board, side);
 		MinMaxNode::truncate = true;
-		int index = node.search(depth);
-		lastMinMaxVal = node.value;
+		int index = node->search(depth);
 
 		COM::choice = Board::coordinates(index);
 		annealed = 0;
 
-		miniMaxDebugStr = node.debugStr();
+		miniMaxDebugStr = node->debugStr();
+
+		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
+		lastMinMaxNode = node;
 	}
 
 	// TODO: softmax使うか要検討

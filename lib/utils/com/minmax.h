@@ -109,6 +109,15 @@ public:
 		}
 		return ss.str();
 	}
+
+	// 負け確定ノードを判定
+	double getChildValue(int src_index) {
+		MinMaxNode* child_node = childNodeByIndex(src_index);
+		if (child_node == nullptr) return 0.0;
+
+		// 子ノードは相手視点
+		return -child_node->value;
+	}
 };
 
 bool MinMaxNode::truncate = false;
