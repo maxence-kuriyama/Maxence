@@ -20,7 +20,6 @@ protected:
 	Enemy* enemyCom = NULL;
 
 public:
-	bool usingSkill = false;
 
 	ScenarioBattle() {
 		initialize();
@@ -85,6 +84,9 @@ public:
 	}
 
 	bool isPlayTurn() {
+		// “G‚Ì•KŽE‹Z’†‚Í“Gƒ^[ƒ“
+		if (usingSkill()) return false;
+
 		return game.isPlayTurn();
 	}
 
@@ -97,12 +99,17 @@ public:
 
 	bool playByCom() {
 		enemyCom->useSkill(game);
-		usingSkill = enemyCom->usingSkill();
-		if (usingSkill) return false;
+		if (enemyCom->usingSkill()) return false;
 
 		if (enemyCom->doneSkill()) return true;
 
 		return enemyCom->play(game);
+	}
+
+	bool usingSkill() {
+		if (enemyCom == NULL || enemyCom == nullptr) return false;
+
+		return enemyCom->usingSkill();
 	}
 
 	string getTrigger() {

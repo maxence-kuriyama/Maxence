@@ -59,7 +59,7 @@ public:
 
 	bool useSkill(Game &game) {
 		if (!shouldUseSkill(game)) {
-			skillUsingStatus = SKILL_USING_STATUS_RELOADED;
+			reloadSkill();
 			return false;
 		}
 
@@ -80,7 +80,7 @@ public:
 			doSkill(game);
 			break;
 		case SKILL_USING_STATUS_DONE_SKILL:
-			checkDone();
+			break;
 		default:
 			return false;
 		}
@@ -145,7 +145,6 @@ private:
 		if (cutin.active) return;
 		
 		skillUsingStatus = SKILL_USING_STATUS_DO_SKILL;
-		skillIndex++;
 	}
 
 protected:
@@ -156,10 +155,11 @@ protected:
 
 	void finishSkill() {
 		skillUsingStatus = SKILL_USING_STATUS_DONE_SKILL;
+		skillIndex++;
 	}
 
-	void checkDone() {
-		skillUsingStatus = SKILL_USING_STATUS_NONE;
+	void reloadSkill() {
+		skillUsingStatus = SKILL_USING_STATUS_RELOADED;
 	}
 
 	virtual bool shouldUseSkill(Game game) {

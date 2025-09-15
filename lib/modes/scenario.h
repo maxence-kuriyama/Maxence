@@ -536,7 +536,7 @@ private:
 	int doBattle() {
 		ScenarioBase::doBattle();
 
-		if (!battle.usingSkill && saveOrReset()) {
+		if (!battle.usingSkill() && saveOrReset()) {
 			battle.initialize();
 			return MODE_TITLE;
 		}
