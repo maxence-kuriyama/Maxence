@@ -213,11 +213,7 @@ private:
 		double minMaxValue = lastMinMaxNode->getChildValue(index);
 		if (minMaxValue >= COM_HYBRID_THRESHOLD_LOSE) return;
 
-		Logger::ss << "Reject!! ==== "
-			<< "chosen index: " << index << ", "
-			<< "value: " << minMaxValue << " < "
-			<< "threshold: " << COM_HYBRID_THRESHOLD_LOSE;
-		Logger::log();
+		loggingReject(index, minMaxValue);
 		COM::choice = Board::coordinates(lastMinMaxNode->max_child_index);
 		annealed = 0;
 	}
@@ -282,6 +278,14 @@ private:
 	/*===========================*/
 	//    Logging
 	/*===========================*/
+	void loggingReject(int index, double minMaxValue) {
+		Logger::ss << "Reject!! ==== "
+			<< "chosen index: " << index << ", "
+			<< "value: " << minMaxValue << " < "
+			<< "threshold: " << COM_HYBRID_THRESHOLD_LOSE;
+		Logger::log();
+	}
+
 	void loggingChoiceBySoftmax(int index) {
 		Logger::ss << "Choice by softmax: "
 			<< "index: " << index << ", "
