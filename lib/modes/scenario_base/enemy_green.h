@@ -19,16 +19,12 @@ private:
 	}
 
 	// Ÿ‚É’u‚«‚½‚¢êŠ‚ğ‹­§Šm•Û
-	void doSkill(Game& game) {
+	void doSkill(Game &game) {
 		Game copied = game;
 
 		COM::setWait(0);
-		Coordinate choice = play(copied);
-		double res = copied.update(choice);
-
-		if (copied.isUpdated(res)) {
-			game.forceWinLocalCheat(choice);
-			COM::resetPlaying();
+		if (play(copied)) {
+			game.forceWinLocalCheat(COM::choice);
 			finishSkill();
 		}
 	}

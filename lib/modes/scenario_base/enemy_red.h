@@ -23,23 +23,12 @@ private:
 	void doSkill(Game &game) {
 		if (!playedOneTurn) {
 			COM::setWait(0);
-			if (playOneTurn(game)) {
-				COM::resetPlaying();
+			if (play(game)) {
 				game.minusOneTurnCheat();
 				playedOneTurn = true;
 			}
 		} else {
-			if (playOneTurn(game)) {
-				COM::resetPlaying();
-				finishSkill();
-			}
+			if (play(game)) finishSkill();
 		}
-	}
-
-	bool playOneTurn(Game &game) {
-		Coordinate choice = play(game);
-
-		double res = game.update(choice);
-		return game.isUpdated(res);
 	}
 };

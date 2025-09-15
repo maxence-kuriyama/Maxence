@@ -46,10 +46,15 @@ public:
 		cutin.setCharacter(character);
 	}
 
-	Coordinate play(Game game) {
-		VectorXd input = game.stateToInput();
-		COM::play(input, game.board, game.currentSide(), comLevel);
-		return COM::choice;
+	bool play(Game &game) {
+		Coordinate choice = generateChoice(game);
+		double res = game.update(choice);
+
+		if (game.isUpdated(res)) {
+			COM::resetPlaying();
+			return true;
+		}
+		return false;
 	}
 
 	bool useSkill(Game &game) {
@@ -109,6 +114,12 @@ private:
 
 		cutin.initialize();
 		msg.initialize();
+	}
+
+	Coordinate generateChoice(Game game) {
+		VectorXd input = game.stateToInput();
+		COM::play(input, game.board, game.currentSide(), comLevel);
+		return COM::choice;
 	}
 
 	void drawPreMessage() {
