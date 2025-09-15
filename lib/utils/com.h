@@ -52,7 +52,6 @@ private:
 	int maxId = 0;
 	double maxVal = 0.0;
 	MinMaxNode* lastMinMaxNode = NULL;
-	int annealed = 0;
 	double alpha = COM_SOFTMAX_ALPHA_DEFAULT;
 	string miniMaxDebugStr;
 	int strColorDebug = GetColor(255, 100, 0);
@@ -161,7 +160,6 @@ public:
 		COM* com = getInstance();
 		int strColor = com->strColorDebug;
 
-		DrawFormatString(505, 25, strColor, "anneal: %d", com->annealed);
 		DrawFormatString(505, 65, strColor, (com->miniMaxDebugStr).c_str());
 	}
 
@@ -215,7 +213,6 @@ private:
 
 		loggingReject(index, minMaxValue);
 		COM::choice = Board::coordinates(lastMinMaxNode->max_child_index);
-		annealed = 0;
 	}
 
 	void _playByMachine(VectorXd input, const Board board, int side) {
@@ -224,14 +221,15 @@ private:
 
 	void _playByMachineWithAnnealing(VectorXd input, const Board board, int side) {
 		_predict(input);
-		if (unif(mt) < COM_ANNEALING_RATE) {
-			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
-			annealed = 1;
-		}
-		else {
+
+		double r = unif(mt);
+		if (r > COM_ANNEALING_RATE) {
 			COM::choice = Board::coordinates(maxId);
-			annealed = 0;
+			return;
 		}
+
+		COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+		loggingAnnealing(r);
 	}
 
 	void _playByMachineWithSoftmax(VectorXd input, const Board board, int side) {
@@ -258,8 +256,6 @@ private:
 		int index = node->search(depth);
 
 		COM::choice = Board::coordinates(index);
-		annealed = 0;
-
 		miniMaxDebugStr = node->debugStr();
 
 		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
@@ -283,6 +279,13 @@ private:
 			<< "chosen index: " << index << ", "
 			<< "value: " << minMaxValue << " < "
 			<< "threshold: " << COM_HYBRID_THRESHOLD_LOSE;
+		Logger::log();
+	}
+
+	void loggingAnnealing(double r) {
+		Logger::ss << "Annealed!! ==== "
+			<< "realized random value: " << r << " < "
+			<< "annealing rate: " << COM_ANNEALING_RATE;
 		Logger::log();
 	}
 
