@@ -105,7 +105,7 @@ public:
 
 		double res = game.update(choice);
 		if (game.isUpdated(res)) {
-			COM::setWait();
+			COM::resetPlaying();
 			return true;
 		}
 

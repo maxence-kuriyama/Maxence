@@ -24,13 +24,13 @@ private:
 		if (!playedOneTurn) {
 			COM::setWait(0);
 			if (playOneTurn(game)) {
-				COM::setWait();
+				COM::resetPlaying();
 				game.minusOneTurnCheat();
 				playedOneTurn = true;
 			}
 		} else {
 			if (playOneTurn(game)) {
-				COM::setWait();
+				COM::resetPlaying();
 				finishSkill();
 			}
 		}

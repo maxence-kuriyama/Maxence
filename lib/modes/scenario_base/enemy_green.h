@@ -28,7 +28,7 @@ private:
 
 		if (copied.isUpdated(res)) {
 			game.forceWinLocalCheat(choice);
-			COM::setWait();
+			COM::resetPlaying();
 			finishSkill();
 		}
 	}
