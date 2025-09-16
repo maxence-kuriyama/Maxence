@@ -148,12 +148,21 @@ public:
 			return com->_playByMachine(input, board, side);
 		case COM_LEVEL2:
 			depth = 2;
-			return com->_play(input, board, side, depth);
+			break;
 		case COM_LEVEL3:
 			depth = 3;
-			return com->_play(input, board, side, depth);
+			break;
 		}
 		return com->_play(input, board, side, depth);
+	}
+
+	static void playAsPlayerCheat(VectorXd input) {
+		COM* com = getInstance();
+
+		com->wait--;
+		if (com->wait > 0) return;
+
+		return com->_playAsPlayer(input);
 	}
 
 	static void debugDump() {
@@ -236,18 +245,15 @@ private:
 		_predict(input);
 		VectorXd distribution = softmax(output);
 
-		double r = unif(mt);
-		double sliceSum = 0.0;
-		for (int i = 0; i < 81; i++) {
-			sliceSum += distribution[i];
-			if (r >= sliceSum) continue;
-
-			COM::choice = Board::coordinates(i);
-			loggingChoiceBySoftmax(i);
-			alpha -= COM_SOFTMAX_ALPHA_DECREMENT;
+		int index = getIndexInProbability(distribution);
+		if (index == -1) {
+			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
 			return;
 		}
-		COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+
+		COM::choice = Board::coordinates(index);
+		loggingChoiceBySoftmax(index);
+		alpha -= COM_SOFTMAX_ALPHA_DECREMENT;
 	}
 
 	void _playByMinMax(const Board board, int side, int depth = 3) {
@@ -260,6 +266,34 @@ private:
 
 		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
 		lastMinMaxNode = node;
+	}
+
+	void _playAsPlayer(VectorXd input) {
+		_predict(input);
+		VectorXd invOutput = -output;
+		VectorXd distribution = softmax(invOutput);
+
+		int index = getIndexInProbability(distribution);
+		if (index == -1) {
+			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+			return;
+		}
+
+		COM::choice = Board::coordinates(index);
+		loggingChoiceBySoftmax(index);
+		alpha -= COM_SOFTMAX_ALPHA_DECREMENT;
+	}
+
+	int getIndexInProbability(VectorXd distribution) {
+		double r = unif(mt);
+		double sliceSum = 0.0;
+		for (int i = 0; i < 81; i++) {
+			sliceSum += distribution[i];
+			if (r >= sliceSum) continue;
+
+			return i;
+		}
+		return -1;
 	}
 
 	VectorXd softmax(const VectorXd& src, double srcAlpha = COM_SOFTMAX_ALPHA_DEFAULT) {

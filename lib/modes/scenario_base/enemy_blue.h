@@ -23,7 +23,7 @@ private:
 	}
 
 	// éüÇ…íuÇ´ÇΩÇ¢èÍèäÇã≠êßämï€
-	void doSkill(Game& game) {
+	void doSkill(Game &game) {
 		switch (skillIndex) {
 		case 0:
 			controlPlayer(game);
@@ -34,14 +34,14 @@ private:
 		}
 	}
 
-	void controlPlayer(Game& game) {
+	void controlPlayer(Game &game) {
 		switch (cntPlayedTurns) {
 		case 0:
 			COM::setWait(0);
 			if (play(game)) cntPlayedTurns++;
 			break;
 		case 1:
-			if (play(game)) cntPlayedTurns++;
+			if (playAsPlayer(game)) cntPlayedTurns++;
 			break;
 		case 2:
 			if (play(game)) finishSkill();
@@ -49,7 +49,19 @@ private:
 		}
 	}
 
-	void whitenField(Game& game) {
+	bool playAsPlayer(Game &game) {
+		VectorXd input = game.stateToInput();
+		COM::playAsPlayerCheat(input);
+
+		double res = game.update(COM::choice);
+		if (game.isUpdated(res)) {
+			COM::resetPlaying();
+			return true;
+		}
+		return false;
+	}
+
+	void whitenField(Game &game) {
 		/*
 		Game copied = game;
 
