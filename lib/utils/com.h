@@ -251,7 +251,7 @@ private:
 
 	void _playByMachineWithSoftmax(VectorXd input, const Board board, int side) {
 		_predict(input);
-		VectorXd distribution = softmax(output);
+		VectorXd distribution = softmax(output, alpha);
 
 		int index = getIndexInProbability(distribution);
 		if (index == -1) {
@@ -279,7 +279,7 @@ private:
 	void _playAsPlayer(VectorXd input) {
 		_predict(input);
 		VectorXd invOutput = -output;
-		VectorXd distribution = softmax(invOutput);
+		VectorXd distribution = softmax(invOutput, alpha);
 
 		int index = getIndexInProbability(distribution);
 		if (index == -1) {
@@ -289,7 +289,7 @@ private:
 
 		COM::choice = Board::coordinates(index);
 		loggingChoiceBySoftmax(index);
-		alpha -= COM_SOFTMAX_ALPHA_DECREMENT;
+		alpha = max(alpha - COM_SOFTMAX_ALPHA_DECREMENT, 0.0);
 	}
 
 	int getIndexInProbability(VectorXd distribution) {
