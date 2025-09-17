@@ -526,4 +526,9 @@ public:
 		board.forceVictory(c, currentSide());
 		cnt++;
 	}
+
+	void resetLocalCheat(Coordinate c) {
+		board.forceVictory(c, 0);
+		cnt++;
+	}
 };

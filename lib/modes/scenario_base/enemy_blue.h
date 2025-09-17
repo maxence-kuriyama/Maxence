@@ -62,18 +62,23 @@ private:
 	}
 
 	void whitenField(Game &game) {
-		/*
-		Game copied = game;
+		double minValue = 100.0;
+		Coordinate minCoord;
 
-		COM::setWait(0);
-		Coordinate choice = play(copied);
-		double res = copied.update(choice);
+		for (int i = 0; i < 9; i++) {
+			Game copied = game;
+			Coordinate c = { i / 3, i % 3, 1, 1, DUMMY_LAST_FIELD };
+			copied.resetLocalCheat(c);
 
-		if (copied.isUpdated(res)) {
-			game.forceWinLocalCheat(choice);
-			COM::resetPlaying();
-			finishSkill();
+			// ‘ŠŽè‚©‚çŒ©‚½•]‰¿’l
+			double value = COM::evaluateByMinMax(game.board, game.currentSide());
+			if (minValue > value) {
+				minValue = value;
+				minCoord = c;
+			}
 		}
-		*/
+
+		game.resetLocalCheat(minCoord);
+		finishSkill();
 	}
 };

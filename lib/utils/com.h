@@ -165,6 +165,14 @@ public:
 		return com->_playAsPlayer(input);
 	}
 
+	static double evaluateByMinMax(const Board board, int side) {
+		MinMaxNode node(board, side);
+		MinMaxNode::truncate = false;
+		int depth = 0;
+		int _index = node.search(depth);
+		return node.value;
+	}
+
 	static void debugDump() {
 		COM* com = getInstance();
 		int strColor = com->strColorDebug;
