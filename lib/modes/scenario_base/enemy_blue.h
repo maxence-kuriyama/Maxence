@@ -71,7 +71,7 @@ private:
 			copied.resetLocalCheat(c);
 
 			// ‘ŠŽè‚©‚çŒ©‚½•]‰¿’l
-			double value = COM::evaluateByMinMax(game.board, game.currentSide());
+			double value = COM::evaluateByMinMax(copied.board, copied.currentSide());
 			if (minValue > value) {
 				minValue = value;
 				minCoord = c;

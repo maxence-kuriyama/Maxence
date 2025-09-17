@@ -132,6 +132,10 @@ public:
 		return localState(c);
 	}
 
+	void clearLocalVictoryCache(int x, int y) {
+		return local[x][y].clearCache();
+	}
+
 	int localVictory(int x, int y) {
 		return local[x][y].victory();
 	}
@@ -243,6 +247,7 @@ public:
 				local[global_x][global_y].forceUpdate(x, y, side);
 			}
 		}
+		clearLocalVictoryCache(global_x, global_y);
 		global.forceUpdate(global_x, global_y, localVictory(global_x, global_y));
 
 		// —š—ð‚Í’†‰›‚É‚µ‚Ä‚¨‚­
