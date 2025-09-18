@@ -1,6 +1,6 @@
 #pragma once
 
-#define VERSION		"Maxence 0.7.2"
+#define VERSION		"Maxence 0.7.3"
 #define FPS			60
 #define DEBUG		1
 #define FIRE_FLOWER_NUM		3
