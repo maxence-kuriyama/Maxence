@@ -1,15 +1,7 @@
 #pragma once
 
 #include "lib/nlohmann/json.hpp"
-
-
-struct Coordinate {
-	int global_x;
-	int global_y;
-	int x;
-	int y;
-	int last_field;
-};
+#include "lib/utils/coordinate.h"
 
 // 試合中の指し手の履歴を保持するクラス
 // Gameオブジェクトのメンバとしての使用を想定
@@ -20,7 +12,7 @@ public:
 
 	void initialize() {
 		for (int i = 0; i < 2; i++) {
-			clear(history[i]);
+			history[i].clear();
 		}
 		cancelCnt = 0;
 	}
@@ -41,7 +33,7 @@ public:
 	int goBack() {
 		if (canCancel()) {
 			history[0] = history[1];
-			clear(history[1]);
+			history[1].clear();
 			cancelCnt--;
 			return 1;
 		}
@@ -84,11 +76,5 @@ public:
 			nlohmann::json hist_data = data["history"][i];
 			add(hist_data[0], hist_data[1], hist_data[2], hist_data[3], hist_data[4]);
 		}
-	}
-
-private:
-
-	void clear(Coordinate& c) {
-		c = { 0, 0, 0, 0, -1 };
 	}
 };

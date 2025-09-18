@@ -2,8 +2,9 @@
 
 #include "lib/const.h"
 #include "lib/utils/logger.h"
+#include "lib/utils/coordinate.h"
 #include "./board/field.h"
-#include "./board/hist.h"
+#include "./board/history.h"
 
 
 const int DUMMY_LAST_FIELD(-1);
