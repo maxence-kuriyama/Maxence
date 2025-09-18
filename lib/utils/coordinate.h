@@ -9,7 +9,7 @@ public:
 	int last_field = -1;
 
 	void operator = (const int index) {
-		setFromIndex(index);
+		set(index);
 	}
 
 	Coordinate operator = (const Coordinate &src) {
@@ -21,7 +21,7 @@ public:
 		return src;
 	}
 
-	void setFromIndex(const int index) {
+	void set(const int index) {
 		global_x = (index / 27) % 3;
 		global_y = (index / 9) % 3;
 		x = (index / 3) % 3;

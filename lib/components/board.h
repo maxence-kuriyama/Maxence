@@ -50,7 +50,7 @@ public:
 	void restore(nlohmann::json data) {
 		for (int index = 0; index < 81; index++) {
 			Coordinate c;
-			c.setFromIndex(index);
+			c.set(index);
 			local[c.global_x][c.global_y].state[c.x][c.y] = data["states"][index];
 		}
 		for (int i = 0; i < 3; i++) {
@@ -119,7 +119,7 @@ public:
 
 	int localState(int index) {
 		Coordinate c;
-		c.setFromIndex(index);
+		c.set(index);
 		return localState(c);
 	}
 
@@ -189,7 +189,7 @@ public:
 
 	bool canPut(int index) {
 		Coordinate c;
-		c.setFromIndex(index);
+		c.set(index);
 		return canPut(c);
 	}
 
@@ -230,7 +230,7 @@ public:
 
 	double update(int index, int side, bool logging = true) {
 		Coordinate c;
-		c.setFromIndex(index);
+		c.set(index);
 		return update(c, side, logging);
 	}
 

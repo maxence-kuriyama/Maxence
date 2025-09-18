@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/utils/user_input.h"
+#include "lib/utils/coordinate.h"
 #include "lib/components/game.h"
 #include "lib/components/character.h"
 #include "lib/components/anime/fade_cutin.h"

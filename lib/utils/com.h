@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "lib/const.h"
+#include "lib/utils/coordinate.h"
 #include "lib/components/board.h"
 #include "./com/vect.h"
 #include "./com/minmax.h"
@@ -213,7 +214,7 @@ private:
 			}
 
 			Coordinate c;
-			c.setFromIndex(index);
+			c.set(index);
 			int draw_x = 160 + 100 * c.global_x + 33 * c.x + 16;
 			int draw_y = 80 + 100 * c.global_y + 33 * c.y + 16;
 			int radius = 15;
