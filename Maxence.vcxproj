@@ -179,9 +179,12 @@
     <ClInclude Include="lib\components\board.h" />
     <ClInclude Include="lib\components\board\field.h" />
     <ClInclude Include="lib\components\board\hist.h" />
+    <ClInclude Include="lib\modes\scenario_base\enemy_blue.h" />
+    <ClInclude Include="lib\modes\scenario_base\enemy_green.h" />
     <ClInclude Include="lib\modes\scenario_base\enemy_red.h" />
     <ClInclude Include="lib\modes\scenario\gameover.h" />
     <ClInclude Include="lib\components\enemy.h" />
+    <ClInclude Include="lib\modes\scenario_base\enemy_yellow.h" />
     <ClInclude Include="lib\modes\scenario_base\scenario_battle.h" />
     <ClInclude Include="lib\modes\scenario_base\scenario_message.h" />
     <ClInclude Include="lib\modes\scenario_base\scene_list.h" />

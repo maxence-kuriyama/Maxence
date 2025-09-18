@@ -151,6 +151,11 @@ public:
 		return 0;
 	}
 
+	int forceUpdate(int i, int j, int side) {
+		state[i][j] = side;
+		return 0;
+	}
+
 	void draw(double baseX, double baseY, double width) {
 		for (int k = 0; k < 3; ++k) {
 			for (int l = 0; l < 3; ++l) {

@@ -17,7 +17,9 @@ private:
 public:
 	int nextField = -1; // Ÿ‚Ì”Õ–ÊA-1: anywhere
 
-	Board() { initialize(); }
+	Board() {
+		initialize();
+	}
 	~Board() {}
 
 	void initialize() {
@@ -78,6 +80,10 @@ public:
 		return c;
 	}
 
+	static int index(Coordinate c) {
+		return c.global_x * 27 + c.global_y * 9 + c.x * 3 + c.y;
+	}
+
 	Board operator = (const Board& src) {
 		global = src.global;
 		for (int i = 0; i < 3; i++) {
@@ -124,6 +130,10 @@ public:
 	int localState(int index) {
 		Coordinate c = coordinates(index);
 		return localState(c);
+	}
+
+	void clearLocalVictoryCache(int x, int y) {
+		return local[x][y].clearCache();
 	}
 
 	int localVictory(int x, int y) {
@@ -229,6 +239,26 @@ public:
 	double update(int index, int side, bool logging = true) {
 		Coordinate c = coordinates(index);
 		return update(c, side, logging);
+	}
+
+	double forceVictory(int global_x, int global_y, int side) {
+		for (int x = 0; x < 3; x++) {
+			for (int y = 0; y < 3; y++) {
+				local[global_x][global_y].forceUpdate(x, y, side);
+			}
+		}
+		clearLocalVictoryCache(global_x, global_y);
+		global.forceUpdate(global_x, global_y, localVictory(global_x, global_y));
+
+		// —š—ğ‚Í’†‰›‚É‚µ‚Ä‚¨‚­
+		addHistory(global_x, global_y, 1, 1);
+
+		nextField = -1;
+		return 1;
+	}
+
+	double forceVictory(Coordinate& c, int side) {
+		return forceVictory(c.global_x, c.global_y, side);
 	}
 
 	void addHistory(int global_x, int global_y, int local_x, int local_y) {

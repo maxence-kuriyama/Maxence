@@ -90,7 +90,7 @@ public:
 		game.drawBeforePlay();
 
 		if (playByPlayer()) {
-			if (game.isVsCOM()) COM::setWait();
+			if (game.isVsCOM()) COM::resetPlaying();
 		}
 		
 		VectorXd input = game.stateToInput();
@@ -118,7 +118,7 @@ public:
 			innerMode = BATTLE_MODE_RESULT;
 		}
 
-		if (cancelPlay()) COM::setWait();
+		if (cancelPlay()) COM::resetPlaying();
 	
 		if (saveOrReset()) return MODE_TITLE;
 

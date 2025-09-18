@@ -3,13 +3,16 @@
 #include "lib/components/anime.h"
 #include "lib/components/character.h"
 
-const int FADE_CUTIN_RIGHT_CHARA_X = 400;
-const int FADE_CUTIN_RIGHT_CHARA_Y = 0;
+const int FADE_CUTIN_RIGHT_CHARA_X(400);
+const int FADE_CUTIN_RIGHT_CHARA_Y(0);
 
 // 試合中のアニメーションクラス
 class FadeCutin : public AnimeBase {
 private:
+	static int fontHandle;
 	int Black = GetColor(0, 0, 0);
+	int strColor = GetColor(255, 255, 255);
+	string skillName = "";
 
 	Character chara;
 
@@ -17,6 +20,19 @@ public:
 
 	FadeCutin() {
 		initialize();
+		if (FadeCutin::fontHandle == NULL) {
+			FadeCutin::fontHandle = CreateFontToHandle("游明朝", 16, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+		}
+	}
+
+	void initialize() {
+		AnimeBase::initialize();
+
+		chara.initialize();
+		chara.alpha = 0;
+		chara.x = FADE_CUTIN_RIGHT_CHARA_X;
+		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
+		skillName = "";
 	}
 
 	void setCharacter(int who) {
@@ -26,16 +42,11 @@ public:
 		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
 	}
 
-private:
-
-	void initialize() {
-		AnimeBase::initialize();
-
-		chara.initialize();
-		chara.alpha = 0;
-		chara.x = FADE_CUTIN_RIGHT_CHARA_X;
-		chara.y = FADE_CUTIN_RIGHT_CHARA_Y;
+	void setSkillName(string str) {
+		skillName = str;
 	}
+
+private:
 
 	void _update() {
 		if (cnt <= 15) {
@@ -62,7 +73,14 @@ private:
 		SetDrawScreen(DX_SCREEN_BACK);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawGraph(0, 0, screenHandle, TRUE);
+		if (skillName != "") {
+			const char* skillNameStr = skillName.c_str();
+			int strWidth = GetDrawStringWidth(skillNameStr, strlen(skillNameStr)) * 1.65;
+			DrawStringToHandle(640 - strWidth, 30, skillNameStr, strColor, FadeCutin::fontHandle);
+		}
 
 		DeleteGraph(screenHandle);
 	}
 };
+
+int FadeCutin::fontHandle = NULL;
