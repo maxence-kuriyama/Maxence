@@ -233,7 +233,7 @@ private:
 
 		_playByMachine(input, board, side);
 
-		int index = Board::index(COM::choice);
+		int index = COM::choice.getIndex();
 		double minMaxValue = lastMinMaxNode->getChildValue(index);
 		if (minMaxValue >= COM_HYBRID_THRESHOLD_LOSE) return;
 

@@ -29,6 +29,10 @@ public:
 		last_field = -1;
 	}
 
+	int getIndex() {
+		return global_x * 27 + global_y * 9 + x * 3 + y;
+	}
+
 	void clear() {
 		global_x = 0;
 		global_y = 0;
