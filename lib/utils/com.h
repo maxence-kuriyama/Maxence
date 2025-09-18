@@ -12,15 +12,17 @@ using namespace Eigen;
 
 const int LAYER_DEPTH(4);
 
-const int COM_THINKING_WAIT(100);
+const int COM_THINKING_WAIT(0.8 * FPS);
 const float COM_ANNEALING_RATE(0.10); // epsilon-greedy
-const float COM_SOFTMAX_ALPHA(5.0);  // softmaxの係数
-const float COM_HYBRID_THRESHOLD(0.75); // epsilon-greedy
+const float COM_SOFTMAX_ALPHA_DEFAULT(15.0);  // softmaxの係数
+const float COM_SOFTMAX_ALPHA_DECREMENT(0.10);
+const float COM_HYBRID_THRESHOLD_WIN(0.75); // 複合戦略でMLPを使うしきい値
+const float COM_HYBRID_THRESHOLD_LOSE(-0.75); // 複合戦略でMLPを棄却するしきい値
 
 const int COM_LEVEL0(0); // Only MiniMax depth 1
 const int COM_LEVEL1(1); // Only MLP
-const int COM_LEVEL2(2); // MPL with MiniMax depth 2
-const int COM_LEVEL3(3); // MPL with MiniMax depth 3
+const int COM_LEVEL2(2); // MLP with MiniMax depth 2
+const int COM_LEVEL3(3); // MLP with MiniMax depth 3
 
 // vect.hで定義したMLPを仮想プレイヤー的に扱うためのインターフェース
 class COM {
@@ -41,14 +43,16 @@ public:
 		initialize();
 	}
 
-	~COM() {}
+	~COM() {
+		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
+	}
 
 private:
-	int cnt = 0;
+	int wait = 0;
 	int maxId = 0;
 	double maxVal = 0.0;
-	double lastMinMaxVal = 0.0;
-	int annealed = 0;
+	MinMaxNode* lastMinMaxNode = NULL;
+	double alpha = COM_SOFTMAX_ALPHA_DEFAULT;
 	string miniMaxDebugStr;
 	int strColorDebug = GetColor(255, 100, 0);
 	
@@ -106,9 +110,16 @@ private:
 	}
 
 public:
-	static void setWait() {
+	static void setWait(int wait = COM_THINKING_WAIT) {
 		COM* com = getInstance();
-		com->cnt = COM_THINKING_WAIT;
+		com->wait = wait;
+	}
+
+	static void resetPlaying() {
+		COM* com = getInstance();
+		com->alpha = COM_SOFTMAX_ALPHA_DEFAULT;
+
+		COM::setWait();
 		COM::choice = { -1, -1, -1, -1, DUMMY_LAST_FIELD };
 	}
 
@@ -125,8 +136,8 @@ public:
 	static void play(VectorXd input, const Board board, int side, int level = COM_LEVEL1) {
 		COM* com = getInstance();
 
-		com->cnt--;
-		if (com->cnt > 0) return;
+		com->wait--;
+		if (com->wait > 0) return;
 
 		int depth = 3;
 		switch (level) {
@@ -137,19 +148,35 @@ public:
 			return com->_playByMachine(input, board, side);
 		case COM_LEVEL2:
 			depth = 2;
-			return com->_play(input, board, side, depth);
+			break;
 		case COM_LEVEL3:
 			depth = 3;
-			return com->_play(input, board, side, depth);
+			break;
 		}
 		return com->_play(input, board, side, depth);
+	}
+
+	static void playAsPlayerCheat(VectorXd input) {
+		COM* com = getInstance();
+
+		com->wait--;
+		if (com->wait > 0) return;
+
+		return com->_playAsPlayer(input);
+	}
+
+	static double evaluateByMinMax(const Board board, int side) {
+		MinMaxNode node(board, side);
+		MinMaxNode::truncate = false;
+		int depth = 0;
+		int _index = node.search(depth);
+		return node.value;
 	}
 
 	static void debugDump() {
 		COM* com = getInstance();
 		int strColor = com->strColorDebug;
 
-		DrawFormatString(505, 25, strColor, "anneal: %d", com->annealed);
 		DrawFormatString(505, 65, strColor, (com->miniMaxDebugStr).c_str());
 	}
 
@@ -193,43 +220,122 @@ private:
 
 	void _play(VectorXd input, const Board board, int side, int depth = 3) {
 		_playByMinMax(board, side, depth);
-		if (lastMinMaxVal > COM_HYBRID_THRESHOLD) return;
+		if (lastMinMaxNode->value > COM_HYBRID_THRESHOLD_WIN) return;
 
-		return _playByMachine(input, board, side);
+		_playByMachine(input, board, side);
+
+		int index = Board::index(COM::choice);
+		double minMaxValue = lastMinMaxNode->getChildValue(index);
+		if (minMaxValue >= COM_HYBRID_THRESHOLD_LOSE) return;
+
+		loggingReject(index, minMaxValue);
+		COM::choice = Board::coordinates(lastMinMaxNode->max_child_index);
 	}
 
 	void _playByMachine(VectorXd input, const Board board, int side) {
+		return _playByMachineWithSoftmax(input, board, side);
+	}
+
+	void _playByMachineWithAnnealing(VectorXd input, const Board board, int side) {
 		_predict(input);
-		if (unif(mt) < COM_ANNEALING_RATE) {
-			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
-			annealed = 1;
-		}
-		else {
+
+		double r = unif(mt);
+		if (r > COM_ANNEALING_RATE) {
 			COM::choice = Board::coordinates(maxId);
-			annealed = 0;
+			return;
 		}
+
+		COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+		loggingAnnealing(r);
+	}
+
+	void _playByMachineWithSoftmax(VectorXd input, const Board board, int side) {
+		_predict(input);
+		VectorXd distribution = softmax(output, alpha);
+
+		int index = getIndexInProbability(distribution);
+		if (index == -1) {
+			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+			return;
+		}
+
+		COM::choice = Board::coordinates(index);
+		loggingChoiceBySoftmax(index);
+		alpha -= COM_SOFTMAX_ALPHA_DECREMENT;
 	}
 
 	void _playByMinMax(const Board board, int side, int depth = 3) {
-		MinMaxNode node(board, side);
+		MinMaxNode* node = new MinMaxNode(board, side);
 		MinMaxNode::truncate = true;
-		int index = node.search(depth);
-		lastMinMaxVal = node.value;
+		int index = node->search(depth);
 
 		COM::choice = Board::coordinates(index);
-		annealed = 0;
+		miniMaxDebugStr = node->debugStr();
 
-		miniMaxDebugStr = node.debugStr();
+		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
+		lastMinMaxNode = node;
 	}
 
-	// TODO: softmax使うか要検討
-	VectorXd softmax(const VectorXd& src) {
+	void _playAsPlayer(VectorXd input) {
+		_predict(input);
+		VectorXd invOutput = -output;
+		VectorXd distribution = softmax(invOutput, alpha);
+
+		int index = getIndexInProbability(distribution);
+		if (index == -1) {
+			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+			return;
+		}
+
+		COM::choice = Board::coordinates(index);
+		loggingChoiceBySoftmax(index);
+		alpha = max(alpha - COM_SOFTMAX_ALPHA_DECREMENT, 0.0);
+	}
+
+	int getIndexInProbability(VectorXd distribution) {
+		double r = unif(mt);
+		double sliceSum = 0.0;
+		for (int i = 0; i < 81; i++) {
+			sliceSum += distribution[i];
+			if (r >= sliceSum) continue;
+
+			return i;
+		}
+		return -1;
+	}
+
+	VectorXd softmax(const VectorXd& src, double srcAlpha = COM_SOFTMAX_ALPHA_DEFAULT) {
 		VectorXd trg;
 
-		trg = (COM_SOFTMAX_ALPHA * src).array().exp();
+		trg = (srcAlpha * src).array().exp();
 		trg = trg / trg.sum();
 
 		return trg;
+	}
+
+	/*===========================*/
+	//    Logging
+	/*===========================*/
+	void loggingReject(int index, double minMaxValue) {
+		Logger::ss << "Reject!! ==== "
+			<< "chosen index: " << index << ", "
+			<< "value: " << minMaxValue << " < "
+			<< "threshold: " << COM_HYBRID_THRESHOLD_LOSE;
+		Logger::log();
+	}
+
+	void loggingAnnealing(double r) {
+		Logger::ss << "Annealed!! ==== "
+			<< "realized random value: " << r << " < "
+			<< "annealing rate: " << COM_ANNEALING_RATE;
+		Logger::log();
+	}
+
+	void loggingChoiceBySoftmax(int index) {
+		Logger::ss << "Choice by softmax: "
+			<< "index: " << index << ", "
+			<< "alpha: " << alpha;
+		Logger::log();
 	}
 };
 

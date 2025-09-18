@@ -50,7 +50,7 @@ public:
 // Gameオブジェクトのメンバとしての使用を想定
 class Comment {
 private:
-	int font = CreateFontToHandle("HG教科書体", 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+	static int fontHandle;
 
 	double rn() { return (rand() % 10000) / 10000.0; }
 
@@ -62,6 +62,12 @@ public:
 	int textSeq = 0;	// テキストがいくつ連続したかのカウンタ
 	int cnt = 0;		// テキスト差し替え用カウンタ
 
+	Comment() {
+		if (Comment::fontHandle == NULL) {
+			Comment::fontHandle = CreateFontToHandle(NULL, 24, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+		}
+	}
+
 	void initialize() {
 		texts.initialize();
 		cnt = 0;
@@ -72,7 +78,7 @@ public:
 
 	void draw(int strColor) {
 		string text = texts.get(textNum);
-		DrawObtainsString2(x + 20, y + 10, 560, GetFontSize(), text.c_str(), strColor, font, GetColor(250, 250, 150));
+		DrawObtainsString2(x + 20, y + 10, 560, GetFontSize(), text.c_str(), strColor, Comment::fontHandle, GetColor(250, 250, 150));
 	}
 
 	void update(int playCnt = 0) {
@@ -136,6 +142,8 @@ public:
 		DrawFormatString(245, 145, strColor, "commCnt: %d", cnt);
 	}
 };
+
+int Comment::fontHandle = NULL;
 
 
 void DrawObtainsString2(int x, int y, int RightX, int AddY, const char* String, int StrColor, int FontHandle, int BoxColor) {

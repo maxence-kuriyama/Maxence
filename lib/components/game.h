@@ -15,6 +15,7 @@ const int VS_COM(1);
 const int GAME_CHARACTER_X1(-40);
 const int GAME_CHARACTER_X2(450);
 const int GAME_CHARACTER_Y(100);
+
 const double GAME_CHARACTER_SCALE(5.7);
 const int GAME_CHARACTER_ALPHA_ACTIVE(245);
 const int GAME_CHARACTER_ALPHA_INACTIVE(230);
@@ -511,5 +512,23 @@ public:
 		DrawFormatString(5, 125, strColor, "teban: %d", teban);
 		DrawFormatString(5, 145, strColor, "cnt: %d", cnt);
 		DrawFormatString(5, 165, strColor, "mode: %s", mode.c_str());
+	}
+
+
+	/*===========================*/
+	//    EnemyƒXƒLƒ‹—p
+	/*===========================*/
+	void minusOneTurnCheat() {
+		cnt--;
+	}
+
+	void forceWinLocalCheat(Coordinate c) {
+		board.forceVictory(c, currentSide());
+		cnt++;
+	}
+
+	void resetLocalCheat(Coordinate c) {
+		board.forceVictory(c, 0);
+		cnt++;
 	}
 };

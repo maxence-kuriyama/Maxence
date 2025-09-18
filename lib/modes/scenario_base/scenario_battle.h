@@ -6,6 +6,9 @@
 #include "lib/utils/encrypter.h"
 #include "lib/components/game.h"
 #include "./enemy_red.h"
+#include "./enemy_green.h"
+#include "./enemy_blue.h"
+#include "./enemy_yellow.h"
 
 using namespace std;
 
@@ -39,7 +42,6 @@ public:
 		if (FlagStore::isDebug() && UserInput::onKeyCutinDebug()) {
 			enemyCom->showCutinDebug();
 		}
-		enemyCom->showCutin(game);
 
 		showBefore();
 		showAfter();
@@ -51,7 +53,7 @@ public:
 
 	void showAfter() {
 		game.drawAfterPlay();
-		enemyCom->updateCutin();
+		enemyCom->tick();
 	}
 
 	void start(int player1, int player2) {
@@ -82,6 +84,9 @@ public:
 	}
 
 	bool isPlayTurn() {
+		// “G‚Ì•KŽE‹Z’†‚Í“Gƒ^[ƒ“
+		if (usingSkill()) return false;
+
 		return game.isPlayTurn();
 	}
 
@@ -93,10 +98,18 @@ public:
 	}
 
 	bool playByCom() {
-		Coordinate choice = enemyCom->play(game);
+		enemyCom->useSkill(game);
+		if (enemyCom->usingSkill()) return false;
 
-		double res = game.update(choice);
-		return game.isUpdated(res);
+		if (enemyCom->doneSkill()) return true;
+
+		return enemyCom->play(game);
+	}
+
+	bool usingSkill() {
+		if (enemyCom == NULL || enemyCom == nullptr) return false;
+
+		return enemyCom->usingSkill();
 	}
 
 	string getTrigger() {
@@ -171,6 +184,12 @@ private:
 		switch (character) {
 		case CHARACTER_WHO_RED:
 			return new EnemyRed();
+		case CHARACTER_WHO_GREEN:
+			return new EnemyGreen();
+		case CHARACTER_WHO_BLUE:
+			return new EnemyBlue();
+		case CHARACTER_WHO_YELLOW:
+			return new EnemyYellow();
 		default:
 			return new Enemy(character);
 		}

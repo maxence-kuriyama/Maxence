@@ -4,12 +4,31 @@
 
 class EnemyRed : public Enemy {
 public:
+
 	EnemyRed() {
+		comLevel = COM_LEVEL0;
+		who = MESSAGE_WHO_RED;
+		skills[0] = { "これを使わせるとはな！！", "燃やし尽くす義憤" };
 		cutin.setCharacter(CHARACTER_WHO_RED);
 	}
 
 private:
-	bool shouldShowCutin(Game game) {
-		return (game.getTurnCount() / 2 == 2);
+	bool playedOneTurn = false;
+
+	bool shouldUseSkill(Game game) {
+		return (game.getTurnCount() / 2 + 1 == 12);
+	}
+
+	// 2ターン行動
+	void doSkill(Game &game) {
+		if (!playedOneTurn) {
+			COM::setWait(0);
+			if (play(game)) {
+				game.minusOneTurnCheat();
+				playedOneTurn = true;
+			}
+		} else {
+			if (play(game)) finishSkill();
+		}
 	}
 };
