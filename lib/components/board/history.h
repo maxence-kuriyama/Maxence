@@ -19,8 +19,9 @@ public:
 
 	// —š—ð‚É’Ç‰Á
 	void add(int global_x, int global_y, int local_x, int local_y, int nextField) {
+		Coordinate c = { global_x, global_y, local_x, local_y, nextField };
 		history[1] = history[0];
-		history[0] = { global_x, global_y, local_x, local_y, nextField };
+		history[0] = c;
 		if (cancelCnt < 2) cancelCnt++;
 	}
 

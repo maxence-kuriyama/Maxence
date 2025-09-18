@@ -21,6 +21,7 @@ public:
 	Board() {
 		initialize();
 	}
+
 	~Board() {}
 
 	void initialize() {
@@ -48,7 +49,8 @@ public:
 
 	void restore(nlohmann::json data) {
 		for (int index = 0; index < 81; index++) {
-			Coordinate c = coordinates(index);
+			Coordinate c;
+			c.setFromIndex(index);
 			local[c.global_x][c.global_y].state[c.x][c.y] = data["states"][index];
 		}
 		for (int i = 0; i < 3; i++) {
@@ -70,15 +72,6 @@ public:
 
 	void drawLocal(int x, int y, double base_x, double base_y, double width) {
 		local[x][y].draw(base_x, base_y, width);
-	}
-
-	static Coordinate coordinates(int index) {
-		Coordinate c;
-		c.global_x = (index / 27) % 3;
-		c.global_y = (index / 9) % 3;
-		c.x = (index / 3) % 3;
-		c.y = index % 3;
-		return c;
 	}
 
 	static int index(Coordinate c) {
@@ -129,7 +122,8 @@ public:
 	}
 
 	int localState(int index) {
-		Coordinate c = coordinates(index);
+		Coordinate c;
+		c.setFromIndex(index);
 		return localState(c);
 	}
 
@@ -198,7 +192,8 @@ public:
 	}
 
 	bool canPut(int index) {
-		Coordinate c = coordinates(index);
+		Coordinate c;
+		c.setFromIndex(index);
 		return canPut(c);
 	}
 
@@ -238,7 +233,8 @@ public:
 	}
 
 	double update(int index, int side, bool logging = true) {
-		Coordinate c = coordinates(index);
+		Coordinate c;
+		c.setFromIndex(index);
 		return update(c, side, logging);
 	}
 
