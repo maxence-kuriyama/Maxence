@@ -15,8 +15,8 @@ const int LAYER_DEPTH(4);
 
 const int COM_THINKING_WAIT(0.8 * FPS);
 const float COM_ANNEALING_RATE(0.10); // epsilon-greedy
-const float COM_SOFTMAX_ALPHA_DEFAULT(15.0);  // softmax‚ÌŒW”
-const float COM_SOFTMAX_ALPHA_DECREMENT(0.10);
+const float COM_SOFTMAX_ALPHA_DEFAULT(25.0);  // softmax‚ÌŒW”
+const float COM_SOFTMAX_ALPHA_DECREMENT(0.20);
 const float COM_HYBRID_THRESHOLD_WIN(0.75); // •¡‡í—ª‚ÅMLP‚ğg‚¤‚µ‚«‚¢’l
 const float COM_HYBRID_THRESHOLD_LOSE(-0.75); // •¡‡í—ª‚ÅMLP‚ğŠü‹p‚·‚é‚µ‚«‚¢’l
 
