@@ -255,7 +255,7 @@ private:
 			return;
 		}
 
-		COM::setChoice({ rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD });
+		COM::setChoice(rand() % 81);
 		loggingAnnealing(r);
 	}
 
@@ -265,7 +265,7 @@ private:
 
 		int index = getIndexInProbability(distribution);
 		if (index == -1) {
-			COM::setChoice({ rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD });
+			COM::setChoice(rand() % 81);
 			return;
 		}
 
@@ -292,7 +292,7 @@ private:
 
 		int index = getIndexInProbability(distribution);
 		if (index == -1) {
-			COM::setChoice({ rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD });
+			COM::setChoice(rand() % 81);
 			return;
 		}
 
