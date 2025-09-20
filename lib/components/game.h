@@ -2,6 +2,7 @@
 
 #include <Eigen/Core>
 #include "lib/const.h"
+#include "lib/utils/coordinate.h"
 #include "lib/utils/music.h"
 #include "lib/utils/user_input.h"
 #include "lib/utils/encrypter.h"
@@ -320,7 +321,8 @@ public:
 	/*===========================*/
 	void getMouseCoord(Mouse& mouse) {
 		for (int index = 0; index < 81; index++) {
-			Coordinate c = Board::coordinates(index);
+			Coordinate c;
+			c.set(index);
 
 			int upLeftX = 160 + 100 * c.global_x + 33 * c.x;
 			int upLeftY = 80 + 100 * c.global_y + 33 * c.y;

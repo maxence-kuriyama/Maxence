@@ -62,7 +62,7 @@ public:
 		onGame = true;
 
 		delete enemyCom;
-		enemyCom = createEnemy(getCharacter(player2));
+		enemyCom = createEnemy(player2);
 	}
 
 	void startTutorial(int player1, int player2) {
@@ -149,15 +149,15 @@ public:
 	}
 
 	bool isWon() {
-		return (game.victory() == 1);
+		return (game.victory() == VICTORY_BLACK);
 	}
 
 	bool isLost() {
-		return (game.victory() == -1);
+		return (game.victory() == VICTORY_WHITE);
 	}
 
 	bool isDraw() {
-		return (game.victory() == 10);
+		return (game.victory() == VICTORY_DRAW);
 	}
 
 	Coordinate last() {
@@ -180,17 +180,18 @@ public:
 
 private:
 
-	Enemy* createEnemy(int character) {
-		switch (character) {
-		case CHARACTER_WHO_RED:
+	Enemy* createEnemy(int player) {
+		switch (player) {
+		case BATTLE_PLAYER_RED:
 			return new EnemyRed();
-		case CHARACTER_WHO_GREEN:
+		case BATTLE_PLAYER_GREEN:
 			return new EnemyGreen();
-		case CHARACTER_WHO_BLUE:
+		case BATTLE_PLAYER_BLUE:
 			return new EnemyBlue();
-		case CHARACTER_WHO_YELLOW:
+		case BATTLE_PLAYER_YELLOW:
 			return new EnemyYellow();
 		default:
+			int character = getCharacter(player);
 			return new Enemy(character);
 		}
 	}

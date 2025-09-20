@@ -55,6 +55,7 @@ public:
 		// g—p‚·‚éSE‚ğˆê“xƒƒ‚ƒŠ‚Éæ‚¹‚Ä‚¨‚­
 		SetUseASyncLoadFlag(TRUE);
 		seHandleKick = LoadSoundMem("sound/kick01.m4a");
+		seHandleWin = LoadSoundMem("sound/kick03.m4a");
 		SetUseASyncLoadFlag(FALSE);
 	}
 
@@ -74,6 +75,7 @@ private:
 	int imgRoom;
 	int imgCard;
 	int seHandleKick = 0;
+	int seHandleWin = 0;
 	unsigned int White = GetColor(255, 255, 255);
 	unsigned int Black = GetColor(0, 0, 0);
 	int strColorDebug = GetColor(100, 30, 30);
@@ -535,6 +537,7 @@ private:
 	// override
 	int doBattle() {
 		ScenarioBase::doBattle();
+		if (battle.isWon()) PlaySoundMem(seHandleWin, DX_PLAYTYPE_BACK);
 
 		if (!battle.usingSkill() && saveOrReset()) {
 			battle.initialize();
@@ -557,7 +560,7 @@ private:
 	}
 
 	int lostBattle(int who) {
-		if (battle.isLost()) {
+		if (battle.isLost() || battle.isDraw()) {
 			if (gameover.isActivated()) {
 				int res = gameover.show();
 				if (gameover.goingContinue()) load();
