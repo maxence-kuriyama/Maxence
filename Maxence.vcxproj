@@ -178,7 +178,7 @@
     <ClInclude Include="lib\modes\music_room\bg_character.h" />
     <ClInclude Include="lib\components\board.h" />
     <ClInclude Include="lib\components\board\field.h" />
-    <ClInclude Include="lib\components\board\hist.h" />
+    <ClInclude Include="lib\components\board\history.h" />
     <ClInclude Include="lib\modes\scenario_base\enemy_blue.h" />
     <ClInclude Include="lib\modes\scenario_base\enemy_green.h" />
     <ClInclude Include="lib\modes\scenario_base\enemy_red.h" />
@@ -201,6 +201,7 @@
     <ClInclude Include="lib\game\anime.h" />
     <ClInclude Include="lib\game\comment.h" />
     <ClInclude Include="lib\load_obj.h" />
+    <ClInclude Include="lib\utils\coordinate.h" />
     <ClInclude Include="lib\utils\flag_store.h" />
     <ClInclude Include="lib\utils\logger.h" />
     <ClInclude Include="lib\components\logo.h" />

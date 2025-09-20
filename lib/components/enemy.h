@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lib/utils/user_input.h"
+#include "lib/utils/coordinate.h"
 #include "lib/components/game.h"
 #include "lib/components/character.h"
 #include "lib/components/anime/fade_cutin.h"
@@ -47,8 +48,8 @@ public:
 	}
 
 	bool play(Game &game) {
-		Coordinate choice = generateChoice(game);
-		double res = game.update(choice);
+		buildChoice(game);
+		double res = game.update(COM::choice);
 
 		if (game.isUpdated(res)) {
 			COM::resetPlaying();
@@ -116,10 +117,9 @@ private:
 		msg.initialize();
 	}
 
-	Coordinate generateChoice(Game game) {
+	void buildChoice(Game game) {
 		VectorXd input = game.stateToInput();
 		COM::play(input, game.board, game.currentSide(), comLevel);
-		return COM::choice;
 	}
 
 	void drawPreMessage() {

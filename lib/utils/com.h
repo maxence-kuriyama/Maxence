@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "lib/const.h"
+#include "lib/utils/coordinate.h"
 #include "lib/components/board.h"
 #include "./com/vect.h"
 #include "./com/minmax.h"
@@ -14,8 +15,8 @@ const int LAYER_DEPTH(4);
 
 const int COM_THINKING_WAIT(0.8 * FPS);
 const float COM_ANNEALING_RATE(0.10); // epsilon-greedy
-const float COM_SOFTMAX_ALPHA_DEFAULT(15.0);  // softmax‚ÌŒW”
-const float COM_SOFTMAX_ALPHA_DECREMENT(0.10);
+const float COM_SOFTMAX_ALPHA_DEFAULT(25.0);  // softmax‚ÌŒW”
+const float COM_SOFTMAX_ALPHA_DECREMENT(0.20);
 const float COM_HYBRID_THRESHOLD_WIN(0.75); // •¡‡í—ª‚ÅMLP‚ðŽg‚¤‚µ‚«‚¢’l
 const float COM_HYBRID_THRESHOLD_LOSE(-0.75); // •¡‡í—ª‚ÅMLP‚ðŠü‹p‚·‚é‚µ‚«‚¢’l
 
@@ -45,6 +46,14 @@ public:
 
 	~COM() {
 		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
+	}
+
+	static void setChoice(Coordinate c) {
+		COM::choice = c;
+	}
+
+	static void setChoice(int index) {
+		COM::choice = index;
 	}
 
 private:
@@ -118,9 +127,7 @@ public:
 	static void resetPlaying() {
 		COM* com = getInstance();
 		com->alpha = COM_SOFTMAX_ALPHA_DEFAULT;
-
 		COM::setWait();
-		COM::choice = { -1, -1, -1, -1, DUMMY_LAST_FIELD };
 	}
 
 	static void visualize(VectorXd input) {
@@ -204,7 +211,8 @@ private:
 				}
 			}
 
-			Coordinate c = Board::coordinates(index);
+			Coordinate c;
+			c.set(index);
 			int draw_x = 160 + 100 * c.global_x + 33 * c.x + 16;
 			int draw_y = 80 + 100 * c.global_y + 33 * c.y + 16;
 			int radius = 15;
@@ -224,12 +232,12 @@ private:
 
 		_playByMachine(input, board, side);
 
-		int index = Board::index(COM::choice);
+		int index = COM::choice.getIndex();
 		double minMaxValue = lastMinMaxNode->getChildValue(index);
 		if (minMaxValue >= COM_HYBRID_THRESHOLD_LOSE) return;
 
 		loggingReject(index, minMaxValue);
-		COM::choice = Board::coordinates(lastMinMaxNode->max_child_index);
+		COM::setChoice(lastMinMaxNode->max_child_index);
 	}
 
 	void _playByMachine(VectorXd input, const Board board, int side) {
@@ -241,11 +249,11 @@ private:
 
 		double r = unif(mt);
 		if (r > COM_ANNEALING_RATE) {
-			COM::choice = Board::coordinates(maxId);
+			COM::setChoice(maxId);
 			return;
 		}
 
-		COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+		COM::setChoice(rand() % 81);
 		loggingAnnealing(r);
 	}
 
@@ -255,11 +263,11 @@ private:
 
 		int index = getIndexInProbability(distribution);
 		if (index == -1) {
-			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+			COM::setChoice(rand() % 81);
 			return;
 		}
 
-		COM::choice = Board::coordinates(index);
+		COM::setChoice(index);
 		loggingChoiceBySoftmax(index);
 		alpha -= COM_SOFTMAX_ALPHA_DECREMENT;
 	}
@@ -268,8 +276,7 @@ private:
 		MinMaxNode* node = new MinMaxNode(board, side);
 		MinMaxNode::truncate = true;
 		int index = node->search(depth);
-
-		COM::choice = Board::coordinates(index);
+		COM::setChoice(index);
 		miniMaxDebugStr = node->debugStr();
 
 		if (lastMinMaxNode != NULL) delete lastMinMaxNode;
@@ -283,11 +290,11 @@ private:
 
 		int index = getIndexInProbability(distribution);
 		if (index == -1) {
-			COM::choice = { rand() % 3, rand() % 3, rand() % 3, rand() % 3, DUMMY_LAST_FIELD };
+			COM::setChoice(rand() % 81);
 			return;
 		}
 
-		COM::choice = Board::coordinates(index);
+		COM::setChoice(index);
 		loggingChoiceBySoftmax(index);
 		alpha = max(alpha - COM_SOFTMAX_ALPHA_DECREMENT, 0.0);
 	}
