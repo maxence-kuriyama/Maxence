@@ -127,9 +127,7 @@ public:
 	static void resetPlaying() {
 		COM* com = getInstance();
 		com->alpha = COM_SOFTMAX_ALPHA_DEFAULT;
-
 		COM::setWait();
-		COM::setChoice({ -1, -1, -1, -1, DUMMY_LAST_FIELD });
 	}
 
 	static void visualize(VectorXd input) {

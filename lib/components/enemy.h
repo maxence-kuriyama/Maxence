@@ -48,8 +48,8 @@ public:
 	}
 
 	bool play(Game &game) {
-		Coordinate choice = generateChoice(game);
-		double res = game.update(choice);
+		buildChoice(game);
+		double res = game.update(COM::choice);
 
 		if (game.isUpdated(res)) {
 			COM::resetPlaying();
@@ -117,10 +117,9 @@ private:
 		msg.initialize();
 	}
 
-	Coordinate generateChoice(Game game) {
+	void buildChoice(Game game) {
 		VectorXd input = game.stateToInput();
 		COM::play(input, game.board, game.currentSide(), comLevel);
-		return COM::choice;
 	}
 
 	void drawPreMessage() {
