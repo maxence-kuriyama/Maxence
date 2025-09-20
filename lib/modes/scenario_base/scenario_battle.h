@@ -149,15 +149,15 @@ public:
 	}
 
 	bool isWon() {
-		return (game.victory() == 1);
+		return (game.victory() == VICTORY_BLACK);
 	}
 
 	bool isLost() {
-		return (game.victory() == -1);
+		return (game.victory() == VICTORY_WHITE);
 	}
 
 	bool isDraw() {
-		return (game.victory() == 10);
+		return (game.victory() == VICTORY_DRAW);
 	}
 
 	Coordinate last() {

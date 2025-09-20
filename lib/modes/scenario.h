@@ -557,7 +557,7 @@ private:
 	}
 
 	int lostBattle(int who) {
-		if (battle.isLost()) {
+		if (battle.isLost() || battle.isDraw()) {
 			if (gameover.isActivated()) {
 				int res = gameover.show();
 				if (gameover.goingContinue()) load();
