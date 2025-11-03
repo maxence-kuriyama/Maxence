@@ -100,7 +100,10 @@ public:
 	}
 
 	void showCutinDebug() {
-		return startCutin();
+		int index = max(skillIndex - 1, 0);
+		string skillName = skills[index].name;
+		cutin.setSkillName(skillName);
+		return cutin.start();
 	}
 
 	void tick() {
