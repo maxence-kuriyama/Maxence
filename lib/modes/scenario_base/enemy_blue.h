@@ -22,13 +22,14 @@ private:
 			|| (skillIndex == 1 && game.getTurnCount() / 2 + 1 == 16));
 	}
 
-	// 次に置きたい場所を強制確保
 	void doSkill(Game &game) {
 		switch (skillIndex) {
 		case 0:
+			// 相手のターンを勝手に操作
 			controlPlayer(game);
 			break;
 		case 1:
+			// 相手が取りたい場所をリセット
 			whitenField(game);
 			break;
 		}
